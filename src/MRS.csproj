@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PublishTrimmed>false</PublishTrimmed>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>MRS</AssemblyName>
+    <ApplicationIcon>MRS.ico</ApplicationIcon>
+    <Version>0.18.0-preview2</Version>
+    <Company>Mike's Radio Software</Company>
+    <Description>Windows radio workbench — audio foundation preview</Description>
+  </PropertyGroup>
+  <ItemGroup><PackageReference Include="NAudio" Version="2.2.1" /></ItemGroup>
+  <ItemGroup><Resource Include="MRS.ico" /></ItemGroup>
+  <ItemGroup><EmbeddedResource Include="NifogChannels.tsv" /></ItemGroup>
+  <ItemGroup><Content Include="../native/HackRF/**/*" Link="Receivers/HackRF/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
+  <ItemGroup><Content Include="../decoders/atsc/**/*" Link="Decoders/ATSC/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
+</Project>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+<UserControl x:Class="MRS.P25CatalogPanel" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Background="#101722" Foreground="#E4EDF8">
+ <Grid Margin="10"><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="2*" MinHeight="65"/><RowDefinition Height="8"/><RowDefinition Height="*" MinHeight="80"/></Grid.RowDefinitions>
+  <StackPanel><TextBlock Text="P25 SYSTEMS · DISCOVERED INFORMATION" FontWeight="SemiBold" FontSize="17" Margin="0,0,0,8"/>
+   <WrapPanel><ComboBox x:Name="SourceChoice" SelectedIndex="0" SelectionChanged="SourceChanged" MinWidth="190"><ComboBoxItem Content="Live discoveries · saved"/><ComboBoxItem Content="Replay · this session only"/></ComboBox><Button Content="Export discoveries" ToolTip="Export the entire selected live or replay catalog, including entries hidden by search." Click="ExportClick" Margin="8,0"/><Button x:Name="EditNotesButton" Content="Name / notes" Click="EditNotes" IsEnabled="False"/><Button x:Name="SaveFrequencyButton" Content="Save to frequencies" Click="SaveFrequency" IsEnabled="False" ToolTip="Review a resolved live channel in the frequency editor before saving. Does not tune the receiver."/></WrapPanel>
+   <TextBlock x:Name="Status" Foreground="#9EB1C9" TextWrapping="Wrap" Margin="0,8,0,0"/>
+  </StackPanel>
+  <Grid Grid.Row="1" Margin="0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions><TextBlock Text="Search" VerticalAlignment="Center" Margin="0,0,8,0"/><TextBox x:Name="Search" Grid.Column="1" TextChanged="SearchChanged" Padding="4"/></Grid>
+  <DataGrid x:Name="Entries" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" SelectionChanged="SelectedChanged" Background="#101722" Foreground="#142133" AlternatingRowBackground="#E4EDF8" RowBackground="#F6F8FC" HeadersVisibility="Column" GridLinesVisibility="Horizontal">
+   <DataGrid.Columns><DataGridTextColumn Header="WACN / System / NAC" Binding="{Binding System}" Width="180" MinWidth="180"/><DataGridTextColumn Header="RFSS / Site" Binding="{Binding Site}" Width="85" MinWidth="85"/><DataGridTextColumn Header="Type" Binding="{Binding Category}" Width="110" MinWidth="110"/><DataGridTextColumn Header="MHz" Binding="{Binding Frequency}" Width="95" MinWidth="95"/><DataGridTextColumn Header="Discovery" Binding="{Binding Label}" Width="*" MinWidth="150"/><DataGridTextColumn Header="Last seen UTC" Binding="{Binding LastSeen}" Width="160" MinWidth="160"/><DataGridTextColumn Header="Seen" Binding="{Binding Count}" Width="55" MinWidth="55"/></DataGrid.Columns>
+  </DataGrid>
+  <GridSplitter Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" ShowsPreview="True" Background="#526881" Cursor="SizeNS" Focusable="True" ToolTip="Drag to resize discoveries and details."/>
+  <TextBox x:Name="Details" Grid.Row="4" Margin="0,4,0,0" Padding="8" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="#101722" Foreground="#B9CBDF" BorderBrush="#35445B" FontFamily="Consolas" FontSize="12" Text="Select a discovery. These are last-observed announcements, not a live-call or site-reachability indicator."/>
+ </Grid>
+</UserControl>
+
+
+

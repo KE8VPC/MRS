@@ -1,0 +1,856 @@
+PASS: HackRF x64 native transfer and device-list ABI layouts
+PASS: HackRF signed I/Q maps zero and both extrema to unsigned I/Q
+PASS: HackRF sample conversion is lossless for every 8-bit value
+PASS: HackRF gain round trip LNA 0, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 0, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 0, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 0, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 0, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 0, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 0, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 0, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 0, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 0, VGA 62, amplifier True
+PASS: HackRF gain round trip LNA 8, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 8, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 8, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 8, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 8, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 8, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 8, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 8, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 8, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 8, VGA 62, amplifier True
+PASS: HackRF gain round trip LNA 16, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 16, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 16, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 16, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 16, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 16, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 16, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 16, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 16, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 16, VGA 62, amplifier True
+PASS: HackRF gain round trip LNA 24, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 24, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 24, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 24, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 24, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 24, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 24, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 24, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 24, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 24, VGA 62, amplifier True
+PASS: HackRF gain round trip LNA 32, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 32, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 32, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 32, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 32, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 32, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 32, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 32, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 32, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 32, VGA 62, amplifier True
+PASS: HackRF gain round trip LNA 40, VGA 0, amplifier False
+PASS: HackRF gain round trip LNA 40, VGA 0, amplifier True
+PASS: HackRF gain round trip LNA 40, VGA 2, amplifier False
+PASS: HackRF gain round trip LNA 40, VGA 2, amplifier True
+PASS: HackRF gain round trip LNA 40, VGA 16, amplifier False
+PASS: HackRF gain round trip LNA 40, VGA 16, amplifier True
+PASS: HackRF gain round trip LNA 40, VGA 32, amplifier False
+PASS: HackRF gain round trip LNA 40, VGA 32, amplifier True
+PASS: HackRF gain round trip LNA 40, VGA 62, amplifier False
+PASS: HackRF gain round trip LNA 40, VGA 62, amplifier True
+PASS: HackRF rejects unsupported gain token -1000
+PASS: HackRF rejects unsupported gain token 0
+PASS: HackRF rejects unsupported gain token 600
+PASS: HackRF rejects unsupported gain token 16777735
+PASS: HackRF rejects unsupported gain token 16777776
+PASS: HackRF rejects unsupported gain token 16793352
+PASS: Capture offset +250 kHz places weather station below hardware center
+PASS: Negative capture offset supported
+PASS: Disabled capture offset preserves direct tuning
+PASS: Capture offset rejects hardware or bandwidth limit without silent fallback
+PASS: Capture offset rejects hardware or bandwidth limit without silent fallback
+PASS: Capture offset rejects hardware or bandwidth limit without silent fallback
+PASS: Independent receiver offsets survive preference serialization
+PASS: HackRF startup acknowledges offset center and listening frequency separately
+PASS: Live HackRF offset retune preserves listening frequency
+PASS: Gain change preserves offset channel
+PASS: Rate change preserves offset, worker and active recording
+PASS: Recorded offset frames pair raw capture center with correct listening channel
+PASS: Replay restores offset metadata without applying offset twice
+PASS: HackRF transport preserves 6 GHz frequency and analog usable coverage separately from sample rate
+PASS: HackRF rejects corrupt framing
+PASS: HackRF live commands preserve upper-range tuning and independent gains
+PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
+PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
+PASS: HackRF identity survives enumeration changes and is namespaced by backend
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (72 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
+PASS: HackRF 2400000 S/s recovers the NFM modulation tone
+PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
+PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (97 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
+PASS: HackRF 9600000 S/s recovers the NFM modulation tone
+PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
+PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (40 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
+PASS: HackRF 19200000 S/s recovers the NFM modulation tone
+PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
+PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (43 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
+PASS: HackRF 20000000 S/s recovers the NFM modulation tone
+PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
+PASS: HackRF 20000000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
+PASS: HackRF fixture starts above uint frequency range: 
+PASS: HackRF live retune acknowledges 6 GHz without reopening process
+PASS: HackRF live gain acknowledgment carries LNA VGA and amplifier
+PASS: HackRF rate change preserves worker ownership
+PASS: HackRF I/Q recording identifies gain encoding and source backend
+PASS: HackRF recording retains 64-bit frequency through control changes
+PASS: HackRF recorded I/Q replays without receiver hardware
+PASS: Subaudible catalog contains 50 common CTCSS tones plus 62.5 Hz and 104 octal DCS codes
+PASS: DCS 023 encoding matches independent CML Table 5 word 763813
+PASS: DCS 025 encoding matches independent CML Table 5 word 6B7815
+PASS: DCS 047 encoding matches independent CML Table 5 word 0FD827
+PASS: DCS 134 encoding matches independent CML Table 5 word 2ED85C
+PASS: DCS 365 encoding matches independent CML Table 5 word 2F08F5
+PASS: DCS 712 encoding matches independent CML Table 5 word 0BD9CA
+PASS: CTCSS 62.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 67.0 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 69.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 71.9 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 74.4 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 77.0 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 79.7 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 82.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 85.4 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 88.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 91.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 94.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 97.4 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 100.0 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 103.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 107.2 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 110.9 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 114.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 118.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 123.0 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 127.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 131.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 136.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 141.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 146.2 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 151.4 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 156.7 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 159.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 162.2 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 165.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 167.9 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 171.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 173.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 177.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 179.9 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 183.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 186.2 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 189.9 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 192.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 196.6 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 199.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 203.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 206.5 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 210.7 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 218.1 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 225.7 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 229.1 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 233.6 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 241.8 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 250.3 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: CTCSS 254.1 Hz tolerates noise, frequency offset and arbitrary buffer boundaries
+PASS: DCS 023 is detected in both polarities with equivalent aliases retained
+PASS: DCS 025 is detected in both polarities with equivalent aliases retained
+PASS: DCS 026 is detected in both polarities with equivalent aliases retained
+PASS: DCS 031 is detected in both polarities with equivalent aliases retained
+PASS: DCS 032 is detected in both polarities with equivalent aliases retained
+PASS: DCS 036 is detected in both polarities with equivalent aliases retained
+PASS: DCS 043 is detected in both polarities with equivalent aliases retained
+PASS: DCS 047 is detected in both polarities with equivalent aliases retained
+PASS: DCS 051 is detected in both polarities with equivalent aliases retained
+PASS: DCS 053 is detected in both polarities with equivalent aliases retained
+PASS: DCS 054 is detected in both polarities with equivalent aliases retained
+PASS: DCS 065 is detected in both polarities with equivalent aliases retained
+PASS: DCS 071 is detected in both polarities with equivalent aliases retained
+PASS: DCS 072 is detected in both polarities with equivalent aliases retained
+PASS: DCS 073 is detected in both polarities with equivalent aliases retained
+PASS: DCS 074 is detected in both polarities with equivalent aliases retained
+PASS: DCS 114 is detected in both polarities with equivalent aliases retained
+PASS: DCS 115 is detected in both polarities with equivalent aliases retained
+PASS: DCS 116 is detected in both polarities with equivalent aliases retained
+PASS: DCS 122 is detected in both polarities with equivalent aliases retained
+PASS: DCS 125 is detected in both polarities with equivalent aliases retained
+PASS: DCS 131 is detected in both polarities with equivalent aliases retained
+PASS: DCS 132 is detected in both polarities with equivalent aliases retained
+PASS: DCS 134 is detected in both polarities with equivalent aliases retained
+PASS: DCS 143 is detected in both polarities with equivalent aliases retained
+PASS: DCS 145 is detected in both polarities with equivalent aliases retained
+PASS: DCS 152 is detected in both polarities with equivalent aliases retained
+PASS: DCS 155 is detected in both polarities with equivalent aliases retained
+PASS: DCS 156 is detected in both polarities with equivalent aliases retained
+PASS: DCS 162 is detected in both polarities with equivalent aliases retained
+PASS: DCS 165 is detected in both polarities with equivalent aliases retained
+PASS: DCS 172 is detected in both polarities with equivalent aliases retained
+PASS: DCS 174 is detected in both polarities with equivalent aliases retained
+PASS: DCS 205 is detected in both polarities with equivalent aliases retained
+PASS: DCS 212 is detected in both polarities with equivalent aliases retained
+PASS: DCS 223 is detected in both polarities with equivalent aliases retained
+PASS: DCS 225 is detected in both polarities with equivalent aliases retained
+PASS: DCS 226 is detected in both polarities with equivalent aliases retained
+PASS: DCS 243 is detected in both polarities with equivalent aliases retained
+PASS: DCS 244 is detected in both polarities with equivalent aliases retained
+PASS: DCS 245 is detected in both polarities with equivalent aliases retained
+PASS: DCS 246 is detected in both polarities with equivalent aliases retained
+PASS: DCS 251 is detected in both polarities with equivalent aliases retained
+PASS: DCS 252 is detected in both polarities with equivalent aliases retained
+PASS: DCS 255 is detected in both polarities with equivalent aliases retained
+PASS: DCS 261 is detected in both polarities with equivalent aliases retained
+PASS: DCS 263 is detected in both polarities with equivalent aliases retained
+PASS: DCS 265 is detected in both polarities with equivalent aliases retained
+PASS: DCS 266 is detected in both polarities with equivalent aliases retained
+PASS: DCS 271 is detected in both polarities with equivalent aliases retained
+PASS: DCS 274 is detected in both polarities with equivalent aliases retained
+PASS: DCS 306 is detected in both polarities with equivalent aliases retained
+PASS: DCS 311 is detected in both polarities with equivalent aliases retained
+PASS: DCS 315 is detected in both polarities with equivalent aliases retained
+PASS: DCS 325 is detected in both polarities with equivalent aliases retained
+PASS: DCS 331 is detected in both polarities with equivalent aliases retained
+PASS: DCS 332 is detected in both polarities with equivalent aliases retained
+PASS: DCS 343 is detected in both polarities with equivalent aliases retained
+PASS: DCS 346 is detected in both polarities with equivalent aliases retained
+PASS: DCS 351 is detected in both polarities with equivalent aliases retained
+PASS: DCS 356 is detected in both polarities with equivalent aliases retained
+PASS: DCS 364 is detected in both polarities with equivalent aliases retained
+PASS: DCS 365 is detected in both polarities with equivalent aliases retained
+PASS: DCS 371 is detected in both polarities with equivalent aliases retained
+PASS: DCS 411 is detected in both polarities with equivalent aliases retained
+PASS: DCS 412 is detected in both polarities with equivalent aliases retained
+PASS: DCS 413 is detected in both polarities with equivalent aliases retained
+PASS: DCS 423 is detected in both polarities with equivalent aliases retained
+PASS: DCS 431 is detected in both polarities with equivalent aliases retained
+PASS: DCS 432 is detected in both polarities with equivalent aliases retained
+PASS: DCS 445 is detected in both polarities with equivalent aliases retained
+PASS: DCS 446 is detected in both polarities with equivalent aliases retained
+PASS: DCS 452 is detected in both polarities with equivalent aliases retained
+PASS: DCS 454 is detected in both polarities with equivalent aliases retained
+PASS: DCS 455 is detected in both polarities with equivalent aliases retained
+PASS: DCS 462 is detected in both polarities with equivalent aliases retained
+PASS: DCS 464 is detected in both polarities with equivalent aliases retained
+PASS: DCS 465 is detected in both polarities with equivalent aliases retained
+PASS: DCS 466 is detected in both polarities with equivalent aliases retained
+PASS: DCS 503 is detected in both polarities with equivalent aliases retained
+PASS: DCS 506 is detected in both polarities with equivalent aliases retained
+PASS: DCS 516 is detected in both polarities with equivalent aliases retained
+PASS: DCS 523 is detected in both polarities with equivalent aliases retained
+PASS: DCS 526 is detected in both polarities with equivalent aliases retained
+PASS: DCS 532 is detected in both polarities with equivalent aliases retained
+PASS: DCS 546 is detected in both polarities with equivalent aliases retained
+PASS: DCS 565 is detected in both polarities with equivalent aliases retained
+PASS: DCS 606 is detected in both polarities with equivalent aliases retained
+PASS: DCS 612 is detected in both polarities with equivalent aliases retained
+PASS: DCS 624 is detected in both polarities with equivalent aliases retained
+PASS: DCS 627 is detected in both polarities with equivalent aliases retained
+PASS: DCS 631 is detected in both polarities with equivalent aliases retained
+PASS: DCS 632 is detected in both polarities with equivalent aliases retained
+PASS: DCS 654 is detected in both polarities with equivalent aliases retained
+PASS: DCS 662 is detected in both polarities with equivalent aliases retained
+PASS: DCS 664 is detected in both polarities with equivalent aliases retained
+PASS: DCS 703 is detected in both polarities with equivalent aliases retained
+PASS: DCS 712 is detected in both polarities with equivalent aliases retained
+PASS: DCS 723 is detected in both polarities with equivalent aliases retained
+PASS: DCS 731 is detected in both polarities with equivalent aliases retained
+PASS: DCS 732 is detected in both polarities with equivalent aliases retained
+PASS: DCS 734 is detected in both polarities with equivalent aliases retained
+PASS: DCS 743 is detected in both polarities with equivalent aliases retained
+PASS: DCS 754 is detected in both polarities with equivalent aliases retained
+PASS: Independent DCS 023N / 047I waveform survives 133.8 bit/s, DC and noise
+PASS: Independent DCS 023N / 047I waveform survives 134.4 bit/s, DC and noise
+PASS: Independent DCS 023N / 047I waveform survives 135.0 bit/s, DC and noise
+PASS: Subaudible detector rejects silence without inventing a tone or code
+PASS: Subaudible detector rejects DC without inventing a tone or code
+PASS: Subaudible detector rejects 60 Hz hum without inventing a tone or code
+PASS: Subaudible detector rejects off-list 70.6 Hz without inventing a tone or code
+PASS: Subaudible detector rejects DCS turn-off tone without inventing a tone or code
+PASS: Subaudible detector rejects corrupted DCS without inventing a tone or code
+PASS: Subaudible detector rejects audio-only 1 kHz without inventing a tone or code
+PASS: Subaudible detector rejects alias at 2500 Hz without inventing a tone or code
+PASS: Subaudible detector rejects noise without inventing a tone or code
+PASS: Short tone burst is not promoted to a stable CTCSS result
+PASS: Continuous CTCSS produces one acquisition, not repeated history spam
+PASS: A new CTCSS tone replaces the prior live result
+PASS: Tone loss clears the live indication
+PASS: P25 C4FM fixture is not misidentified as subaudible signaling
+PASS: Two DCS repetitions are insufficient for a stable code
+PASS: CTCSS detection survives stronger voice-band components
+PASS: Subaudible Data observations retain protocol, frequency, replay and source position
+PASS: Source/retune boundary clears the previous subaudible detection
+PASS: Stereo PCM path decodes an independent DCS word across small blocks
+PASS: Explicit stop/seek reset clears the live subaudible state
+PASS: Resetting one receiver does not clear the other receiver's tone
+PASS: Disabled subaudible decoder emits no observations
+PASS: Production NFM I/Q discriminator preserves 100.0 Hz
+PASS: Production NFM I/Q discriminator preserves 114I / 712N
+PASS: P25 repeats retain one fixed summary row and first-seen time while raw history remains bounded
+PASS: Changed P25 site fields update the current row and increment the content-change counter
+PASS: Changed summary content is searchable
+PASS: Filtered summary disappears when its updated content no longer matches
+PASS: P25 summary separates frequency, receiver, replay and NAC
+PASS: Unknown P25 payload variants update one category row
+PASS: Identical P25 grants are counted while changed activity stays separate
+PASS: Non-P25 observations retain separate history rows
+PASS: Category grouping counts all payload variants
+PASS: Individual-message view retains the latest 500 observations
+PASS: Switching back restores summary counts without reconstructing them from truncated history
+PASS: Active status summary survives activity-row eviction
+PASS: Summary storage remains bounded even with changing payloads
+PASS: Clear resets both raw history and summary counters
+PASS: Different source sessions retain distinct summary rows
+PASS: Changing header bits and undecoded TSBK payloads do not flood grouped view
+PASS: Category rows preserve reception and payload-change counts
+PASS: Different opcodes and DUIDs remain separate
+PASS: Individual view retains changing raw observations
+PASS: P25 type filters hide header/TSBK but retain grant/status and raw history
+PASS: Export respects message type filters
+PASS: Type filters apply to individual messages too
+PASS: P25 filters do not hide another protocol with the same kind
+PASS: Show all restores hidden recent history
+PASS: Hidden rows continue accumulating summary counts
+PASS: AM recovers 1200 Hz audio at 48 kHz from 240000 S/s
+PASS: AM preserves filter and AGC state across uneven input blocks at 240000 S/s
+PASS: AM recovers 1200 Hz audio at 48 kHz from 960000 S/s
+PASS: AM preserves filter and AGC state across uneven input blocks at 960000 S/s
+PASS: AM recovers 1200 Hz audio at 48 kHz from 1920000 S/s
+PASS: AM preserves filter and AGC state across uneven input blocks at 1920000 S/s
+PASS: AM recovers 1200 Hz audio at 48 kHz from 3200000 S/s
+PASS: AM preserves filter and AGC state across uneven input blocks at 3200000 S/s
+PASS: USB recovers 1200 Hz audio at 48 kHz from 240000 S/s
+PASS: USB preserves filter and AGC state across uneven input blocks at 240000 S/s
+PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 240000 S/s
+PASS: USB recovers 1200 Hz audio at 48 kHz from 960000 S/s
+PASS: USB preserves filter and AGC state across uneven input blocks at 960000 S/s
+PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 960000 S/s
+PASS: USB recovers 1200 Hz audio at 48 kHz from 1920000 S/s
+PASS: USB preserves filter and AGC state across uneven input blocks at 1920000 S/s
+PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 1920000 S/s
+PASS: USB recovers 1200 Hz audio at 48 kHz from 3200000 S/s
+PASS: USB preserves filter and AGC state across uneven input blocks at 3200000 S/s
+PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 3200000 S/s
+PASS: LSB recovers 1200 Hz audio at 48 kHz from 240000 S/s
+PASS: LSB preserves filter and AGC state across uneven input blocks at 240000 S/s
+PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 240000 S/s
+PASS: LSB recovers 1200 Hz audio at 48 kHz from 960000 S/s
+PASS: LSB preserves filter and AGC state across uneven input blocks at 960000 S/s
+PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 960000 S/s
+PASS: LSB recovers 1200 Hz audio at 48 kHz from 1920000 S/s
+PASS: LSB preserves filter and AGC state across uneven input blocks at 1920000 S/s
+PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 1920000 S/s
+PASS: LSB recovers 1200 Hz audio at 48 kHz from 3200000 S/s
+PASS: LSB preserves filter and AGC state across uneven input blocks at 3200000 S/s
+PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 3200000 S/s
+PASS: Worker commands retain independent rate, gain and tuning requests
+PASS: Invalid control requests never reach the native receiver
+PASS: Usable RF display span is independent of sample rate
+PASS: Complete sideband filter must fit inside capture boundaries
+PASS: Offset channel mixes before decimation and recovers audio away from capture center
+PASS: Channel oscillator retains phase across input blocks
+PASS: Milestone fixture starts with acknowledged capture state
+PASS: Software channel tuning leaves capture center unchanged
+PASS: Gain selection is acknowledged without reopening receiver
+PASS: Live rate change rebuilds DSP while preserving an in-range channel
+PASS: Live gain, rate and channel changes preserve worker and I/Q recording
+PASS: Version 3 records applied rate transitions
+PASS: Version 3 retains gain and channel settings independently of capture center
+PASS: Replay index derives duration and seek offsets from complete frames
+PASS: Indexed seek lands on a valid metadata boundary
+PASS: Paused replay indexes without opening hardware
+PASS: Paused playback does not emit audio or advance its timeline
+PASS: Seeking updates paused position without resuming audio
+PASS: Paused seek restores frequency metadata without emitting audio
+PASS: Resume after seek restores destination frequency and processing
+PASS: Pause freezes audio and elapsed time during a recorded gap
+PASS: Stop cancels paused replay promptly
+PASS: HF tuning limits depend on sampling path
+PASS: Direct sampling permits 1 Hz but rejects DC, out-of-range frequencies and invalid branch values
+PASS: Near-zero RF view clips negative frequencies without remapping sample coverage
+PASS: HF view retains full span away from zero
+PASS: Direct branch command accepts the lowest positive frequency: 1
+PASS: Direct branch rejects zero-frequency commands: 1
+PASS: Live frame carries HF frequency and applied sampling branch: 1
+PASS: HF frame cannot masquerade as quadrature sampling: 1
+PASS: Direct sampling starts at 7 MHz without tuner gain: 1
+PASS: Tuner gain command is rejected in direct mode: 1
+PASS: Direct mode retunes to 1 Hz without reopening worker: 1
+PASS: Recording preserves branch and near-zero/HF capture metadata: 1
+PASS: Recorded direct sampling replays without receiver hardware: 1
+PASS: Direct branch command accepts the lowest positive frequency: 2
+PASS: Direct branch rejects zero-frequency commands: 2
+PASS: Live frame carries HF frequency and applied sampling branch: 2
+PASS: HF frame cannot masquerade as quadrature sampling: 2
+PASS: Direct sampling starts at 7 MHz without tuner gain: 2
+PASS: Tuner gain command is rejected in direct mode: 2
+PASS: Direct mode retunes to 1 Hz without reopening worker: 2
+PASS: Recording preserves branch and near-zero/HF capture metadata: 2
+PASS: Recorded direct sampling replays without receiver hardware: 2
+PASS: WFM locks stereo pilot at -2 Hz offset and produces 48 kHz stereo
+PASS: WFM separates left/right tones by over 26 dB at -2 Hz pilot offset (0.100/0.0000, 0.075/0.0000)
+PASS: WFM stereo preserves PLL/filter state across uneven blocks
+PASS: WFM locks stereo pilot at 0 Hz offset and produces 48 kHz stereo
+PASS: WFM separates left/right tones by over 26 dB at 0 Hz pilot offset (0.100/0.0000, 0.075/0.0000)
+PASS: WFM stereo preserves PLL/filter state across uneven blocks
+PASS: WFM locks stereo pilot at +2 Hz offset and produces 48 kHz stereo
+PASS: WFM separates left/right tones by over 26 dB at +2 Hz pilot offset (0.100/0.0000, 0.075/0.0000)
+PASS: WFM stereo preserves PLL/filter state across uneven blocks
+PASS: Force mono keeps pilot lock but duplicates mono to both channels
+PASS: Pilot loss releases stereo lock and returns to mono
+PASS: Stereo WAV retains both channels and remains ungated by RF squelch
+PASS: RDS checks all four CRC/offset blocks before accepting a group
+PASS: RDS rejects a corrupted group without displaying its fields
+PASS: RDS confirms repeated PS and RadioText with PI and PTY (1234, MRS TEST, HELLO, 10, 144)
+PASS: RDS station change discards previous station text
+PASS: RDS recovers independent-carrier MPX at -3 Hz offset (groups 57, PS MRS TEST, RT HELLO)
+PASS: RDS recovers independent-carrier MPX at 0 Hz offset (groups 57, PS MRS TEST, RT HELLO)
+PASS: RDS recovers independent-carrier MPX at +3 Hz offset (groups 57, PS MRS TEST, RT HELLO)
+PASS: RDS silence does not invent a station
+PASS: RDS rejects deterministic broadband noise without false station metadata
+PASS: RDS decodes stereo composite with added broadband noise
+PASS: RDS loss ages previous metadata beyond the display freshness limit
+PASS: RDS 2B RadioText uses C-prime and repeated PI correctly
+PASS: RDS RadioText A/B change clears the previous message before completion
+PASS: WFM I/Q at 240000 S/s decodes stereo and RDS together
+PASS: WFM I/Q at 240000 S/s retains over 23 dB stereo separation
+PASS: WFM I/Q at 960000 S/s decodes stereo and RDS together
+PASS: WFM I/Q at 960000 S/s retains over 23 dB stereo separation
+PASS: WFM I/Q at 1920000 S/s decodes stereo and RDS together
+PASS: WFM I/Q at 1920000 S/s retains over 23 dB stereo separation
+PASS: WFM I/Q at 3200000 S/s decodes stereo and RDS together
+PASS: WFM I/Q at 3200000 S/s retains over 23 dB stereo separation
+PASS: HD parses pinned decoder metadata and advertised services
+PASS: HD suppresses duplicate metadata events
+PASS: HD synchronization loss clears stale program information
+PASS: HD receiver input preserves complex-sample rate conversion
+PASS: HD receiver input rejects retuned frames
+PASS: HD bounded receiver queue reports overflow instead of silently dropping I/Q
+PASS: HD 960000: exact output count and continuous state across blocks
+PASS: HD 960000: preserves digital sidebands and rejects out-of-band energy
+PASS: HD 1920000: exact output count and continuous state across blocks
+PASS: HD 1920000: preserves digital sidebands and rejects out-of-band energy
+PASS: HD 3200000: exact output count and continuous state across blocks
+PASS: HD 3200000: preserves digital sidebands and rejects out-of-band energy
+PASS: HD rejects narrowband recordings
+PASS: HD rejects incomplete complex samples
+PASS: HD file conversion rejects sample-rate changes
+PASS: HD file conversion rejects off-center channels
+PASS: HD file conversion rejects missing clean completion marker
+PASS: HD cancellation before conversion creates no temporary output
+PASS: AX.25 FCS matches the independent CRC-16/X-25 check vector
+PASS: AX.25 UI preserves callsigns, SSIDs and repeated digipeater flags
+PASS: APRS uncompressed position converts degrees/minutes with correct hemisphere
+PASS: Bad FCS never produces trusted callsigns or APRS coordinates
+PASS: HDLC flags, bit stuffing and repeated frames round-trip independently encoded data
+PASS: AFSK1200 decodes three packets with offset 0 Hz, clock 0.0%, amplitude 0.6, noise 0
+PASS: APRS message addressee/ID and status are interpreted without transmission
+PASS: AFSK1200 decodes three packets with offset 30 Hz, clock 0.3%, amplitude 0.45, noise 0.06
+PASS: APRS message addressee/ID and status are interpreted without transmission
+PASS: AFSK1200 decodes three packets with offset -30 Hz, clock -0.3%, amplitude 0.4, noise 0.04
+PASS: APRS message addressee/ID and status are interpreted without transmission
+PASS: AFSK1200 decodes three packets with offset 0 Hz, clock 0.0%, amplitude 0.025, noise 0
+PASS: APRS message addressee/ID and status are interpreted without transmission
+PASS: Out-of-range APRS coordinates remain unlocated
+PASS: Ambiguous APRS position is not represented as an exact location
+PASS: AFSK silence produces no validated packets
+PASS: APRS timestamped position accepts valid day/time and rejects invalid time
+PASS: APRS acknowledgment syntax does not misclassify normal message text
+PASS: Non-APRS UI data and other PIDs are retained without inferred APRS fields
+PASS: HDLC abort discards the partial frame and reacquires a subsequent packet
+PASS: Oversized unterminated HDLC input remains bounded and later reacquires
+PASS: Broadband noise produces no validated AX.25 packets
+PASS: NFM I/Q at 240000 S/s recovers the complete AX.25 packet
+PASS: NFM I/Q at 960000 S/s recovers the complete AX.25 packet
+PASS: NFM I/Q at 1920000 S/s recovers the complete AX.25 packet
+PASS: NFM I/Q at 3200000 S/s recovers the complete AX.25 packet
+PASS: Packet pipeline labels replay/frequency/position and counts failed FCS separately
+PASS: A source discontinuity cannot combine two halves into a packet
+PASS: Disabled decoder consumes no packets
+PASS: Packet decoding receives audio with volume zero and the listening gate closed
+PASS: Two synthetic V3 identities retain selection when enumeration order changes
+PASS: Duplicate or generic V3 serials cannot authorize automatic restoration/reconnect
+PASS: Receiver labels distinguish indexes and reported serials
+PASS: Valid FCS does not bypass address syntax validation
+PASS: An incomplete packet is never published before its closing flag
+PASS: AFSK frame recovery is identical across single-sample and whole-buffer input
+PASS: Duplicated stereo packet audio decodes once
+PASS: Packet queue remains bounded and reports overflow instead of growing without limit
+PASS: Packet history retains at most 500 observations
+PASS: Packet export respects the active filter
+PASS: Clearing packet history removes prior observations
+PASS: Malformed frames with valid checksums are bounded and do not crash the parser
+PASS: P25 BCH encoder agrees with independent OP25 NID vector
+PASS: P25 NID corrects 0 bit errors within the conservative limit
+PASS: P25 NID corrects 1 bit errors within the conservative limit
+PASS: P25 NID corrects 2 bit errors within the conservative limit
+PASS: P25 NID corrects 3 bit errors within the conservative limit
+PASS: P25 NID corrects 4 bit errors within the conservative limit
+PASS: P25 NID rejects five errors beyond the preview correction limit
+PASS: P25 independent three-block fixture produces one verified header and three messages
+PASS: P25 status removal, deinterleave and trellis recover independent CRC-protected bytes
+PASS: P25 network, site and voice-grant fields match known fixture values
+PASS: P25 rejects corrupted control block and recovers at the next complete frame
+PASS: P25 status symbols are excluded from protected header and payload
+PASS: P25 valid trellis with independently corrupted CRC is rejected
+PASS: P25 reacquires consecutive 1-block frames with 100 ppm symbol-clock offset
+PASS: P25 reacquires consecutive 2-block frames with 100 ppm symbol-clock offset
+PASS: P25 C4FM recovers nine messages across arbitrary blocks, DC 0, gain 1, noise 0; actual 9
+PASS: P25 C4FM recovers nine messages across arbitrary blocks, DC 220, gain 0.8, noise 80; actual 9
+PASS: P25 C4FM recovers nine messages across arbitrary blocks, DC -180, gain -1.1, noise 60; actual 9
+PASS: P25 random discriminator noise is not reported as verified data
+PASS: P25 240000 S/s I/Q through 12.5 kHz production NFM discriminator recovers nine CRC messages; actual 9
+PASS: P25 1920000 S/s I/Q through 12.5 kHz production NFM discriminator recovers nine CRC messages; actual 9
+PASS: P25 observations retain validation scope, replay attribution and frequency
+PASS: P25 reset prevents joining frames across retunes or replay gaps
+PASS: P25 queue stays bounded and counts dropped observations
+PASS: P25 disabled decoder emits no observations
+PASS: P25 protected block fields are not interpreted as cleartext
+PASS: P25 manufacturer format is retained without standard-field assumptions
+PASS: P25 does not guess frequencies without a received identifier table
+PASS: Independent FDMA identifier fields decode with correct units and offset sign
+PASS: FDMA grant resolves downlink/uplink while retaining original channel ID
+PASS: Site status uses its control-channel ID rather than grant field offsets
+PASS: Network status resolves without clearing the same-system identifier table
+PASS: Independent VHF/UHF identifier uses spacing-scaled positive offset
+PASS: Independent TDMA grant divides channel number into carrier and zero-based slot
+PASS: P25 channel type 0 uses 1 slot(s) per carrier
+PASS: P25 channel type 1 uses 1 slot(s) per carrier
+PASS: P25 channel type 2 uses 1 slot(s) per carrier
+PASS: P25 channel type 3 uses 2 slot(s) per carrier
+PASS: P25 channel type 4 uses 4 slot(s) per carrier
+PASS: P25 channel type 5 uses 2 slot(s) per carrier
+PASS: Reserved TDMA channel type invalidates old table rather than assuming two slots
+PASS: No-uplink sentinel is not interpreted as a real transmit frequency
+PASS: FDMA positive offset direction is supported
+PASS: Zero spacing invalidates a table instead of inventing a channel frequency
+PASS: Zero base frequency is unresolved
+PASS: A changed identifier replaces the current table
+PASS: Bad CRC, header-only, protected and manufacturer messages cannot replace a frequency table
+PASS: A new NAC cannot reuse the previous NAC's tables
+PASS: A changed system identity clears learned tables on the same NAC
+PASS: A changed site identity clears learned tables
+PASS: Explicit source/gap reset clears frequency tables
+PASS: Unspecified channel ID remains unresolved
+PASS: Independent channel-table waveform passes production C4FM and pipeline enrichment
+PASS: Resolved traffic frequencies do not overwrite monitored input frequency
+PASS: Identifier summaries update per table ID; multiple band IDs remain separate in export
+PASS: JSON export retains structured traffic frequency and slot metadata
+PASS: Identifier updates can be hidden without hiding grants or status
+PASS: Pipeline source change cannot reuse old identifier tables
+PASS: Pipeline replay-gap reset clears identifier tables
+PASS: Independent dual-grant update preserves both talkgroups without inventing radio ID/service options
+PASS: Dual grant update resolves each channel through its own identifier and slot mapping
+PASS: Explicit grant uses separate uplink channel base without adding the implicit offset
+PASS: Missing explicit uplink table does not fall back to downlink offset
+PASS: Explicit uplink can resolve independently of a missing downlink table
+PASS: Secondary broadcast preserves RFSS/site and two independently resolved service/channel entries
+PASS: Unused secondary B entry does not invent an extra channel
+PASS: Adjacent broadcast decodes the advertised neighbor and its control channel
+PASS: Neighbor identity does not replace the current system/site or clear frequency tables
+PASS: Even a different advertised neighbor system does not clear the current tables
+PASS: Opcode 02 requires CRC-valid unprotected standard format
+PASS: Opcode 03 requires CRC-valid unprotected standard format
+PASS: Opcode 39 requires CRC-valid unprotected standard format
+PASS: Opcode 3C requires CRC-valid unprotected standard format
+PASS: Identically repeated B grant does not create duplicate activity
+PASS: Same talkgroup on a different channel remains a separate announcement
+PASS: Independent expanded-control waveform survives production C4FM/pipeline decoding
+PASS: Repeated neighbor announcements update a stable per-neighbor row
+PASS: Different neighbor sites are never collapsed into one row
+PASS: Secondary service changes update the same announced channel-pair row
+PASS: Different secondary channel sets remain separately visible
+PASS: Activity filter retains all three grant formats and current site status
+PASS: JSON export retains both structured grants in one received message
+PASS: The same message-type filters apply to expanded-control raw history
+PASS: Pipeline exports current system/site identity independently of advertised neighbors
+PASS: Persistent catalog tracks both grant assignments without duplicating repeated announcements
+PASS: Discovery save/reopen preserves first/last-seen times and counts
+PASS: Fully identified live discoveries merge across receiver sessions
+PASS: Live persistence rejects replay observations
+PASS: Different systems, sites and monitored frequencies cannot overwrite one another
+PASS: Incomplete identities remain provisional across sessions rather than guessed into one system
+PASS: Headers, failed validation and unrelated protocols do not become P25 discoveries
+PASS: Out-of-order observations do not regress last-seen metadata
+PASS: Panel keeps live persistence and replay-only discoveries separate across reopen
+PASS: Selected live channel enables frequency review; replay selection cannot request it
+PASS: Catalog retains band tables and both discovery announcement types
+PASS: Discovery export is versioned and preserves all entries
+PASS: Unreadable catalog is preserved and reported rather than overwritten
+PASS: Unknown catalog versions are preserved
+PASS: Operator annotations survive incoming updates without changing decoded labels or counts
+PASS: Names and notes survive save/reopen
+PASS: Frequency draft uses selected resolved downlink, annotations and source metadata
+PASS: Review drafts have fresh identities and cannot silently overwrite an existing saved station
+PASS: Unresolved, invalid, band-base or replay entries cannot become live frequency drafts
+PASS: Unresolved, invalid, band-base or replay entries cannot become live frequency drafts
+PASS: Unresolved, invalid, band-base or replay entries cannot become live frequency drafts
+PASS: Unresolved, invalid, band-base or replay entries cannot become live frequency drafts
+PASS: Neighbor frequency draft does not mislabel the target with receiving-site NAC
+PASS: Clearing an operator name restores the decoded label
+PASS: Annotation length rejection leaves the previous values intact
+PASS: Catalog limit reports skipped new entries while existing discoveries keep updating
+PASS: Shared migration preserves A and imports B hierarchy
+PASS: Shared migration leaves legacy B file unchanged
+PASS: Receiver B import is persistent and runs only once
+PASS: Shared save refreshes markers in both panels
+PASS: Stale library cannot overwrite another window's saved edit
+PASS: Shared delete refreshes both panels
+PASS: Shared undo refreshes both panels
+PASS: Malformed legacy input does not rewrite original files
+PASS: NIFOG reviewed tables contain 246 channel/plan rows and 236 distinct RF centers
+PASS: NIFOG frequencies are positive, sorted and grouped with source-page provenance
+PASS: NIFOG VCALL10 matches the published simplex frequency and CTCSS
+PASS: NIFOG VTAC33 preserves the asymmetric repeater pair and tones
+PASS: NIFOG 700 MHz exact 6.25 kHz precision and wildcard RX NAC remain distinct from TX NAC
+PASS: NIFOG 800 MHz negative repeater split is not confused with direct operation
+PASS: NIFOG federal VHF/UHF channel pairs and law-enforcement NAC match the tables
+PASS: NIFOG medical channels include narrowband interstitial and direct entries
+PASS: NIFOG air-ground, low-power and deployable control references preserve exact frequencies
+PASS: NIFOG weather references never manufacture transmit channels
+PASS: NIFOG proposed and geographically limited entries keep source qualifications
+PASS: NIFOG shared-frequency hover preserves simplex, repeater input and output aliases
+PASS: NIFOG markers use channel centers rather than invented allocation ranges
+PASS: NIFOG visibility persists independently of other layers and theme
+PASS: NIFOG checkbox publishes its own display setting without enabling other layers
+PASS: NIFOG checkbox survives actual display-profile save and reload
+PASS: NIFOG independent bar hover reports channel provenance without tuning
+PASS: NIFOG shared-frequency details wrap and retain overflow in a bounded scroll view (overflow 382, width 599)
+PASS: NIFOG overflow details can scroll while the pointer stays over the marker
+PASS: NIFOG marker appears at the mobile-transmit side of the pair
+PASS: NIFOG bottom bar retains direct-channel aliases
+PASS: All three reference layers render safely at compact sizes and both placements
+PASS: Disabling NIFOG removes its reference tooltip
+PASS: NIFOG RF channels stay absent from audio and MPX views
+PASS: Band reference identifies the full Region 2 two-meter band
+PASS: Band reference excludes the upper boundary from adjacent coverage
+PASS: CB numbering preserves irregular channel 23/24 order
+PASS: CB reference does not invent a channel in the radio-control gap
+PASS: Reference distinguishes 22 shared channels from eight GMRS repeater inputs
+PASS: Weather and MURS channel counts match source tables
+PASS: AM reference includes 117 carrier centers and broadcast outline
+PASS: Aviation navigation and communication references meet without overlap
+PASS: Marine references distinguish DSC and AIS data
+PASS: Marine duplex channels retain ship and shore direction
+PASS: Band reference preference persists and survives theme changes
+PASS: Band hover shows source without tuning
+PASS: ARRL covers 28 band groups with valid endpoints
+PASS: ARRL LF boundaries use Hz precision and exclude adjacent spectrum
+PASS: HF calling markers retain exact frequencies
+PASS: 60 m distinguishes four dial markers from the RF segment
+PASS: 13 cm does not bridge the allocation gap
+PASS: 9 cm omits discontinued upper coverage
+PASS: 70 cm preserves overlapping ATV and repeater recommendations
+PASS: Microwave outlines retain 64-bit frequency precision
+PASS: ARRL and channel settings persist independently through theme changes
+PASS: ARRL-only hover includes overlapping recommendations without FCC layer
+PASS: Bottom overlay hover uses relocated bar bounds
+PASS: Bottom placement preserves spectrum click frequency
+PASS: Bottom placement preserves waterfall click frequency
+PASS: Frequency-axis gap does not accidentally tune
+PASS: Overlay placement persists independently of theme
+PASS: Spectrum hover clears bottom reference tooltip
+PASS: Both reported RF frequencies render with combined overlays at compact heights and either placement
+PASS: RF band reference stays absent from audio-frequency views
+PASS: First workspace claims a receiver
+PASS: Identity prevents duplicate receiver use after index changes
+PASS: Distinct identities remain distinct after enumeration changes
+PASS: Unknown identity uses the index to prevent conflicting opens
+PASS: Stopping the owner releases the receiver for another workspace
+PASS: Wideband viewport retains GHz frequencies and independent visible span
+PASS: Dragging clamps both edges to captured coverage
+PASS: Spectrum drag pans without issuing a tuning command
+PASS: Small pointer movement preserves click-to-tune
+PASS: Center view preserves selected zoom
+PASS: Full span restores all captured coverage
+PASS: Receiver identity follows serial across device index changes
+PASS: Duplicate receiver identities require manual selection
+PASS: Blank and common factory serials cannot authorize reconnect
+PASS: Missing or mismatched receiver identity does not select a substitute
+PASS: Replay spectrum suppresses click-to-tune commands
+PASS: Reconnect retries use bounded backoff and reacquire the matching receiver
+PASS: Reconnect respects remaining session budget and refuses another receiver
+PASS: Stop cancellation prevents reconnect discovery
+PASS: Version 2 accepts wideband signed I/Q and 64-bit frequencies
+PASS: Version 2 preserves separate usable bandwidth, rate, format and sample bytes
+PASS: Recording throughput includes both I/Q components and container width
+PASS: Unsupported wideband playback is rejected explicitly before demodulation
+PASS: Invalid version 2 capture metadata is rejected: CaptureDescriptor { CenterHz = -1, SampleRate = 20000000, UsableBandwidthHz = 18000000, Format = Signed16LittleEndian }
+PASS: Invalid version 2 capture metadata is rejected: CaptureDescriptor { CenterHz = 6000000000, SampleRate = 20000000, UsableBandwidthHz = NaN, Format = Signed16LittleEndian }
+PASS: Invalid version 2 capture metadata is rejected: CaptureDescriptor { CenterHz = 6000000000, SampleRate = 20000000, UsableBandwidthHz = 21000000, Format = Signed16LittleEndian }
+PASS: Invalid version 2 capture metadata is rejected: CaptureDescriptor { CenterHz = 6000000000, SampleRate = 20000000, UsableBandwidthHz = 18000000, Format = 99 }
+PASS: Partial complex samples cannot enter recordings
+PASS: Version 2 replay at 3.2 MS/s retains frequency above 32-bit range
+PASS: AM recording metadata restores the correct playback demodulator
+PASS: USB recording metadata restores the correct playback demodulator
+PASS: LSB recording metadata restores the correct playback demodulator
+PASS: I/Q writer accepts full captured samples
+PASS: I/Q writer accepts per-frame retune and sample-rate metadata
+PASS: I/Q recording owns samples independently of producer buffers
+PASS: I/Q metadata and frequency transitions round-trip exactly
+PASS: I/Q timing and clean completion marker survive reload
+PASS: Incomplete I/Q files retain preceding complete frames
+PASS: Missing completion marker is reported as incomplete rather than successful EOF
+PASS: Invalid I/Q file signature is rejected before replay
+PASS: I/Q replay opens no SDR worker and refuses hardware tuning
+PASS: I/Q replay reaches completion without hanging
+PASS: I/Q replay applies recorded retunes and recovers demodulated audio
+PASS: I/Q replay preserves a recorded timing gap
+PASS: Stop promptly cancels I/Q replay during a recorded gap
+PASS: Live I/Q recording fixture reaches EOF
+PASS: Worker I/Q recording preserves both retuned spans and finalizes on source loss
+PASS: TV setup installs GLib before running the GDK post-link helper
+PASS: TV physical RF channel 2 center mapping
+PASS: TV physical RF channel 4 center mapping
+PASS: TV physical RF channel 5 center mapping
+PASS: TV physical RF channel 6 center mapping
+PASS: TV physical RF channel 7 center mapping
+PASS: TV physical RF channel 13 center mapping
+PASS: TV physical RF channel 14 center mapping
+PASS: TV physical RF channel 36 center mapping
+PASS: TV rejects narrow RTL sample rate
+PASS: TV rejects partial channel coverage with offset
+PASS: TV rejects unknown usable coverage
+PASS: TV accepts 9.6 and 20 MS/s with 1 MHz offset
+PASS: TV rejects capture retune midstream
+PASS: TV rejects capture sample-rate change midstream
+PASS: TV bounded queue reports overload without blocking sample pump
+PASS: RF 4096 waits for real samples instead of zero-padding
+PASS: RF 4096 retains every shifted FFT bin with correct negative frequency
+PASS: RF 4096 preserves tone calibration across resolution settings
+PASS: RF 4096 crosses uneven USB blocks without changing raw I/Q
+PASS: RF 4096 clears old samples on capture boundary
+PASS: RF 16384 waits for real samples instead of zero-padding
+PASS: RF 16384 retains every shifted FFT bin with correct negative frequency
+PASS: RF 16384 preserves tone calibration across resolution settings
+PASS: RF 16384 crosses uneven USB blocks without changing raw I/Q
+PASS: RF 16384 clears old samples on capture boundary
+PASS: RF 32768 waits for real samples instead of zero-padding
+PASS: RF 32768 retains every shifted FFT bin with correct negative frequency
+PASS: RF 32768 preserves tone calibration across resolution settings
+PASS: RF 32768 crosses uneven USB blocks without changing raw I/Q
+PASS: RF 32768 clears old samples on capture boundary
+PASS: RF 65536 waits for real samples instead of zero-padding
+PASS: RF 65536 retains every shifted FFT bin with correct negative frequency
+PASS: RF 65536 preserves tone calibration across resolution settings
+PASS: RF 65536 crosses uneven USB blocks without changing raw I/Q
+PASS: RF 65536 clears old samples on capture boundary
+PASS: High-detail FFT separates close carriers that shared one old display bin
+PASS: Changing FFT resolution discards the old sample window
+PASS: Unsupported stored FFT setting restores safe default
+PASS: Spectrum and waterfall accept resolution changes without mixing old row sizes
+PASS: Waterfall retains frequency bins with bounded one-byte dB storage
+PASS: Clearing waterfall releases retained byte budget
+PASS: Squelch checkbox migration preserves legacy OFF and explicit enabled state
+PASS: Left lower threshold opens weaker signals; right higher threshold is tighter
+PASS: Click-to-tune uses zoom and pan frequency mapping at selected sample rate
+PASS: Waterfall click-to-tune matches spectrum frequency
+PASS: Axis and Ctrl-click do not trigger tuning
+PASS: Audio-only spectrum cannot issue radio tuning commands
+PASS: Bandwidth selector converts desired span to zoom
+PASS: Bandwidth selector clamps to captured coverage
+PASS: I/Q packets bind frequency and sample rate to their payload
+PASS: Invalid I/Q frame headers are rejected
+PASS: 960000 S/s NFM produces exactly 48 kHz audio
+PASS: 960000 S/s NFM recovers the modulation tone
+PASS: 960000 S/s NFM preserves decimation state across uneven blocks
+PASS: 960000 S/s WFM produces exactly 48 kHz audio
+PASS: 960000 S/s WFM recovers the modulation tone
+PASS: 960000 S/s WFM preserves decimation state across uneven blocks
+PASS: 1920000 S/s NFM produces exactly 48 kHz audio
+PASS: 1920000 S/s NFM recovers the modulation tone
+PASS: 1920000 S/s NFM preserves decimation state across uneven blocks
+PASS: 1920000 S/s WFM produces exactly 48 kHz audio
+PASS: 1920000 S/s WFM recovers the modulation tone
+PASS: 1920000 S/s WFM preserves decimation state across uneven blocks
+PASS: 3200000 S/s NFM produces exactly 48 kHz audio
+PASS: 3200000 S/s NFM recovers the modulation tone
+PASS: 3200000 S/s NFM preserves decimation state across uneven blocks
+PASS: 3200000 S/s WFM produces exactly 48 kHz audio
+PASS: 3200000 S/s WFM recovers the modulation tone
+PASS: 3200000 S/s WFM preserves decimation state across uneven blocks
+PASS: 960000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
+PASS: 1920000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
+PASS: 3200000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
+PASS: Live-tuning fixture completes without hanging
+PASS: Retune command acknowledges new frequency and resumes audio in the same worker
+PASS: Live retune retains one open WAV recording across both frequencies
+PASS: RF squelch rejects a channel below threshold
+PASS: RF squelch opens at channel-power threshold
+PASS: RF hysteresis holds gate within 3 dB closing margin
+PASS: RF gate closes after 200 ms below closing threshold
+PASS: Recovered RF signal resets hang timer
+PASS: Minimum RF threshold explicitly disables squelch
+PASS: Invalid RF measurement closes gate
+PASS: Open RF gate passes audio below the old audio threshold
+PASS: Closed RF gate mutes loud demodulated noise
+PASS: RF squelch power measures the filtered channel rather than the full captured band
+PASS: Unmodulated centered carrier keeps RF gate open without speech
+PASS: RF channel power tracks a 6 dB carrier amplitude change
+PASS: Closed RF squelch preserves analysis frames and original WAV samples
+PASS: Pointer-anchored zoom preserves RF frequency
+PASS: RF marker coordinate round-trip remains aligned after zoom
+PASS: Zoom-out clamps to the captured span
+PASS: Pan cannot expose uncaptured RF frequencies
+PASS: Invalid display settings normalize to safe bounded values
+PASS: Waterfall history owns its data independently of incoming buffers
+PASS: Time mapping selects timestamped rows and leaves missing intervals blank
+PASS: Waterfall history discards data outside its retention limit
+PASS: Display gain, zoom and peak hold do not mutate source spectrum samples
+PASS: Grayscale palette covers black to white
+PASS: Every waterfall palette distinguishes weak and strong values
+PASS: Theme selection preserves display scale and zoom
+PASS: Display preferences and RF detail restore after reload
+PASS: Named display preset restores colors, gain and zoom together
+PASS: New frequency libraries contain no starter folders or signals
+PASS: Fractional MHz converts exactly to integer Hz
+PASS: Invalid/sub-Hz frequency input rejected
+PASS: Nested entry metadata survives save/reload
+PASS: Duplicate frequencies retain distinct entries
+PASS: Cyclic folder move rejected without changing state
+PASS: Hidden parent folder hides descendant RF markers
+PASS: Folder delete includes descendant entries
+PASS: Undo restores subtree in memory and on disk
+PASS: Library saves retain previous-file backup
+PASS: Stale window cannot overwrite newer edits
+PASS: Library stores frequencies outside current receiver coverage
+PASS: FFT locates 1500 Hz tone
+PASS: RMS level calibration
+PASS: Silence produces finite spectrum
+PASS: Squelch closes below threshold
+PASS: Zero volume silences monitoring
+PASS: Monitoring volume scales audio
+PASS: Listening gate preserves analysis/recording samples
+PASS: NFM output rate is 48 kHz
+PASS: NFM recovers 1 kHz modulation
+PASS: NFM filter/decimator state survives USB block boundaries
+PASS: WFM output rate is 48 kHz
+PASS: WFM recovers 1 kHz modulation
+PASS: WFM filter/decimator state survives USB block boundaries
+PASS: RF FFT places positive-frequency carrier correctly
+PASS: Isolated I/Q worker reaches EOF without hanging
+PASS: Worker pipe drives RF spectrum and demodulated audio
+PASS: Stop tears down the owned receiver worker promptly
+PASS: WAV format and duration
+PASS: WAV playback reaches end
+PASS: Playback emits analysis frames
+PASS: Recording finalized with audio data
+PASS: Stop cancels playback
+PASS: Monitoring defaults off
+Local synthetic tests only; no live RF, audio hardware or PTT tested.

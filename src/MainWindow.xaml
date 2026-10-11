@@ -1,0 +1,162 @@
+<Window x:Class="MRS.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:MRS" Icon="MRS.ico" Title="M.R.S. — Mike's Radio Software" Width="1260" Height="850" MinWidth="1040" MinHeight="740" Background="#101722" Foreground="#E4EDF8" FontFamily="Segoe UI" FontSize="14">
+ <Grid Margin="24">
+  <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+  <Grid Margin="0,0,0,22">
+   <StackPanel><WrapPanel><TextBlock x:Name="WorkspaceLabel" Foreground="#66DEBA" Margin="0,0,16,0" VerticalAlignment="Center"/><Button x:Name="OtherReceiverButton" Click="OpenOtherReceiver"/></WrapPanel><TextBlock Text="M.R.S." FontSize="32" FontWeight="Bold"/><TextBlock Text="Mike’s Radio Software  /  HDTV preview 0.18.0-preview2" Foreground="#9EB1C9"/></StackPanel>
+   <StackPanel HorizontalAlignment="Right"><TextBlock Text="RECEIVE ONLY" Foreground="#66DEBA" FontWeight="Bold" HorizontalAlignment="Right"/><TextBlock x:Name="ClockLabel" Foreground="#9EB1C9"/><TextBlock Text="PC clock · OS controls synchronization" Foreground="#9EB1C9" FontSize="12"/></StackPanel>
+  </Grid>
+  <Grid Grid.Row="1">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="305"/><ColumnDefinition Width="20"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+   <TabControl x:Name="SidebarTabs" Background="#101722" BorderThickness="0" Padding="0,8,0,0">
+   <TabItem Header="Receiver">
+   <ScrollViewer x:Name="ReceiverScroll" VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+     <GroupBox Header="SDR receiver">
+      <StackPanel>
+       <ComboBox x:Name="ReceiverFamily" SelectedIndex="0" SelectionChanged="ReceiverFamilyChanged" AutomationProperties.Name="Receiver family" Margin="0,0,0,8"><ComboBoxItem Content="RTL-SDR / NESDR"/><ComboBoxItem Content="HackRF / PortaPack (USB mode)"/></ComboBox>
+       <WrapPanel Margin="0,0,0,10"><Button x:Name="SetupRtlButton" Content="Set up RTL library" Click="SetupRtl"/><Button x:Name="FindRtlButton" Content="Find" Click="FindRtl"/></WrapPanel>
+       <ComboBox x:Name="RtlDevices" DisplayMemberPath="DisplayName" AutomationProperties.Name="SDR receiver" ToolTip="Index is temporary. Saved identity and reconnect require a unique non-default serial."/>
+       <TextBlock x:Name="ReceiverIdentityStatus" Text="Select a receiver" TextWrapping="Wrap" Foreground="#9EB1C9" FontSize="11" Margin="0,5,0,0"/>
+       <CheckBox x:Name="AutoReconnectCheck" Content="Reconnect same receiver on loss" Foreground="#E4EDF8" Margin="0,8,0,0" Unchecked="ReconnectChanged"/>
+       <TextBlock Text="Requires a unique non-default serial. Stop cancels retries." TextWrapping="Wrap" Foreground="#9EB1C9" FontSize="11"/>
+       <StackPanel x:Name="RtlSamplingPanel"><TextBlock Text="Sampling mode (stops reception when changed)" Margin="0,10,0,4" FontSize="11"/>
+       <ComboBox x:Name="SamplingModeBox" SelectedIndex="0" AutomationProperties.Name="Receiver sampling mode">
+        <ComboBoxItem Content="Quadrature / tuner"/><ComboBoxItem Content="Direct sampling — I branch"/><ComboBoxItem Content="Direct sampling — Q branch"/>
+       </ComboBox></StackPanel>
+       <TextBlock x:Name="SamplingStatus" Foreground="#9EB1C9" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,0"/>
+       <TextBlock x:Name="FrequencyRangeLabel" Text="Frequency (MHz) · 25–1750" TextWrapping="Wrap" Margin="0,10,0,5"/>
+       <TextBlock x:Name="CaptureCenterLabel" Text="Capture center: stopped" TextWrapping="Wrap" Foreground="#66DEBA" FontSize="12" Margin="0,0,0,5"/>
+       <TextBox x:Name="FrequencyBox" Text="146.520000" Padding="6" AutomationProperties.Name="Receiver frequency in MHz"/>
+       <Grid Margin="0,10,0,10"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <ComboBox x:Name="FmMode" SelectedIndex="0" Margin="0,0,6,0" AutomationProperties.Name="Receive mode"><ComboBoxItem Content="Narrow FM"/><ComboBoxItem Content="Wide FM"/><ComboBoxItem Content="AM"/><ComboBoxItem Content="USB"/><ComboBoxItem Content="LSB"/></ComboBox>
+        <ComboBox x:Name="RtlGain" Grid.Column="1" SelectedIndex="0" AutomationProperties.Name="Tuner gain"><ComboBoxItem Content="Auto gain" Tag="-1000"/><ComboBoxItem Content="0 dB" Tag="0"/><ComboBoxItem Content="10 dB" Tag="100"/><ComboBoxItem Content="20 dB" Tag="200"/><ComboBoxItem Content="30 dB" Tag="300"/><ComboBoxItem Content="40 dB" Tag="400"/></ComboBox>
+       </Grid>
+       <StackPanel x:Name="HackRfControls" Visibility="Collapsed">
+        <CheckBox x:Name="CaptureOffsetEnabled" Content="Enable capture offset" IsChecked="True" Foreground="#E4EDF8"/>
+        <WrapPanel Margin="0,4,0,4"><TextBlock Text="Offset (kHz)" VerticalAlignment="Center"/><TextBox x:Name="CaptureOffsetKhz" Text="250" Width="80" Margin="10,0,0,0" AutomationProperties.Name="Capture offset in kHz"/></WrapPanel>
+        <TextBlock Text="Set while stopped. Positive offset puts capture above listening frequency. Disable for HD Radio." TextWrapping="Wrap" Foreground="#9EB1C9" FontSize="11"/>
+        <TextBlock Text="HackRF receive gain · applies on selection" FontSize="11"/>
+        <WrapPanel Margin="0,4,0,4"><TextBlock Text="LNA" VerticalAlignment="Center" Margin="0,0,5,0"/><ComboBox x:Name="HackRfLna" Width="75" SelectionChanged="HackRfGainChanged" AutomationProperties.Name="HackRF LNA gain"/><TextBlock Text="VGA" VerticalAlignment="Center" Margin="10,0,5,0"/><ComboBox x:Name="HackRfVga" Width="75" SelectionChanged="HackRfGainChanged" AutomationProperties.Name="HackRF VGA gain"/></WrapPanel>
+        <CheckBox x:Name="HackRfAmplifier" Content="Enable RF amplifier" Foreground="#E4EDF8" Checked="HackRfGainChanged" Unchecked="HackRfGainChanged"/>
+        <TextBlock Text="Mayhem: select HackRF mode. RX only; antenna power off. Hardware changes briefly pause USB reception." Foreground="#9EB1C9" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,0"/>
+       </StackPanel>
+       <TextBlock Text="Receive filter width" Margin="0,8,0,4"/>
+       <ComboBox x:Name="ChannelBandwidth" AutomationProperties.Name="Receive filter bandwidth"/>
+       <CheckBox x:Name="ChannelAgc" Content="Audio AGC (AM / SSB)" IsChecked="True" Foreground="#E4EDF8" Margin="0,8,0,0"/>
+       <TextBlock Text="SDR sample rate (applies on selection)" Margin="0,8,0,4"/>
+       <ComboBox x:Name="SampleRateBox" AutomationProperties.Name="SDR sample rate"/>
+       <WrapPanel Margin="0,10,0,0"><Button x:Name="StartRtlButton" Content="Start / Apply" Click="StartRtl"/><Button Content="Stop" Click="StopSource"/><Button Content="Save" Click="SaveFrequency"/></WrapPanel>
+       <CheckBox x:Name="RfSquelchEnabled" Content="Enable RF squelch" IsChecked="True" Checked="RfSquelchChanged" Unchecked="RfSquelchChanged" Foreground="#E4EDF8" Margin="0,10,0,0"/>
+       <TextBlock x:Name="RfSquelchLabel" Text="RF squelch: −60 dB relative" Margin="0,10,0,0"/>
+       <Slider x:Name="RfSquelchSlider" Minimum="-119" Maximum="0" Value="-60" ValueChanged="RfSquelchChanged" AutomationProperties.Name="RF squelch threshold; lower and looser on left, higher and tighter on right"/>
+       <TextBlock x:Name="RfSquelchStatus" Text="RF gate: stopped" Foreground="#66DEBA" FontSize="12"/>
+       <TextBlock Text="Raise above idle-channel level to mute noise. Left: lower / looser. Right: higher / tighter. 3 dB hysteresis / 200 ms hang. Listening only." TextWrapping="Wrap" Foreground="#9EB1C9" FontSize="12" Margin="0,6,0,0"/>
+       <TextBlock x:Name="RtlStatus" Text="Choose a receiver family, click Find, then Start. For PortaPack, select HackRF mode on the device." TextWrapping="Wrap" Foreground="#9EB1C9" Margin="0,10,0,0" FontSize="12"/>
+      </StackPanel>
+     </GroupBox>
+     <Expander Header="Audio input / WAV / test tone" Foreground="#E4EDF8" Margin="0,0,0,12">
+      <StackPanel>
+       <TextBlock Text="Windows audio input" Margin="0,0,0,8"/>
+       <ComboBox x:Name="InputDevices" DisplayMemberPath="Name" AutomationProperties.Name="Windows audio input device"/>
+       <WrapPanel Margin="0,12,0,10"><Button x:Name="RefreshButton" Content="Refresh" Click="RefreshInputs"/><Button x:Name="LiveButton" Content="Start input" Click="StartLive"/></WrapPanel>
+       <WrapPanel><Button Content="Open WAV" Click="OpenWave"/><Button Content="Stop" Click="StopSource"/></WrapPanel>
+       <Button Content="Load test tone" Click="LoadDemo" Margin="0,12,0,0"/>
+       <TextBlock x:Name="SourceLabel" Text="Stopped · no input opened" TextWrapping="Wrap" Foreground="#9EB1C9" Margin="0,12,0,0"/>
+      </StackPanel>
+     </Expander>
+     <GroupBox Header="Listening">
+      <StackPanel>
+       <TextBlock Text="Listening output" Margin="0,0,0,8"/>
+       <ComboBox x:Name="OutputDevices" DisplayMemberPath="Name" AutomationProperties.Name="Listening output device" Margin="0,0,0,10"/>
+       <TextBlock x:Name="OutputStatus" Text="Select a listening output." TextWrapping="Wrap" FontSize="11" Foreground="#9EB1C9" Margin="0,0,0,8"/>
+       <CheckBox x:Name="MonitorCheck" IsChecked="True" Content="Enable audio monitoring" Foreground="#E4EDF8" Checked="ListeningChanged" Unchecked="ListeningChanged"/>
+       <TextBlock Text="Choose PC speakers or headphones. A radio-connected output can trigger its VOX." TextWrapping="Wrap" FontSize="12" Foreground="#9EB1C9" Margin="0,8,0,0"/>
+       <TextBlock Text="Volume" Margin="0,12,0,0"/><Slider x:Name="VolumeSlider" Minimum="0" Maximum="1" Value="0.35" ValueChanged="ListeningChanged" AutomationProperties.Name="Monitor volume"/>
+       <TextBlock x:Name="SquelchLabel" Text="Audio input gate: −60 dBFS" Margin="0,8,0,0"/>
+       <Slider x:Name="SquelchSlider" Minimum="-90" Maximum="0" Value="-60" ValueChanged="ListeningChanged" AutomationProperties.Name="Audio input gate threshold in dBFS"/>
+       <TextBlock Text="Audio input/WAV only; disabled for SDR. Recording and analysis receive the original input." TextWrapping="Wrap" FontSize="12" Foreground="#9EB1C9" Margin="0,8,0,0"/>
+      </StackPanel>
+     </GroupBox>
+    </StackPanel>
+   </ScrollViewer>
+   </TabItem>
+   <TabItem x:Name="FrequencyTab" Header="Frequencies"><local:FrequencyPanel x:Name="FrequencyManager"/></TabItem>
+   <TabItem x:Name="DisplayTab" Header="Display"><local:DisplayPanel x:Name="DisplayControls"/></TabItem>
+   <TabItem x:Name="RecordingTab" Header="Recording"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>     <GroupBox Header="RF I/Q recording / replay">
+      <StackPanel>
+       <WrapPanel><Button x:Name="IqRecordButton" Content="Record I/Q" Click="RecordIq" IsEnabled="False"/><Button x:Name="FinishIqButton" Content="Finish I/Q" Click="FinishIq" IsEnabled="False"/></WrapPanel>
+       <Button Content="Open I/Q recording" Click="OpenIq" Margin="0,8,0,0"/>
+       <TextBlock x:Name="IqRecordLabel" Text="Full captured RF span · .mrsiq files" TextWrapping="Wrap" Foreground="#9EB1C9" FontSize="12" Margin="0,8,0,0"/>
+      </StackPanel>
+     </GroupBox>
+     <GroupBox Header="Recording">
+      <StackPanel><WrapPanel><Button x:Name="RecordButton" Content="Record WAV" Click="StartRecording" IsEnabled="False"/><Button x:Name="FinishRecordButton" Content="Finish" Click="FinishRecording" IsEnabled="False"/></WrapPanel><TextBlock x:Name="RecordLabel" Text="Not recording" TextWrapping="Wrap" Foreground="#9EB1C9" Margin="0,10,0,0"/></StackPanel>
+     </GroupBox>
+    <GroupBox x:Name="PlaybackPanel" Header="I/Q playback" Visibility="Collapsed"><StackPanel>
+     <WrapPanel><Button x:Name="ReplayPlayButton" Content="Play" Click="ReplayPlay"/><Button x:Name="ReplayPauseButton" Content="Pause" Click="ReplayPause"/><Button Content="Stop" Click="ReplayStop"/></WrapPanel>
+     <TextBlock x:Name="ReplayTime" Text="Indexing…" Foreground="#9EB1C9" Margin="0,8,0,0"/>
+     <Slider x:Name="ReplaySeek" Minimum="0" Maximum="1" PreviewMouseLeftButtonDown="ReplaySeekBegin" PreviewMouseLeftButtonUp="ReplaySeekEnd" PreviewKeyDown="ReplaySeekKeyBegin" PreviewKeyUp="ReplaySeekKey" AutomationProperties.Name="I/Q playback position"/>
+     <TextBlock Text="Seek finalizes any WAV export. Playback follows recorded tuning and mode." TextWrapping="Wrap" FontSize="11" Foreground="#9EB1C9"/>
+    </StackPanel></GroupBox>
+   </StackPanel></ScrollViewer></TabItem>
+   </TabControl>
+   <TabControl x:Name="WorkspaceTabs" Grid.Column="2" Background="#101722" BorderThickness="0" Padding="0,8,0,0"><TabItem Header="Spectrum"><Grid>
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <Grid Margin="0,0,0,12"><TextBlock x:Name="SpectrumTitle" Foreground="#E4EDF8" Text="AUDIO SPECTRUM / WATERFALL" FontWeight="SemiBold"/><TextBlock x:Name="LevelLabel" Text="Input: — dBFS" HorizontalAlignment="Right" Foreground="#66DEBA"/></Grid>
+    <DockPanel Grid.Row="1">
+     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+      <Border x:Name="SubaudiblePanel" Visibility="Collapsed" Background="#162638" Padding="8" Margin="0,0,0,6"><TextBlock x:Name="SubaudibleLabel" Foreground="#66DEBA" TextWrapping="Wrap" ToolTip="Enable CTCSS / DCS in the Data tab. Receive indication only; independent of listening squelch. N/I pairs are equivalent cyclic DCS codes."/></Border>
+      <Border x:Name="BroadcastPanel" Visibility="Collapsed" TextElement.Foreground="#E4EDF8" Background="#162638" Padding="8" Margin="0,0,0,6"><StackPanel>
+       <WrapPanel><TextBlock Text="FM BROADCAST" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,12,0"/>
+        <ComboBox x:Name="BroadcastView" Width="145" SelectedIndex="0" SelectionChanged="BroadcastViewChanged"><ComboBoxItem Content="RF"/><ComboBoxItem Content="MPX"/><ComboBoxItem Content="Audio (L+R)"/><ComboBoxItem Content="Waveform L/R"/></ComboBox>
+        <CheckBox x:Name="ForceMonoBox" Content="Force mono" Foreground="#E4EDF8" Margin="12,0,0,0" VerticalAlignment="Center" Checked="BroadcastMonoChanged" Unchecked="BroadcastMonoChanged"/>
+        <ComboBox x:Name="RdsRegion" SelectedIndex="0" Width="120" Margin="12,0,0,0" ToolTip="Program-type naming region"><ComboBoxItem Content="RBDS (US)"/><ComboBoxItem Content="RDS"/></ComboBox>
+       </WrapPanel>
+       <TextBlock x:Name="BroadcastStatus" Text="Waiting for composite signal" TextWrapping="Wrap" Margin="0,5,0,0"/>
+       <Grid Margin="0,4,0,4"><Grid.ColumnDefinitions><ColumnDefinition Width="20"/><ColumnDefinition/><ColumnDefinition Width="20"/><ColumnDefinition/></Grid.ColumnDefinitions><TextBlock Text="L"/><ProgressBar x:Name="LeftMeter" Grid.Column="1" Height="5" Minimum="-90" Maximum="0" Value="-90"/><TextBlock Text="R" Grid.Column="2"/><ProgressBar x:Name="RightMeter" Grid.Column="3" Height="5" Minimum="-90" Maximum="0" Value="-90"/></Grid>
+       <TextBlock x:Name="BroadcastData" Text="RDS: searching · HD: recording preview in HD Radio tab" TextWrapping="Wrap" Foreground="#9EB1C9"/>
+       <TextBlock x:Name="CompositeLegend" Text="MPX: L+R 0–15 kHz · pilot 19 kHz · L−R 23–53 kHz · RDS 57 kHz" FontSize="11" Foreground="#9EB1C9" TextWrapping="Wrap"/>
+      </StackPanel></Border>
+      <WrapPanel x:Name="RfNavigationControls">
+       <TextBlock Text="MHz" Foreground="#E4EDF8" VerticalAlignment="Center" Margin="0,0,6,0"/>
+       <TextBox x:Name="NavigationFrequency" Width="110" Padding="5" KeyDown="NavigationEnter" AutomationProperties.Name="Spectrum frequency in MHz; Enter to tune"/>
+       <Button Content="− Step" Click="NavigationStep" Tag="-1"/>
+       <ComboBox x:Name="NavigationStepSize" Width="90" SelectedIndex="4" AutomationProperties.Name="Tuning step">
+        <ComboBoxItem Content="10 Hz" Tag="10"/><ComboBoxItem Content="100 Hz" Tag="100"/><ComboBoxItem Content="1 kHz" Tag="1000"/><ComboBoxItem Content="5 kHz" Tag="5000"/><ComboBoxItem Content="12.5 kHz" Tag="12500"/><ComboBoxItem Content="25 kHz" Tag="25000"/><ComboBoxItem Content="100 kHz" Tag="100000"/><ComboBoxItem Content="1 MHz" Tag="1000000"/>
+       </ComboBox>
+       <Button Content="+ Step" Click="NavigationStep" Tag="1"/>
+       <Button Content="Shift −" Click="ShiftCapture" Tag="-1" ToolTip="Move capture center left by half its span"/><Button Content="Shift +" Click="ShiftCapture" Tag="1" ToolTip="Move capture center right by half its span"/><Button Content="Full span" Click="NavigationFull"/><Button Content="Center view" Click="NavigationCenter"/>
+      </WrapPanel>
+      <WrapPanel x:Name="RfViewControls"><Button Content="Zoom out" Click="NavigationZoom" Tag="0.5"/><Button Content="Zoom in" Click="NavigationZoom" Tag="2"/><TextBlock x:Name="NavigationReadout" VerticalAlignment="Center" Foreground="#9EB1C9" FontSize="12"/></WrapPanel>
+     </StackPanel>
+     <Border BorderBrush="#35445B" BorderThickness="1" Background="#090F19"><Grid><local:SpectrumView x:Name="Spectrum"/><local:SpectrumView x:Name="BroadcastPlot" Visibility="Collapsed"/><local:StereoWaveform x:Name="BroadcastWaveform" Visibility="Collapsed"/></Grid></Border>
+    </DockPanel>
+   </Grid></TabItem><TabItem x:Name="PacketsTab" Header="Data"><local:PacketPanel x:Name="Packets"/></TabItem><TabItem x:Name="P25SystemsTab" Header="P25 Systems"><local:P25CatalogPanel x:Name="P25Systems"/></TabItem><TabItem x:Name="HdRadioTab" Header="HD Radio"><local:HdRecordingPanel x:Name="HdRecordings"/></TabItem><TabItem x:Name="TvTab" Header="HDTV"><local:TvPanel x:Name="Television"/></TabItem><TabItem x:Name="SessionLogTab" Header="Session log"><Grid Margin="10"><TextBox x:Name="LogBox" Background="#101722" Foreground="#9EB1C9" BorderBrush="#35445B" Padding="8" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="12"/></Grid></TabItem></TabControl>
+  </Grid>
+  <Grid Grid.Row="2" Margin="0,16,0,0">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+   <TextBlock Text="Windows 11 x64  •  Receive only  •  One source per receiver window  •  SDR: RF spectrum / I/Q and demodulated-audio recording" Foreground="#9EB1C9" FontSize="12" TextWrapping="Wrap" Margin="0,0,16,0" VerticalAlignment="Bottom"/>
+   <TextBlock Grid.Column="1" Text="KE8VPC" Foreground="#E4EDF8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right" TextAlignment="Right" VerticalAlignment="Bottom"/>
+  </Grid>
+ </Grid>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

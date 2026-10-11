@@ -1,0 +1,26 @@
+src/bin/
+src/obj/
+build/
+*.user
+*.log
+settings.json
+
+# Local recordings, credentials, and generated outputs
+*.mrsiq
+*.cu8
+*.wav
+*.pcm
+*.ts
+*.partial
+*.userprefs
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.key
+.vs/
+smoke-profile/
+runtime-v*/
+__pycache__/
+*.pyc

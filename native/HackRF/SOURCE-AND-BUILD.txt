@@ -1,0 +1,28 @@
+M.R.S. HackRF receiver backend - Windows x64
+
+libhackrf 0.9, source tag v2024.02.1 (unmodified host library).
+Upstream: https://github.com/greatscottgadgets/hackrf
+Archive: https://github.com/greatscottgadgets/hackrf/archive/refs/tags/v2024.02.1.zip
+SHA256: DAC018CE074CEDF80375CD423ED5B0539B0BF83B844DA05B8F1DEAB0444F18BF
+Sources/hackrf-v2024.02.1-host.zip contains the extracted, unmodified host subtree.
+
+Built with the existing MSYS2 MinGW64 x64 toolchain: GCC 16.2.0,
+CMake and Ninja, libusb 1.0.30, winpthreads.
+From a MinGW64 environment, with libusb headers/libraries available:
+  cmake -S host/libhackrf -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DLIBUSB_INCLUDE_DIR=/mingw64/include/libusb-1.0 -DLIBUSB_LIBRARIES=/mingw64/lib/libusb-1.0.dll.a
+  cmake --build build
+The resulting build/src/libhackrf.dll is distributed as hackrf.dll.
+Copy libusb-1.0.dll and libwinpthread-1.dll from the same toolchain beside it.
+No statically linked LGPL library is used. libusb's corresponding MSYS2
+source package and build recipe are included under Sources. Native notices
+are under Licenses. The M.R.S. loader uses an explicit absolute DLL path and
+DLL-directory/system search flags, not arbitrary current-directory lookup.
+
+Binary SHA256:
+60D26E09C65614061AFDD216ABB5A58F43B3BB1DEC8473CDB0D61E181C155F03 hackrf.dll
+9858E2381221619E26A78A2824E5970C2A7EC48CDB75071C19EB7B61BAA268E2 libusb-1.0.dll
+72BF8802DE3A99D28F0BC2DB9A11F281A9F9F3FA83DAB2BC67E69FAC3BD3D9C0 libwinpthread-1.dll
+
+Only reception is implemented. There is no TX, firmware flashing, automatic
+driver installation, or automatic antenna-power enable. Native USB streaming
+and actual H4M/Mayhem v2.4 compatibility still require station acceptance.
