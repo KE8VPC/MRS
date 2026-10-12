@@ -86,22 +86,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (72 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (52 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (97 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (61 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (40 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (31 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (43 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (32 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
@@ -609,7 +609,12 @@ PASS: Catalog limit reports skipped new entries while existing discoveries keep 
 PASS: Shared migration preserves A and imports B hierarchy
 PASS: Shared migration leaves legacy B file unchanged
 PASS: Receiver B import is persistent and runs only once
+PASS: Programmatic saved-marker selection does not tune either receiver
+PASS: Saved signal click sends its frequency, mode and filter only to its own receiver
+PASS: Clicking the same saved signal again requests tuning again
+PASS: Folder clicks, cancelled drags and mismatched release targets do not tune
 PASS: Shared save refreshes markers in both panels
+PASS: Shared-library refresh does not unexpectedly retune a receiver
 PASS: Stale library cannot overwrite another window's saved edit
 PASS: Shared delete refreshes both panels
 PASS: Shared undo refreshes both panels
@@ -638,6 +643,18 @@ PASS: NIFOG bottom bar retains direct-channel aliases
 PASS: All three reference layers render safely at compact sizes and both placements
 PASS: Disabling NIFOG removes its reference tooltip
 PASS: NIFOG RF channels stay absent from audio and MPX views
+PASS: TV overlay contains physical RF channels 2–36 with 6 MHz widths
+PASS: TV allocation endpoints include the VHF band gaps and current UHF limit
+PASS: TV overlay excludes allocation gaps and reserved RF 37
+PASS: RF 15 bounds, center and nominal ATSC 1.0 pilot agree with channel geometry
+PASS: TV boundaries are half-open and pilot references are optional, not detection
+PASS: TV and pilot controls persist independently of other overlays and survive theme changes
+PASS: TV hover identifies RF 15, its nominal pilot and allocation provenance
+PASS: TV reference-bar clicks retain existing spectrum frequency mapping
+PASS: TV hover follows the bottom reference-bar placement
+PASS: All four reference layers render safely at compact heights and either placement
+PASS: Pilot option alone does not enable a hidden TV layer
+PASS: TV RF channel references remain absent from MPX audio views
 PASS: Band reference identifies the full Region 2 two-meter band
 PASS: Band reference excludes the upper boundary from adjacent coverage
 PASS: CB numbering preserves irregular channel 23/24 order

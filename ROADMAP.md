@@ -429,7 +429,10 @@ Corrected explicit package installation order after user-observed GDK/GLib missi
 ### October 11: VDL2 decoder explicitly requested (planned)
 User requested VDL2 (VHF Data Link Mode 2). Reaffirm the existing aviation decoder target as an explicit receive-only protocol item alongside ACARS and ADS-B. Integrate validated decoded messages, aircraft identifiers when present, raw AVLC frames, timestamps, filtering and export into the Data tab. Support live SDR I/Q and compatible recordings; verify input requirements and supported message families before implementation. This entry records scope only: VDL2 decoding is not yet implemented or included in the current build.
 
-### October 11: locked-spectrum activity scanner and automatic discovery (planned)
+### October 12: 0.18.0-preview3 saved-frequency clicks and TV channel overlay
+Implemented single-click saved-signal tuning through the existing receiver-specific mode/filter and tuning checks. Programmatic selection, shared-library refreshes, folders and drag organization do not trigger tuning. Added an independent U.S. TV RF 2–36 reference layer with boundaries, center ticks and optional nominal ATSC 1.0 pilot ticks. Preferences persist per receiver and respect themes, zoom/pan, placement and compact-window safeguards. This milestone changes receiver navigation/reference UI, not the HDTV decoder.
+
+### October 11: locked-spectrum activity scanner and automatic discovery (planned; combined with automatic noise-floor squelch October 12)
 User requested: keep the spectrum stationary, estimate the noise floor, set RF squelch, detect a frequency exceeding squelch, jump there to monitor, and add it to Frequency Manager.
 
 - Add an explicit Start/Stop activity-scanner control per receiver. While enabled, keep the hardware capture center and spectrum viewport fixed; change only the listening frequency within the usable captured span. Respect channel-filter fit at the edges. A display zoom or sweep does not create additional simultaneous RF coverage.

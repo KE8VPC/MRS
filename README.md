@@ -1,5 +1,11 @@
 # M.R.S. — Mike's Radio Software
 
+## 0.18.0-preview3 saved-frequency tuning and TV references
+
+Click a saved signal once to tune that receiver and apply its supported receive mode/filter. Folders and library refreshes do not tune; drag-and-drop organization remains available. The Tune button remains available for keyboard selection. See FREQUENCY-MANAGER.md.
+
+Display now includes independent TV RF 2–36 channel boundaries/centers and optional ATSC 1.0 pilot references. Hover for exact frequencies. The overlay follows zoom, pan, theme and above/below placement, with channel gaps and RF 37 excluded. See BAND-PLAN.md. This update does not change the HDTV decoder. Automatic noise-floor squelch and locked-spectrum activity scanning remain a combined future milestone.
+
 
 
 ## 0.18.0-preview2 HDTV setup correction

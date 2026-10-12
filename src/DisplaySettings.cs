@@ -21,6 +21,8 @@ public sealed record DisplaySettings
     public bool ShowChannelMarkers { get; init; } = true;
     public bool ShowArrlPlan { get; init; }
     public bool ShowNifogPlan { get; init; }
+    public bool ShowTvPlan { get; init; }
+    public bool ShowTvPilots { get; init; }
     public bool BandPlanAtBottom { get; init; }
     public double Zoom { get; init; } = 1;
     public double Pan { get; init; } = .5;

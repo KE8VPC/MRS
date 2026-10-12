@@ -20,7 +20,8 @@ public sealed class SpectrumView : FrameworkElement
     private bool rf;
     // Preserve room for the plot, axis and waterfall in compact receiver windows.
     // Settings remain enabled; reference rows return when the panel grows.
-    private double PlanHeight => rf && ActualHeight >= (settings.ShowNifogPlan && settings.ShowBandPlan && settings.ShowArrlPlan ? 290 : 240) ? (settings.ShowBandPlan ? 44 : 0) + (settings.ShowArrlPlan ? 62 : 0) + (settings.ShowNifogPlan ? 44 : 0) : 0;
+    private double RequestedPlanHeight => (settings.ShowBandPlan ? 44 : 0) + (settings.ShowArrlPlan ? 62 : 0) + (settings.ShowNifogPlan ? 44 : 0) + (settings.ShowTvPlan ? 44 : 0);
+    private double PlanHeight => rf && ActualHeight >= Math.Max(240,RequestedPlanHeight+140) ? RequestedPlanHeight : 0;
     private double MpxReferenceHeight => !rf && basebandName == "MPX" ? 42 : 0;
     private double PlotHeight => Math.Max(20, ActualHeight * .38 - PlanHeight - MpxReferenceHeight);
     private double PlotTop => 16 + MpxReferenceHeight + (settings.BandPlanAtBottom ? 0 : PlanHeight);
@@ -165,6 +166,8 @@ public sealed class SpectrumView : FrameworkElement
                 var nifog=NifogPlan.Visible(Start,Start+Span).MinBy(c=>Math.Abs(c.Frequency-hz));
                 if(nifog!=null && Math.Abs(nifog.Frequency-hz)/Span*(ActualWidth-72)<=8)lines.Add(nifog.Source);
             }
+            if(settings.ShowTvPlan)
+                foreach(var tv in TvBandPlan.Visible(hz,hz+1))lines.Add(tv.Details(settings.ShowTvPilots));
             string detail=lines.Count > 0 ? string.Join("\n",lines) : "Reference layers · no listed entry here\nPublished reference, not local activity or transmit authorization.";
             ToolTip=settings.ShowNifogPlan?new ReferenceToolTip(detail):detail;
         }
@@ -213,7 +216,8 @@ public sealed class SpectrumView : FrameworkElement
             double rowTop=PlanTop;
             if(settings.ShowBandPlan){DrawBandPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
             if(settings.ShowArrlPlan){DrawArrlPlan(dc,left,plotWidth,rowTop);rowTop+=62;}
-            if(settings.ShowNifogPlan)DrawNifogPlan(dc,left,plotWidth,rowTop);
+            if(settings.ShowNifogPlan){DrawNifogPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
+            if(settings.ShowTvPlan)DrawTvPlan(dc,left,plotWidth,rowTop);
         }
         double waterTop = WaterTop, waterHeight = Math.Max(1, height - waterTop - 46);
         double levelTop = settings.AutoSpectrum ? autoHigh : settings.SpectrumTop;
@@ -315,6 +319,38 @@ public sealed class SpectrumView : FrameworkElement
             }
         }
         if(!any) dc.DrawText(Text("U.S. reference · no listed band/channel here",10,ColorBrush(settings.Text)),new Point(left+4,top+2));
+        dc.Pop();
+    }
+    private void DrawTvPlan(DrawingContext dc,double left,double width,double top)
+    {
+        var bounds=new Rect(left,top,width,40);
+        dc.PushClip(new RectangleGeometry(bounds));
+        dc.DrawRectangle(ColorBrush(settings.Background),new Pen(ColorBrush(settings.Grid),1),bounds);
+        var entries=TvBandPlan.Visible(Start,Start+Span).ToArray();
+        foreach(var entry in entries)
+        {
+            double x=left+View.Fraction(Math.Max(Start,entry.Low))*width;
+            double right=left+View.Fraction(Math.Min(Start+Span,entry.High))*width;
+            var rect=new Rect(x,top,Math.Max(0,right-x),19);
+            var fill=ColorBrush(settings.Marker).Clone();fill.Opacity=.18;
+            dc.DrawRectangle(fill,new Pen(ColorBrush(settings.Marker),1),rect);
+            dc.PushClip(new RectangleGeometry(rect));
+            DrawPlanLabel(dc,$"TV RF {entry.Number} · {entry.Low/1e6:0.###}–{entry.High/1e6:0.###} MHz",rect,10);
+            dc.Pop();
+        }
+        double occupied=left;
+        var ticks=entries.SelectMany(c=>settings.ShowTvPilots
+            ? new[]{(Hz:c.Pilot,Label:$"1.0 pilot {c.Pilot/1e6:0.######}",Pilot:true),(Hz:(double)c.Center,Label:$"Center {c.Center/1e6:0.###}",Pilot:false)}
+            : new[]{(Hz:(double)c.Center,Label:$"Center {c.Center/1e6:0.###}",Pilot:false)}).OrderBy(t=>t.Hz);
+        foreach(var tick in ticks.Where(t=>InView(t.Hz)))
+        {
+            double x=left+View.Fraction(tick.Hz)*width;
+            dc.DrawLine(new Pen(ColorBrush(tick.Pilot?settings.Peak:settings.Marker),1),new Point(x,top+20),new Point(x,top+39));
+            var label=Text(tick.Label,10,ColorBrush(settings.Text));
+            if(x+3>=occupied && x+label.Width+5<=left+width)
+            {dc.DrawText(label,new Point(x+3,top+22));occupied=x+label.Width+9;}
+        }
+        if(entries.Length==0)DrawPlanLabel(dc,"TV RF 2–36 · no channel allocation here",bounds,10);
         dc.Pop();
     }
     private void DrawNifogPlan(DrawingContext dc,double left,double width,double top)

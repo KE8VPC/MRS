@@ -87,6 +87,8 @@ public sealed class DisplayPanel : UserControl
         Check(plan, "Include service channel markers", s => s.ShowChannelMarkers, (s, v) => s with { ShowChannelMarkers = v });
         Check(plan, "Show ARRL operating recommendations", s => s.ShowArrlPlan, (s, v) => s with { ShowArrlPlan = v });
         Check(plan, "Show CISA NIFOG channels", s => s.ShowNifogPlan, (s, v) => s with { ShowNifogPlan = v });
+        Check(plan, "Show TV RF channels (2–36)", s => s.ShowTvPlan, (s, v) => s with { ShowTvPlan = v });
+        Check(plan, "Show ATSC 1.0 pilot references (TV layer)", s => s.ShowTvPilots, (s, v) => s with { ShowTvPilots = v });
         plan.Children.Add(new TextBlock {Text="NIFOG 2.02: nationwide/federal interoperability, medical and SAR references. Hover for mobile RX/TX, tones/NAC and page. Markers do not indicate local activity.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,FontSize=11});
         plan.Children.Add(new TextBlock { Text = "Reference bar position", Margin = new Thickness(0, 8, 0, 4) });
         var planPosition = new ComboBox { ItemsSource = new[] { "Above spectrum", "Below spectrum" } };

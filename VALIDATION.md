@@ -316,3 +316,9 @@ October 3 persistent P25 Systems source milestone: 686 self-tests passed. Full U
 
 P25 discovery annotations/frequency review source milestone: 698 self-tests and full UI smoke passed. Tests cover annotation retention through updates/reopen, clearing names, input length, selected live/replay action availability, target-vs-receiving identity, safe frequency drafts and independent library entries. Visual P25 Systems review passed. Field acceptance and user-driven frequency editor workflow remain pending; Desktop preview3 unchanged.
 
+
+## October 12, 2026 — 0.18.0-preview3 navigation and TV references
+
+Release publish completed successfully. All 872 local synthetic self-tests and the full WPF UI smoke passed. Added checks cover the saved-frequency mouse-down/up event path, complete frequency/mode/filter delivery, receiver-panel isolation, repeated clicks, folder/cancelled-drag/mismatched-release handling and shared-library refresh. TV checks cover RF 2–36 boundaries, VHF gaps, RF 37 exclusion, the RF 15 nominal pilot, independent checkbox persistence/theme retention, hover, bottom placement, all four layers at compact sizes, and exclusion from MPX. Dark/top and light/bottom reference screenshots were visually reviewed.
+
+No live radio was opened for these tests. Hardware click-tuning and TV-overlay operator acceptance are described in ACCEPTANCE-0.18.0-preview3.md. The ATSC decoder is unchanged; earlier TV field reception limitations remain. Automatic noise-floor squelch and locked-spectrum discovery are one future milestone.

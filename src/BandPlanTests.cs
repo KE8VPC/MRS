@@ -9,6 +9,7 @@ internal static class BandPlanTests
     internal static void Run(Action<bool,string> check)
     {
         NifogTests.Run(check);
+        TvBandPlanTests.Run(check);
         check(UsBandPlan.VisibleBands(144000000,148000000).Single().Name=="Amateur 2 m", "Band reference identifies the full Region 2 two-meter band");
         check(!UsBandPlan.VisibleBands(148000000,149000000).Any(), "Band reference excludes the upper boundary from adjacent coverage");
         check(UsBandPlan.Channels.Count(x=>x.Name.StartsWith("CB "))==40 && UsBandPlan.Channels.Single(x=>x.Name=="CB 23").Frequency==27255000 && UsBandPlan.Channels.Single(x=>x.Name=="CB 24").Frequency==27235000, "CB numbering preserves irregular channel 23/24 order");

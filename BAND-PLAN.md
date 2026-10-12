@@ -1,5 +1,13 @@
 # U.S. spectrum band reference
 
+## TV channel layer — 0.18.0-preview3
+
+Under Display > U.S. band reference, enable **Show TV RF channels (2–36)**. This independent layer shows physical U.S. TV channel boundaries and center-frequency ticks. Enable **Show ATSC 1.0 pilot references (TV layer)** for nominal pilot markers. Hover for exact endpoints, center, pilot frequency and source. Both switches save per receiver and survive theme changes. Above/below placement, zoom and pan follow the existing reference controls. Reference rows temporarily hide in very short windows to leave room for the spectrum and waterfall.
+
+The channel table follows [47 CFR 73.603](https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603), reviewed October 12, 2026: RF 2–4 occupy 54–72 MHz; 5–6, 76–88 MHz; 7–13, 174–216 MHz; 14–36, 470–608 MHz. Channel 37 is reserved for radio astronomy and is excluded. Allocation gaps are left empty. RF 17's tooltip includes the Hawaii non-broadcast exception.
+
+The [ATSC A/53 Part 2](https://www.atsc.org/wp-content/uploads/2021/04/A53-Part-2-2011.pdf) nominal pilot is approximately 309.441 kHz above the lower channel edge (2.690559 MHz below center). For example, RF 15 spans 476–482 MHz, centered on 479 MHz, with a nominal ATSC 1.0 pilot at 476.309441 MHz. These are reference positions, not signal detection or station identification. Physical RF channel numbers are distinct from virtual program numbers; the allocation layer applies regardless of whether the station uses ATSC 1.0 or 3.0, but the pilot markers apply only to 1.0. Enabling the overlay does not launch the TV decoder or change modulation.
+
 Implemented in source; pending the next milestone package.
 
 Enable Display > U.S. band reference > Show U.S. band reference bar. Service channel markers have their own checkbox. The setting is saved independently for each receiver. A two-row bar at the top of the RF spectrum tracks zoom, pan, tuning and resize. Band blocks use their actual endpoints; channel ticks mark center frequencies, not occupied bandwidth. Labels are suppressed when they would overlap; hover near a tick for its name, exact frequency and source. Empty areas say no listed entry, not unallocated. Audio and MPX views do not display RF allocations.

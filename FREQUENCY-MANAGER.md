@@ -29,7 +29,7 @@ Saving a protocol label does not imply that a corresponding decoder is available
 - Arbitrarily nested folders, with user-selected names and ordering.
 - Create, rename, move and delete folders/entries; drag-and-drop organization.
 - Search across names, frequencies, notes and protocol fields; filter by mode, protocol or tags.
-- Select an entry to inspect/edit details. An explicit Tune action or double-click recalls supported receive settings, subject to active receiver coverage. Unsupported modes/decoders are visibly identified rather than silently replaced.
+- Click a saved signal once to recall its frequency, supported receive mode and saved filter width in that receiver window. Clicking it again retunes again. Keyboard selection shows details; the Tune button remains available. Folders, drag-and-drop organization, search/reloads and programmatic marker selection do not tune. Unsupported modes/decoders are visibly identified rather than silently replaced. Replay and hardware coverage checks still apply.
 - Selection, hovering and saving do not transmit. Mere selection should not unexpectedly retune an active recording.
 - Allow multiple distinct entries on the same frequency for different sites, systems or observations; flag possible duplicates instead of automatically merging them.
 - Local persistence, portable export/import and a recoverable deletion workflow. Carry stable IDs and provenance forward into future RadioReference imports.
@@ -83,7 +83,7 @@ Saved entries now include optional receive-filter width in Hz (0 means mode defa
 
 ## Next milestone: shared frequency library (implemented in source)
 
-Receiver A and Receiver B now read the main MRS frequencies.json library. Saving, moving, hiding, deleting or undoing an entry refreshes both open windows and their spectrum markers in the same application process. Selecting Tune still controls only the window used. Receiver settings, audio, capture and display settings remain independent.
+Receiver A and Receiver B now read the main MRS frequencies.json library. Saving, moving, hiding, deleting or undoing an entry refreshes both open windows and their spectrum markers in the same application process. Clicking a saved signal or selecting Tune controls only the window used. Receiver settings, audio, capture and display settings remain independent.
 
 On first use, an existing ReceiverB/frequencies.json is imported under an "Imported from Receiver B" folder, preserving nested folders and metadata and assigning new IDs to avoid collisions. The legacy file is left unchanged. A migration flag is saved atomically with the shared library, so later launches do not repeat the import. Entries at the same frequency are retained rather than guessed to be duplicates. Invalid files stop loading with an error instead of being overwritten.
 

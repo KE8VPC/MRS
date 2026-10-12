@@ -49,6 +49,14 @@ public sealed class FrequencyPanel : UserControl
         dock.Children.Add(tree);
         tree.SelectedItemChanged += (_, _) => ShowDetails();
         tree.PreviewMouseLeftButtonDown += (_, e) => { dragStart = e.GetPosition(tree); dragItem = ItemAt(e.OriginalSource as DependencyObject)?.Tag as FrequencyItem; };
+        tree.PreviewMouseLeftButtonUp += (_, e) =>
+        {
+            var pressed=dragItem;dragItem=null;
+            var released=ItemAt(e.OriginalSource as DependencyObject)?.Tag as FrequencyItem;
+            Point p=e.GetPosition(tree);
+            if(e.ClickCount==1 && Math.Abs(p.X-dragStart.X)<SystemParameters.MinimumHorizontalDragDistance && Math.Abs(p.Y-dragStart.Y)<SystemParameters.MinimumVerticalDragDistance)
+                ActivateClick(pressed,released);
+        };
         tree.MouseMove += (_, e) =>
         {
             if (e.LeftButton != MouseButtonState.Pressed || dragItem == null) return;
@@ -73,6 +81,10 @@ public sealed class FrequencyPanel : UserControl
         while (value != null && value is not TreeViewItem) value = value is Visual ? VisualTreeHelper.GetParent(value) : LogicalTreeHelper.GetParent(value);
         return value as TreeViewItem;
     }
+    internal void ActivateClick(FrequencyItem? pressed,FrequencyItem? released)
+    {
+        if(pressed is {IsFolder:false} && released?.Id==pressed.Id)Attempt(()=>TuneRequested?.Invoke(pressed));
+    }
     private FrequencyLibrary RequireLibrary() => library ?? throw new InvalidOperationException("Library is unavailable. Resolve the file error and Reload.");
     private string? legacyPath;
     public void Release() => FrequencyLibrary.Saved -= LibrarySaved;
@@ -84,7 +96,7 @@ public sealed class FrequencyPanel : UserControl
     public void Initialize(string file, string? legacy = null)
     {
         Release(); path = file; legacyPath = legacy ?? legacyPath;
-        try { library = new FrequencyLibrary(file); if (legacyPath != null) library.ImportReceiverB(legacyPath); FrequencyLibrary.Saved += LibrarySaved; Rebuild(); Notify("Shared frequency library. Select Tune to receive in this window."); }
+        try { library = new FrequencyLibrary(file); if (legacyPath != null) library.ImportReceiverB(legacyPath); FrequencyLibrary.Saved += LibrarySaved; Rebuild(); Notify("Click a saved signal to tune this receiver. Drag to organize; folders do not tune."); }
         catch (Exception ex) { library = null; tree.Items.Clear(); status.Text = "Library not loaded: " + ex.Message + " Original file preserved."; Changed?.Invoke(); }
     }
     private Guid? Destination() => Selected is { } item ? item.IsFolder ? item.Id : item.ParentId : null;
@@ -143,7 +155,7 @@ public sealed class FrequencyPanel : UserControl
     }
     private void ShowDetails()
     {
-        if (Selected is not { } item) { details.Text = "Select a folder or saved signal. Browsing does not retune."; return; }
+        if (Selected is not { } item) { details.Text = "Click a saved signal to tune. Keyboard selection uses the Tune button."; return; }
         details.Text = item.IsFolder ? $"{item.Name}\nFolder visibility also controls child RF markers." : $"{item}\nModulation: {item.Modulation}\n{item.Signaling}\nTags: {item.Tags}\n{item.Notes}\nProtocol labels do not enable decoding.";
     }
 }

@@ -2,7 +2,7 @@
  <Grid Margin="24">
   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
   <Grid Margin="0,0,0,22">
-   <StackPanel><WrapPanel><TextBlock x:Name="WorkspaceLabel" Foreground="#66DEBA" Margin="0,0,16,0" VerticalAlignment="Center"/><Button x:Name="OtherReceiverButton" Click="OpenOtherReceiver"/></WrapPanel><TextBlock Text="M.R.S." FontSize="32" FontWeight="Bold"/><TextBlock Text="Mike’s Radio Software  /  HDTV preview 0.18.0-preview2" Foreground="#9EB1C9"/></StackPanel>
+   <StackPanel><WrapPanel><TextBlock x:Name="WorkspaceLabel" Foreground="#66DEBA" Margin="0,0,16,0" VerticalAlignment="Center"/><Button x:Name="OtherReceiverButton" Click="OpenOtherReceiver"/></WrapPanel><TextBlock Text="M.R.S." FontSize="32" FontWeight="Bold"/><TextBlock Text="Mike’s Radio Software  /  HDTV preview 0.18.0-preview3" Foreground="#9EB1C9"/></StackPanel>
    <StackPanel HorizontalAlignment="Right"><TextBlock Text="RECEIVE ONLY" Foreground="#66DEBA" FontWeight="Bold" HorizontalAlignment="Right"/><TextBlock x:Name="ClockLabel" Foreground="#9EB1C9"/><TextBlock Text="PC clock · OS controls synchronization" Foreground="#9EB1C9" FontSize="12"/></StackPanel>
   </Grid>
   <Grid Grid.Row="1">
