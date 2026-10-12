@@ -4,7 +4,7 @@ public partial class MainWindow
 {
     private async Task RenderSpectrumDetailSmoke(Action<string> capture)
     {
-        Stop();WorkspaceTabs.SelectedIndex=0;SidebarTabs.SelectedIndex=2;
+        Stop();WorkspaceTabs.SelectedIndex=0;SidebarTabs.SelectedItem=DisplayTab;
         SpectrumTitle.Text="SYNTHETIC RF DETAIL TEST";
         Spectrum.SetRf(774400000,9600000,false);
         Spectrum.Configure(new DisplaySettings{Zoom=32,Pan=.5,HistorySeconds=5,RfFftSize=65536,SpectrumTop=0,WaterLow=-100,WaterHigh=-15});

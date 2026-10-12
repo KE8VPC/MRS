@@ -432,7 +432,10 @@ User requested VDL2 (VHF Data Link Mode 2). Reaffirm the existing aviation decod
 ### October 12: 0.18.0-preview3 saved-frequency clicks and TV channel overlay
 Implemented single-click saved-signal tuning through the existing receiver-specific mode/filter and tuning checks. Programmatic selection, shared-library refreshes, folders and drag organization do not trigger tuning. Added an independent U.S. TV RF 2–36 reference layer with boundaries, center ticks and optional nominal ATSC 1.0 pilot ticks. Preferences persist per receiver and respect themes, zoom/pan, placement and compact-window safeguards. This milestone changes receiver navigation/reference UI, not the HDTV decoder.
 
-### October 11: locked-spectrum activity scanner and automatic discovery (planned; combined with automatic noise-floor squelch October 12)
+### October 12: 0.19.0-preview1 automatic squelch and locked-spectrum activity scanner
+Implemented the combined milestone for live SDRs: local noise-floor estimation and channel-power conversion, automatic/manual RF threshold, optional level lines, fixed-viewport/capture scanning, strongest-first qualification, hold/quiet-delay/skip, and batched persistent discoveries preserving user edits. Source/gain/rate/filter/FFT changes stop and recalibrate; digital listening changes preserve HackRF capture offset. See ACTIVITY-SCANNER.md for bounded work/storage, excluded center/edges, manual override, synthetic verification and remaining field acceptance. Previous saved-click and TV-reference features are included in the same package.
+
+### October 11: original activity-scanner requirements (implemented in the October 12 preview; field validation pending)
 User requested: keep the spectrum stationary, estimate the noise floor, set RF squelch, detect a frequency exceeding squelch, jump there to monitor, and add it to Frequency Manager.
 
 - Add an explicit Start/Stop activity-scanner control per receiver. While enabled, keep the hardware capture center and spectrum viewport fixed; change only the listening frequency within the usable captured span. Respect channel-filter fit at the edges. A display zoom or sweep does not create additional simultaneous RF coverage.
@@ -442,4 +445,4 @@ User requested: keep the spectrum stationary, estimate the noise floor, set RF s
 - Automatically upsert qualified discoveries into a scanner-owned Frequency Manager folder, shown in the sidebar and as spectrum markers. Store frequency, selected receive mode/filter, estimated occupied bandwidth, first/last seen, hit count and signal-above-floor strength. Mark protocol/modulation as unknown unless actually identified; do not confuse selected demodulation with detected modulation. Deduplicate with channel-aware tolerances; update repeat hits and preserve existing user names, notes and folder organization. Create the folder when the feature is first used, not as a starter-folder preset.
 - Stop scanning on incompatible source changes, or explicitly re-arm after recalibration. Preserve manual tuning/stop authority. Validate with synthetic multi-signal/noise fixtures, edge cases, persistent discoveries and live RF before claiming acceptance.
 
-Scope is planned; this entry does not implement the scanner or rebuild the application.
+The October 12 preview implements this workflow within its documented estimator and live-SDR limits. Local synthetic verification and live RF acceptance remain distinct.

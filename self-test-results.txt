@@ -86,12 +86,12 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (52 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (56 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (61 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (21 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
@@ -774,6 +774,35 @@ PASS: Unsupported stored FFT setting restores safe default
 PASS: Spectrum and waterfall accept resolution changes without mixing old row sizes
 PASS: Waterfall retains frequency bins with bounded one-byte dB storage
 PASS: Clearing waterfall releases retained byte budget
+PASS: RF scanner calibrates on noise without saving or tuning false channels
+PASS: Noise floor converts FFT-bin power to integrated channel power with Hann ENBW
+PASS: Minimum duration rejects a brief RF impulse
+PASS: Scanner excludes capture-center artifact and filter-overrun edge signals
+PASS: Scanner selects the strongest sustained channel using its occupied center
+PASS: All qualified channels accumulate discovery metadata while listening to one
+PASS: Continuous activity updates last seen without counting each FFT as a new burst
+PASS: Hold prevents hopping when the monitored signal becomes quiet
+PASS: Releasing Hold selects an active signal after quiet delay
+PASS: Skip ignores a persistent channel for the rest of the scan session
+PASS: Clear ignored makes skipped activity eligible again
+PASS: Scanner Stop clears selection and hold state
+PASS: Locked scan scope does not follow signals outside the chosen viewport
+PASS: Manual override uses the integrated RF threshold instead of the auto margin
+PASS: Invalid scan preferences restore bounded defaults
+PASS: Configured 6.25 kHz channel grid rounds an estimated center to the channel frequency
+PASS: Capture reset discards old candidates and requires fresh calibration and explicit rearming
+PASS: Insufficient FFT resolution refuses a narrow-channel scan instead of inventing detail
+PASS: Local floor estimate follows frequency-dependent noise instead of one global threshold
+PASS: Discovery folder is not a starter-library preset
+PASS: Discoveries deduplicate against existing signals and create one managed folder
+PASS: Discovery metadata preserves existing names, notes, protocols and folder placement
+PASS: Persistent discovery refresh updates last seen without duplicate burst counts
+PASS: Energy discoveries do not invent modulation or protocol identification
+PASS: Automatic RF squelch preference persists without starting the scanner
+PASS: Real I/Q 4096-bin noise estimate matches demodulator channel power within 3 dB (-43.2 vs -43.3)
+PASS: Real I/Q 32768-bin noise estimate matches demodulator channel power within 3 dB (-43.1 vs -43.3)
+PASS: Locked scanner view rejects zoom and pan changes
+PASS: Stopping scanner restores spectrum zoom control
 PASS: Squelch checkbox migration preserves legacy OFF and explicit enabled state
 PASS: Left lower threshold opens weaker signals; right higher threshold is tighter
 PASS: Click-to-tune uses zoom and pan frequency mapping at selected sample rate

@@ -1,5 +1,11 @@
 # M.R.S. — Mike's Radio Software
 
+## 0.19.0-preview1 automatic squelch and activity scanner
+
+The new Scan tab estimates the local RF noise floor, applies an adjustable automatic squelch margin, and optionally draws floor/trigger lines. Start scanner locks the visible captured span, monitors the strongest sustained signal, holds until quiet, and supports Hold and Skip. Digital channel changes preserve the HackRF capture center and offset setting. Qualified discoveries update Frequency Manager with timestamps, burst counts and signal measurements while preserving user labels and folders. See ACTIVITY-SCANNER.md.
+
+Includes the previous single-click saved-frequency tuning and TV RF-channel overlay. Use ACCEPTANCE-0.19.0-preview1.md to test all four features together. Scanning is a live-SDR preview and does not start automatically; field acceptance remains pending.
+
 ## 0.18.0-preview3 saved-frequency tuning and TV references
 
 Click a saved signal once to tune that receiver and apply its supported receive mode/filter. Folders and library refreshes do not tune; drag-and-drop organization remains available. The Tune button remains available for keyboard selection. See FREQUENCY-MANAGER.md.

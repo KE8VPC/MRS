@@ -1,5 +1,13 @@
 # Preview validation
 
+## 0.19.0-preview1 activity scanner — October 12, 2026
+
+Release publish succeeded. All **901 local self-tests** passed, including new tests for noise-only calibration, integrated RF-power conversion, impulse rejection, capture-center/edge rejection, strongest-first selection, minimum activity, Hold, quiet release, Skip/clear, locked scan range, manual override, channel-grid rounding, insufficient-resolution rejection, local noise gradients, persistence/deduplication and preservation of user metadata. Raw Gaussian-noise I/Q at 4K and 32K FFT sizes produced estimated channel floors of about -43.2/-43.1 dB versus -43.3 dB measured by the production demodulator.
+
+The full WPF smoke passed. The new scenario uses a synthetic HackRF worker with its 250 kHz capture offset enabled and independently generated multi-signal spectra. It checks digital channel selection and Skip without changing capture center, worker ID or viewport; saves two discoveries; confirms slider override and manual-tune cancellation; and clears state on reset. This is simulated receiver/UI evidence, not actual USB hardware reception. The level-line render and Scan tab screenshot were visually inspected. Existing saved-click and TV-reference checks remain in the suite.
+
+Operator acceptance for all four features is in ACCEPTANCE-0.19.0-preview1.md. Live RF reliability, performance under the user's selected wideband rate/FFT settings, crowded-spectrum floor estimation and precise discovered centers remain field acceptance items. ATSC decoding and hardware drivers are unchanged.
+
 ## 0.18.0-preview2 setup dependency order — October 8, 2026
 
 Preview1's alphabetically generated explicit package lock allowed GDK's post-link helper to run before GLib was linked. The operator reported Windows loader dialogs for gmodule-2.0-0.dll and glib-2.0-0.dll. The original readiness check imported GNU Radio but did not exercise this helper, so it missed that installation defect.

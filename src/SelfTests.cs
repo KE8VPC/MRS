@@ -16,6 +16,7 @@ public static class SelfTests
         ReceiverFeatureTests.Run(Check);
         TvTests.Run(Check);
         RfSpectrumTests.Run(Check);
+        ActivityTests.Run(Check);
         Check(!RfSquelch.RestoreEnabled(null, -120) && RfSquelch.RestoreEnabled(null, -60) && !RfSquelch.RestoreEnabled(false, -60) && RfSquelch.RestoreEnabled(true, -120), "Squelch checkbox migration preserves legacy OFF and explicit enabled state");
         Check(new RfSquelch().Update(-65, -70, .05) && !new RfSquelch().Update(-65, -60, .05), "Left lower threshold opens weaker signals; right higher threshold is tighter");
         var clickView = new SpectrumView(); clickView.Measure(new System.Windows.Size(872, 470)); clickView.Arrange(new System.Windows.Rect(0, 0, 872, 470));

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 
 namespace MRS;
+public sealed record SignalActivity(DateTimeOffset FirstSeen,DateTimeOffset LastSeen,long Hits,double OccupiedHz,double AboveFloorDb,string Receiver);
 public sealed record FrequencyItem
 {
     public Guid Id { get; init; } = Guid.NewGuid();
@@ -19,6 +20,8 @@ public sealed record FrequencyItem
     public string Tags { get; init; } = "";
     public string Color { get; init; } = "#71CDF5";
     public bool Visible { get; init; } = true;
+    public bool ScannerFolder {get;init;}
+    public SignalActivity? Activity {get;init;}
     public override string ToString() => IsFolder ? Name : $"{Name} · {FrequencyHz / 1000000m:0.######} MHz · {Mode} {Protocols}";
 }
 public sealed class FrequencyLibrary
@@ -107,6 +110,33 @@ public sealed class FrequencyLibrary
         var next = items.ToList(); int index = next.FindIndex(n => n.Id == value.Id);
         if (index < 0) next.Add(value); else next[index] = value;
         Commit(next);
+    }
+    internal void SaveDiscoveries(IEnumerable<ActivityDiscovery> observations,string receiver)
+    {
+        var next=items.ToList();bool changed=false;
+        foreach(var observation in observations)
+        {
+            if(observation.Frequency<=0||observation.Hits<0||!double.IsFinite(observation.OccupiedHz)||!double.IsFinite(observation.AboveFloorDb))continue;
+            double tolerance=Math.Min(observation.FilterHz*.3,5000);
+            var item=next.Where(i=>!i.IsFolder&&Math.Abs(i.FrequencyHz-observation.Frequency)<=tolerance).MinBy(i=>Math.Abs(i.FrequencyHz-observation.Frequency));
+            if(item==null)
+            {
+                if(next.Count(i=>i.Activity!=null)>=1000)throw new IOException("Discovery limit of 1,000 entries reached. Remove unwanted discoveries before saving more.");
+                var folder=next.FirstOrDefault(i=>i.IsFolder&&i.ScannerFolder);
+                if(folder==null){folder=new(){Name="Discovered signals",IsFolder=true,ScannerFolder=true};next.Add(folder);}
+                item=new(){Name=$"Signal {observation.Frequency/1e6:0.######} MHz",FrequencyHz=observation.Frequency,ParentId=folder.Id,
+                    Mode=observation.Mode,BandwidthHz=observation.FilterHz,Modulation="Unknown",Protocols="Unknown",Tags="RF activity discovery"};
+                next.Add(item);
+            }
+            var previous=item.Activity;
+            var activity=new SignalActivity(previous?.FirstSeen<observation.FirstSeen?previous.FirstSeen:observation.FirstSeen,
+                previous?.LastSeen>observation.LastSeen?previous.LastSeen:observation.LastSeen,
+                Math.Min(long.MaxValue-observation.Hits,previous?.Hits??0)+observation.Hits,
+                observation.OccupiedHz,observation.AboveFloorDb,receiver);
+            int index=next.FindIndex(i=>i.Id==item.Id);next[index]=item with{Activity=activity};changed=true;
+        }
+        // Background metadata does not create an unbounded Undo history.
+        if(changed)Commit(next,false);
     }
     public void Move(Guid id, Guid? parent)
     {

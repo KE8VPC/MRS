@@ -32,6 +32,9 @@ public sealed class SpectrumView : FrameworkElement
     private string receiveMode = "NFM";
     internal void SetReceiveMode(string mode) { receiveMode = mode; InvalidateVisual(); }
     private bool canTune = true;
+    internal bool InteractionLocked {get;set;}
+    private double? activityFloor,activityTrigger;
+    internal void SetActivityLevels(double? floor,double? trigger){activityFloor=floor;activityTrigger=trigger;InvalidateVisual();}
     private DisplaySettings settings = new();
     private IReadOnlyList<FrequencyItem> markers = [];
     private double UsableStart => captureStart + (captureSpan - usableSpan) / 2;
@@ -59,6 +62,7 @@ public sealed class SpectrumView : FrameworkElement
     public void Configure(DisplaySettings value)
     {
         var next = value.Normalize();
+        if(InteractionLocked)next=next with{Zoom=settings.Zoom,Pan=settings.Pan};
         if (next.PeakHold != settings.PeakHold) peak = current == null ? null : (float[])current.Clone();
         settings = next; InvalidateVisual(); SettingsChanged?.Invoke(settings);
     }
@@ -254,6 +258,19 @@ public sealed class SpectrumView : FrameworkElement
         }
         if (settings.PeakHold && peak != null) Trace(peak, settings.Peak, .8);
         if (current != null) Trace(current, settings.Trace, 1.2);
+        if(rf&&activityFloor is {} floor&&activityTrigger is {} trigger)
+        {
+            void Line(double value,string name,string color)
+            {
+                double y=top+(levelTop-value-settings.GainDb)/levelRange*plotHeight;
+                if(y<top||y>top+plotHeight)return;
+                dc.DrawLine(new Pen(ColorBrush(color),1){DashStyle=DashStyles.Dash},new Point(left,y),new Point(left+plotWidth,y));
+                var label=Text($"{name} {value:0.0} dB/bin",10,ColorBrush(color));
+                dc.DrawRectangle(background,null,new Rect(left+4,Math.Max(top,y-14),label.Width+6,14));
+                dc.DrawText(label,new Point(left+7,Math.Max(top,y-14)));
+            }
+            Line(floor,"Floor",settings.Marker);Line(trigger,"Trigger",settings.Peak);
+        }
         DrawWaterfall(dc, new Rect(left, waterTop, plotWidth, waterHeight));
         for (int tick = 0; tick <= 4; tick++) Label(dc, (settings.HistorySeconds * tick / 4).ToString("0.#", CultureInfo.InvariantCulture) + "s", 6, waterTop + waterHeight * tick / 4 - 6);
         if (current == null) Label(dc, rf ? "Waiting for receiver data…" : "Start a source or load a test tone", left + 12, waterTop + 25);

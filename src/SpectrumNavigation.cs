@@ -11,6 +11,7 @@ public partial class MainWindow
         if (!NavigationFrequency.IsKeyboardFocused) NavigationFrequency.Text = Spectrum.IsRf ? (Spectrum.TunedCenter / 1000000).ToString("F6", CultureInfo.InvariantCulture) : "";
         NavigationReadout.Text = $"{(Spectrum.IsRf ? "RF" : "Audio")} · View {Spectrum.VisibleSpan / 1000:0.###} kHz / full {Spectrum.FullSpan / 1000:0.###} kHz · center {Spectrum.VisibleCenter / 1000000:0.000000} MHz";
         if (Spectrum.IsRf && receiver.IsHackRf && receiver.AppliedBandwidth > 0) NavigationReadout.Text += $" · analog filter {receiver.AppliedBandwidth / 1000000:0.##} MHz";
+        if(Spectrum.InteractionLocked)NavigationReadout.Text+=" · SCAN LOCKED";
     }
     private async Task TuneText(string text)
     {

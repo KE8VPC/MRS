@@ -8,6 +8,7 @@ namespace MRS;
 public sealed class FrequencyPanel : UserControl
 {
     private FrequencyLibrary? library;
+    private static int openEditors;
     private string path = "";
     private readonly TreeView tree = new() { Background = new SolidColorBrush(Color.FromRgb(10, 17, 27)), Foreground = Brushes.White, BorderBrush = Brushes.SlateGray };
     private readonly TextBox search = new() { Padding = new Thickness(6), Margin = new Thickness(0, 6, 0, 8) };
@@ -109,11 +110,20 @@ public sealed class FrequencyPanel : UserControl
         });
     }
     internal void ReviewDiscovery(FrequencyItem draft)=>Attempt(()=>Edit(draft with{ParentId=Destination()}));
+    internal bool SaveDiscoveries(IEnumerable<ActivityDiscovery> observations,string receiver)
+    {
+        if(openEditors>0)return false;
+        // Reload under the library's revision/atomic-write checks; never overwrite a stale user edit.
+        var fresh=new FrequencyLibrary(path);fresh.SaveDiscoveries(observations,receiver);
+        return true;
+    }
     private void Edit(FrequencyItem item)
     {
         var store = RequireLibrary();
         var dialog = new FrequencyEditor(item, store.Items) { Owner = Window.GetWindow(this) };
-        if (dialog.ShowDialog() != true || dialog.Result is not { } result) return;
+        bool? accepted;openEditors++;
+        try{accepted=dialog.ShowDialog();}finally{openEditors--;}
+        if (accepted != true || dialog.Result is not { } result) return;
         bool duplicate = !result.IsFolder && store.Items.Any(n => !n.IsFolder && n.Id != result.Id && n.FrequencyHz == result.FrequencyHz);
         store.Upsert(result); search.Clear(); Rebuild(result.Id);
         Notify(duplicate ? "Saved as a separate entry. Another entry has the same frequency." : "Saved.");
@@ -157,6 +167,7 @@ public sealed class FrequencyPanel : UserControl
     {
         if (Selected is not { } item) { details.Text = "Click a saved signal to tune. Keyboard selection uses the Tune button."; return; }
         details.Text = item.IsFolder ? $"{item.Name}\nFolder visibility also controls child RF markers." : $"{item}\nModulation: {item.Modulation}\n{item.Signaling}\nTags: {item.Tags}\n{item.Notes}\nProtocol labels do not enable decoding.";
+        if(item.Activity is {} activity)details.Text+=$"\nRF activity: {activity.Hits} bursts · {activity.AboveFloorDb:0.0} dB above estimated floor\nOccupied estimate: {activity.OccupiedHz/1000:0.##} kHz\nFirst UTC: {activity.FirstSeen:u}\nLast UTC: {activity.LastSeen:u} · Receiver {activity.Receiver}";
     }
 }
 
