@@ -1,4 +1,32 @@
-# M.R.S. — Mike's Radio Software
+# Current preview: 0.25.0-preview1 — HF reception
+
+See HF-RECEPTION.md and ACCEPTANCE-0.25.0-preview1.md. Optional narrow HackRF hardware filter and input-level diagnostics; live HF acceptance pending.
+
+# Current preview: 0.24.0-preview2
+
+Fixes confirmation of LTR idle bursts spaced more than ten seconds apart. See ACCEPTANCE-0.24.0-preview2.md.
+
+# Current preview: 0.24.0-preview1
+
+DMR / Capacity Plus / LTR identification: see TRUNK-IDENTIFICATION.md and ACCEPTANCE-0.24.0-preview1.md. Includes prior receiver/display refinements.
+
+# M.R.S. — Mike’s Radio Software
+
+## 0.21.0-preview1 aviation milestone
+
+Adds ACARS, VDL2, ADS-B/Mode S and UAT receive decoding from I/Q, a stable aircraft table, JSON export and an optional offline coordinate map. Includes RTL 2.4 MS/s and the pending inspector comparisons. Read AVIATION.md and ACCEPTANCE-0.21.0-preview1.md for startup instructions, limits and the carried-forward checks. Local RF reception remains unverified.
+
+## October 15 inspector comparison checkpoint (now included in 0.21.0-preview1)
+
+Adds a per-receiver pinned inspection reference and field/text/compatible-bit comparisons. Included in the aviation preview. Preview2 has partial user stability feedback (remained running without a crash); individual checks remain unconfirmed. The aviation preview includes ACCEPTANCE-0.21.0-preview1.md, which carries all preview2 checks forward and adds comparison checks with a place to record progress.
+
+## 0.20.0-preview2 paging management and Data inspector
+
+Adds fixed-row paging duplicate grouping across capcodes, saved labels, ignore/restore controls, wrapped payloads, and a frozen Data inspector. Select a Data row and click Inspect selected. P25 NID/TSBK fields have explicit received/decoded byte provenance and supported bit selections; paging exposes decoder fields and JSON without fabricated raw bits. See DATA-INSPECTOR.md and ACCEPTANCE-0.20.0-preview2.md. Live user acceptance remains pending.
+
+## 0.20.0-preview1 paging and scanner refinements
+
+POCSAG/FLEX reception is now in Data, with an offline bundled worker, validation/fragment labels, and audio or NFM I/Q input. This build also packages the pending scanner centering, dated discoveries, multi-delete, fine slider wheel adjustments, birdie exclusions, marker correction and sidebar layout work. See PAGING.md and ACCEPTANCE-0.20.0-preview1.md. User field acceptance is pending.
 
 ## 0.19.0-preview1 automatic squelch and activity scanner
 
@@ -8,7 +36,7 @@ Includes the previous single-click saved-frequency tuning and TV RF-channel over
 
 ## 0.18.0-preview3 saved-frequency tuning and TV references
 
-Click a saved signal once to tune that receiver and apply its supported receive mode/filter. Folders and library refreshes do not tune; drag-and-drop organization remains available. The Tune button remains available for keyboard selection. See FREQUENCY-MANAGER.md.
+Single-click a saved signal to select it; Edit or F2 opens its editor. Double-click to tune that receiver and apply its supported receive mode/filter. Folders and library refreshes do not tune; drag-and-drop organization remains available. The Tune button remains available for keyboard selection. See FREQUENCY-MANAGER.md.
 
 Display now includes independent TV RF 2–36 channel boundaries/centers and optional ATSC 1.0 pilot references. Hover for exact frequencies. The overlay follows zoom, pan, theme and above/below placement, with channel gaps and RF 37 excluded. See BAND-PLAN.md. This update does not change the HDTV decoder. Automatic noise-floor squelch and locked-spectrum activity scanning remain a combined future milestone.
 
@@ -362,3 +390,12 @@ KE8VPC appears in the lower-right footer. Quick check: select 3.2 MS/s and Full 
 
 
 
+
+
+
+0.21.0-preview2 corrects high-rate HackRF ADS-B input overruns. Above 4 MS/s,
+the aviation worker shifts/filters/downsamples its own input while retaining
+the wide main spectrum. See AVIATION.md and ACCEPTANCE-0.21.0-preview2.md.
+
+0.21.0-preview3 removes receiver DC in the ADS-B branch. The supplied small-offset
+HackRF recording now decodes; see AVIATION.md and ACCEPTANCE-0.21.0-preview3.md.

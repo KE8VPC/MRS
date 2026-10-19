@@ -21,7 +21,7 @@ public partial class MainWindow
     private string SelectedBackend => SelectedHackRf ? "HackRF" : "RTL";
     private IReadOnlyList<int> SelectedRates => SelectedHackRf ? ReceiverCapabilities.HackRf.SampleRates : ReceiverCapabilities.Rtl.SampleRates;
     private bool SelectedCanTune(long hz) => SelectedHackRf ? ReceiverCapabilities.HackRf.CanTune(hz) : SamplingModes.CanTune(hz, SelectedSamplingMode);
-    private int SelectedGain => SelectedHackRf ? new HackRfGain(Math.Max(0, HackRfLna.SelectedIndex) * 8, Math.Max(0, HackRfVga.SelectedIndex) * 2, HackRfAmplifier.IsChecked == true).Token : SelectedSamplingMode != 0 ? -1000 : int.Parse(((ComboBoxItem)RtlGain.SelectedItem).Tag.ToString()!);
+    private int SelectedGain => SelectedHackRf ? new HackRfGain(Math.Max(0, HackRfLna.SelectedIndex) * 8, Math.Max(0, HackRfVga.SelectedIndex) * 2, HackRfAmplifier.IsChecked == true, HackRfHfFilter.IsChecked == true).Token : SelectedSamplingMode != 0 ? -1000 : int.Parse(((ComboBoxItem)RtlGain.SelectedItem).Tag.ToString()!);
     private void InitializeHackRfControls()
     {
         foreach (int gain in Enumerable.Range(0, 6).Select(n => n * 8)) HackRfLna.Items.Add($"{gain} dB");
@@ -46,7 +46,7 @@ public partial class MainWindow
     }
     private void ReflectHackRfGain(int token)
     {
-        var gain = HackRfGain.Decode(token); HackRfLna.SelectedIndex = gain.Lna / 8; HackRfVga.SelectedIndex = gain.Vga / 2; HackRfAmplifier.IsChecked = gain.Amplifier;
+        var gain = HackRfGain.Decode(token); HackRfLna.SelectedIndex = gain.Lna / 8; HackRfVga.SelectedIndex = gain.Vga / 2; HackRfAmplifier.IsChecked = gain.Amplifier; HackRfHfFilter.IsChecked = gain.HfFilter;
     }
     private void ReceiverFamilyChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -100,6 +100,13 @@ public partial class MainWindow
         RefreshPlayback();
         if(!CaptureCenterLabel.Text.Contains("162.650000") || CaptureOffsetKhz.IsEnabled) throw new InvalidOperationException("Offset readout or live edit guard failed.");
         await Task.Delay(400); ReceiverScroll.ScrollToTop();UpdateLayout();capture("ui-hackrf-offset.png");
+        Stop();
+        updatingControls=true;HackRfHfFilter.IsChecked=true;ReflectRate(9600000);FmMode.SelectedIndex=3;PopulateBandwidth(2400);FrequencyBox.Text="7.100000";updatingControls=false;
+        receiver.Start(0,7100000,SelectedGain,false,fixture:true,sampleRate:9600000,fixtureSeconds:15,mode:"USB",bandwidth:2400,backend:"HackRF",captureOffset:new(true,250));
+        rfMode=true;engine.StartExternal(2);await WaitUi(()=>receiver.AppliedFrequency==7350000&&receiver.InputLevel!=null);await Task.Delay(250);RefreshPlayback();
+        if(receiver.AppliedBandwidth!=1750000||HackRfHfFilter.IsEnabled||!HackRfInputStatus.Text.Contains("1.75"))throw new InvalidOperationException("HF capture coverage, level readout or stopped-only control failed");
+        ReceiverScroll.ScrollToTop();UpdateLayout();capture("ui-hf-reception.png");
+        Stop();HackRfHfFilter.IsChecked=false;
         Stop(); ReceiverFamily.SelectedIndex = 0;
         RtlDevices.ItemsSource = new[] { new RtlNative.Device(0,"SYNTHETIC RTL","MRS","Test","RTL-REPLAY-SWITCH") }; RtlDevices.SelectedIndex = 0;
         string replay = System.IO.Path.Combine(dataFolder,"synthetic-hackrf-replay.mrsiq");

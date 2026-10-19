@@ -1,5 +1,13 @@
 # Preview validation
 
+## Dated discoveries and batch deletion — October 12, 2026 (source only)
+
+908 local synthetic checks passed, including local-date discovery folders, next-day entries, preserving existing user entries, deleting overlapping folder/child selections across folders and restoring the full batch with one Undo. Release-configuration compilation completed with zero warnings/errors; full WPF UI smoke passed. Added tree selection shortcuts and highlights; physical mouse/keyboard acceptance remains an operator check. No new release package built.
+
+## Channel-grid centering correction — October 12, 2026 (source only)
+
+Fixed unconditional zero-origin grid rounding after an operator screenshot showed two saved frequencies straddling a signal near 772.08125 MHz. Added a configurable grid offset and limited snapping to nearby measured centers; mismatched grids now retain the measured estimate. Existing saved entries remain unchanged. All 904 local synthetic self-tests passed, including jitter around the half-step boundary with zero and 6.25 kHz grid offsets. Release-configuration compilation completed with zero warnings/errors and the full WPF smoke passed. No new distributable was packaged; live RF center estimation still needs operator verification.
+
 ## 0.19.0-preview1 activity scanner — October 12, 2026
 
 Release publish succeeded. All **901 local self-tests** passed, including new tests for noise-only calibration, integrated RF-power conversion, impulse rejection, capture-center/edge rejection, strongest-first selection, minimum activity, Hold, quiet release, Skip/clear, locked scan range, manual override, channel-grid rounding, insufficient-resolution rejection, local noise gradients, persistence/deduplication and preservation of user metadata. Raw Gaussian-noise I/Q at 4K and 32K FFT sizes produced estimated channel floors of about -43.2/-43.1 dB versus -43.3 dB measured by the production demodulator.
@@ -330,3 +338,65 @@ P25 discovery annotations/frequency review source milestone: 698 self-tests and 
 Release publish completed successfully. All 872 local synthetic self-tests and the full WPF UI smoke passed. Added checks cover the saved-frequency mouse-down/up event path, complete frequency/mode/filter delivery, receiver-panel isolation, repeated clicks, folder/cancelled-drag/mismatched-release handling and shared-library refresh. TV checks cover RF 2–36 boundaries, VHF gaps, RF 37 exclusion, the RF 15 nominal pilot, independent checkbox persistence/theme retention, hover, bottom placement, all four layers at compact sizes, and exclusion from MPX. Dark/top and light/bottom reference screenshots were visually reviewed.
 
 No live radio was opened for these tests. Hardware click-tuning and TV-overlay operator acceptance are described in ACCEPTANCE-0.18.0-preview3.md. The ATSC decoder is unchanged; earlier TV field reception limitations remain. Automatic noise-floor squelch and locked-spectrum discovery are one future milestone.
+
+## October 13 sidebar and TV overlay source checkpoint
+909 local synthetic checks passed, including removed TV pilot controls and TV hover behavior without the pilot reference. Full WPF smoke passed with the resizable sidebar. Sidebar width is persisted in receiver preferences with bounded restoration; saved-center correction uses the existing validated atomic library update and Undo path. Physical drag/keyboard/display-scaling acceptance and the new center-correction operator flow remain to be tested in the next package. No new distributable produced.
+
+## October 13 scan-range and discovery-only checkpoint
+911 synthetic self-tests passed, including explicit range preservation and rejection of out-of-capture limits. Full WPF smoke passed with an added discovery-only scenario: candidates continue to appear while the listening channel and HackRF capture center remain fixed, and mode changes stop/rearm scanning. Final source compiles with zero warnings/errors. The smoke uses generated spectra and a simulated receiver, not live hardware. Direct frequency entry, range editing and compact controls remain operator acceptance items. No release package produced.
+
+## October 13 birdie references and exclusions (source)
+916 synthetic checks passed, including fixed versus capture-relative placement, candidate/auto-save exclusion, bypass behavior and settings serialization. Birdie reference bands were rendered and visually inspected over spectrum/waterfall axes. The editor and physical/live receiver operation still require operator acceptance. No release ZIP produced.
+Full WPF smoke passed; final source compilation completed with zero warnings/errors. Save failures in the birdie editor are reported without crashing the application.
+
+## October 13 marker-drag correction checkpoint
+921 synthetic checks passed, including unique marker selection, cancel without mutation, one commit with original identity/new frequency, scanner-lock rejection and ambiguous-overlap rejection. Full WPF smoke passed; compilation had zero warnings/errors. Initial tests in the sandbox-default temporary location stopped on the existing P25 catalog save/reopen assertion; rerunning the same executable with TEMP/TMP under work/marker-test-temp passed the full suite. Physical Alt-drag, Escape and display-scaling acceptance remain pending. No release ZIP produced.
+
+## October 13 — 0.20.0-preview1 paging and combined scanner build
+
+Release publish succeeded with no compiler warnings/errors. 930 local synthetic self-tests passed, plus the full WPF smoke with a paging Data-tab check. The paging smoke verifies enabling discriminator capture, readable message summaries, validation filtering, source metadata and JSON fields. The pending scanner/frequency-manager/sidebar tests are included in this total.
+
+The bundled native worker passed generated POCSAG 512/1200/2400, inverted numeric POCSAG and 1600-symbol/s 2-FSK FLEX through M.R.S. PCM conversion and asynchronous process pipeline. Each single-message fixture yields one validated message; five seconds of noise yields none. Inverted-input trailing silence creates address-only native observations, which deliberately remain unvalidated and hidden by default.
+
+The original local FLEX I/Q sample passed through the production M.R.S. NFM demodulator at its recorded 25 kHz width: 29 FLEX observations, 12 checksum-passing, no POCSAG, zero input/output queue drops. This is not the earlier narrower offline filter experiment, and passing fragments are not represented as complete pages. Private message contents and the original recording are excluded from release artifacts.
+
+The paging worker has only Windows system DLL imports; its GPL source, modifications, build commands and runtime notices are bundled. Tests ran without opening RF or audio hardware. Field validation of higher-rate FLEX, weak signals, gain/filter choices and simultaneous SDR operation remains pending. The sandbox's default temporary directory prevented one self-contained test launch; rerunning with the established writable test TEMP completed normally.
+
+## October 13 — paging message management source checkpoint
+
+941 synthetic checks passed, including exact-payload grouping across capcodes, complete/reassembled normalization, fragment/failure separation, receiver/frequency/replay boundaries, aggregate recipient export, alias search, selective recipient ignore, exact-message ignore, restoration, independent P25 grouping, atomic rule persistence and unreadable-file preservation. Final source build completed with zero warnings/errors. Full WPF smoke passed; the paging management view was visually reviewed at the compact test window size with a wrapped synthetic payload, two capcodes, label and count.
+
+Paging grouping is remembered per receiver. Labels and ignore rules are saved per receiver/protocol/frequency. Rule/group changes rebuild from the bounded 500-observation recent history. Ignoring affects the display/export, not capture or decoding. No private paging message content was used in tests or screenshots. No new release ZIP was produced; 0.20.0-preview1 remains unchanged pending the next requested package.
+
+## October 14 - 0.20.0-preview2 combined checkpoint
+
+Release publish completed successfully. All 950 synthetic self-tests and the full WPF UI smoke passed. The paging-management view and new resizable Data inspector were visually reviewed. Inspector checks cover received versus corrected NID data, decoded TSBK field positions, protected payload boundaries, frozen snapshots and absent/malformed raw data. Packaging and extracted-artifact checks are recorded separately in the release validation report. No new live RF validation is claimed.
+
+
+## October 15 - inspector comparison source checkpoint
+
+955 synthetic self-tests passed, including identical frames, exact differing-bit position, decoded field/text changes, incompatible NID/TSBK representations, JSON field reordering and added/removed paging fields. Build completed with zero warnings/errors. Full WPF UI smoke passed. Screenshot review found initially collapsed comparison columns; explicit resizable widths corrected the layout, the UI smoke was rerun successfully and the resulting comparison screenshot was visually reviewed. No live RF/hardware acceptance is claimed. Existing release ZIPs are unchanged.
+
+User reports preview2 stayed running without a crash but does not recall where acceptance testing stopped. Individual checklist items are therefore unconfirmed. ACCEPTANCE-NEXT.md carries the complete previous checklist plus new comparison checks and a progress note; include it in the next packaged build.
+
+## October 17 - 0.21.0-preview1 aviation milestone
+
+Added ACARS, VDL2, ADS-B/Mode S and UAT selected-channel I/Q decoding, a per-receiver aircraft table, optional offline coordinate map with adjustable divider, JSON export and Data inspector provenance. Added the 2.4 MS/s RTL-SDR rate. Pinned inspector comparison work and previous acceptance checks are included.
+
+985 local synthetic application checks passed. All 286 native decoder core tests passed, including an upstream public off-air VDL2 fixture. UAT tests were rerun after correcting cross-block burst handling and native-rate timing. Eight generated I/Q worker integration cases passed: each of the four modes with unsigned and signed 8-bit input, exact expected counts and zero queue drops. Full WPF UI smoke passed; aircraft/map layout was visually inspected. Generated fixtures establish software behavior, not local reception or weak-signal performance.
+
+No live aviation RF/hardware acceptance is claimed. ACARS conventional-radio audio input, surface-position receiver reference, map basemap tiles, UAT weather-product overlays and MLAT are not part of this increment. Packaging/extracted-artifact verification is recorded in the release validation report.
+
+## October 17 - 0.21.0-preview2 ADS-B input overrun correction
+
+Reported setup: HackRF 19.2 MS/s, 1090 MHz target, +750 kHz capture offset. The decoder previously searched the full input rate; the 64-block queue covered only about 55 ms at that rate. ADS-B now frequency-shifts and anti-alias filters input above 4 MS/s to a 4 MS/s decoding branch, retaining the original spectrum capture. Live fractional-rate timing search uses two passes rather than four, with a marginal-frame sensitivity tradeoff. The bounded input queue now holds approximately one second of standard capture blocks.
+
+All nine generated I/Q integration cases passed, including real-time-paced noisy 19.2 MS/s input with a -750 kHz signal offset: eight expected frames and zero drops. The native worker processed that three-second fixture in about 1.1 seconds on this development machine; this is not a guarantee for other hardware. All 101 ADS-B core tests passed. Prior four-protocol unsigned/signed tests passed. No live HackRF validation is claimed; operator acceptance includes a five-minute reproduction test.
+
+## October 17 - 0.21.0-preview3 ADS-B receiver DC correction
+The supplied 505135992-byte MRSIQ recording is cleanly finalized and contains 26.257 seconds at 9.6 MS/s, capture 1090.250 MHz, target 1090 MHz. Preview2 and the prior full-rate decoder yielded zero frames. Removing receiver DC before ADS-B channel extraction recovers 82 checksum-validated Mode S messages (DF11:40, DF17:28, DF0:12, DF4:2), identity A3F133, callsign DAL1207, with eight decoded position reports. No sample clipping was observed. The source recording is preserved and excluded from release packaging. Automated fixture now includes DC bias; hardware acceptance remains pending.
+
+Operator feedback during preview3 preparation: screenshot from previous build shows
+one live UAT aircraft row, address adsb_icao:a59a9e, source Receiver A HackRF.
+No position is shown. Cumulative dropped counter is 90; sustained loss-free UAT
+operation is not established by this screenshot. Record as one live decode only.

@@ -8,6 +8,6 @@ internal sealed record ReceiverCapabilities(string Model, long MinimumHz, long M
     internal static bool SupportsDspRate(int rate) => Rtl.SampleRates.Contains(rate) || HackRf.SampleRates.Contains(rate);
     // Validated choices for the current adapter, not application-wide limits.
     internal static ReceiverCapabilities Rtl { get; } = new("RTL-SDR", 25000000, 1750000000,
-        Array.AsReadOnly(new[] { 240000, 960000, 1920000, 3200000 }), IqSampleFormat.Unsigned8);
+        Array.AsReadOnly(new[] { 240000, 960000, 1920000, 2400000, 3200000 }), IqSampleFormat.Unsigned8);
 }
 

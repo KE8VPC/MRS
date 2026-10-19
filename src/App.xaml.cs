@@ -7,6 +7,25 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        if(e.Args.Length==2&&e.Args[0]=="--trunk-flat-test")
+        {
+            try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"trunk-test.txt"),TrunkTests.Analyze(e.Args[1]));Shutdown(0);}
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"trunk-test.txt"),ex.ToString());Shutdown(1);}return;
+        }
+        if(e.Args.Length==2&&e.Args[0]=="--dmr-iq-test")
+        {
+            try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"dmr-test.txt"),DmrTests.Iq(e.Args[1]));Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"dmr-test.txt"),ex.ToString());Shutdown(1);}return;
+        }
+        if(e.Args.Length==2&&e.Args[0]=="--aviation-test")
+        {
+            try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"aviation-test.txt"),Task.Run(()=>AviationTests.Fixtures(e.Args[1])).GetAwaiter().GetResult());Shutdown(0);}
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"aviation-test.txt"),ex.ToString());Shutdown(1);}return;
+        }
+        if(e.Args.Length==2 && e.Args[0] is "--paging-test" or "--paging-iq-test")
+        {
+            try { var report=Task.Run(()=>e.Args[0]=="--paging-test"?PagingTests.Fixtures(e.Args[1]):PagingTests.Iq(e.Args[1])).GetAwaiter().GetResult();File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"paging-test.txt"),report);Shutdown(0); }
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"paging-test.txt"),ex.ToString());Shutdown(1);}return;
+        }
         if(e.Args.Length==3 && e.Args[0]=="--tv-stream-test")
         {
             try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"tv-stream-test.txt"),Task.Run(()=>TvTests.Stream(e.Args[1],e.Args[2])).GetAwaiter().GetResult());Shutdown(0);}

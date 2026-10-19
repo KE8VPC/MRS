@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 namespace MRS;
 public partial class MainWindow
@@ -15,7 +15,9 @@ public partial class MainWindow
     private void InitializeActivity()
     {
         ActivityControls.Initialize(Path.Combine(dataFolder,"activity.json"));activityOptions=ActivityControls.Options;
+        Spectrum.SetBirdies(activityOptions.ShowBirdies?activityOptions.Birdies??[]:[]);
         ActivityControls.StartRequested+=StartActivity;
+        ActivityControls.TuneRequested+=async hz=>await LiveTune(hz);
         ActivityControls.StopRequested+=()=>StopActivity("Scanner stopped.");
         ActivityControls.HoldChanged+=held=>activity.Held=held;
         ActivityControls.SkipRequested+=()=>{FlushActivity();activity.Skip();};
@@ -23,11 +25,12 @@ public partial class MainWindow
         ActivityControls.RecalibrateRequested+=()=>ResetActivity("Recalibrating; press Start to resume scanning.");
         ActivityControls.Changed+=next=>
         {
-            if(activityOptions.GridHz!=next.GridHz)StopActivity("Channel grid changed; press Start to scan again.");
+            if(activityOptions.ExcludeBirdies!=next.ExcludeBirdies||!(activityOptions.Birdies??[]).SequenceEqual(next.Birdies??[])||activityOptions.GridHz!=next.GridHz||activityOptions.GridOffsetHz!=next.GridOffsetHz||activityOptions.ScanLowHz!=next.ScanLowHz||activityOptions.ScanHighHz!=next.ScanHighHz||activityOptions.DiscoveryOnly!=next.DiscoveryOnly)StopActivity("Scan configuration changed; press Start to scan again.");
             if(!activityOptions.AutoSquelch&&next.AutoSquelch)manualActivityThreshold=(float)RfSquelchSlider.Value;
             if(activityOptions.AutoSquelch&&!next.AutoSquelch&&manualActivityThreshold is {} manual)
             {applyingActivity=true;try{RfSquelchSlider.Value=manual;}finally{applyingActivity=false;}manualActivityThreshold=null;}
             activityOptions=next;
+            Spectrum.SetBirdies(next.ShowBirdies?next.Birdies??[]:[]);
             if(!next.SaveDiscoveries){activity.Saved(activity.Pending());activityPending.Clear();activitySaveError="";}
             if(!next.ShowLines)Spectrum.SetActivityLevels(null,null);
         };
@@ -45,11 +48,12 @@ public partial class MainWindow
         {
             FlushActivity();
             if(activityPending.Count>0)throw new IOException("Resolve the pending discovery save before starting another scan.");
+            var bounds=ActivityControls.Options.ScanBounds(Math.Max(activity.Low,Spectrum.VisibleCenter-Spectrum.VisibleSpan/2),Math.Min(activity.High,Spectrum.VisibleCenter+Spectrum.VisibleSpan/2),receiver.AppliedChannel!.Width);
             ActivityControls.EnableAuto();RfSquelchEnabled.IsChecked=true;
-            activity.Start(Spectrum.VisibleCenter-Spectrum.VisibleSpan/2,Spectrum.VisibleCenter+Spectrum.VisibleSpan/2);
+            activity.Start(bounds.Low,bounds.High);
             Spectrum.InteractionLocked=true;
             RefreshNavigation();
-            activityMessage=$"Locked {Math.Max(activity.Low,Spectrum.VisibleCenter-Spectrum.VisibleSpan/2)/1e6:0.######}–{Math.Min(activity.High,Spectrum.VisibleCenter+Spectrum.VisibleSpan/2)/1e6:0.######} MHz";
+            activityMessage=$"Locked {bounds.Low/1e6:0.######}–{bounds.High/1e6:0.######} MHz";
             Log("Activity scanner started. "+activityMessage+"; listening mode "+receiver.AppliedChannel!.Mode+". Capture stays fixed.");
         }
         catch(Exception ex){activityMessage=ex.Message;}
@@ -101,7 +105,7 @@ public partial class MainWindow
             {applyingActivity=true;try{RfSquelchSlider.Value=activity.ChannelThresholdDb;}finally{applyingActivity=false;}}
             Spectrum.SetActivityLevels(ActivityControls.Options.ShowLines?activity.FloorBinDb:null,ActivityControls.Options.ShowLines?activity.TriggerBinDb:null);
         }
-        if(frequency is {} hz)
+        if(!ActivityControls.Options.DiscoveryOnly&&frequency is {} hz)
         {
             // Intentionally bypass LiveTune/Retune: these can move HackRF capture to maintain its offset.
             try{receiver.SetChannel(channel with{Frequency=hz});}
@@ -114,8 +118,9 @@ public partial class MainWindow
         bool live=ActivityLive;
         if(activityCapture!=null&&(!live||DisplaySettings.Clock-activity.LastFrame>2))ResetActivity("Scanner stopped: RF data interrupted. Restart after reception recovers.");
         string state=!live?"Live SDR required. Replay/audio scanning is unavailable.":!activity.Ready||activityCapture==null?"Calibrating noise floor (about 1.2 seconds)…":activity.Running?
-            (activity.Held?"HOLD":activity.Current!=null?"Monitoring":"Searching")+" · "+activityMessage:activityMessage;
-        string detail=activity.Ready&&activityCapture!=null?$"Estimated channel floor {activity.ChannelFloorDb:0.0} dB rel.\nRF trigger {activity.ChannelThresholdDb:0.0} dB rel. · {(ActivityControls.Options.AutoSquelch?"automatic":"manual")}\n{(activity.Current is {} hz?$"Listening {hz/1e6:0.######} MHz · ":"")}{activity.Candidates.Count} candidates · {activity.IgnoredCount} ignored\nLines show equivalent FFT-bin levels at the listening channel; the RF gate uses integrated channel power.":"";
+            (ActivityControls.Options.DiscoveryOnly?"Discovering only":activity.Held?"HOLD":activity.Current!=null?"Monitoring":"Searching")+" · "+activityMessage:activityMessage;
+        string detail=activity.Ready&&activityCapture!=null?$"Estimated channel floor {activity.ChannelFloorDb:0.0} dB rel.\nRF trigger {activity.ChannelThresholdDb:0.0} dB rel. · {(ActivityControls.Options.AutoSquelch?"automatic":"manual")}\n{(receiver.AppliedChannel is {} listening?$"Listening {listening.Frequency/1e6:0.######} MHz · ":"")}{activity.Candidates.Count} candidates · {activity.IgnoredCount} ignored\nLines show equivalent FFT-bin levels at the listening channel; the RF gate uses integrated channel power.":"";
+        ReceiverAutoStatus.Text=!live?"Auto squelch: live SDR required.":activityCapture==null||!activity.Ready?"Measuring noise floor…":$"Floor {activity.ChannelFloorDb:0.0} dB · threshold {activity.ChannelThresholdDb:0.0} dB · {(activityOptions.AutoSquelch?"automatic":"manual")}{(RfSquelchEnabled.IsChecked==true?"":" · muting bypassed")}";
         ActivityControls.Display(live,activity.Running,activity.Held,activity.Current!=null,state,detail+(activitySaveError.Length>0?"\n"+activitySaveError:""));
     }
 }

@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,18 +20,18 @@ internal static class TvBandPlanTests
         {
             var panel=new DisplayPanel();panel.Initialize(path);
             var body=(StackPanel)((ScrollViewer)panel.Content).Content;
-            var toggles=body.Children.OfType<GroupBox>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>());
+            var toggles=body.Children.OfType<System.Windows.Controls.HeaderedContentControl>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>());
             toggles.Single(c=>c.Content?.ToString()=="Show TV RF channels (2–36)").IsChecked=true;
-            toggles.Single(c=>c.Content?.ToString()=="Show ATSC 1.0 pilot references (TV layer)").IsChecked=true;
+            check(!toggles.Any(c=>c.Content?.ToString()?.Contains("pilot references")==true),"TV pilot control is removed");
             panel.Save();DisplaySettings? loaded=null;
             var restored=new DisplayPanel();restored.Changed+=s=>loaded=s;restored.Initialize(path);
-            check(loaded is {ShowTvPlan:true,ShowTvPilots:true,ShowBandPlan:false,ShowArrlPlan:false,ShowNifogPlan:false}&&loaded.ColorsFrom(DisplaySettings.Theme("Light")).ShowTvPilots,"TV and pilot controls persist independently of other overlays and survive theme changes");
+            check(loaded is {ShowTvPlan:true,ShowTvPilots:false,ShowBandPlan:false,ShowArrlPlan:false,ShowNifogPlan:false}&&!loaded.ColorsFrom(DisplaySettings.Theme("Light")).ShowTvPilots,"TV channel overlay persists without retired pilot references");
         }
         finally{if(Directory.Exists(Path.GetDirectoryName(path)))Directory.Delete(Path.GetDirectoryName(path)!,true);}
         var view=new SpectrumView();view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));
         view.SetRf(479000000,19200000);view.Configure(new DisplaySettings{ShowTvPlan=true,ShowTvPilots=true});
         view.SetPointer(new Point(516,25));
-        check(view.ToolTip?.ToString()?.Contains("TV RF 15")==true&&view.ToolTip.ToString()!.Contains("476.309441")&&view.ToolTip.ToString()!.Contains("73.603"),"TV hover identifies RF 15, its nominal pilot and allocation provenance");
+        check(view.ToolTip?.ToString()?.Contains("TV RF 15")==true&&!view.ToolTip.ToString()!.Contains("476.309441")&&view.ToolTip.ToString()!.Contains("73.603"),"TV hover identifies RF 15 and provenance without retired pilot reference");
         long tuned=0;view.TuneRequested+=hz=>tuned=hz;
         view.ClickAt(new Point(516,25));check(tuned==479000000,"TV reference-bar clicks retain existing spectrum frequency mapping");
         Capture(view,"ui-tv-band-plan.png");

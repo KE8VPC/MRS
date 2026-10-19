@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Threading;
@@ -25,7 +25,7 @@ public partial class MainWindow : Window
     private bool ready, closing;
     private long session;
     private record Device(int Id, string Name);
-    private record Preferences(float Volume, float Squelch, string? InputName, string Frequency = "146.520000", int Mode = 0, int Gain = 0, float RfSquelch = -60, bool? RfSquelchOn = null, int SampleRate = 240000, string? RtlIdentity = null, bool AutoReconnect = false, string? OutputId = null, double Bandwidth = 0, bool AudioAgc = true, Dictionary<string, int>? SamplingByReceiver = null, bool ForceMono = false, int RdsRegion = 0, bool PacketDecoding = false, bool P25Decoding = false, bool SubaudibleDecoding = false, bool GroupP25Repeats = true, string[]? HiddenP25Types = null, string Backend = "RTL", int HackRfGainToken = 0x1001010, Dictionary<string, CaptureOffset>? CaptureOffsets = null);
+    private record Preferences(float Volume, float Squelch, string? InputName, string Frequency = "146.520000", int Mode = 0, int Gain = 0, float RfSquelch = -60, bool? RfSquelchOn = null, int SampleRate = 240000, string? RtlIdentity = null, bool AutoReconnect = false, string? OutputId = null, double Bandwidth = 0, bool AudioAgc = true, Dictionary<string, int>? SamplingByReceiver = null, bool ForceMono = false, int RdsRegion = 0, bool PacketDecoding = false, bool P25Decoding = false, bool SubaudibleDecoding = false, bool GroupP25Repeats = true, string[]? HiddenP25Types = null, string Backend = "RTL", int HackRfGainToken = 0x1001010, Dictionary<string, CaptureOffset>? CaptureOffsets = null, double SidebarWidth = 330, bool PagingDecoding = false, bool GroupPagingRepeats = true, bool AutoBand = false, double CwPitch = 700);
 
     public MainWindow(bool diagnostic = false, string slot = "A", string? diagnosticRoot = null)
     {
@@ -33,6 +33,10 @@ public partial class MainWindow : Window
         workspaceSlot=slot;diagnosticWorkspace=diagnostic;
         if(slot=="B")dataFolder=Path.Combine(dataFolder,"ReceiverB");
         InitializeComponent();
+        SliderWheel.Enable(RfSquelchSlider,.5);
+        SliderWheel.Enable(SquelchSlider,.5);
+        SliderWheel.Enable(VolumeSlider,.01);
+        SliderWheel.Enable(ReplaySeek,1,changed:async ()=>await ApplySeek());
         Title=$"M.R.S. — Receiver {slot}";WorkspaceLabel.Text=$"Receiver {slot} · independent settings and history";OtherReceiverButton.Content=slot=="A"?"Open Receiver B":"Open Receiver A";
         InitializePackets();
         InitializeHackRfControls(); SampleRateBox.Items.Clear();
@@ -42,6 +46,7 @@ public partial class MainWindow : Window
         PopulateBandwidth();
         if (diagnostic) dataFolder = diagnosticRoot ?? Path.Combine(AppContext.BaseDirectory, "smoke-profile", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dataFolder);
+        Packets.InitializePagingRules(Path.Combine(dataFolder,"paging-rules.json"));
         P25Systems.Initialize(Path.Combine(dataFolder,"p25-discoveries.json"));
         P25Systems.SaveFrequencyRequested+=draft=>{SidebarTabs.SelectedItem=FrequencyTab;FrequencyManager.ReviewDiscovery(draft);};
         DisplayControls.Changed += s => receiver.SpectrumSize = s.RfFftSize;
@@ -62,6 +67,7 @@ public partial class MainWindow : Window
         Spectrum.SaveFrequencyRequested += hz => { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.AddSignal(hz); };
         InitializeActivity();
         Spectrum.MarkerSelected += id => { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.SelectEntry(id); };
+        Spectrum.MarkerMoveRequested += (id,oldHz,newHz)=>{SidebarTabs.SelectedItem=FrequencyTab;FrequencyManager.CorrectMarker(id,oldHz,newHz);};
         RefreshInputs(this, new RoutedEventArgs());
         try
         {
@@ -71,18 +77,20 @@ public partial class MainWindow : Window
                 var settings = JsonSerializer.Deserialize<Preferences>(File.ReadAllText(path));
                 if (settings != null)
                 {
+                    AutoBandMode.IsChecked = settings.AutoBand; CwPitch.Value = double.IsFinite(settings.CwPitch) ? Math.Clamp(settings.CwPitch, 300, 1200) : 700;
                     savedSampling = settings.SamplingByReceiver?.Where(p => SamplingModes.Valid(p.Value)).ToDictionary(p => p.Key, p => p.Value) ?? new();
                     savedOutputId = settings.OutputId;
                     savedCaptureOffsets = settings.CaptureOffsets ?? new();
                     savedReceiverIdentity = settings.RtlIdentity; AutoReconnectCheck.IsChecked = settings.AutoReconnect;
+                    SidebarColumn.Width = new GridLength(double.IsFinite(settings.SidebarWidth) ? Math.Clamp(settings.SidebarWidth,260,520) : 330);
                     VolumeSlider.Value = Math.Clamp(settings.Volume, 0, 1);
                     SquelchSlider.Value = Math.Clamp(settings.Squelch, -90, 0);
                     RfSquelchSlider.Value = float.IsFinite(settings.RfSquelch) ? Math.Clamp(settings.RfSquelch, -119, 0) : -60;
                     RfSquelchEnabled.IsChecked = RfSquelch.RestoreEnabled(settings.RfSquelchOn, settings.RfSquelch);
                     ReceiverFamily.SelectedIndex = settings.Backend == "HackRF" ? 1 : 0; PopulateReceiverRates(settings.SampleRate); try { ReflectHackRfGain((HackRfGain.Decode(settings.HackRfGainToken) with { Amplifier = false }).Token); } catch (ArgumentException) { ReflectHackRfGain(new HackRfGain().Token); }
                     FrequencyBox.Text = settings.Frequency ?? "146.520000";
-                    FmMode.SelectedIndex = Math.Clamp(settings.Mode, 0, 4);
-                    PopulateBandwidth(settings.Bandwidth); ChannelAgc.IsChecked = settings.AudioAgc; ForceMonoBox.IsChecked = settings.ForceMono; RdsRegion.SelectedIndex = Math.Clamp(settings.RdsRegion,0,1); Packets.DecoderEnabled=settings.PacketDecoding; Packets.P25Enabled=settings.P25Decoding; Packets.SubaudibleEnabled=settings.SubaudibleDecoding; Packets.Grouped=settings.GroupP25Repeats; Packets.HiddenP25Types=settings.HiddenP25Types??[];
+                    FmMode.SelectedIndex = Math.Clamp(settings.Mode, 0, ReceiveDemodulator.Modes.Length-1);
+                    PopulateBandwidth(settings.Bandwidth); ChannelAgc.IsChecked = settings.AudioAgc; ForceMonoBox.IsChecked = settings.ForceMono; RdsRegion.SelectedIndex = Math.Clamp(settings.RdsRegion,0,1); Packets.DecoderEnabled=settings.PacketDecoding; Packets.P25Enabled=settings.P25Decoding; Packets.SubaudibleEnabled=settings.SubaudibleDecoding; Packets.PagingEnabled=settings.PagingDecoding; Packets.PagingGrouped=settings.GroupPagingRepeats; Packets.Grouped=settings.GroupP25Repeats; Packets.HiddenP25Types=settings.HiddenP25Types??[];
                     RtlGain.SelectedIndex = Math.Clamp(settings.Gain, 0, 5);
                     var matches = InputDevices.Items.Cast<Device>().Where(d => d.Name == settings.InputName).ToArray();
                     if (matches.Length == 1) InputDevices.SelectedItem = matches[0];
@@ -167,6 +175,7 @@ public partial class MainWindow : Window
         SamplingModeBox.SelectionChanged += (_, _) => SamplingSelectionChanged();
         RtlDevices.SelectionChanged += (_, _) => { RestoreSamplingForSelection(); RestoreCaptureOffset(); };
         RefreshSamplingControls();
+        InitializeReceiverRefinements();
         ready = true;
         RfSquelchChanged(this, new RoutedEventArgs());
         ListeningChanged(this, new RoutedEventArgs());
@@ -174,11 +183,11 @@ public partial class MainWindow : Window
         Closing += (_, _) =>
         {
             StopActivity("Scanner stopped on close.");
-            closing = true; P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
+            closing = true; P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); pagingDecoder.Dispose(); Aviation.Release(); Dmr.Release(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
             try
             {
                 ActivityControls.Save();
-                var preferences = new Preferences((float)VolumeSlider.Value, (float)SquelchSlider.Value, (InputDevices.SelectedItem as Device)?.Name, FrequencyBox.Text, FmMode.SelectedIndex, RtlGain.SelectedIndex, manualActivityThreshold ?? (float)RfSquelchSlider.Value, RfSquelchEnabled.IsChecked == true, SelectedSampleRate, savedReceiverIdentity, AutoReconnectCheck.IsChecked == true, savedOutputId, SelectedBandwidth, ChannelAgc.IsChecked == true, savedSampling, ForceMonoBox.IsChecked == true, RdsRegion.SelectedIndex, Packets.DecoderEnabled, Packets.P25Enabled, Packets.SubaudibleEnabled, Packets.Grouped, Packets.HiddenP25Types, SelectedBackend, new HackRfGain(Math.Max(0,HackRfLna.SelectedIndex)*8,Math.Max(0,HackRfVga.SelectedIndex)*2,false).Token, savedCaptureOffsets);
+                var preferences = new Preferences((float)VolumeSlider.Value, (float)SquelchSlider.Value, (InputDevices.SelectedItem as Device)?.Name, FrequencyBox.Text, FmMode.SelectedIndex, RtlGain.SelectedIndex, manualActivityThreshold ?? (float)RfSquelchSlider.Value, RfSquelchEnabled.IsChecked == true, SelectedSampleRate, savedReceiverIdentity, AutoReconnectCheck.IsChecked == true, savedOutputId, SelectedBandwidth, ChannelAgc.IsChecked == true, savedSampling, ForceMonoBox.IsChecked == true, RdsRegion.SelectedIndex, Packets.DecoderEnabled, Packets.P25Enabled, Packets.SubaudibleEnabled, Packets.Grouped, Packets.HiddenP25Types, SelectedBackend, new HackRfGain(Math.Max(0,HackRfLna.SelectedIndex)*8,Math.Max(0,HackRfVga.SelectedIndex)*2,false,HackRfHfFilter.IsChecked==true).Token, savedCaptureOffsets, SidebarColumn.ActualWidth, Packets.PagingEnabled, Packets.PagingGrouped, AutoBandMode.IsChecked == true, CwPitch.Value);
                 string target = Path.Combine(dataFolder, "settings.json");
                 File.WriteAllText(target + ".tmp", JsonSerializer.Serialize(preferences, new JsonSerializerOptions { WriteIndented = true }));
                 File.Move(target + ".tmp", target, true);
@@ -206,7 +215,7 @@ public partial class MainWindow : Window
             if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) { receiver.SetChannel(channel); return; }
         }
         if (RtlDevices.SelectedItem is not RtlNative.Device) { Log("Select an SDR receiver before tuning."); return; }
-        StartRtl(this, new RoutedEventArgs());
+        StartRtl(FrequencyManager, new RoutedEventArgs());
         await Task.CompletedTask;
     }    private void PostReceiverMessage(string message, bool ended)
     {
@@ -254,11 +263,12 @@ public partial class MainWindow : Window
         if (RtlDevices.SelectedItem is not RtlNative.Device device || device.Backend != SelectedBackend) { RtlStatus.Text = "Click Find and select a receiver from the current receiver family first."; return; }
         if (!double.TryParse(FrequencyBox.Text, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double mhz) || !double.IsFinite(mhz) || mhz < .000001 || mhz > 6000 || !SelectedCanTune((long)Math.Round(mhz * 1000000)))
         { RtlStatus.Text = "Enter a frequency in " + (SelectedHackRf ? "1–6000 MHz" : SamplingModes.Range(SelectedSamplingMode)) + ". Use a decimal point for MHz."; return; }
+        if (!ReferenceEquals(sender, FrequencyManager)) ApplyBandMode((long)Math.Round(mhz * 1000000));
         CaptureOffset offset;
-        try { offset = ReadCaptureOffset(); if (SelectedHackRf) offset.Center(SelectedChannel((long)Math.Round(mhz * 1000000)), SelectedSampleRate); }
+        try { offset = ReadCaptureOffset(); if (SelectedHackRf) offset.Center(SelectedChannel((long)Math.Round(mhz * 1000000)), SelectedSampleRate, SelectedGain); }
         catch (Exception ex) { RtlStatus.Text = ex.Message; Log(ex.Message); return; }
         int selectedGain = SelectedGain;
-        if (rfMode && !receiver.IsReplay && device.Index == activeDevice && receiver.SamplingMode == SelectedSamplingMode && SelectedSampleRate == activeRate && selectedGain == activeGain && ReceiveDemodulator.Modes[FmMode.SelectedIndex] == tunedMode && receiver.AppliedChannel?.Width == SelectedBandwidth && receiver.AppliedChannel?.Agc == (ChannelAgc.IsChecked == true))
+        if (!ReferenceEquals(sender, FrequencyManager) && rfMode && !receiver.IsReplay && device.Index == activeDevice && receiver.SamplingMode == SelectedSamplingMode && SelectedSampleRate == activeRate && selectedGain == activeGain && ReceiveDemodulator.Modes[FmMode.SelectedIndex] == tunedMode && receiver.AppliedChannel?.Width == SelectedBandwidth && receiver.AppliedChannel?.Agc == (ChannelAgc.IsChecked == true))
         { await LiveTune((long)Math.Round(mhz * 1000000)); return; }
         Stop();
         try
@@ -295,9 +305,10 @@ public partial class MainWindow : Window
         {
             RtlStatus.Text = $"Tuning to {frequency / 1000000.0:F6} MHz…";
             var channel = (receiver.AppliedChannel ?? SelectedChannel(frequency)) with { Frequency = frequency };
+            if (AutoBandMode.IsChecked == true) channel = BandModeDefaults.Apply(channel);
             if (receiver.IsHackRf && receiver.Offset.Enabled) await receiver.Retune(frequency, channel);
             else if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) receiver.SetChannel(channel);
-            else await receiver.Retune(frequency);
+            else await receiver.Retune(frequency, channel);
         }
         catch (Exception ex)
         {
@@ -355,7 +366,7 @@ public partial class MainWindow : Window
         HdRecordings.StopLive("Receiver stopped.");
         Television.StopLive("Receiver stopped.");
         CancelRecovery(); session++; receiver.Stop(); ReceiverOwnership.Release(this); engine.Stop(); rfMode = false;
-        p25Decoder.Reset();
+        pagingDecoder.Reset(); p25Decoder.Reset();
         subaudibleDecoder.Reset();
         if (clearReplay) { loadedIqPath = null; PlaybackPanel.Visibility = Visibility.Collapsed; }
         Spectrum.SetAudio(); SpectrumTitle.Text = "AUDIO SPECTRUM / WATERFALL";
@@ -413,6 +424,17 @@ public partial class MainWindow : Window
     }
     internal async Task RenderSmokeTest(string path)
     {
+        ReceiverAutoSquelch.IsChecked=true;
+        ReceiverAutoMargin.Value=11;
+        if(!ActivityControls.Options.AutoSquelch||ActivityControls.Options.MarginDb!=11||activity.Running)throw new InvalidOperationException("Receiver auto squelch failed without scanning.");
+        ActivityControls.DisableAuto();
+        if(ReceiverAutoSquelch.IsChecked==true)throw new InvalidOperationException("Scan/receiver auto controls lost synchronization.");
+        FmMode.SelectedIndex=5;
+        if(CwPitchPanel.Visibility!=Visibility.Visible||SelectedBandwidth!=500)throw new InvalidOperationException("CW controls not visible.");
+        CwPitch.Value=800;
+        if(receiver.CwPitchHz!=800)throw new InvalidOperationException("CW pitch not applied.");
+        FmMode.SelectedIndex=0;
+
         LoadDemo(this, new RoutedEventArgs());
         await Task.Delay(1500);
         UpdateLayout();
@@ -463,7 +485,7 @@ public partial class MainWindow : Window
         using (var stream = File.Create(Path.Combine(Path.GetDirectoryName(path)!, "ui-editor-smoke.png"))) editorEncoder.Save(stream);
         editor.Close();
         SidebarTabs.SelectedItem = DisplayTab;
-        foreach (string themeName in new[] { "Dark", "Light", "High contrast", "Amber" })
+        foreach (string themeName in new[] { "Dark", "Light", "High contrast", "Amber", "Hot signals" })
         {
             Spectrum.Configure(DisplaySettings.Theme(themeName) with { Zoom = 4, PeakHold = true, HistorySeconds = 30 });
             double now = DisplaySettings.Clock;
@@ -536,9 +558,19 @@ public partial class MainWindow : Window
         Stop(); await RenderHackRfSmoke(Capture); await RenderSamplingSmoke(Capture); await RenderBroadcastSmoke(Capture); await RenderPacketSmoke(Capture); await RenderP25Smoke(Capture); await RenderSubaudibleSmoke(Capture); await RenderDualReceiverSmoke(Capture);
         await RenderSpectrumDetailSmoke(Capture);
         await RenderActivitySmoke(Capture);
+        await RenderPagingSmoke(Capture);
+        Aviation.Observe(AviationData.Parse(AviationTests.PositionJson,"adsb",AviationTests.Context)!);
+        Aviation.Observe(AviationData.Parse(AviationTests.PositionJson.Replace("ABCDEF","123456").Replace("40.5","40.7").Replace("84.2","84.5"),"adsb",AviationTests.Context)!);
+        Aviation.ShowMapForTest();Aviation.Refresh();WorkspaceTabs.SelectedItem=AviationTab;UpdateLayout();Capture("ui-aviation.png");
+        WorkspaceTabs.SelectedItem=PacketsTab;Packets.ClearRows();Packets.SetFilter("");
+        var flood=new PacketObservation(DateTimeOffset.UtcNow,"Synthetic DMR",true,451600000,null,"Slot Golay + BPTC valid","","","","Slot identification","CC 0 slot 1 data type 3",null,"ABCD","DMR",true);
+        for(int batch=0;batch<100;batch++){for(int n=0;n<100;n++)Packets.Add(flood with{ObservedUtc=DateTimeOffset.UtcNow});if(batch%10==0){WorkspaceTabs.SelectedIndex=0;UpdateLayout();WorkspaceTabs.SelectedItem=PacketsTab;}await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background);}
+        if(Packets.Count!=500||Packets.VisibleCount!=1)throw new InvalidOperationException("DMR Data flood grouping failed");await Task.Delay(250);UpdateLayout();Capture("ui-dmr-data-flood.png");
+        await Dmr.Smoke();WorkspaceTabs.SelectedItem=DmrTab;UpdateLayout();Capture("ui-dmr.png");
         WorkspaceTabs.SelectedItem=SessionLogTab;UpdateLayout();Capture("ui-session-log.png");WorkspaceTabs.SelectedIndex=0;
     }
 }
+
 
 
 

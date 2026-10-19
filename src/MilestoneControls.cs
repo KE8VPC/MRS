@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -20,7 +20,8 @@ public partial class MainWindow
             ChannelBandwidth.Items.Clear();
             foreach (double width in ChannelSettings.Widths(mode)) ChannelBandwidth.Items.Add(new ComboBoxItem { Content = $"{width / 1000:0.###} kHz", Tag = width });
             ChannelBandwidth.SelectedItem = ChannelBandwidth.Items.Cast<ComboBoxItem>().FirstOrDefault(i => (double)i.Tag == selected) ?? ChannelBandwidth.Items.Cast<ComboBoxItem>().First(i => (double)i.Tag == ChannelSettings.DefaultWidth(mode));
-            ChannelAgc.IsEnabled = mode is "AM" or "USB" or "LSB";
+            CwPitchPanel.Visibility = mode == "CW" ? Visibility.Visible : Visibility.Collapsed;
+            ChannelAgc.IsEnabled = mode is "AM" or "USB" or "LSB" or "CW";
         }
         finally { updatingControls = previous; }
     }
@@ -99,12 +100,16 @@ public partial class MainWindow
     }
     private void RefreshPlayback()
     {
+        var input=System.Threading.Volatile.Read(ref receiver.InputLevel);
+        bool fresh=rfMode && input!=null && Environment.TickCount64-input.Tick<1000;
+        HackRfInputStatus.Text=fresh?$"Input RMS {input!.RmsDb:F1} dBFS · peak {input.PeakDb:F1} dBFS · rail samples {input.RailPercent:F2}%\nHardware span {receiver.AppliedBandwidth/1e6:0.##} MHz"+(input.RailPercent>0?" · possible clipping: try lower gain":" · no sampled clipping"):"Input level: stopped / no recent samples";
+        HackRfInputStatus.Foreground=fresh && input!.RailPercent>0?System.Windows.Media.Brushes.Orange:System.Windows.Media.Brushes.LightSteelBlue;
         PlaybackPanel.Visibility = loadedIqPath == null ? Visibility.Collapsed : Visibility.Visible;
-        CaptureOffsetEnabled.IsEnabled = CaptureOffsetKhz.IsEnabled = !rfMode && !receiver.IsReplay;
+        HackRfHfFilter.IsEnabled = CaptureOffsetEnabled.IsEnabled = CaptureOffsetKhz.IsEnabled = !rfMode && !receiver.IsReplay;
         CaptureCenterLabel.Text = receiver.AppliedFrequency == 0 ? "Capture center: stopped" : $"Capture: {receiver.AppliedFrequency / 1000000.0:F6} MHz · offset {(receiver.AppliedFrequency - (receiver.AppliedChannel?.Frequency ?? receiver.AppliedFrequency)) / 1000.0:+0.###;-0.###;0} kHz";
         SampleRateBox.IsEnabled = FmMode.IsEnabled = ChannelBandwidth.IsEnabled = !receiver.IsReplay;
         SamplingModeBox.IsEnabled = !receiver.IsReplay && !SelectedHackRf; RtlGain.IsEnabled = !receiver.IsReplay && !SelectedHackRf && SelectedSamplingMode == 0; HackRfControls.IsEnabled = !receiver.IsReplay;
-        ChannelAgc.IsEnabled = !receiver.IsReplay && (ReceiveDemodulator.Modes[Math.Max(0, FmMode.SelectedIndex)] is "AM" or "USB" or "LSB");
+        ChannelAgc.IsEnabled = !receiver.IsReplay && (ReceiveDemodulator.Modes[Math.Max(0, FmMode.SelectedIndex)] is "AM" or "USB" or "LSB" or "CW");
         if (loadedIqPath == null) return;
         bool active = receiver.IsReplay;
         ReplayPlayButton.IsEnabled = !active || receiver.ReplayPaused || receiver.ReplayFinished;
@@ -119,7 +124,7 @@ public partial class MainWindow
     }
     private void ReplayPlay(object sender, RoutedEventArgs e)
     {
-        ChannelAgc.IsEnabled = !receiver.IsReplay && (ReceiveDemodulator.Modes[Math.Max(0, FmMode.SelectedIndex)] is "AM" or "USB" or "LSB");
+        ChannelAgc.IsEnabled = !receiver.IsReplay && (ReceiveDemodulator.Modes[Math.Max(0, FmMode.SelectedIndex)] is "AM" or "USB" or "LSB" or "CW");
         if (loadedIqPath == null) return;
         if (!receiver.IsReplay || receiver.ReplayFinished) PlayIq(loadedIqPath); else receiver.ReplayPaused = false;
     }

@@ -1,4 +1,4 @@
-# Frequency manager
+﻿# Frequency manager
 
 User clarification after the 0.3.0 test passed: the example tree below illustrates hierarchy only. Do not create those folders automatically. From 0.3.1 onward, new libraries contain only the empty Frequency list root, and users create their own folders.
 
@@ -29,7 +29,7 @@ Saving a protocol label does not imply that a corresponding decoder is available
 - Arbitrarily nested folders, with user-selected names and ordering.
 - Create, rename, move and delete folders/entries; drag-and-drop organization.
 - Search across names, frequencies, notes and protocol fields; filter by mode, protocol or tags.
-- Click a saved signal once to recall its frequency, supported receive mode and saved filter width in that receiver window. Clicking it again retunes again. Keyboard selection shows details; the Tune button remains available. Folders, drag-and-drop organization, search/reloads and programmatic marker selection do not tune. Unsupported modes/decoders are visibly identified rather than silently replaced. Replay and hardware coverage checks still apply.
+- Single-click a saved signal to select it without tuning. Edit or F2 opens the selected entry. Double-click (using the Windows double-click timing) recalls its frequency, supported receive mode and saved filter width in that receiver window. The Tune button remains available. Ctrl/Shift selection does not tune. Folders, drag-and-drop organization, search/reloads and programmatic marker selection do not tune. Unsupported modes/decoders are visibly identified rather than silently replaced. Replay and hardware coverage checks still apply.
 - Selection, hovering and saving do not transmit. Mere selection should not unexpectedly retune an active recording.
 - Allow multiple distinct entries on the same frequency for different sites, systems or observations; flag possible duplicates instead of automatically merging them.
 - Local persistence, portable export/import and a recoverable deletion workflow. Carry stable IDs and provenance forward into future RadioReference imports.
@@ -90,3 +90,14 @@ On first use, an existing ReceiverB/frequencies.json is imported under an "Impor
 Each panel retains its own selection and search. An update from another panel reloads its library and clears its local Undo history. If an edit dialog was opened before another window saved a change, its stale save is rejected; reopen the editor to use the latest entries. Separate application processes retain file-lock/revision protection, but need Reload to see outside changes.
 
 The compact 0.11.0 ZIP still has separate libraries. This change and the broadcast contrast fix await the next milestone package. No user profile files were migrated during development tests.
+
+## Selection and editing update (source change pending next package)
+- Single-click selects only. Double-click uses Windows timing and tunes only a signal; folders and modifier-assisted selection do not tune.
+- Edit or F2 opens the single selected entry. Selecting multiple entries gives a clear message rather than editing an arbitrary entry.
+- Shift + Up/Down extends or contracts a range from its anchor. Ctrl-click toggles entries; Ctrl + Up/Down moves focus without changing the group; Ctrl + Space toggles the focused entry.
+- Right-click offers Edit, Delete and Tune. Right-clicking a selected entry preserves its selected group; right-clicking an unselected entry selects that entry. Edit/Tune require one entry; Delete acts on the group.
+- A single custom selection highlight avoids disagreement with the TreeView's separate focused-item highlight.
+
+Acceptance: select an entry without retuning, open/cancel/save Edit, double-click to tune, select a range with Shift/arrows and delete/undo, and verify right-click actions while DMR auto-save is active. Changes must appear in the list and RF markers and survive restarting.
+
+Marker visibility correction (pending next package): separate Show markers / Hide markers actions apply to all highlighted entries as one undoable save. Both actions are also available on right-click. Saved entries remain in the frequency list; hiding changes spectrum/waterfall markers. A hidden parent folder continues to suppress its children. No selection produces an explanatory status instead of silently doing nothing.

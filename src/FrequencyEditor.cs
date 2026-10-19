@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -40,7 +40,7 @@ internal sealed class FrequencyEditor : Window
         ComboBox? mode = null;
         if (!item.IsFolder)
         {
-            body.Children.Add(new TextBlock { Text = "Receiver mode (NFM / WFM / AM / USB / LSB supported)", Margin = new Thickness(0, 8, 0, 4) });
+            body.Children.Add(new TextBlock { Text = "Receiver mode (NFM / WFM / AM / USB / LSB / CW supported)", Margin = new Thickness(0, 8, 0, 4) });
             mode = new ComboBox { IsEditable = true, ItemsSource = new[] { "NFM", "WFM", "AM", "USB", "LSB", "CW", "Unknown" }, Text = item.Mode }; body.Children.Add(mode);
         }
         var bandwidth = item.IsFolder ? null : Field("Receive filter width (Hz; 0 = mode default)", item.BandwidthHz.ToString(System.Globalization.CultureInfo.InvariantCulture));

@@ -3,15 +3,16 @@ namespace MRS;
 internal sealed record PacketContext(string Key,string Source,bool Replay,long? FrequencyHz,double? PositionSeconds=null);
 internal sealed record PacketObservation(DateTimeOffset ObservedUtc,string Source,bool Replay,long? FrequencyHz,
     double? PositionSeconds,string Validation,string Callsign,string Destination,string Path,string Kind,string Information,
-    AprsData? Aprs,string RawHex,string Protocol="AX.25",bool? Validated=null,long ReceptionCount=1,DateTimeOffset? FirstSeenUtc=null,long ContentChanges=0,string? SourceKey=null,P25BandPlan? P25BandPlan=null,P25Channel? P25Channel=null,P25GrantAssignment[]? P25Assignments=null,P25SiteAnnouncement? P25SiteAnnouncement=null,P25Identity? P25Identity=null)
+    AprsData? Aprs,string RawHex,string Protocol="AX.25",bool? Validated=null,long ReceptionCount=1,DateTimeOffset? FirstSeenUtc=null,long ContentChanges=0,string? SourceKey=null,P25BandPlan? P25BandPlan=null,P25Channel? P25Channel=null,P25GrantAssignment[]? P25Assignments=null,P25SiteAnnouncement? P25SiteAnnouncement=null,P25Identity? P25Identity=null,string? DecoderJson=null,string? DisplaySummary=null,string? Label=null,string[]? PagingRecipients=null)
 {
     public bool IsValidated=>Validated ?? Validation.StartsWith("FCS valid",StringComparison.Ordinal);
     public string Time=>ObservedUtc.ToString("HH:mm:ss.fff");
     public string Input=>Source+(Replay?" · replay":"");
     public string From=>Callsign;
     public string To=>Destination;
+    public string SourceLabel=>Label??"";
     public string Status=>IsValidated?Validation:"Unvalidated · "+Validation;
-    public string Description=>Aprs?.Summary ?? Information;
+    public string Description=>DisplaySummary ?? Aprs?.Summary ?? Information;
     public string Type=>Aprs?.Type ?? Kind;
 }
 

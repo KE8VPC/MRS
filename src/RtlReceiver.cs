@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
@@ -12,6 +12,8 @@ internal sealed class RtlReceiver : IDisposable
     private Task? pump;
     private long lastSpectrum;
     private readonly RfSpectrumAnalyzer spectrumAnalyzer = new();
+    internal ReceiverInputLevel? InputLevel;
+    private long lastInputMeasurement;
     internal volatile int SpectrumSize = 32768;
     private volatile bool stopping;
     private CancellationTokenSource? cancellation;
@@ -81,10 +83,14 @@ internal sealed class RtlReceiver : IDisposable
     }
     internal Task SetRate(int rate)
     {
-        if (IsHackRf && AppliedChannel is {} channel) Offset.Center(channel, rate);
+        if (IsHackRf && AppliedChannel is {} channel) Offset.Center(channel, rate, RequestedGain);
         return SendControl("RATE", rate);
     }
-    internal Task SetGain(int gain) => SendControl("GAIN", gain);
+    internal Task SetGain(int gain)
+    {
+        if(IsHackRf && AppliedChannel is {} channel) Offset.Center(channel,AppliedRate,gain);
+        return SendControl("GAIN", gain);
+    }
     private async Task SendControl(string command, int value)
     {
         if (IsReplay || process == null) throw new IOException("Start a live receiver first.");
@@ -111,7 +117,7 @@ internal sealed class RtlReceiver : IDisposable
         if (!CanTune(frequency)) throw new ArgumentOutOfRangeException(nameof(frequency));
         var channel = listeningChannel ?? (AppliedChannel ?? throw new IOException("Wait for receiver data before tuning.")) with { Frequency = frequency };
         channel.Validate();
-        if (IsHackRf) frequency = Offset.Center(channel, AppliedRate);
+        if (IsHackRf) frequency = Offset.Center(channel, AppliedRate, RequestedGain);
         var targetWorker = process ?? throw new IOException("Receiver is not running.");
         await commandLock.WaitAsync().ConfigureAwait(false);
         try
@@ -175,7 +181,7 @@ internal sealed class RtlReceiver : IDisposable
         SamplingMode = samplingMode; if (samplingMode != 0) gain = -1000;
         requestedRate = sampleRate; requestedGain = gain;
         var initialChannel = new ChannelSettings(frequency, mode ?? (wide ? "WFM" : "NFM"), bandwidth, agc); initialChannel.Validate();
-        if (IsHackRf) frequency = Offset.Center(initialChannel, sampleRate);
+        if (IsHackRf) frequency = Offset.Center(initialChannel, sampleRate, gain);
         Interlocked.Exchange(ref requestedFrequency, frequency);
         desiredChannel = initialChannel;
         var worker = IsHackRf ? Launch(fixture ? "--hackrf-fixture" : "--hackrf-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), fixtureSeconds.ToString()) : fixture ? Launch("--rtl-fixture", sampleRate.ToString(), fixtureSeconds.ToString(), gain.ToString(), samplingMode.ToString(), frequency.ToString()) : Launch("--rtl-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), samplingMode.ToString());
@@ -247,11 +253,15 @@ internal sealed class RtlReceiver : IDisposable
             }
         });
     }
+    internal double CwPitchHz { get; set; } = 700;
     private void ProcessBlock(byte[] block, int rate, ReceiveDemodulator dsp, RfSquelch squelch)
     {
+        long inputNow=Environment.TickCount64;
+        if(inputNow-lastInputMeasurement>=100){Volatile.Write(ref InputLevel,ReceiverInputLevel.Measure(block,inputNow));lastInputMeasurement=inputNow;}
         // Render at most 30 RF spectra per second; all samples still reach recording and DSP.
         spectrumAnalyzer.Append(block, SpectrumSize);
         if (Environment.TickCount64 - lastSpectrum >= 33) { lastSpectrum = Environment.TickCount64; if (spectrumAnalyzer.Snapshot() is {} spectrum) Spectrum?.Invoke(spectrum); }
+        dsp.CwPitchHz = CwPitchHz;
         dsp.ForceMono = ForceMono;
         dsp.CaptureData = CaptureData;
         byte[] audio = dsp.Process(block); ChannelDb = (float)dsp.ChannelDb;
@@ -359,7 +369,7 @@ internal sealed class RtlReceiver : IDisposable
         pump = null; process?.Dispose(); process = null;
         cancellation?.Dispose(); cancellation = null;
         FinishIq(); IsReplay = false; ReplayPaused = false; ReplayFinished = false; ReplayReady = false;
-        spectrumAnalyzer.Reset(); lastSpectrum = 0;
+        spectrumAnalyzer.Reset(); lastSpectrum = 0; Volatile.Write(ref InputLevel,null); lastInputMeasurement=0;
         ChannelDb = -120; SquelchOpen = false; AppliedFrequency = 0; AppliedRate = 0; AppliedChannel = null; desiredChannel = null; Broadcast = null; Rds = null;
     }
     public void Dispose() => Stop();

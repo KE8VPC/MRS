@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 
@@ -26,6 +26,7 @@ public sealed record DisplaySettings
     public bool BandPlanAtBottom { get; init; }
     public double Zoom { get; init; } = 1;
     public double Pan { get; init; } = .5;
+    public bool GradientTrace { get; init; }
     public string Palette { get; init; } = "Blue/cyan";
     public string Background { get; init; } = "#090F19";
     public string Grid { get; init; } = "#263649";
@@ -36,23 +37,24 @@ public sealed record DisplaySettings
     public string Tuned { get; init; } = "#FF9E64";
     public string Marker { get; init; } = "#71CDF5";
     public bool UseEntryColors { get; init; } = true;
-    public static readonly string[] Palettes = ["Blue/cyan", "Grayscale", "Heatmap", "High contrast"];
+    public static readonly string[] Palettes = ["Blue/cyan", "Grayscale", "Heatmap", "High contrast", "Hot signals"];
     public static DisplaySettings Theme(string name) => name switch
     {
+        "Hot signals" => new() { Palette = "Hot signals", GradientTrace = true },
         "Light" => new() { Background = "#F4F7FA", Grid = "#B9C6D1", Text = "#142B40", Trace = "#006355", Peak = "#A12091", Cursor = "#8A5200", Tuned = "#C33200", Marker = "#164BB0", UseEntryColors = false },
         "High contrast" => new() { Background = "#000000", Grid = "#777777", Text = "#FFFFFF", Trace = "#FFFF00", Peak = "#FF77FF", Cursor = "#FFFFFF", Tuned = "#00FFFF", Marker = "#00FF66", Palette = "High contrast", UseEntryColors = false },
         "Amber" => new() { Background = "#140E06", Grid = "#4C3920", Text = "#EED7AE", Trace = "#FFC04D", Peak = "#FFF4CC", Cursor = "#FFFFFF", Tuned = "#FF6F40", Marker = "#E2B66E", Palette = "Heatmap", UseEntryColors = false },
         _ => new()
     };
-    public DisplaySettings ColorsFrom(DisplaySettings theme) => this with { Background = theme.Background, Grid = theme.Grid, Text = theme.Text, Trace = theme.Trace, Peak = theme.Peak, Cursor = theme.Cursor, Tuned = theme.Tuned, Marker = theme.Marker, UseEntryColors = theme.UseEntryColors, Palette = theme.Palette };
+    public DisplaySettings ColorsFrom(DisplaySettings theme) => this with { Background = theme.Background, Grid = theme.Grid, Text = theme.Text, Trace = theme.Trace, Peak = theme.Peak, Cursor = theme.Cursor, Tuned = theme.Tuned, Marker = theme.Marker, UseEntryColors = theme.UseEntryColors, Palette = theme.Palette, GradientTrace = theme.GradientTrace };
     public DisplaySettings Normalize()
     {
         double Clamp(double v, double min, double max, double fallback) => double.IsFinite(v) ? Math.Clamp(v, min, max) : fallback;
         string Color(string value, string fallback) => value != null && Regex.IsMatch(value, "^#[0-9A-Fa-f]{6}$") ? value : fallback;
         double low = Clamp(WaterLow, -140, 10, -100), high = Clamp(WaterHigh, -130, 20, -10);
         if (high < low + 5) high = low + 5;
-        return this with { RfFftSize = RfSpectrumAnalyzer.Sizes.Contains(RfFftSize) ? RfFftSize : 32768, GainDb = Clamp(GainDb, -40, 40, 0), SpectrumTop = Clamp(SpectrumTop, -100, 40, 0), SpectrumRange = Clamp(SpectrumRange, 20, 140, 100), WaterLow = low, WaterHigh = high,
-            HistorySeconds = Clamp(HistorySeconds, 5, 120, 30), RefreshFps = Math.Clamp(RefreshFps, 2, 30), AveragingSeconds = Clamp(AveragingSeconds, 0, 5, .15), Zoom = Clamp(Zoom, 1, 32, 1), Pan = Clamp(Pan, 0, 1, .5),
+        return this with { ShowTvPilots = false, RfFftSize = RfSpectrumAnalyzer.Sizes.Contains(RfFftSize) ? RfFftSize : 32768, GainDb = Clamp(GainDb, -40, 40, 0), SpectrumTop = Clamp(SpectrumTop, -100, 40, 0), SpectrumRange = Clamp(SpectrumRange, 20, 140, 100), WaterLow = low, WaterHigh = high,
+            HistorySeconds = Clamp(HistorySeconds, 5, 120, 30), RefreshFps = Math.Clamp(RefreshFps, 2, 30), AveragingSeconds = Clamp(AveragingSeconds, 0, 5, .15), Zoom = Clamp(Zoom, 1, 4096, 1), Pan = Clamp(Pan, 0, 1, .5),
             Palette = Palettes.Contains(Palette) ? Palette : Palettes[0], Background = Color(Background, "#090F19"), Grid = Color(Grid, "#263649"), Text = Color(Text, "#B7C9DC"), Trace = Color(Trace, "#57DFC2"), Peak = Color(Peak, "#ED8DFF"), Cursor = Color(Cursor, "#FFD700"), Tuned = Color(Tuned, "#FF9E64"), Marker = Color(Marker, "#71CDF5") };
     }
     public static double Clock => Stopwatch.GetTimestamp() / (double)Stopwatch.Frequency;
@@ -68,7 +70,7 @@ internal readonly record struct FrequencyViewport(double CaptureStart, double Ca
     public FrequencyViewport ZoomAt(double factor, double fraction)
     {
         fraction = Math.Clamp(fraction, 0, 1);
-        double target = Frequency(fraction), zoom = Math.Clamp(factor, 1, 32), width = CaptureSpan / zoom;
+        double target = Frequency(fraction), zoom = Math.Clamp(factor, 1, 4096), width = CaptureSpan / zoom;
         double start = Math.Clamp(target - fraction * width, CaptureStart, CaptureStart + CaptureSpan - width);
         return this with { Zoom = zoom, Pan = zoom == 1 ? .5 : (start - CaptureStart) / (CaptureSpan - width) };
     }
@@ -77,20 +79,22 @@ internal sealed class WaterfallHistory
 {
     internal sealed class Row
     {
+        internal double CaptureStart { get; }
+        internal double CaptureSpan { get; }
         internal double Time { get; }
         internal byte[] Levels { get; }
         internal float Value(int i) => Levels[i] - 160;
-        internal Row(double time,float[] values) { Time=time; Levels=values.Select(v=>(byte)Math.Clamp((int)Math.Round(v)+160,0,255)).ToArray(); }
+        internal Row(double time,float[] values, double captureStart=0, double captureSpan=1) { CaptureStart=captureStart; CaptureSpan=captureSpan; Time=time; Levels=values.Select(v=>(byte)Math.Clamp((int)Math.Round(v)+160,0,255)).ToArray(); }
     }
     private readonly Queue<Row> rows = new();
     private double lastTime = double.NegativeInfinity;
     private long retainedBytes;
     internal long RetainedBytes => retainedBytes;
-    public void Add(float[] values, double time)
+    public void Add(float[] values, double time, double captureStart=0, double captureSpan=1)
     {
         if (time < lastTime) return;
         lastTime = time;
-        var row=new Row(time,values);rows.Enqueue(row);retainedBytes+=row.Levels.Length;
+        var row=new Row(time,values,captureStart,captureSpan);rows.Enqueue(row);retainedBytes+=row.Levels.Length;
         while (rows.Count > 6000 || retainedBytes > 256L*1024*1024 || rows.Count > 0 && time - rows.Peek().Time > 125) retainedBytes-=rows.Dequeue().Levels.Length;
     }
     public Row[] Snapshot() => rows.ToArray();
@@ -109,6 +113,7 @@ internal static class DisplayPalette
         double t = Math.Clamp(value, 0, 1);
         Color[] stops = palette switch
         {
+            "Hot signals" => [Colors.Black, Colors.DarkBlue, Colors.Cyan, Colors.Yellow, Colors.Red, Colors.White],
             "Grayscale" => [Colors.Black, Colors.White],
             "Heatmap" => [Color.FromRgb(9, 4, 24), Color.FromRgb(105, 16, 93), Color.FromRgb(222, 55, 47), Color.FromRgb(255, 166, 39), Color.FromRgb(255, 255, 210)],
             "High contrast" => [Colors.Black, Colors.Blue, Colors.Cyan, Colors.Yellow, Colors.White],

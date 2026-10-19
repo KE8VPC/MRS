@@ -53,9 +53,35 @@ internal static class ActivityTests
         options=options with{AutoSquelch=false};for(int i=0;i<25;i++)Feed((a,6000,-80));
         check(scanner.Current==null&&scanner.ChannelThresholdDb==-60,"Manual override uses the integrated RF threshold instead of the auto margin");
         check(new ActivityOptions(MarginDb:double.NaN,GridHz:77).Normalize() is {MarginDb:8,GridHz:0},"Invalid scan preferences restore bounded defaults");
+        check(new ActivityOptions(ScanLowHz:a,ScanHighHz:b).ScanBounds(a-10000,b+10000,12500)==((double)a,(double)b),"Explicit scan limits preserve the requested captured subrange");
+        bool badRange=false;try{new ActivityOptions(ScanLowHz:a-20000,ScanHighHz:b).ScanBounds(a-10000,b+10000,12500);}catch(InvalidOperationException){badRange=true;}
+        check(badRange,"Scan limits outside capture are rejected rather than silently clipped or retuned");
+        var artifact=new Birdie("Center spur",0,4000,true);
+        check(artifact.Frequency(center)==center&&artifact.Frequency(center+100000)==center+100000,"Capture-relative birdie follows the actual capture center");
+        check(new Birdie("Fixed",a,2000).Frequency(center+100000)==a,"Fixed birdie remains at its RF frequency after capture shifts");
+        scanner.Reset(center,rate,rate,bins,channel);scanner.Start(center-rate/2,center+rate/2);
+        options=new(AutoSquelch:true,Birdies:[new("Known test spur",a,3000)]);
+        for(int i=0;i<28;i++)Feed((a,6000,-48),(b,6000,-55));
+        check(scanner.Pending().Length==1&&Math.Abs((scanner.Current??0)-b)<500,"Known birdie is excluded from automatic tuning and saved discoveries while other channels remain eligible");
+        scanner.Reset(center,rate,rate,bins,channel);scanner.Start(center-rate/2,center+rate/2);options=options with{ExcludeBirdies=false};
+        for(int i=0;i<28;i++)Feed((a,6000,-48),(b,6000,-55));
+        check(scanner.Pending().Length==2,"Disabling birdie exclusion restores both detected channels");
+        var restoredBirdies=System.Text.Json.JsonSerializer.Deserialize<ActivityOptions>(System.Text.Json.JsonSerializer.Serialize(options))!.Normalize();
+        check(restoredBirdies.Birdies is {Length:1}&&!restoredBirdies.ExcludeBirdies&&restoredBirdies.Birdies[0].PositionHz==a,"Birdie list and exclusion toggle survive settings serialization");
         scanner.Reset(center,rate,rate,bins,channel);scanner.Start(center-rate/2,center+rate/2);options=new(AutoSquelch:true,GridHz:6250);
         for(int i=0;i<28;i++)Feed((a+700,6000,-50));
         check(scanner.Current==a,"Configured 6.25 kHz channel grid rounds an estimated center to the channel frequency");
+        foreach(double offset in new double[]{0,6250})
+        {
+            const long tvCenter=772300000,target=772081250;
+            var narrow=new ChannelSettings(target,"NFM",12500);
+            scanner.Reset(tvCenter,rate,rate,bins,narrow);scanner.Start(tvCenter-rate/2,tvCenter+rate/2);
+            var gridOptions=new ActivityOptions(AutoSquelch:true,GridHz:12500,GridOffsetHz:offset);
+            for(int i=0;i<50;i++)scanner.Process(Frame(bins,rate,tvCenter,i,(target+(i%2==0?120:-120),7000,-55)),i*.15,epoch.AddSeconds(i*.15),narrow,gridOptions,-60);
+            check(scanner.Pending().Length==1&&Math.Abs((scanner.Current??0)-target)<500&&scanner.Pending().All(p=>Math.Abs(p.Frequency-target)<500),
+                $"12.5 kHz grid with offset {offset} preserves one centered discovery at 772.08125 MHz despite estimate jitter");
+            if(offset==6250)check(scanner.Current==target,"Explicit half-channel grid offset snaps to the actual channel center");
+        }
         scanner.Reset(center,rate,rate,bins,channel);
         check(!scanner.Running&&!scanner.Ready&&scanner.Current==null&&scanner.Pending().Length==0,"Capture reset discards old candidates and requires fresh calibration and explicit rearming");
         scanner.Reset(center,20000000,15000000,4096,channel);bool rejected=false;
@@ -72,6 +98,17 @@ internal static class ActivityTests
         Persistence(check,saved);
         CheckIqPower(check);
         var view=new SpectrumView();view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));view.SetRf(center,rate);
+        view.SetBirdies([artifact,new Birdie("Fixed test",a,3000)]);
+        var marker=new FrequencyItem{Name="Marker correction test",FrequencyHz=a};view.SetMarkers([marker]);
+        Point MarkerPoint(long hz)=>new(52+(hz-(center-rate/2.0))/rate*928,80);
+        int moved=0;long movedHz=0;view.MarkerMoveRequested+=(id,oldHz,newHz)=>{if(id==marker.Id&&oldHz==a){moved++;movedHz=newHz;}};
+        check(view.BeginMarkerAdjustment(MarkerPoint(a)),"Explicit marker adjustment selects a single visible marker");
+        view.PreviewMarkerAdjustment(MarkerPoint(a+3000));view.FinishMarkerAdjustment(false);
+        check(moved==0,"Cancel leaves saved marker unchanged");
+        view.BeginMarkerAdjustment(MarkerPoint(a));view.PreviewMarkerAdjustment(MarkerPoint(a+3000));view.FinishMarkerAdjustment(true);
+        check(moved==1&&movedHz==a+3000,"Marker adjustment commits the preview frequency and original identity once");
+        view.InteractionLocked=true;check(!view.BeginMarkerAdjustment(MarkerPoint(a)),"Running scanner lock prevents marker adjustment");view.InteractionLocked=false;
+        view.SetMarkers([marker,marker with{Id=Guid.NewGuid()}]);check(!view.BeginMarkerAdjustment(MarkerPoint(a)),"Overlapping markers refuse ambiguous adjustment");view.SetMarkers([marker]);
         view.Configure(new DisplaySettings{AutoSpectrum=false,SpectrumTop=-30,SpectrumRange=80});view.Push(Frame(bins,rate,center,23,(a,6000,-50)));view.SetActivityLevels(-90,-82);
         view.InteractionLocked=true;view.Configure(view.Settings with{Zoom=4,Pan=.8});
         check(view.Settings.Zoom==1&&view.Settings.Pan==.5,"Locked scanner view rejects zoom and pan changes");
@@ -95,6 +132,13 @@ internal static class ActivityTests
             var updated=new FrequencyLibrary(path).Items.Single(i=>i.Id==user.Id);
             check(updated.Activity?.Hits==1&&updated.Activity.Receiver=="B"&&updated.Activity.LastSeen>kept.Activity!.LastSeen,"Persistent discovery refresh updates last seen without duplicate burst counts");
             var unknown=reopened.Items.Single(i=>!i.IsFolder&&i.Id!=user.Id);check(unknown.Modulation=="Unknown"&&unknown.Protocols=="Unknown","Energy discoveries do not invent modulation or protocol identification");
+            check(reopened.Items.Single(i=>i.Id==unknown.ParentId) is {IsFolder:true,DetectionDate:not null},"New discoveries use a local-date subfolder");
+            reopened.SaveDiscoveries(discoveries.Select(d=>d with{FirstSeen=d.FirstSeen.AddDays(1),LastSeen=d.LastSeen.AddDays(1)}),"A");
+            check(reopened.Items.Count(i=>i.IsFolder&&i.DetectionDate!=null)==2&&reopened.Items.Count(i=>!i.IsFolder)==3,"Next-day discoveries get a new date folder while named user entries remain in place");
+            var before=reopened.Items.ToArray();var dayFolder=reopened.Items.First(i=>i.IsFolder&&i.DetectionDate!=null);
+            reopened.DeleteMany([dayFolder.Id,unknown.Id,user.Id]);
+            check(!reopened.Items.Any(i=>i.Id==unknown.Id||i.Id==dayFolder.Id||i.Id==user.Id),"Batch deletion removes overlapping folder/child selections and entries in other folders atomically");
+            reopened.Undo();check(reopened.Items.SequenceEqual(before),"One Undo restores the entire multi-delete batch");
             var panel=new ActivityPanel();panel.Initialize(Path.Combine(root,"activity.json"));panel.EnableAuto();panel.Save();
             var panel2=new ActivityPanel();panel2.Initialize(Path.Combine(root,"activity.json"));check(panel2.Options.AutoSquelch,"Automatic RF squelch preference persists without starting the scanner");
         }

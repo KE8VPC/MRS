@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using NAudio.Wave;
 
 namespace MRS;
@@ -13,6 +13,11 @@ public static class SelfTests
     {
         var lines = new List<string>();
         void Check(bool condition, string name) { if (!condition) throw new InvalidOperationException("FAIL: " + name); lines.Add("PASS: " + name); }
+        ReceiverRefinementTests.Run(Check);
+        PagingTests.Run(Check);
+        PagingManagementTests.Run(Check);
+        DataInspectionTests.Run(Check);
+        AviationTests.Run(Check); DmrTests.Run(Check); TrunkTests.Run(Check);
         ReceiverFeatureTests.Run(Check);
         TvTests.Run(Check);
         RfSpectrumTests.Run(Check);
@@ -42,7 +47,7 @@ public static class SelfTests
             header[0] = 0; bool rejected = false; try { ReceiverStream.Header(header); } catch (IOException) { rejected = true; }
             Check(rejected, "Invalid I/Q frame headers are rejected");
         }
-        foreach (int rate in new[] { 960000, 1920000, 3200000 })
+        foreach (int rate in new[] { 960000, 1920000, 2400000, 3200000 })
         foreach (bool wideMode in new[] { false, true })
         {
             byte[] highRateIq = MakeFm(wideMode, rate / 5, rate);
@@ -55,7 +60,7 @@ public static class SelfTests
             byte[] splitAudio = splitDsp.Process(highRateIq[..32766]).Concat(splitDsp.Process(highRateIq[32766..])).ToArray();
             Check(pcm.SequenceEqual(splitAudio), $"{rate} S/s {(wideMode ? "WFM" : "NFM")} preserves decimation state across uneven blocks");
         }
-        foreach (int rate in new[] { 960000, 1920000, 3200000 })
+        foreach (int rate in new[] { 960000, 1920000, 2400000, 3200000 })
         {
             byte[] outside = new byte[rate / 5];
             for (int n = 0; n < outside.Length / 2; n++)
@@ -295,6 +300,8 @@ public static class SelfTests
         return iq;
     }
 }
+
+
 
 
 

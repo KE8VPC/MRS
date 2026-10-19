@@ -40,6 +40,15 @@ public partial class MainWindow
             activity.Skip();for(int i=0;i<8;i++)Feed(true);
             await WaitFor(()=>Math.Abs((receiver.AppliedChannel?.Frequency??0)-163000000)<1000);
             if(receiver.AppliedFrequency!=fixedCenter||receiver.WorkerId!=worker)throw new InvalidOperationException("Scanner Skip recentered the capture.");
+            var scanBody=(System.Windows.Controls.StackPanel)((System.Windows.Controls.ScrollViewer)ActivityControls.Content).Content;
+            var discover=scanBody.Children.OfType<System.Windows.Controls.CheckBox>().Single(c=>c.Content?.ToString()=="Discover only (keep listening frequency)");
+            discover.IsChecked=true;
+            if(activity.Running)throw new InvalidOperationException("Changing discovery mode must stop scanning before rearming.");
+            long heldFrequency=receiver.AppliedChannel!.Frequency;
+            StartActivity();for(int i=0;i<18;i++)Feed(true);FlushActivity();
+            if(!activity.Running||receiver.AppliedChannel!.Frequency!=heldFrequency||receiver.AppliedFrequency!=fixedCenter||activity.Candidates.Count==0)
+                throw new InvalidOperationException("Discovery-only mode failed to detect with the listening and capture frequencies fixed.");
+            discover.IsChecked=false;
             RfSquelchSlider.Value=-64;
             if(ActivityControls.Options.AutoSquelch||receiver.SquelchThreshold!=-64)throw new InvalidOperationException("Manual RF slider did not override automatic squelch.");
             await LiveTune(162400000);

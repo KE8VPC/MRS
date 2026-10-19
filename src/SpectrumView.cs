@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -14,6 +14,23 @@ public sealed class SpectrumView : FrameworkElement
     private Point? dragOrigin;
     private FrequencyViewport dragView;
     private bool dragged;
+    private FrequencyItem? adjustingMarker;
+    private long adjustedHz;
+    public event Action<Guid,long,long>? MarkerMoveRequested;
+    internal bool BeginMarkerAdjustment(Point point)
+    {
+        if(!rf||InteractionLocked||FrequencyAt(point) is not {} hz)return false;
+        var near=markers.Where(m=>InView(m.FrequencyHz)&&Math.Abs(m.FrequencyHz-hz)/Span*(ActualWidth-72)<=6).ToArray();
+        if(near.Length!=1)return false;
+        adjustingMarker=near[0];adjustedHz=near[0].FrequencyHz;dragOrigin=null;InvalidateVisual();return true;
+    }
+    internal void PreviewMarkerAdjustment(Point point)
+    {if(adjustingMarker!=null&&FrequencyAt(point) is {} hz){adjustedHz=Math.Max(1,(long)Math.Round(hz));InvalidateVisual();}}
+    internal void FinishMarkerAdjustment(bool commit)
+    {
+        var item=adjustingMarker;adjustingMarker=null;InvalidateVisual();
+        if(commit&&item!=null&&!InteractionLocked&&adjustedHz!=item.FrequencyHz)MarkerMoveRequested?.Invoke(item.Id,item.FrequencyHz,adjustedHz);
+    }
     private double captureStart, captureSpan = 24000, usableSpan = 24000, lastFrame, lastRender;
     private ChannelSettings? channel;
     private double autoLow = -100, autoHigh = 0;
@@ -34,6 +51,8 @@ public sealed class SpectrumView : FrameworkElement
     private bool canTune = true;
     internal bool InteractionLocked {get;set;}
     private double? activityFloor,activityTrigger;
+    private Birdie[] birdies=[];
+    internal void SetBirdies(IEnumerable<Birdie> values){birdies=values.ToArray();InvalidateVisual();}
     internal void SetActivityLevels(double? floor,double? trigger){activityFloor=floor;activityTrigger=trigger;InvalidateVisual();}
     private DisplaySettings settings = new();
     private IReadOnlyList<FrequencyItem> markers = [];
@@ -71,10 +90,11 @@ public sealed class SpectrumView : FrameworkElement
     internal void SetRf(double center, int rate = RtlNative.SampleRate, bool allowTuning = true, double usableBandwidth = 0)
     {
         if (!double.IsFinite(center) || rate <= 0 || !double.IsFinite(usableBandwidth) || usableBandwidth < 0 || usableBandwidth > rate) throw new ArgumentOutOfRangeException(nameof(usableBandwidth));
-        rf = true; canTune = allowTuning; captureStart = center - rate / 2.0; captureSpan = rate; usableSpan = usableBandwidth == 0 ? rate : usableBandwidth;
-        channel = null; Clear(); CaptureSpanChanged?.Invoke(FullSpan);
+        bool keepHistory = rf;
+        FinishMarkerAdjustment(false); rf = true; canTune = allowTuning; captureStart = center - rate / 2.0; captureSpan = rate; usableSpan = usableBandwidth == 0 ? rate : usableBandwidth;
+        channel = null; if (!keepHistory) Clear(); else { current = peak = null; lastFrame = 0; InvalidateVisual(); } CaptureSpanChanged?.Invoke(FullSpan);
     }
-    internal void SetAudio() { rf = false; basebandName = "Audio"; channel = null; captureStart = 0; captureSpan = usableSpan = AudioEngine.Rate / 2.0; Clear(); CaptureSpanChanged?.Invoke(captureSpan); }
+    internal void SetAudio() { FinishMarkerAdjustment(false); rf = false; basebandName = "Audio"; channel = null; captureStart = 0; captureSpan = usableSpan = AudioEngine.Rate / 2.0; Clear(); CaptureSpanChanged?.Invoke(captureSpan); }
     internal void SetBaseband(int rate, string name = "Audio") { SetAudio(); basebandName = name; captureSpan = usableSpan = rate / 2.0; CaptureSpanChanged?.Invoke(captureSpan); }
     private double? FrequencyAt(Point p)
     {
@@ -87,12 +107,13 @@ public sealed class SpectrumView : FrameworkElement
     {
         Focusable = true;
         ToolTipService.SetShowDuration(this,30000);
-        MouseMove += (_, e) => { var point = e.GetPosition(this); ContinueDrag(point); SetPointer(point); };
-        MouseLeftButtonDown += (_, e) => { if (FrequencyAt(e.GetPosition(this)) == null) return; BeginDrag(e.GetPosition(this)); CaptureMouse(); Focus(); e.Handled = true; };
-        LostMouseCapture += (_, _) => dragOrigin = null;
+        MouseMove += (_, e) => { var point = e.GetPosition(this); if(adjustingMarker!=null)PreviewMarkerAdjustment(point);else ContinueDrag(point); SetPointer(point); };
+        MouseLeftButtonDown += (_, e) => { if (FrequencyAt(e.GetPosition(this)) == null) return; if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)){if(BeginMarkerAdjustment(e.GetPosition(this))){CaptureMouse();Focus();}e.Handled=true;return;} BeginDrag(e.GetPosition(this)); CaptureMouse(); Focus(); e.Handled = true; };
+        LostMouseCapture += (_, _) => {dragOrigin = null;FinishMarkerAdjustment(false);};
         MouseLeave += (_, _) => SetPointer(null);
         MouseWheel += (_, e) =>
         {
+            if(adjustingMarker!=null){e.Handled=true;return;}
             var p = e.GetPosition(this); if (FrequencyAt(p) == null) return;
             if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)&&InPlan(p)&&ToolTip is ReferenceToolTip {IsOpen:true} detail)
             {detail.Scroll(e.Delta);e.Handled=true;return;}
@@ -102,6 +123,7 @@ public sealed class SpectrumView : FrameworkElement
         };
         KeyDown += (_, e) =>
         {
+            if(adjustingMarker!=null){if(e.Key==Key.Escape){FinishMarkerAdjustment(false);ReleaseMouseCapture();}e.Handled=true;return;}
             switch (e.Key)
             {
                 case Key.Add: case Key.OemPlus: CenterZoom(1.5); break;
@@ -123,9 +145,10 @@ public sealed class SpectrumView : FrameworkElement
         MouseLeftButtonUp += (_, e) =>
         {
             Focus();
+            if(adjustingMarker!=null){PreviewMarkerAdjustment(e.GetPosition(this));FinishMarkerAdjustment(FrequencyAt(e.GetPosition(this))!=null);ReleaseMouseCapture();e.Handled=true;return;}
             EndDrag(e.GetPosition(this), Keyboard.Modifiers.HasFlag(ModifierKeys.Control)); ReleaseMouseCapture(); e.Handled = true;
         };
-        SizeChanged += (_, _) => { pointer = IsMouseOver ? Mouse.GetPosition(this) : null; InvalidateVisual(); };
+        SizeChanged += (_, _) => { FinishMarkerAdjustment(false); pointer = IsMouseOver ? Mouse.GetPosition(this) : null; InvalidateVisual(); };
     }
     private bool InView(double frequency) => frequency >= Start && frequency <= Start + Span;
     internal void BeginDrag(Point point) { dragOrigin = point; dragView = View; dragged = false; }
@@ -181,7 +204,7 @@ public sealed class SpectrumView : FrameworkElement
     internal void PushAt(float[] frame, double timestamp)
     {
         if ((frame.Length != 1024 && !RfSpectrumAnalyzer.Sizes.Contains(frame.Length)) || frame.Any(v => !float.IsFinite(v)) || timestamp < lastFrame) return;
-        if (current != null && current.Length != frame.Length) Clear();
+        if (current != null && current.Length != frame.Length) { if (rf) { current = peak = null; lastFrame = 0; } else Clear(); }
         double dt = Math.Max(0, timestamp - lastFrame);
         if (current == null) current = (float[])frame.Clone();
         else
@@ -198,7 +221,7 @@ public sealed class SpectrumView : FrameworkElement
         double smoothing = lastFrame == 0 ? 1 : 1 - Math.Exp(-dt / .5);
         autoLow += smoothing * (low - autoLow); autoHigh += smoothing * (high - autoHigh);
         }
-        lastFrame = timestamp; history.Add(frame, timestamp); Tick();
+        lastFrame = timestamp; history.Add(frame, timestamp, captureStart, captureSpan); Tick();
     }
     public void Tick()
     {
@@ -237,7 +260,7 @@ public sealed class SpectrumView : FrameworkElement
         {
             double x = left + tick / 6.0 * plotWidth, frequency = View.Frequency(tick / 6.0);
             dc.DrawLine(gridPen, new Point(x, top), new Point(x, top + plotHeight));
-            string label = rf ? (frequency / 1000000).ToString(Span < 40000 ? "F4" : "F3", CultureInfo.InvariantCulture) : (frequency / 1000).ToString("0.##", CultureInfo.InvariantCulture) + "k";
+            string label = rf ? (frequency / 1000000).ToString(Span < 1000 ? "F6" : Span < 10000 ? "F5" : Span < 40000 ? "F4" : "F3", CultureInfo.InvariantCulture) : (frequency / 1000).ToString("0.##", CultureInfo.InvariantCulture) + "k";
             var formatted = Text(label, 10, textBrush);
             dc.DrawText(formatted, new Point(Math.Clamp(x - formatted.Width / 2, 0, width - formatted.Width), top + plotHeight + 6));
         }
@@ -254,7 +277,9 @@ public sealed class SpectrumView : FrameworkElement
                     if (x == 0) context.BeginFigure(point, false, false); else context.LineTo(point, true, false);
                 }
             }
-            geometry.Freeze(); dc.DrawGeometry(null, new Pen(ColorBrush(color), thickness), geometry);
+            Brush brush = ColorBrush(color);
+            if (settings.GradientTrace && ReferenceEquals(data, current)) { var gradient = new LinearGradientBrush { MappingMode = BrushMappingMode.Absolute, StartPoint = new Point(0, top), EndPoint = new Point(0, top + plotHeight) }; for (int k=0;k<=20;k++) gradient.GradientStops.Add(new GradientStop(DisplayPalette.Sample(settings.Palette, 1-k/20.0), k/20.0)); gradient.Freeze(); brush=gradient; }
+            geometry.Freeze(); dc.DrawGeometry(null, new Pen(brush, thickness), geometry);
         }
         if (settings.PeakHold && peak != null) Trace(peak, settings.Peak, .8);
         if (current != null) Trace(current, settings.Trace, 1.2);
@@ -279,7 +304,7 @@ public sealed class SpectrumView : FrameworkElement
         DrawPointer(dc, left, plotWidth, top, plotHeight, waterTop, height - 46);
         string units = rf ? "RF MHz · relative display dB" : basebandName == "MPX" ? "MPX kHz · relative display dB" : "Audio kHz · display dBFS";
         Label(dc, $"{units} · {settings.Zoom:0.#}× zoom{(rf && current != null ? $" · {captureSpan/current.Length:0.##} Hz/bin · {current.Length:N0} bins" : "")} · {settings.HistorySeconds:0.#}s history{(MpxReferenceHeight>0 ? " · Markers: reference positions, not detections" : "")}", left, height - 30);
-        Label(dc, rf ? (canTune ? "Click: tune  |  Drag: pan  |  Ctrl+click: marker  |  Wheel: zoom" : "I/Q replay: recorded coverage  |  Drag: pan  |  Wheel: zoom") : "Drag: pan  |  Wheel: zoom  |  Home: full span", left, height - 16);
+        Label(dc, rf ? (canTune ? "Click: tune  |  Drag: pan  |  Ctrl+click: marker  |  Alt+drag: correct marker  |  Wheel: zoom" : "I/Q replay: recorded coverage  |  Drag: pan  |  Wheel: zoom") : "Drag: pan  |  Wheel: zoom  |  Home: full span", left, height - 16);
     }
     private void DrawMpxReferences(DrawingContext dc,double left,double width,double top,double plotHeight,double waterTop,double bottom)
     {
@@ -435,11 +460,14 @@ public sealed class SpectrumView : FrameworkElement
         float value = values[first]; for (int i = first + 1; i <= last; i++) value = Math.Max(value, values[i]);
         return value;
     }
+    internal WaterfallHistory.Row[] HistoryRows => history.Snapshot();
+    internal float HistorySample(WaterfallHistory.Row row, double fraction, double pixelFraction) => HistoryBinValue(row, fraction, pixelFraction);
     private float HistoryBinValue(WaterfallHistory.Row row, double fraction, double pixelFraction)
     {
         int length=row.Levels.Length;
-        double start=(View.Frequency(fraction)-captureStart)/captureSpan*length;
-        double end=(View.Frequency(Math.Min(1,fraction+pixelFraction))-captureStart)/captureSpan*length;
+        double start=(View.Frequency(fraction)-row.CaptureStart)/row.CaptureSpan*length;
+        double end=(View.Frequency(Math.Min(1,fraction+pixelFraction))-row.CaptureStart)/row.CaptureSpan*length;
+        if (end <= 0 || start >= length) return float.NaN;
         int first=Math.Clamp((int)Math.Floor(start),0,length-1),last=Math.Clamp((int)Math.Ceiling(end)-1,first,length-1);
         byte value=row.Levels[first];for(int i=first+1;i<=last;i++)value=Math.Max(value,row.Levels[i]);return value-160;
     }
@@ -465,7 +493,7 @@ public sealed class SpectrumView : FrameworkElement
                 if (row >= 0)
                 {
                     float value = HistoryBinValue(rows[row], x / (double)columns, 1.0 / columns);
-                    int index = (int)Math.Clamp((value + settings.GainDb - low) / Math.Max(5, high - low) * 255, 0, 255); color = palette[index];
+                    if (float.IsFinite(value)) { int index = (int)Math.Clamp((value + settings.GainDb - low) / Math.Max(5, high - low) * 255, 0, 255); color = palette[index]; }
                 }
                 int p = (y * columns + x) * 4; pixels[p] = color.B; pixels[p + 1] = color.G; pixels[p + 2] = color.R; pixels[p + 3] = 255;
             }
@@ -490,6 +518,24 @@ public sealed class SpectrumView : FrameworkElement
             dc.DrawLine(new Pen(ColorBrush(settings.Tuned), 1) { DashStyle = DashStyles.Dash }, new Point(x, top), new Point(x, bottom));
         }
         var occupied = new[] { left, left, left };
+        if(adjustingMarker is {} moving&&InView(adjustedHz))
+        {
+            double x=left+View.Fraction(adjustedHz)*width;var brush=ColorBrush(settings.Cursor);
+            dc.DrawLine(new Pen(brush,2){DashStyle=DashStyles.Dash},new Point(x,top),new Point(x,bottom));
+            var label=Text($"Move {moving.FrequencyHz/1e6:0.######} → {adjustedHz/1e6:0.######} MHz · release saves · Esc cancels",11,brush);
+            dc.DrawText(label,new Point(left+4,top+Math.Max(0,plotHeight-34)));
+        }
+        double birdieLabelEnd=left;
+        foreach(var birdie in birdies.OrderBy(b=>b.Frequency(CaptureCenter)))
+        {
+            double hz=birdie.Frequency(CaptureCenter),a=Math.Max(Start,hz-birdie.WidthHz/2),b=Math.Min(Start+Span,hz+birdie.WidthHz/2);
+            if(b<=a)continue;
+            var brush=ColorBrush(settings.Peak);var fill=brush.Clone();fill.Opacity=.08;
+            double x=left+View.Fraction(a)*width,right=left+View.Fraction(b)*width;
+            dc.DrawRectangle(fill,new Pen(brush,.7){DashStyle=DashStyles.Dot},new Rect(x,top,right-x,Math.Max(0,bottom-top)));
+            var label=Text("Birdie: "+(birdie.Name.Length>22?birdie.Name[..22]+"…":birdie.Name),10,brush);
+            if(x>=birdieLabelEnd&&x+label.Width<left+width){dc.DrawText(label,new Point(x,top+Math.Max(0,plotHeight-16)));birdieLabelEnd=x+label.Width+10;}
+        }
         foreach (var group in markers.Where(m => InView(m.FrequencyHz)).OrderBy(m => m.FrequencyHz).GroupBy(m => m.FrequencyHz))
         {
             var entry = group.First(); double x = left + View.Fraction(entry.FrequencyHz) * width;

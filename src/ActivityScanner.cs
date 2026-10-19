@@ -1,10 +1,19 @@
 namespace MRS;
 
 internal sealed record ActivityOptions(bool AutoSquelch=false, bool ShowLines=true, bool SaveDiscoveries=true,
-    double MarginDb=8, double MinimumSeconds=.3, double QuietSeconds=1.5, double GridHz=0)
+    double MarginDb=8, double MinimumSeconds=.3, double QuietSeconds=1.5, double GridHz=0, double GridOffsetHz=0,
+    bool DiscoveryOnly=false, long? ScanLowHz=null, long? ScanHighHz=null,
+    bool ExcludeBirdies=true,bool ShowBirdies=true,Birdie[]? Birdies=null)
 {
-    internal ActivityOptions Normalize()=>this with {MarginDb=Finite(MarginDb,3,30,8),MinimumSeconds=Finite(MinimumSeconds,.15,3,.3),QuietSeconds=Finite(QuietSeconds,.3,10,1.5),GridHz=new double[]{0,1000,2500,5000,6250,12500,25000,50000,100000,200000}.Contains(GridHz)?GridHz:0};
+    internal ActivityOptions Normalize()=>this with {Birdies=(Birdies??[]).Where(b=>b is not null&&b.Valid).Take(128).ToArray(),MarginDb=Finite(MarginDb,3,30,8),MinimumSeconds=Finite(MinimumSeconds,.15,3,.3),QuietSeconds=Finite(QuietSeconds,.3,10,1.5),GridOffsetHz=Finite(GridOffsetHz,-1000000,1000000,0),GridHz=new double[]{0,1000,2500,5000,6250,12500,25000,50000,100000,200000}.Contains(GridHz)?GridHz:0};
     private static double Finite(double value,double min,double max,double fallback)=>double.IsFinite(value)?Math.Clamp(value,min,max):fallback;
+    internal (double Low,double High) ScanBounds(double low,double high,double width)
+    {
+        double a=ScanLowHz??low,b=ScanHighHz??high;
+        if(!double.IsFinite(a)||!double.IsFinite(b)||a<low||b>high||a<=0||b-a<width)
+            throw new InvalidOperationException("Scan limits must be ordered, fit the visible usable capture, and span at least one receive filter.");
+        return(a,b);
+    }
 }
 internal sealed record ActivityDiscovery(Guid TrackId,long Frequency,string Mode,double FilterHz,double OccupiedHz,
     DateTimeOffset FirstSeen,DateTimeOffset LastSeen,int Hits,double AboveFloorDb);
@@ -108,7 +117,16 @@ internal sealed class ActivityScanner
             {
                 double middle=(Hz(begin)+Hz(last))/2;
                 double dial=mode=="USB"?middle-(width/2+300):mode=="LSB"?middle+(width/2+300):middle;
-                long frequency=(long)Math.Round(options.GridHz>0?Math.Round(dial/options.GridHz)*options.GridHz:dial);
+                // A spacing alone does not define the channel centers. Never pull a
+                // measured center halfway across a mismatched grid onto a signal edge.
+                double snapped=dial;
+                if(options.GridHz>0)
+                {
+                    double origin=double.IsFinite(options.GridOffsetHz)?options.GridOffsetHz:0;
+                    double nearest=origin+Math.Round((dial-origin)/options.GridHz)*options.GridHz;
+                    if(Math.Abs(nearest-dial)<=Math.Min(options.GridHz*.2,Math.Max(binHz*2,width*.1)))snapped=nearest;
+                }
+                long frequency=(long)Math.Round(snapped);
                 var candidate=listening with{Frequency=frequency};var e=candidate.Edges;
                 if(frequency+e.Low>=scopeLow&&frequency+e.High<=scopeHigh&&candidate.Fits(center,usable)&&
                     !(frequency+e.Low<center+Math.Max(2000,binHz*3)&&frequency+e.High>center-Math.Max(2000,binHz*3)))
@@ -132,7 +150,7 @@ internal sealed class ActivityScanner
         Finish();
         // Collapse fragmented modulation into one channel, strongest first; bounded work per frame.
         var distinct=new List<ActivityCandidate>();
-        foreach(var candidate in found.OrderByDescending(c=>c.AboveFloorDb))
+        foreach(var candidate in found.Where(c=>!options.ExcludeBirdies||!(options.Birdies??[]).Any(b=>b.Valid&&b.Overlaps(c.Frequency,c.OccupiedHz,center))).OrderByDescending(c=>c.AboveFloorDb))
             if(distinct.Count<128&&!distinct.Any(c=>Math.Abs(c.Frequency-candidate.Frequency)<width*.65))distinct.Add(candidate);
         Candidates=distinct;
         foreach(var candidate in distinct)

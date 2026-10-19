@@ -1,0 +1,31 @@
+M.R.S. paging worker: multimon-ng 1.6.2, retrieved 2026-10-12 from
+https://github.com/EliasOenal/multimon-ng
+
+Runs as a separate process via signed PCM16 mono stdin at 22050 Hz and JSON stdout.
+M.R.S. enables POCSAG512, POCSAG1200, POCSAG2400 and FLEX_NEXT only.
+The executable is statically linked against its MinGW runtime and requires only Windows system DLLs.
+
+Corresponding source: Sources/multimon-ng-1.6.2-mrs.zip (all compilation units,
+headers and CMake files; upstream example/test recordings are omitted).
+License: GPL v2 or later, see LICENSE-multimon-ng.txt and individual source headers.
+cJSON and signal generators retain their source-header licenses.
+Compiler/runtime notices are in Licenses.
+
+Local modifications:
+- CMake Windows project enables both C and CXX for MinGW compilation.
+- unixinput.c sets stdout unbuffered for live JSON delivery.
+- pocsag.c adds a Boolean sync field to each JSON message, preserving lost-sync evidence.
+
+Build on Windows x64 with MinGW-w64 GCC/G++, CMake and Ninja in PATH:
+  Expand-Archive Sources/multimon-ng-1.6.2-mrs.zip build-source
+  cmake -S build-source/multimon-ng -B build-native -G Ninja -DBUILD_GEN_NG=ON -DENABLE_HARDENING=OFF -DCMAKE_EXE_LINKER_FLAGS=-static
+  cmake --build build-native -j 4
+Copy build-native/multimon-ng.exe beside this file. gen-ng.exe is used only to
+create synthetic validation fixtures; M.R.S. has no paging transmitter.
+
+Fixture generation examples (raw output is 22050 Hz signed PCM16 mono):
+  gen-ng -t raw -P "MRS POCSAG TEST 1200" -B 1200 synthetic-pocsag1200.raw
+  gen-ng -t raw -P "9876543210" -B 1200 -N -I synthetic-pocsag-inverted-numeric.raw
+  gen-ng -t raw -f "MRS FLEX TEST" synthetic-flex.raw
+The distributed WAV fixtures are resampled to 48000 Hz for M.R.S. audio replay.
+No user recordings or decoded personal messages are included.

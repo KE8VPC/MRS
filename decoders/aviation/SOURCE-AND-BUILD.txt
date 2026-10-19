@@ -1,0 +1,36 @@
+M.R.S. aviation worker 0.1.0
+
+Decoder cores: airframesio/xng commit 096c805278faa0a904de7d98066bf4cf395cb6c2
+https://github.com/airframesio/xng/tree/096c805278faa0a904de7d98066bf4cf395cb6c2
+Upstream license: MIT OR Apache-2.0. Preserve upstream crate PROVENANCE.md and license notices.
+Only xng-types, xng-dsp, xng-acars and the ACARS/VDL2/ADS-B/UAT cores are included.
+M.R.S. worker has no SDR ownership, networking, feed/upload, or transmitter interface.
+Input is bounded length-prefixed u8/s8 I/Q from stdin. Output is decoder JSON lines.
+
+M.R.S. modifications:
+- Minimal stdin worker and generated receive-fixture examples.
+- UAT keeps incomplete bursts across blocks; verifies candidate FEC before skipping;
+  retains native 2.084-3.2 MS/s timing and decimates higher rates to 2.4 MS/s.
+
+Build on Windows with Rust x86_64-pc-windows-gnu and MinGW GCC on PATH:
+  cargo build --release --locked --manifest-path source/Cargo.toml -p mrs-aviation
+  cargo test --locked --manifest-path source/Cargo.toml -p xng-mode-acars -p xng-mode-vdl2 -p xng-mode-adsb -p xng-mode-uat --lib --tests
+Copy target/release/mrs-aviation.exe alongside this file.
+Cargo.lock pins dependency versions; initial build needs crates.io access.
+Additional dependency licenses are under Licenses. Tests/fixtures are receive-only and generated/public upstream test data, not user recordings.
+Native imports checked: Windows system DLLs only. Target Windows 11 x64.
+
+Preview2 changes:
+- ADS-B input above 4 MS/s is frequency-shifted to the selected 1090 MHz channel,
+  anti-alias filtered and reduced to 4 MS/s before PPM decoding.
+- Live fractional-rate timing search uses two passes instead of four. This trades
+  some marginal-frame recall for throughput; the full offline core retains sixteen.
+- Bounded M.R.S. input queue accommodates approximately one second of normal
+  32768-byte capture blocks, rather than only 55 ms at 19.2 MS/s.
+- Synthetic adsb_stress example exercises noisy 19.2 MS/s at -750 kHz baseband offset.
+
+Preview3: ADS-B removes per-block complex DC mean before frequency shifting and
+magnitude detection. This suppresses the receiver-center artifact even when a
+small capture offset places it inside the extracted ADS-B passband.
+Supplied 9.6 MS/s +250 kHz capture changed from zero to 82 validated Mode S frames.
+The synthetic high-rate fixture now includes DC bias. User recordings are not bundled.

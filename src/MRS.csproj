@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -11,7 +11,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>MRS</AssemblyName>
     <ApplicationIcon>MRS.ico</ApplicationIcon>
-    <Version>0.19.0-preview1</Version>
+    <Version>0.25.0-preview1</Version>
     <Company>Mike's Radio Software</Company>
     <Description>Windows radio workbench — audio foundation preview</Description>
   </PropertyGroup>
@@ -20,7 +20,13 @@
   <ItemGroup><EmbeddedResource Include="NifogChannels.tsv" /></ItemGroup>
   <ItemGroup><Content Include="../native/HackRF/**/*" Link="Receivers/HackRF/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
   <ItemGroup><Content Include="../decoders/atsc/**/*" Link="Decoders/ATSC/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
-</Project>
+<ItemGroup><Content Include="../decoders/paging/**/*" Link="Decoders/Paging/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
+<ItemGroup><Content Include="../decoders/aviation/**/*" Link="Decoders/Aviation/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><EmbeddedResource Include="DmrVectors.tsv" /></ItemGroup></Project>
+
+
+
+
+
 
 
 

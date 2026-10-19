@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -39,13 +39,22 @@ internal static class SharedFrequencyTests
                     return null;
                 }
                 var target=Find(tree,signal.Id)??throw new InvalidOperationException("Saved frequency tree row missing");
+                var header=target.Header;
                 tree.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,Environment.TickCount,MouseButton.Left){RoutedEvent=UIElement.PreviewMouseLeftButtonDownEvent,Source=target});
+                check(ReferenceEquals(header,target.Header),"Selection preserves the clicked header visual so normal tree selection can complete");
                 tree.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice,Environment.TickCount,MouseButton.Left){RoutedEvent=UIElement.PreviewMouseLeftButtonUpEvent,Source=target});
-                check(requestsA.Count==1&&requestsA[0].FrequencyHz==146520000&&requestsA[0].Mode=="NFM"&&requestsA[0].BandwidthHz==12500&&requestsB==0,"Saved signal click sends its frequency, mode and filter only to its own receiver");
-                panelA.ActivateClick(signal,signal);
-                check(requestsA.Count==2,"Clicking the same saved signal again requests tuning again");
-                panelA.ActivateClick(folder,folder);panelA.ActivateClick(null,signal);panelA.ActivateClick(signal,folder);panelA.ActivateClick(signal,null);
-                check(requestsA.Count==2&&requestsB==0,"Folder clicks, cancelled drags and mismatched release targets do not tune");
+                check(requestsA.Count==0,"Single click selects without tuning");
+                panelA.ActivateClick(signal,signal,2);
+                check(requestsA.Count==1&&requestsA[0].FrequencyHz==146520000&&requestsA[0].Mode=="NFM"&&requestsA[0].BandwidthHz==12500&&requestsB==0,"Double click tunes only the selected receiver with saved settings");
+                panelA.ActivateClick(signal,signal,1);check(requestsA.Count==1,"Later single click still does not tune");
+                panelA.ActivateClick(signal,signal,2);
+                panelA.ActivateClick(folder,folder,2);panelA.ActivateClick(null,signal,2);panelA.ActivateClick(signal,folder,2);panelA.ActivateClick(signal,null,2);
+                check(requestsA.Count==2&&requestsB==0,"Folder double clicks, cancelled drags and mismatched release targets do not tune");
+                bool editorOpened=false;
+                var closeEditor=new System.Windows.Threading.DispatcherTimer{Interval=TimeSpan.FromMilliseconds(50)};
+                closeEditor.Tick+=(_,_)=>{var editor=Application.Current.Windows.OfType<FrequencyEditor>().FirstOrDefault();if(editor!=null){editorOpened=true;closeEditor.Stop();editor.DialogResult=false;}};
+                closeEditor.Start();try{panelA.EditSelected();}finally{closeEditor.Stop();}
+                check(editorOpened&&requestsA.Count==2,"Selected frequency editor opens and cancelling does not tune");
                 int updates=0; panelB.Changed+=()=>updates++;
                 reopened.Upsert(signal with {Name="Updated A"});
                 check(panelA.Markers.Any(x=>x.Name=="Updated A") && panelB.Markers.Any(x=>x.Name=="Updated A") && updates>0,"Shared save refreshes markers in both panels");
@@ -58,6 +67,21 @@ internal static class SharedFrequencyTests
                 check(panelA.Markers.Any(x=>x.Id==signal.Id)&&panelB.Markers.Any(x=>x.Id==signal.Id),"Shared undo refreshes both panels");
             }
             finally{panelA.Release();panelB.Release();}
+            string multiPath=Path.Combine(root,"multi.json");var multiStore=new FrequencyLibrary(multiPath);
+            var first=new FrequencyItem{Name="First",FrequencyHz=145000000};var second=new FrequencyItem{Name="Second",FrequencyHz=146000000};var third=new FrequencyItem{Name="Third",FrequencyHz=147000000};
+            multiStore.Upsert(first);multiStore.Upsert(second);multiStore.Upsert(third);var multi=new FrequencyPanel();
+            try{
+                multi.Initialize(multiPath);multi.SelectEntry(first.Id);multi.MoveSelection(1,ModifierKeys.Shift);check(multi.SelectedCount==2,"Shift Down extends frequency selection");
+                int markerEvents=0;multi.Changed+=()=>markerEvents++;
+                multi.SetSelectedVisibility(false);check(multi.Markers.Count==1&&multi.Markers[0].Id==third.Id&&multi.SelectedCount==2&&markerEvents>0,"Hide markers applies to the selected range and notifies the spectrum");
+                check(new FrequencyLibrary(multiPath).VisibleEntries().Count()==1,"Hidden marker state persists to disk");
+                multi.SetSelectedVisibility(true);check(multi.Markers.Count==3&&multi.SelectedCount==2,"Show markers restores the selected range without losing selection");
+                multi.MoveSelection(1,ModifierKeys.Shift);check(multi.SelectedCount==3,"Repeated Shift Down preserves range anchor");
+                multi.MoveSelection(-1,ModifierKeys.Shift);check(multi.SelectedCount==2,"Shift Up contracts frequency range");
+                var multiTree=((DockPanel)multi.Content).Children.OfType<TreeView>().Single();
+                var delete=((DockPanel)multi.Content).Children.OfType<WrapPanel>().Single().Children.OfType<Button>().Single(b=>(string)b.Content=="Delete");delete.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                check(new FrequencyLibrary(multiPath).Items.Count==1&&new FrequencyLibrary(multiPath).Items[0].Id==third.Id,"Delete removes the selected range only");
+            }finally{multi.Release();}
             string bad=Path.Combine(root,"bad.json"); File.WriteAllText(bad,"broken");
             string before=File.ReadAllText(path);
             try {new FrequencyLibrary(Path.Combine(root,"new.json")).ImportReceiverB(bad);}catch(System.Text.Json.JsonException){}

@@ -1,4 +1,12 @@
-# M.R.S. product roadmap
+# HF reception increment — 0.25.0-preview1
+
+Implemented optional 1.75 MHz HackRF hardware filter with capture coverage validation and sampled ADC input diagnostics. Pending live HF acceptance, noise blanker, notch filter, AGC timing and passband shifting.
+
+## 0.24.0-preview1 identification update
+
+DMR Cap+ CSBK/full LC, short-LC network/site fields and experimental LTR Standard outbound identification added. See TRUNK-IDENTIFICATION.md for exact limits. Local RF acceptance and automatic system association/trunk following remain pending.
+
+﻿# M.R.S. product roadmap
 
 ## Platform and equipment
 
@@ -446,3 +454,89 @@ User requested: keep the spectrum stationary, estimate the noise floor, set RF s
 - Stop scanning on incompatible source changes, or explicitly re-arm after recalibration. Preserve manual tuning/stop authority. Validate with synthetic multi-signal/noise fixtures, edge cases, persistent discoveries and live RF before claiming acceptance.
 
 The October 12 preview implements this workflow within its documented estimator and live-SDR limits. Local synthetic verification and live RF acceptance remain distinct.
+
+### October 12: scanner, frequency correction and sidebar refinements (planned)
+User-requested TODO milestone; these changes are not yet implemented or packaged.
+
+- Remove the optional ATSC pilot-reference overlay and its setting. Interpret "pilot bandplan view" as the TV pilot references introduced in the previous milestone; retain TV channel boundaries/centers and the separate FM MPX stereo-pilot/RDS guides.
+- Make the 25 kHz receive-filter choice easy to find and keep amateur-band operation flexible. NFM already offers 25 kHz; do not add a duplicate or impose NFM-only restrictions on amateur allocations. Coordinate with the wider/custom-filter roadmap item and keep modulation, receive-filter width, tuning step and spectrum span separate. Validate choices against actual receiver and demodulator capabilities.
+- Add frequency controls to Scan. Proposed scope: direct listening-frequency entry and editable scan start/end frequencies, constrained to the usable locked capture span and full filter fit. Keep channel-grid spacing separately labeled. Frequency ranges outside that span require an explicit future sweep workflow, not silent capture retuning.
+- Improve unattended discovery and automatic frequency saving. The current scanner already has "Save discoveries to Frequencies"; make that behavior prominent and add a discovery-only option that logs activity without following each signal. Preserve deduplication, user edits and first/last-seen/count metadata; provide clear running/save-failure/storage-limit status and useful history/export. Automatically estimated frequencies must not overwrite manually corrected centers.
+- Add easy visual correction of saved frequencies: a spectrum-marker context action to set the entry to the current tuned frequency, plus an explicit marker-adjust mode with drag preview, commit/cancel and undo. Update the same library entry, preserving its folder, name, notes and activity history. Avoid accidental edits during ordinary click-to-tune or spectrum panning; distinguish overlapping markers and protect corrected centers from later scanner jitter.
+- Add user-confirmed birdie markers and optional scanner/auto-save exclusions. Support both fixed RF frequencies and capture-relative artifacts, including the visible hardware capture-center/DC spike associated with offset tuning. Show the exclusion width and reason; move capture-relative markers when the capture center changes. Allow review, editing and removal without hiding the underlying RF trace. An undecoded signal or absence of voice is not sufficient evidence to automatically classify a birdie.
+- Make the left sidebar horizontally resizable with a draggable divider and a remembered width per receiver. Improve grouping, spacing and label wrapping; keep common controls prominent and place advanced controls in compact collapsible sections. Verify minimum window sizes and Windows display scaling so frequency, gain, offset and scanner text remain readable without clipping.
+
+Acceptance targets: preserve TV channel and MPX references while removing TV pilot references; expose the existing 25 kHz filter clearly; constrain scan bounds correctly; save repeated unattended discoveries without duplicate entries or overwriting corrections; correct a marker with undo; verify fixed versus capture-relative birdie behavior; and resize the sidebar at typical and enlarged Windows scaling. Live scanner acceptance remains a separate operator test.
+
+### October 12: sidebar slider wheel adjustment (source)
+Enabled fine hover-wheel adjustment for Receiver volume/RF squelch/audio gate, all Scan and Display sliders, and I/Q playback position. Up increases and down decreases; Shift gives ten-times-finer increments except integer refresh FPS. Values clamp at existing limits, partial wheel deltas accumulate, and enabled sliders consume wheel events to prevent simultaneous sidebar scrolling. Tooltips describe the controls. No release ZIP rebuilt.
+
+### October 12: dated discoveries and batch deletion (source)
+New scanner-created entries use Discovered signals / YYYY-MM-DD folders based on the observation's local date. Repeat detections update that day's entry; a later date can have its own entry. Existing undated/manual entries keep their location and continue receiving metadata updates; no automatic migration of existing folders. Date identity survives folder renaming. Frequency-list Ctrl-click toggles selection, Shift-click/arrows select visible ranges, and Ctrl-arrows navigate focus with Ctrl-Space toggling selection. Modified selection does not tune. Delete button/key removes a selection across folders in one atomic operation, includes descendants of selected folders and supports one-step Undo. Search changes clear selection to prevent deleting hidden search results. No release ZIP rebuilt.
+
+### October 12: paging decoder priority (planned)
+User supplied a spectrum/waterfall reference near 929.93 MHz identifying local paging activity and requested decoding soon. Prioritize POCSAG 512/1200/2400 receive decoding, followed by FLEX as a separate decoder milestone. Integrate protocol/rate, capcode/address, function where applicable, numeric/alphanumeric content, timestamp, receiver/frequency and validation/error status into Data with filtering, repeat grouping and export. Support live SDR and recorded I/Q first; assess conventional-radio discriminator/audio input separately. Preserve uncertain or raw content rather than claiming corrupted text is valid. Validate against independent known samples and then a local active-burst I/Q recording when available. The screenshot alone does not distinguish POCSAG from FLEX or establish a bit rate. This is prioritization only; neither decoder is newly implemented by this entry.
+
+### October 13: sidebar resizing, retired TV pilot overlay and saved-center correction (source)
+Added a draggable sidebar divider with 260–520 logical-pixel limits, a 330-pixel default and per-receiver width persistence. Sidebar labels wrap and group spacing is reduced. Removed the optional TV pilot control; normalized legacy preferences disable its ticks, preserving TV channel boundaries/centers and MPX references. Frequency Manager now offers Use tuned frequency for one selected signal, updating its center and generated default name while preserving custom names, folder, notes and history. Existing Undo applies. Drag-based correction, fuller receiver-control compaction, scan range controls, discovery-only mode and birdie exclusions remain pending. No new release ZIP built.
+
+### October 13: visual Data Inspector / Frame Analyzer (planned)
+Define a resizable inspector opened from a Data row: linked protocol field layout, raw bits/hex/text, field positions and decoded values, received versus corrected data and explicit validation scope. Start with paging and existing P25 data, add frame comparisons, waveform/symbol timing and recording-position links as decoder provenance becomes available. Preserve original data separately from decoder corrections and distinguish unknown fields from interpreted ones. Do not show fabricated waveforms or imply raw-symbol access when a decoder only exposes decoded messages.
+
+### October 13: scanner range, direct tuning and discovery-only mode (source)
+Added Scan-tab listening-frequency entry, explicit lower/upper limits within the visible usable capture and persisted discovery-only selection. Blank bounds use capture/view limits; invalid bounds are rejected before arming. Discovery-only keeps listening and capture frequencies fixed while detecting/saving candidates. Grid-offset changes now also stop/rearm the scan. Threshold, timing and grid controls are collapsible. Birdie management and drag-based saved-marker correction remain pending. No release ZIP rebuilt.
+
+### October 13: known birdie manager and references (source)
+Added named fixed-RF and capture-relative birdie entries, widths, add/update/remove controls, per-workspace persistence, independent marker/exclusion toggles and outlined spectrum/waterfall bands. Enabled exclusions filter overlapping activity candidates before tracking/tuning/auto-save; raw samples and existing saved frequencies remain intact. Custom exclusion changes stop/rearm scanning. Center offset 0 follows hardware capture center. Drag correction and further compact-layout work remain pending. No release ZIP rebuilt.
+
+### October 13: deliberate saved-marker drag correction (source)
+Added Alt-drag preview/release-to-save with Escape/capture-loss/outside-release/resize cancellation, no receiver tuning or spectrum panning, scanner-lock protection and refusal of ambiguous overlapping markers. Commits use the existing validated library update with original-frequency checking, preserve entry identity and metadata, update generated names, and support library Undo. Physical interaction acceptance remains pending. No release ZIP rebuilt.
+
+
+### October 13: 0.20.0-preview1 paging milestone
+
+Implemented POCSAG 512/1200/2400 and FLEX receive integration through an isolated, bounded multimon-ng worker, Data controls, source-aware observations, JSON fields and validation labels. Bundles all source-only scanner/UI/frequency-manager refinements since 0.19.0. Generated and local recording validation are documented in PAGING.md; live RF acceptance remains with the user. Full frame inspector, additional paging controls and long-term message archive remain later work.
+
+### October 13: paging management source checkpoint
+
+Added independent complete-page duplicate grouping across recipient capcodes, retained recipient sets/counts in JSON, wrapped Summary text, persistent capcode/message labels, exact message or recipient ignore rules, Show ignored and a rule editor for rename/unignore/removal. 941 local checks and full WPF smoke passed. Ready for the next packaged build; the existing 0.20.0-preview1 ZIP is unchanged. Further frame-inspector and paging archive work remains planned.
+
+### October 14: 0.20.0-preview2 paging management and first Data inspector
+
+Combined the paging labels/grouping/ignore/wrapped-summary work with Inspect selected: frozen fields, bytes, message text and exportable snapshot JSON. P25 NID and TSBK include available bit mappings and explicit received/decoded provenance. Paging exposes supplied metadata without inventing raw codewords. 950 checks and full WPF smoke passed. Waveform/symbol timing, frame comparisons, complete protocol maps and long-term archive remain future work.
+
+
+### October 15: acceptance carryover and inspector comparison (source)
+
+User reports preview2 stayed running without a crash; acceptance testing was started but the stopping point is unknown. This is partial stability feedback, not completion of individual acceptance checks. ACCEPTANCE-NEXT.md carries all eight preview2 checks forward with checkboxes and a resume note, plus new comparison checks. Include it with the next release.
+
+Added per-receiver in-memory pinned inspector reference, side-by-side field/text differences, changed-only filtering and bit-position differences for compatible mapped frames. References remain frozen until replaced/cleared or receiver closure. No persistent archive or waveform analysis. Existing release ZIPs remain unchanged.
+
+### October 17: aviation milestone implementation — 0.21.0-preview1
+
+Added receive-only ACARS, VDL2, ADS-B/Mode S and UAT worker integration from receiver-owned I/Q, the Aviation tab, bounded aircraft table, JSON export and optional offline coordinate map with adjustable divider. Added RTL 2.4 MS/s choice. UAT worker changes preserve incomplete bursts across blocks and validate timing candidates before skipping; native 2.4 MS/s avoids unnecessary resampling. Includes the previously source-only inspector comparisons and the full carried-forward acceptance checklist. See AVIATION.md for exact capability limits, validation and field-test requirements. MLAT remains excluded; maps do not yet have basemap tiles, tracks or weather overlays. Local live reception is not yet accepted.
+
+October 17: preview2 fixes the high-rate ADS-B worker path and queue duration;
+live HackRF acceptance at 19.2 MS/s +750 kHz remains pending.
+
+October 17 preview3: receiver DC suppression verified against supplied ADS-B recording;
+live reception and continued overload checks pending operator acceptance.
+
+## Next preview target - zoomable aviation basemap and DMR identification (October 17)
+
+Requested after preview3 live ADS-B acceptance (127 messages, zero drops, three aircraft, two plotted positions at HackRF 9.6 MS/s +250 kHz). This section records approved scope, not completed implementation.
+
+1. Aviation basemap: optional OpenStreetMap street tiles, mouse-wheel zoom anchored at pointer, drag pan, +/- controls, Fit aircraft and follow-selected-aircraft. Manual pan/zoom must not be reset by incoming aircraft updates. Preserve existing splitter, fresh/stale rules and offline coordinate view. Online mode is explicitly selectable; tile service receives map-area requests, not decoded aircraft messages. Visible attribution, identifying User-Agent, bounded asynchronous requests, cancellation, provider-compliant cache and graceful offline/failure status. No bulk tile downloads. Source: https://operations.osmfoundation.org/policies/tiles/ .
+2. DMR/MOTOTRBO receive identification first: 4FSK synchronization, validated color code, slot when reliably established, burst type, validated link-control source/radio ID and destination/talkgroup where transmitted. Preserve unknown fields and received/decoded provenance. Full voice playback, trunk following, Capacity Plus/Connect Plus/Tier III expansion are later increments; generic DMR detection alone does not identify Motorola equipment or an organization.
+3. Channel catalog: stable rows by receiver/frequency/color code, observed slots, talkgroups/radio IDs, first/last seen, counts and editable aliases. Keep frequency, color code, talkgroup and radio namespaces separate: IDs are reused across systems. Preserve original identifiers and user labels. Unsupported manufacturer data remains raw/unknown.
+4. Scanner integration: separate opt-in Save/update identified channels. During an actual tuned-channel dwell, require repeated validated observations before attaching identifiers to an existing discovered frequency or creating a new dated discovery. Off-center RF detections and merely seeing sync are not enough. Store multiple observed talkgroups/slots under a frequency; do not create a frequency per radio ID. Never overwrite a user label, infer an agency name, merge systems by ID alone, or update the live discovery catalog from replay by default. Expose decode dwell/hold so the scanner has time to receive identifying bursts.
+
+Implementation and acceptance gates: map zoom/pan/follow/offline UI checks; DMR known independently sourced vectors and generated noise/error cases; replay then user live DMR sample; scanner deduplication, identifier conflicts, label preservation and dated-folder persistence. Carry all unfinished aviation/paging/inspector checks forward. No next-preview release number assigned until scope is implemented and validated.
+
+## Future capture aid
+Signal-triggered recording: audio VOX and RF-triggered I/Q, pre-trigger buffer, hang time, automatic frequency/time naming, and bounded disk/file limits. Intended for unattended decoder-debug samples; not included in 0.22.0-preview1.
+
+
+## October 18 — receiver/display refinements, 0.23.0-preview1
+
+Implemented expanded filters, CW listening/pitch, tighter zoom, Hot signals/gradient trace, optional band-based manual tuning, larger steps, frequency-aligned RF waterfall history, compact navigation, collapsible sidebar sections, dark receiver labels, and the pending Frequency Manager fixes. Receiver auto squelch shares Scan settings and operates without scanning. See RECEIVER-DISPLAY.md and the carried-forward ACCEPTANCE-0.23.0-preview1.md. Local automated verification does not establish station acceptance. Timed scan resume, CW ID decoding, aircraft trails, protocol workspace reorganization and triggered recording remain pending.

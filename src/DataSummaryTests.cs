@@ -1,9 +1,15 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 namespace MRS;
 internal static class DataSummaryTests
 {
     internal static void Run(Action<bool,string> check)
     {
+        var dmrPanel=new PacketPanel();
+        var dmr=new PacketObservation(DateTimeOffset.UtcNow,"Receiver A",false,451600000,null,"Slot Golay + BPTC valid","","","","Slot identification","CC 0 slot 1 data type 3",null,"ABCD","DMR",true);
+        for(int i=0;i<10000;i++)dmrPanel.Add(dmr with{RawHex=i%2==0?"ABCD":"ABCE"});
+        using(var report=JsonDocument.Parse(dmrPanel.ExportJson()))check(dmrPanel.VisibleCount==1&&dmrPanel.Count==500&&report.RootElement[0].GetProperty("ReceptionCount").GetInt64()==10000,"DMR flood keeps one stable row, full repeat count and bounded raw history");
+        dmrPanel.Add(dmr with{FrequencyHz=452000000});dmrPanel.Add(dmr with{Replay=true});check(dmrPanel.VisibleCount==3,"DMR grouping separates frequency and live/replay");
+        dmrPanel.DmrGrouped=false;check(dmrPanel.VisibleCount==500,"Ungrouped DMR exposes bounded individual history");
         var panel=new PacketPanel();var start=DateTimeOffset.Parse("2026-09-30T12:00:00Z");
         var site=new PacketObservation(start,"Receiver A",false,774000000,null,"TSBK CRC valid","NAC 345","","","Site status","System 348 · RFSS 1 · Site 22 · control channel ID 17B0",null,"3A00010123011617B01234","P25 Phase I",true);
         for(int n=0;n<1000;n++)panel.Add(site with{ObservedUtc=start.AddSeconds(n)});

@@ -112,6 +112,7 @@ internal sealed class HackRfNative
             Check(Get<SetRate>("set_sample_rate")(device, rate), "Set sample rate");
             uint filter = Get<Filter>("compute_baseband_filter_bw_round_down_lt")((uint)rate);
             if (filter != HackRfProtocol.UsableBandwidth(rate)) throw new IOException("HackRF library returned an unexpected analog filter width.");
+            filter = (uint)HackRfProtocol.CaptureBandwidth(rate,gain);
             Check(Get<SetUInt>("set_baseband_filter_bandwidth")(device, filter), "Set baseband filter");
             Check(Get<SetFrequency>("set_freq")(device, (ulong)frequency), "Tune HackRF");
             Check(Get<SetUInt>("set_lna_gain")(device, (uint)gains.Lna), "Set LNA gain");

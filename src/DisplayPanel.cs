@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -20,13 +20,13 @@ public sealed class DisplayPanel : UserControl
     private double captureSpan = 24000;
     private sealed record SpanChoice(double Hz, string Label) { public override string ToString() => Label; }
     internal void SetCaptureSpan(double span) { captureSpan = span; Reflect(settings); }
-    internal void SelectViewSpan(double hz) => Publish(settings with { Zoom = Math.Clamp(captureSpan / hz, 1, 32) });
+    internal void SelectViewSpan(double hz) => Publish(settings with { Zoom = Math.Clamp(captureSpan / hz, 1, 4096) });
     private void RefreshBandwidth(DisplaySettings value)
     {
         double visible = captureSpan / value.Zoom;
         var choices = new List<SpanChoice> { new(captureSpan, $"Full span ({captureSpan / 1000:0.##} kHz)") };
-        foreach (double span in Enumerable.Range(0, 13).SelectMany(power => new[] { 1.0, 2.0, 5.0 }.Select(m => m * Math.Pow(10, power))).Concat(new[] { captureSpan / 2, captureSpan / 4, captureSpan / 8, captureSpan / 16, captureSpan / 32 }).Distinct().Order())
-            if (span >= captureSpan / 32 && span < captureSpan) choices.Add(new(span, $"{span / 1000:0.##} kHz"));
+        foreach (double span in Enumerable.Range(0, 13).SelectMany(power => new[] { 1.0, 2.0, 5.0 }.Select(m => m * Math.Pow(10, power))).Concat(new[] { captureSpan / 2, captureSpan / 4, captureSpan / 8, captureSpan / 16, captureSpan / 4096 }).Distinct().Order())
+            if (span >= captureSpan / 4096 && span < captureSpan) choices.Add(new(span, $"{span / 1000:0.##} kHz"));
         var selected = choices.FirstOrDefault(c => Math.Abs(c.Hz - visible) < .01);
         if (selected == null) { selected = new(visible, $"Custom ({visible / 1000:0.##} kHz)"); choices.Add(selected); }
         viewBandwidth.ItemsSource = choices; viewBandwidth.SelectedItem = selected;
@@ -42,7 +42,7 @@ public sealed class DisplayPanel : UserControl
         body.Children.Add(new TextBlock { Text = "Display only · does not retune or change audio", TextWrapping = TextWrapping.Wrap, Foreground = Brushes.LightSteelBlue, FontSize = 12 });
         StackPanel Group(string title)
         {
-            var stack = new StackPanel(); body.Children.Add(new GroupBox { Header = title, Content = stack, Margin = new Thickness(0, 12, 0, 0) }); return stack;
+            var stack = new StackPanel(); body.Children.Add(new Expander { IsExpanded = true, Header = title, Foreground = Brushes.White, Content = stack, Margin = new Thickness(0, 12, 0, 0) }); return stack;
         }
         void Button(Panel panel, string title, Action action)
         {
@@ -51,9 +51,11 @@ public sealed class DisplayPanel : UserControl
         }
         void Slider(Panel panel, string title, double min, double max, Func<DisplaySettings, double> get, Func<DisplaySettings, double, DisplaySettings> set, string units = "")
         {
-            var label = new TextBlock { Margin = new Thickness(0, 8, 0, 0) }; panel.Children.Add(label);
+            var label = new TextBlock { Foreground = Brushes.White, Margin = new Thickness(0, 8, 0, 0) }; panel.Children.Add(label);
             var slider = new Slider { Minimum = min, Maximum = max, SmallChange = (max - min) / 100, LargeChange = (max - min) / 10, Value = get(settings) };
             System.Windows.Automation.AutomationProperties.SetName(slider, title);
+            double wheelStep=title switch {"Zoom"=>.1,"Pan across captured span"=>.5,"Visible history (smaller = faster)"=>1,"Display refresh limit"=>1,"Spectrum averaging"=>.05,_=>.5};
+            SliderWheel.Enable(slider,wheelStep,extraFine:title!="Display refresh limit");
             panel.Children.Add(slider);
             refresh.Add(value => { slider.Value = get(value); label.Text = $"{title}: {get(value):0.##}{units}"; });
             slider.ValueChanged += (_, _) => { if (!updating) Publish(set(settings, slider.Value)); };
@@ -69,7 +71,7 @@ public sealed class DisplayPanel : UserControl
         System.Windows.Automation.AutomationProperties.SetName(resolution,"RF FFT points");
         detail.Children.Add(resolution);
         var resolutionText=new TextBlock{TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,FontSize=11,Margin=new Thickness(0,5,0,0)};detail.Children.Add(resolutionText);
-        refresh.Add(s=>{resolution.SelectedItem=s.RfFftSize;resolutionText.Text="More points reveal finer RF detail and use more CPU/memory. Actual Hz/bin is shown below the RF plot. Changing detail clears history; audio and recording continue.";});
+        refresh.Add(s=>{resolution.SelectedItem=s.RfFftSize;resolutionText.Text="More points reveal finer RF detail and use more CPU/memory. Actual Hz/bin is shown below the RF plot. Zoom magnifies existing bins; audio and recording continue.";});
         resolution.SelectionChanged+=(_,_)=>{if(!updating && resolution.SelectedItem is int size)Publish(settings with{RfFftSize=size});};
         var view = Group("Zoom / pan");
         view.Children.Add(new TextBlock { Text = "View bandwidth", Margin = new Thickness(0, 6, 0, 4) });
@@ -77,7 +79,7 @@ public sealed class DisplayPanel : UserControl
         System.Windows.Automation.AutomationProperties.SetName(viewBandwidth, "Visible spectrum and waterfall bandwidth");
         refresh.Add(RefreshBandwidth);
         viewBandwidth.SelectionChanged += (_, _) => { if (!updating && viewBandwidth.SelectedItem is SpanChoice choice) SelectViewSpan(choice.Hz); };
-        Slider(view, "Zoom", 1, 32, s => s.Zoom, (s, v) => s with { Zoom = v }, "×");
+        Slider(view, "Zoom", 1, 4096, s => s.Zoom, (s, v) => s with { Zoom = v }, "×");
         Slider(view, "Pan across captured span", 0, 100, s => s.Pan * 100, (s, v) => s with { Pan = v / 100 }, "%");
         Button(view, "Full span / center", () => Publish(settings with { Zoom = 1, Pan = .5 }));
         Button(view, "Center on tuned RF frequency", () => Publish(settings with { Pan = .5 }));
@@ -88,7 +90,6 @@ public sealed class DisplayPanel : UserControl
         Check(plan, "Show ARRL operating recommendations", s => s.ShowArrlPlan, (s, v) => s with { ShowArrlPlan = v });
         Check(plan, "Show CISA NIFOG channels", s => s.ShowNifogPlan, (s, v) => s with { ShowNifogPlan = v });
         Check(plan, "Show TV RF channels (2–36)", s => s.ShowTvPlan, (s, v) => s with { ShowTvPlan = v });
-        Check(plan, "Show ATSC 1.0 pilot references (TV layer)", s => s.ShowTvPilots, (s, v) => s with { ShowTvPilots = v });
         plan.Children.Add(new TextBlock {Text="NIFOG 2.02: nationwide/federal interoperability, medical and SAR references. Hover for mobile RX/TX, tones/NAC and page. Markers do not indicate local activity.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,FontSize=11});
         plan.Children.Add(new TextBlock { Text = "Reference bar position", Margin = new Thickness(0, 8, 0, 4) });
         var planPosition = new ComboBox { ItemsSource = new[] { "Above spectrum", "Below spectrum" } };
@@ -112,12 +113,13 @@ public sealed class DisplayPanel : UserControl
         Check(speed, "Peak hold", s => s.PeakHold, (s, v) => s with { PeakHold = v });
         Button(speed, "Clear held peak", () => ClearPeakRequested?.Invoke());
         var themes = Group("Themes / palettes");
-        var theme = new ComboBox { ItemsSource = new[] { "Dark", "Light", "High contrast", "Amber" } }; themes.Children.Add(theme);
+        var theme = new ComboBox { ItemsSource = new[] { "Dark", "Light", "High contrast", "Amber", "Hot signals" } }; themes.Children.Add(theme);
         theme.SelectionChanged += (_, _) => { if (theme.SelectedItem is string name) Publish(settings.ColorsFrom(DisplaySettings.Theme(name))); };
         themes.Children.Add(new TextBlock { Text = "Waterfall palette", Margin = new Thickness(0, 8, 0, 4) });
         var palette = new ComboBox { ItemsSource = DisplaySettings.Palettes }; themes.Children.Add(palette);
         refresh.Add(s => palette.SelectedItem = s.Palette);
         palette.SelectionChanged += (_, _) => { if (!updating && palette.SelectedItem is string value) Publish(settings with { Palette = value }); };
+        Check(themes, "Gradient spectrum by signal level", s => s.GradientTrace, (s, v) => s with { GradientTrace = v });
         var colors = new StackPanel(); themes.Children.Add(new Expander { Header = "Custom colors (#RRGGBB)", Content = colors, Foreground = Brushes.White, Margin = new Thickness(0, 10, 0, 0) });
         void Color(string title, Func<DisplaySettings, string> get, Func<DisplaySettings, string, DisplaySettings> set)
         {

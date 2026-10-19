@@ -1,15 +1,16 @@
-namespace MRS;
+﻿namespace MRS;
 
 internal sealed class ReceiveDemodulator
 {
-    internal static readonly string[] Modes = ["NFM", "WFM", "AM", "USB", "LSB"];
+    internal static readonly string[] Modes = ["NFM", "WFM", "AM", "USB", "LSB", "CW"];
     private readonly FmDemodulator? fm;
     private readonly IqDecimator? frontEnd;
     private readonly string mode;
     private readonly bool agc;
     private readonly double[] real = new double[1025], imaginary = new double[1025], iHistory = new double[1025], qHistory = new double[1025];
     private int position, phase;
-    private double previous, dc, envelope = .1;
+    private double previous, dc, envelope = .1, bfoPhase;
+    internal double CwPitchHz { get; set; } = 700;
     internal double ChannelDb { get; private set; } = -120;
     internal BroadcastState? Broadcast => fm?.Broadcast;
     internal RdsState? Rds => fm?.Rds;
@@ -24,6 +25,7 @@ internal sealed class ReceiveDemodulator
         this.agc = agc;
         var channel = new ChannelSettings(0, mode, bandwidth, agc); channel.Validate();
         if (mode is "NFM" or "WFM") { fm = new(mode == "WFM", rate, offsetHz, channel.Width); return; }
+        if (mode == "CW") { real = new double[4097]; imaginary = new double[4097]; iHistory = new double[4097]; qHistory = new double[4097]; }
         frontEnd = new(rate, offsetHz);
         // Complex bandpass selects positive (USB) or negative (LSB) frequencies.
         var (low, high) = channel.Edges;
@@ -53,7 +55,8 @@ internal sealed class ReceiveDemodulator
                     if (--index < 0) index = real.Length - 1;
                 }
                 double p = i * i + q * q; power += p; count++;
-                double detected = mode == "AM" ? Math.Sqrt(p) : i;
+                double detected = mode == "AM" ? Math.Sqrt(p) : mode == "CW" ? i * Math.Cos(bfoPhase) - q * Math.Sin(bfoPhase) : i;
+                if (mode == "CW") bfoPhase = (bfoPhase + 2 * Math.PI * Math.Clamp(double.IsFinite(CwPitchHz) ? CwPitchHz : 700, 300, 1200) / 48000) % (2 * Math.PI);
                 dc = detected - previous + .995 * dc; previous = detected;
                 // Bounded audio AGC: fast attack and slower release, never RF squelch.
                 double level = Math.Abs(dc); envelope += (level > envelope ? .02 : .00005) * (level - envelope);

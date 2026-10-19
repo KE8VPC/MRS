@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +32,7 @@ internal static class NifogTests
         string settingsPath=Path.Combine(AppContext.BaseDirectory,"nifog-test-profile",Guid.NewGuid().ToString("N"),"display.json");
         var panel=new DisplayPanel();panel.Initialize(settingsPath);DisplaySettings? changed=null;panel.Changed+=s=>changed=s;
         var body=(StackPanel)((ScrollViewer)panel.Content).Content;
-        var toggle=body.Children.OfType<GroupBox>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>()).Single(c=>c.Content?.ToString()=="Show CISA NIFOG channels");
+        var toggle=body.Children.OfType<System.Windows.Controls.HeaderedContentControl>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>()).Single(c=>c.Content?.ToString()=="Show CISA NIFOG channels");
         toggle.IsChecked=true;panel.Save();
         check(changed is {ShowNifogPlan:true,ShowBandPlan:false,ShowArrlPlan:false},"NIFOG checkbox publishes its own display setting without enabling other layers");
         var second=new DisplayPanel();DisplaySettings? loaded=null;second.Changed+=s=>loaded=s;second.Initialize(settingsPath);

@@ -2,12 +2,12 @@ using System.IO;
 namespace MRS;
 
 // Gain tokens are transport values, not tenths of dB. Backend metadata identifies their meaning.
-internal sealed record HackRfGain(int Lna = 16, int Vga = 16, bool Amplifier = false)
+internal sealed record HackRfGain(int Lna = 16, int Vga = 16, bool Amplifier = false, bool HfFilter = false)
 {
-    internal int Token => 0x1000000 | Lna | (Vga << 8) | (Amplifier ? 0x10000 : 0);
+    internal int Token => 0x1000000 | Lna | (Vga << 8) | (Amplifier ? 0x10000 : 0) | (HfFilter ? 0x20000 : 0);
     internal static HackRfGain Decode(int token)
     {
-        var value = new HackRfGain(token & 255, (token >> 8) & 255, (token & 0x10000) != 0);
+        var value = new HackRfGain(token & 255, (token >> 8) & 255, (token & 0x10000) != 0, (token & 0x20000) != 0);
         if (value.Token != token || value.Lna > 40 || value.Lna % 8 != 0 || value.Vga > 62 || value.Vga % 2 != 0)
             throw new ArgumentException("Invalid HackRF LNA/VGA gain settings.");
         return value;
@@ -19,12 +19,13 @@ internal static class HackRfProtocol
 {
     internal const int Magic = 0x4D525310, HeaderSize = 32;
     internal static int UsableBandwidth(int rate) => rate switch { 2400000 => 1750000, 9600000 => 9000000, 19200000 or 20000000 => 15000000, _ => throw new ArgumentOutOfRangeException(nameof(rate)) };
+    internal static int CaptureBandwidth(int rate,int gain) => HackRfGain.Decode(gain).HfFilter ? Math.Min(1750000,UsableBandwidth(rate)) : UsableBandwidth(rate);
     internal static void Normalize(byte[] data) { for (int n = 0; n < data.Length; n++) data[n] ^= 0x80; }
     internal static void Write(Stream output, byte[] data, long frequency, int rate, int gain)
     {
         using var writer = new BinaryWriter(output, System.Text.Encoding.UTF8, true);
         writer.Write(Magic); writer.Write(data.Length); writer.Write(frequency); writer.Write(rate);
-        writer.Write(gain); writer.Write(gain); writer.Write(UsableBandwidth(rate)); writer.Write(data); writer.Flush();
+        writer.Write(gain); writer.Write(gain); writer.Write(CaptureBandwidth(rate,gain)); writer.Write(data); writer.Flush();
     }
     internal static ReceiverStream.FrameHeader Header(byte[] bytes)
     {
@@ -35,7 +36,7 @@ internal static class HackRfProtocol
         if (magic != Magic || count < 4096 || count > 32768 || count % 2 != 0 ||
             !ReceiverCapabilities.HackRf.CanTune(frequency) || !ReceiverCapabilities.HackRf.SampleRates.Contains(rate))
             throw new IOException("Invalid HackRF capture metadata.");
-        if (bandwidth != UsableBandwidth(rate)) throw new IOException("Unexpected HackRF analog bandwidth.");
+        if (bandwidth != CaptureBandwidth(rate,applied)) throw new IOException("Unexpected HackRF analog bandwidth.");
         HackRfGain.Decode(requested); HackRfGain.Decode(applied);
         return new(count, frequency, rate, requested, applied, 0, bandwidth);
     }

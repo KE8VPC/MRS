@@ -1,3 +1,274 @@
+PASS: CW appends mode index without changing legacy I/Q recording modes
+PASS: Optional band defaults choose AM at 1000000
+PASS: Optional band defaults choose WFM at 100100000
+PASS: Optional band defaults choose AM at 121500000
+PASS: Optional band defaults choose NFM at 156800000
+PASS: Optional band defaults choose NFM at 162400000
+PASS: Amateur and marine AIS frequencies do not force an analog voice mode
+PASS: Tight zoom supports 4096x and clamps larger requests
+PASS: Retuning preserves history and shifts the old carrier to its actual RF coordinate
+PASS: Newly exposed waterfall frequencies are blank rather than stretched edge samples
+PASS: History retains each row's own FFT size after resolution change
+PASS: Changing from RF to audio clears incompatible history
+PASS: Receiver auto squelch estimates floor plus margin with scanning stopped
+PASS: CW produces a 700 Hz listening tone for carrier at offset 0
+PASS: CW oscillator and narrow filter remain continuous across blocks at offset 0
+PASS: CW produces a 700 Hz listening tone for carrier at offset 25000
+PASS: CW oscillator and narrow filter remain continuous across blocks at offset 25000
+PASS: CW produces a 700 Hz listening tone for carrier at offset -25000
+PASS: CW oscillator and narrow filter remain continuous across blocks at offset -25000
+PASS: CW pitch adjusts independently of carrier tuning
+PASS: 500 Hz CW filter rejects adjacent carrier 1.5 kHz away
+PASS: Paging POCSAG fields and replay provenance; BCH is not claimed as a message CRC
+PASS: Partial POCSAG cannot become a validated page
+PASS: FLEX checksum-passing fragments stay explicitly labelled fragments, with symbol rate
+PASS: FLEX failed checksum stays unvalidated
+PASS: FLEX signature failure overrides fragment checksum
+PASS: Address-only POCSAG stays unvalidated, avoiding silence-generated tone-page floods
+PASS: Paging ignores malformed output and diagnostic-only frames
+PASS: Paging resampler preserves 22050 Hz timing across arbitrary callback splits
+PASS: Disabled paging never starts a worker or emits observations
+PASS: Paging groups identical complete/reassembled payloads across recipient capcodes
+PASS: Paging grouping preserves frequency, receiver session and replay boundaries
+PASS: Incomplete fragments and failed validation remain individual observations
+PASS: Grouped paging exports count and all recipient capcodes
+PASS: Paging aliases remain searchable across grouped recipients and preserve original addresses
+PASS: Ignoring one recipient preserves nonignored duplicate recipients without inflating counts
+PASS: Exact-message ignore hides all matching recipient copies
+PASS: Show ignored restores grouped observations for inspection
+PASS: Disabling paging grouping restores individual recent receptions independently of P25
+PASS: Paging label/ignore persistence is scoped to frequency and protocol
+PASS: Unreadable paging rules are preserved rather than overwritten
+PASS: Inspector distinguishes decoded TSBK bytes from received symbols
+PASS: Inspector maps standard group-grant fields to verified byte offsets
+PASS: Inspector mapped bit selections stay inside the supplied frame
+PASS: Inspector keeps erroneous received NID bits distinct from corrected decoded fields
+PASS: Inspector does not interpret a protected TSBK payload as a clear grant
+PASS: Paging inspector exposes JSON fields without inventing raw bits
+PASS: Inspector snapshot deep-copies arrays and preserves replay position
+PASS: Inspector handles unavailable or malformed raw hex without crashing
+PASS: Inspector preserves malformed decoder data as unparsed information
+PASS: Identical inspection snapshots compare without differences
+PASS: Comparison detects exact changed bit and decoded field/text differences
+PASS: Comparison refuses received NID versus decoded TSBK bit comparisons
+PASS: Comparison pairs decoder fields by identity independent of JSON order
+PASS: Paging comparison tracks added removed changed fields without fabricating bit differences
+PASS: Aviation retains decoded identity position and replay provenance
+PASS: Aviation rejects malformed worker JSON
+PASS: Aviation rejects out-of-range positions
+PASS: Aircraft table does not promote failed validation
+PASS: Aircraft table separates live and replay identities
+PASS: Aircraft without decoded positions remain unmapped
+PASS: Aircraft rows expire independently of another source
+PASS: UAT preserves non-ICAO address class and RS validation terminology
+PASS: Aviation accepts full ADS-B capture at 2.4 MS/s
+PASS: Aviation rejects a wideband target outside usable capture
+PASS: Aviation rejects insufficient UAT sample rate
+PASS: VDL2 accepts an offset channel fully inside capture
+PASS: Independent DMR vector CC 0 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 0 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 1 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 1 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 2 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 2 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 3 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 3 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 4 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 4 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 5 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 5 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 6 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 6 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 7 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 7 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 8 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 8 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 9 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 9 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 10 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 10 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 11 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 11 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 12 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 12 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 13 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 13 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 14 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 14 type 2: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 15 type 1: Golay BPTC RS and IDs
+PASS: Independent DMR vector CC 15 type 2: Golay BPTC RS and IDs
+PASS: ETSI Golay known codeword for data 01
+PASS: DMR product code repairs isolated errors without inventing mobile slot
+PASS: DMR rejects ambiguous four-bit slot-code damage
+PASS: DMR 48 kHz noisy block-boundary receive, polarity 1, phase deduplication
+PASS: DMR 48 kHz noisy block-boundary receive, polarity -1, phase deduplication
+PASS: DMR noise does not identify a channel
+PASS: Basemap Mercator equator and origin
+PASS: Basemap polar clipping and longitude wrapping
+PASS: DMR identifier persistence preserves labels and deduplicates
+PASS: DMR replay cannot auto-save live discoveries
+PASS: Independent MMDVM Cap+ call vector: manufacturer LC identifiers
+PASS: Independent Cap+ status vector: CRC validated, no invented network/site
+PASS: Color-code identity requires three matching observations
+PASS: One-off color code 14 cannot become a confirmed row
+PASS: One-off color code 7 cannot become a confirmed row
+PASS: One-off color code 10 cannot become a confirmed row
+PASS: One-off color code 1 cannot become a confirmed row
+PASS: One-off color code 3 cannot become a confirmed row
+PASS: One-off color code 2 cannot become a confirmed row
+PASS: Same color code at another frequency has independent evidence
+PASS: Old candidate evidence expires after ten seconds
+PASS: Failed payload CRC and heavily corrected slot type cannot confirm a color code
+PASS: LTR idle bursts eleven seconds apart confirm within sixty seconds
+PASS: Confirmed LTR identity retains evidence while bursts continue within sixty seconds
+PASS: LTR evidence expires after sixty seconds without a matching observation
+PASS: Unconfirmed LTR evidence cannot accumulate beyond sixty seconds
+PASS: Pending status reports confirmation count and removes expired progress
+PASS: CSBK detects single-bit corruption 0
+PASS: CSBK detects single-bit corruption 1
+PASS: CSBK detects single-bit corruption 2
+PASS: CSBK detects single-bit corruption 3
+PASS: CSBK detects single-bit corruption 4
+PASS: CSBK detects single-bit corruption 5
+PASS: CSBK detects single-bit corruption 6
+PASS: CSBK detects single-bit corruption 7
+PASS: CSBK detects single-bit corruption 8
+PASS: CSBK detects single-bit corruption 9
+PASS: CSBK detects single-bit corruption 10
+PASS: CSBK detects single-bit corruption 11
+PASS: CSBK detects single-bit corruption 12
+PASS: CSBK detects single-bit corruption 13
+PASS: CSBK detects single-bit corruption 14
+PASS: CSBK detects single-bit corruption 15
+PASS: CSBK detects single-bit corruption 16
+PASS: CSBK detects single-bit corruption 17
+PASS: CSBK detects single-bit corruption 18
+PASS: CSBK detects single-bit corruption 19
+PASS: CSBK detects single-bit corruption 20
+PASS: CSBK detects single-bit corruption 21
+PASS: CSBK detects single-bit corruption 22
+PASS: CSBK detects single-bit corruption 23
+PASS: CSBK detects single-bit corruption 24
+PASS: CSBK detects single-bit corruption 25
+PASS: CSBK detects single-bit corruption 26
+PASS: CSBK detects single-bit corruption 27
+PASS: CSBK detects single-bit corruption 28
+PASS: CSBK detects single-bit corruption 29
+PASS: CSBK detects single-bit corruption 30
+PASS: CSBK detects single-bit corruption 31
+PASS: CSBK detects single-bit corruption 32
+PASS: CSBK detects single-bit corruption 33
+PASS: CSBK detects single-bit corruption 34
+PASS: CSBK detects single-bit corruption 35
+PASS: CSBK detects single-bit corruption 36
+PASS: CSBK detects single-bit corruption 37
+PASS: CSBK detects single-bit corruption 38
+PASS: CSBK detects single-bit corruption 39
+PASS: CSBK detects single-bit corruption 40
+PASS: CSBK detects single-bit corruption 41
+PASS: CSBK detects single-bit corruption 42
+PASS: CSBK detects single-bit corruption 43
+PASS: CSBK detects single-bit corruption 44
+PASS: CSBK detects single-bit corruption 45
+PASS: CSBK detects single-bit corruption 46
+PASS: CSBK detects single-bit corruption 47
+PASS: CSBK detects single-bit corruption 48
+PASS: CSBK detects single-bit corruption 49
+PASS: CSBK detects single-bit corruption 50
+PASS: CSBK detects single-bit corruption 51
+PASS: CSBK detects single-bit corruption 52
+PASS: CSBK detects single-bit corruption 53
+PASS: CSBK detects single-bit corruption 54
+PASS: CSBK detects single-bit corruption 55
+PASS: CSBK detects single-bit corruption 56
+PASS: CSBK detects single-bit corruption 57
+PASS: CSBK detects single-bit corruption 58
+PASS: CSBK detects single-bit corruption 59
+PASS: CSBK detects single-bit corruption 60
+PASS: CSBK detects single-bit corruption 61
+PASS: CSBK detects single-bit corruption 62
+PASS: CSBK detects single-bit corruption 63
+PASS: CSBK detects single-bit corruption 64
+PASS: CSBK detects single-bit corruption 65
+PASS: CSBK detects single-bit corruption 66
+PASS: CSBK detects single-bit corruption 67
+PASS: CSBK detects single-bit corruption 68
+PASS: CSBK detects single-bit corruption 69
+PASS: CSBK detects single-bit corruption 70
+PASS: CSBK detects single-bit corruption 71
+PASS: CSBK detects single-bit corruption 72
+PASS: CSBK detects single-bit corruption 73
+PASS: CSBK detects single-bit corruption 74
+PASS: CSBK detects single-bit corruption 75
+PASS: CSBK detects single-bit corruption 76
+PASS: CSBK detects single-bit corruption 77
+PASS: CSBK detects single-bit corruption 78
+PASS: CSBK detects single-bit corruption 79
+PASS: CSBK detects single-bit corruption 80
+PASS: CSBK detects single-bit corruption 81
+PASS: CSBK detects single-bit corruption 82
+PASS: CSBK detects single-bit corruption 83
+PASS: CSBK detects single-bit corruption 84
+PASS: CSBK detects single-bit corruption 85
+PASS: CSBK detects single-bit corruption 86
+PASS: CSBK detects single-bit corruption 87
+PASS: CSBK detects single-bit corruption 88
+PASS: CSBK detects single-bit corruption 89
+PASS: CSBK detects single-bit corruption 90
+PASS: CSBK detects single-bit corruption 91
+PASS: CSBK detects single-bit corruption 92
+PASS: CSBK detects single-bit corruption 93
+PASS: CSBK detects single-bit corruption 94
+PASS: CSBK detects single-bit corruption 95
+PASS: Independent MMDVM short LC product code, CRC and 12-bit network identity
+PASS: CACH fragment order and timing assemble a network identity
+PASS: DMR symbol stream carries Cap+ status and independent Connect Plus SLC test identity
+PASS: Missing CACH fragments cannot publish identities
+PASS: LTR Standard field extraction
+PASS: LTR rejects corrupted word bit 0
+PASS: LTR rejects corrupted word bit 1
+PASS: LTR rejects corrupted word bit 2
+PASS: LTR rejects corrupted word bit 3
+PASS: LTR rejects corrupted word bit 4
+PASS: LTR rejects corrupted word bit 5
+PASS: LTR rejects corrupted word bit 6
+PASS: LTR rejects corrupted word bit 7
+PASS: LTR rejects corrupted word bit 8
+PASS: LTR rejects corrupted word bit 9
+PASS: LTR rejects corrupted word bit 10
+PASS: LTR rejects corrupted word bit 11
+PASS: LTR rejects corrupted word bit 12
+PASS: LTR rejects corrupted word bit 13
+PASS: LTR rejects corrupted word bit 14
+PASS: LTR rejects corrupted word bit 15
+PASS: LTR rejects corrupted word bit 16
+PASS: LTR rejects corrupted word bit 17
+PASS: LTR rejects corrupted word bit 18
+PASS: LTR rejects corrupted word bit 19
+PASS: LTR rejects corrupted word bit 20
+PASS: LTR rejects corrupted word bit 21
+PASS: LTR rejects corrupted word bit 22
+PASS: LTR rejects corrupted word bit 23
+PASS: LTR rejects corrupted word bit 24
+PASS: LTR rejects corrupted word bit 25
+PASS: LTR rejects corrupted word bit 26
+PASS: LTR rejects corrupted word bit 27
+PASS: LTR rejects corrupted word bit 28
+PASS: LTR rejects corrupted word bit 29
+PASS: LTR rejects corrupted word bit 30
+PASS: LTR rejects corrupted word bit 31
+PASS: LTR rejects corrupted word bit 32
+PASS: LTR rejects corrupted word bit 33
+PASS: LTR rejects corrupted word bit 34
+PASS: LTR rejects corrupted word bit 35
+PASS: LTR rejects corrupted word bit 36
+PASS: LTR rejects corrupted word bit 37
+PASS: LTR rejects corrupted word bit 38
+PASS: LTR rejects corrupted word bit 39
+PASS: LTR noisy DC-offset discriminator blocks, polarity 1: 4 words
+PASS: LTR noisy DC-offset discriminator blocks, polarity -1: 4 words
+PASS: LTR idle word is not a subscriber talkgroup
+PASS: LTR rejects ten seconds of broadband noise
 PASS: HackRF x64 native transfer and device-list ABI layouts
 PASS: HackRF signed I/Q maps zero and both extrema to unsigned I/Q
 PASS: HackRF sample conversion is lossless for every 8-bit value
@@ -67,6 +338,16 @@ PASS: HackRF rejects unsupported gain token 600
 PASS: HackRF rejects unsupported gain token 16777735
 PASS: HackRF rejects unsupported gain token 16777776
 PASS: HackRF rejects unsupported gain token 16793352
+PASS: HF setting survives transport token without changing gains
+PASS: Older gain tokens retain automatic filter selection
+PASS: HF transport retains high sampling rate and narrow actual capture coverage
+PASS: HF filter accepts offset channel inside hardware coverage
+PASS: HF filter rejects one MHz offset before receiver start
+PASS: Input monitor distinguishes digital silence from clipping
+PASS: Input monitor reports component RMS relative to ADC full scale
+PASS: Input monitor counts both ADC rails
+PASS: HF worker fixture acknowledges narrow coverage and selected station
+PASS: HF I/Q recording preserves filter coverage and station metadata
 PASS: Capture offset +250 kHz places weather station below hardware center
 PASS: Negative capture offset supported
 PASS: Disabled capture offset preserves direct tuning
@@ -86,22 +367,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (56 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (54 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (21 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (64 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (31 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (78 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (32 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (33 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
@@ -302,6 +583,9 @@ PASS: Resetting one receiver does not clear the other receiver's tone
 PASS: Disabled subaudible decoder emits no observations
 PASS: Production NFM I/Q discriminator preserves 100.0 Hz
 PASS: Production NFM I/Q discriminator preserves 114I / 712N
+PASS: DMR flood keeps one stable row, full repeat count and bounded raw history
+PASS: DMR grouping separates frequency and live/replay
+PASS: Ungrouped DMR exposes bounded individual history
 PASS: P25 repeats retain one fixed summary row and first-seen time while raw history remains bounded
 PASS: Changed P25 site fields update the current row and increment the content-change counter
 PASS: Changed summary content is searchable
@@ -333,6 +617,8 @@ PASS: AM recovers 1200 Hz audio at 48 kHz from 960000 S/s
 PASS: AM preserves filter and AGC state across uneven input blocks at 960000 S/s
 PASS: AM recovers 1200 Hz audio at 48 kHz from 1920000 S/s
 PASS: AM preserves filter and AGC state across uneven input blocks at 1920000 S/s
+PASS: AM recovers 1200 Hz audio at 48 kHz from 2400000 S/s
+PASS: AM preserves filter and AGC state across uneven input blocks at 2400000 S/s
 PASS: AM recovers 1200 Hz audio at 48 kHz from 3200000 S/s
 PASS: AM preserves filter and AGC state across uneven input blocks at 3200000 S/s
 PASS: USB recovers 1200 Hz audio at 48 kHz from 240000 S/s
@@ -344,6 +630,9 @@ PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 960000 S/s
 PASS: USB recovers 1200 Hz audio at 48 kHz from 1920000 S/s
 PASS: USB preserves filter and AGC state across uneven input blocks at 1920000 S/s
 PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 1920000 S/s
+PASS: USB recovers 1200 Hz audio at 48 kHz from 2400000 S/s
+PASS: USB preserves filter and AGC state across uneven input blocks at 2400000 S/s
+PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 2400000 S/s
 PASS: USB recovers 1200 Hz audio at 48 kHz from 3200000 S/s
 PASS: USB preserves filter and AGC state across uneven input blocks at 3200000 S/s
 PASS: USB rejects the opposite 1200 Hz sideband by over 40 dB at 3200000 S/s
@@ -356,6 +645,9 @@ PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 960000 S/s
 PASS: LSB recovers 1200 Hz audio at 48 kHz from 1920000 S/s
 PASS: LSB preserves filter and AGC state across uneven input blocks at 1920000 S/s
 PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 1920000 S/s
+PASS: LSB recovers 1200 Hz audio at 48 kHz from 2400000 S/s
+PASS: LSB preserves filter and AGC state across uneven input blocks at 2400000 S/s
+PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 2400000 S/s
 PASS: LSB recovers 1200 Hz audio at 48 kHz from 3200000 S/s
 PASS: LSB preserves filter and AGC state across uneven input blocks at 3200000 S/s
 PASS: LSB rejects the opposite 1200 Hz sideband by over 40 dB at 3200000 S/s
@@ -434,6 +726,8 @@ PASS: WFM I/Q at 960000 S/s decodes stereo and RDS together
 PASS: WFM I/Q at 960000 S/s retains over 23 dB stereo separation
 PASS: WFM I/Q at 1920000 S/s decodes stereo and RDS together
 PASS: WFM I/Q at 1920000 S/s retains over 23 dB stereo separation
+PASS: WFM I/Q at 2400000 S/s decodes stereo and RDS together
+PASS: WFM I/Q at 2400000 S/s retains over 23 dB stereo separation
 PASS: WFM I/Q at 3200000 S/s decodes stereo and RDS together
 PASS: WFM I/Q at 3200000 S/s retains over 23 dB stereo separation
 PASS: HD parses pinned decoder metadata and advertised services
@@ -479,6 +773,7 @@ PASS: Broadband noise produces no validated AX.25 packets
 PASS: NFM I/Q at 240000 S/s recovers the complete AX.25 packet
 PASS: NFM I/Q at 960000 S/s recovers the complete AX.25 packet
 PASS: NFM I/Q at 1920000 S/s recovers the complete AX.25 packet
+PASS: NFM I/Q at 2400000 S/s recovers the complete AX.25 packet
 PASS: NFM I/Q at 3200000 S/s recovers the complete AX.25 packet
 PASS: Packet pipeline labels replay/frequency/position and counts failed FCS separately
 PASS: A source discontinuity cannot combine two halves into a packet
@@ -610,14 +905,24 @@ PASS: Shared migration preserves A and imports B hierarchy
 PASS: Shared migration leaves legacy B file unchanged
 PASS: Receiver B import is persistent and runs only once
 PASS: Programmatic saved-marker selection does not tune either receiver
-PASS: Saved signal click sends its frequency, mode and filter only to its own receiver
-PASS: Clicking the same saved signal again requests tuning again
-PASS: Folder clicks, cancelled drags and mismatched release targets do not tune
+PASS: Selection preserves the clicked header visual so normal tree selection can complete
+PASS: Single click selects without tuning
+PASS: Double click tunes only the selected receiver with saved settings
+PASS: Later single click still does not tune
+PASS: Folder double clicks, cancelled drags and mismatched release targets do not tune
+PASS: Selected frequency editor opens and cancelling does not tune
 PASS: Shared save refreshes markers in both panels
 PASS: Shared-library refresh does not unexpectedly retune a receiver
 PASS: Stale library cannot overwrite another window's saved edit
 PASS: Shared delete refreshes both panels
 PASS: Shared undo refreshes both panels
+PASS: Shift Down extends frequency selection
+PASS: Hide markers applies to the selected range and notifies the spectrum
+PASS: Hidden marker state persists to disk
+PASS: Show markers restores the selected range without losing selection
+PASS: Repeated Shift Down preserves range anchor
+PASS: Shift Up contracts frequency range
+PASS: Delete removes the selected range only
 PASS: Malformed legacy input does not rewrite original files
 PASS: NIFOG reviewed tables contain 246 channel/plan rows and 236 distinct RF centers
 PASS: NIFOG frequencies are positive, sorted and grouped with source-page provenance
@@ -648,8 +953,9 @@ PASS: TV allocation endpoints include the VHF band gaps and current UHF limit
 PASS: TV overlay excludes allocation gaps and reserved RF 37
 PASS: RF 15 bounds, center and nominal ATSC 1.0 pilot agree with channel geometry
 PASS: TV boundaries are half-open and pilot references are optional, not detection
-PASS: TV and pilot controls persist independently of other overlays and survive theme changes
-PASS: TV hover identifies RF 15, its nominal pilot and allocation provenance
+PASS: TV pilot control is removed
+PASS: TV channel overlay persists without retired pilot references
+PASS: TV hover identifies RF 15 and provenance without retired pilot reference
 PASS: TV reference-bar clicks retain existing spectrum frequency mapping
 PASS: TV hover follows the bottom reference-bar placement
 PASS: All four reference layers render safely at compact heights and either placement
@@ -789,7 +1095,17 @@ PASS: Scanner Stop clears selection and hold state
 PASS: Locked scan scope does not follow signals outside the chosen viewport
 PASS: Manual override uses the integrated RF threshold instead of the auto margin
 PASS: Invalid scan preferences restore bounded defaults
+PASS: Explicit scan limits preserve the requested captured subrange
+PASS: Scan limits outside capture are rejected rather than silently clipped or retuned
+PASS: Capture-relative birdie follows the actual capture center
+PASS: Fixed birdie remains at its RF frequency after capture shifts
+PASS: Known birdie is excluded from automatic tuning and saved discoveries while other channels remain eligible
+PASS: Disabling birdie exclusion restores both detected channels
+PASS: Birdie list and exclusion toggle survive settings serialization
 PASS: Configured 6.25 kHz channel grid rounds an estimated center to the channel frequency
+PASS: 12.5 kHz grid with offset 0 preserves one centered discovery at 772.08125 MHz despite estimate jitter
+PASS: 12.5 kHz grid with offset 6250 preserves one centered discovery at 772.08125 MHz despite estimate jitter
+PASS: Explicit half-channel grid offset snaps to the actual channel center
 PASS: Capture reset discards old candidates and requires fresh calibration and explicit rearming
 PASS: Insufficient FFT resolution refuses a narrow-channel scan instead of inventing detail
 PASS: Local floor estimate follows frequency-dependent noise instead of one global threshold
@@ -798,9 +1114,18 @@ PASS: Discoveries deduplicate against existing signals and create one managed fo
 PASS: Discovery metadata preserves existing names, notes, protocols and folder placement
 PASS: Persistent discovery refresh updates last seen without duplicate burst counts
 PASS: Energy discoveries do not invent modulation or protocol identification
+PASS: New discoveries use a local-date subfolder
+PASS: Next-day discoveries get a new date folder while named user entries remain in place
+PASS: Batch deletion removes overlapping folder/child selections and entries in other folders atomically
+PASS: One Undo restores the entire multi-delete batch
 PASS: Automatic RF squelch preference persists without starting the scanner
 PASS: Real I/Q 4096-bin noise estimate matches demodulator channel power within 3 dB (-43.2 vs -43.3)
 PASS: Real I/Q 32768-bin noise estimate matches demodulator channel power within 3 dB (-43.1 vs -43.3)
+PASS: Explicit marker adjustment selects a single visible marker
+PASS: Cancel leaves saved marker unchanged
+PASS: Marker adjustment commits the preview frequency and original identity once
+PASS: Running scanner lock prevents marker adjustment
+PASS: Overlapping markers refuse ambiguous adjustment
 PASS: Locked scanner view rejects zoom and pan changes
 PASS: Stopping scanner restores spectrum zoom control
 PASS: Squelch checkbox migration preserves legacy OFF and explicit enabled state
@@ -825,6 +1150,12 @@ PASS: 1920000 S/s NFM preserves decimation state across uneven blocks
 PASS: 1920000 S/s WFM produces exactly 48 kHz audio
 PASS: 1920000 S/s WFM recovers the modulation tone
 PASS: 1920000 S/s WFM preserves decimation state across uneven blocks
+PASS: 2400000 S/s NFM produces exactly 48 kHz audio
+PASS: 2400000 S/s NFM recovers the modulation tone
+PASS: 2400000 S/s NFM preserves decimation state across uneven blocks
+PASS: 2400000 S/s WFM produces exactly 48 kHz audio
+PASS: 2400000 S/s WFM recovers the modulation tone
+PASS: 2400000 S/s WFM preserves decimation state across uneven blocks
 PASS: 3200000 S/s NFM produces exactly 48 kHz audio
 PASS: 3200000 S/s NFM recovers the modulation tone
 PASS: 3200000 S/s NFM preserves decimation state across uneven blocks
@@ -833,6 +1164,7 @@ PASS: 3200000 S/s WFM recovers the modulation tone
 PASS: 3200000 S/s WFM preserves decimation state across uneven blocks
 PASS: 960000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
 PASS: 1920000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
+PASS: 2400000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
 PASS: 3200000 S/s anti-alias filtering rejects an out-of-band carrier that would fold into the tuned channel
 PASS: Live-tuning fixture completes without hanging
 PASS: Retune command acknowledges new frequency and resumes audio in the same worker

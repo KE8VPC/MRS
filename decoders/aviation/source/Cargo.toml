@@ -1,0 +1,85 @@
+[workspace]
+members = ["crates/*"]
+exclude = ["legacy"]
+resolver = "2"
+
+[workspace.package]
+version = "0.21.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/airframesio/xng"
+authors = ["Kevin Elliott", "xng contributors"]
+
+[workspace.dependencies]
+anyhow = "1"
+rumqttc = { version = "0.25", default-features = false }
+chrono = { version = "0.4", features = ["serde"] }
+crc = "3"
+crossbeam-channel = "0.8"
+num-complex = "0.4"
+rayon = "1"
+rustfft = "6"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "io-util", "net", "signal", "sync", "fs", "process", "io-std"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+xng-types = { path = "crates/xng-types" }
+xng-dsp = { path = "crates/xng-dsp" }
+xng-sdr = { path = "crates/xng-sdr" }
+xng-mode-acars = { path = "crates/xng-mode-acars" }
+xng-mode-ais = { path = "crates/xng-mode-ais" }
+xng-mode-adsb = { path = "crates/xng-mode-adsb" }
+xng-proto = { path = "crates/xng-proto" }
+xng-acars = { path = "crates/xng-acars" }
+xng-mode-vdl2 = { path = "crates/xng-mode-vdl2" }
+xng-mode-aero = { path = "crates/xng-mode-aero" }
+xng-mode-stdc = { path = "crates/xng-mode-stdc" }
+xng-mode-hfdl = { path = "crates/xng-mode-hfdl" }
+xng-mode-iridium = { path = "crates/xng-mode-iridium" }
+xng-mode-uat = { path = "crates/xng-mode-uat" }
+xng-mode-sarsat = { path = "crates/xng-mode-sarsat" }
+xng-mode-dsc = { path = "crates/xng-mode-dsc" }
+xng-mode-navtex = { path = "crates/xng-mode-navtex" }
+xng-mode-sonde = { path = "crates/xng-mode-sonde" }
+xng-mode-adsl = { path = "crates/xng-mode-adsl" }
+xng-mode-atcs = { path = "crates/xng-mode-atcs" }
+xng-mode-aprs = { path = "crates/xng-mode-aprs" }
+xng-mode-pocsag = { path = "crates/xng-mode-pocsag" }
+xng-mode-eot = { path = "crates/xng-mode-eot" }
+xng-mode-flex = { path = "crates/xng-mode-flex" }
+xng-mode-vdes = { path = "crates/xng-mode-vdes" }
+prost = "0.13"
+tonic = "0.12"
+quinn = "0.11"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+ratatui = "0.30"
+rcgen = "0.13"
+rustls-pemfile = "2"
+tokio-stream = "0.1"
+webpki-roots = "0.26"
+zeromq = { version = "0.6.0", default-features = false, features = ["tokio-runtime", "tcp-transport", "ipc-transport"] }
+
+# DSP loopback tests are too slow unoptimized.
+[profile.test]
+opt-level = 2
+
+[package]
+name = "mrs-aviation"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+num-complex.workspace = true
+serde_json.workspace = true
+xng-types.workspace = true
+xng-mode-acars.workspace = true
+xng-mode-vdl2.workspace = true
+xng-mode-adsb.workspace = true
+xng-mode-uat.workspace = true
+
+xng-dsp.workspace = true
