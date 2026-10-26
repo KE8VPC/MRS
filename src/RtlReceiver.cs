@@ -46,6 +46,7 @@ internal sealed class RtlReceiver : IDisposable
     internal event Action<float[]>? Spectrum;
     internal event Action<byte[]>? Audio;
     internal event Action<IqFrame>? RawIq;
+    internal event Action<IqFrame,double>? TriggeredIq;
     internal event Action<double[]>? DataSamples;
     internal volatile bool CaptureData;
     internal event Action<byte[]>? StereoAudio;
@@ -239,6 +240,7 @@ internal sealed class RtlReceiver : IDisposable
                     if (recordingFailed) FinishIq();
                     RawIq?.Invoke(new IqFrame(0,AppliedFrequency,AppliedRate,block,AppliedBandwidth,IqSampleFormat.Unsigned8,AppliedChannel));
                     ProcessBlock(block, metadata.Rate, dsp, squelch);
+                    TriggeredIq?.Invoke(new IqFrame(0,AppliedFrequency,AppliedRate,block,AppliedBandwidth,IqSampleFormat.Unsigned8,AppliedChannel,AppliedGain,RequestedGain),ChannelDb);
                 }
             }
             catch (OperationCanceledException) { message = token.IsCancellationRequested ? "Receiver stopped." : "Receiver timed out. Check USB connection/driver and restart reception."; }

@@ -29,12 +29,7 @@ internal static class P25FrequencyDraft
     internal static FrequencyItem Create(P25Discovery discovery)
     {
         if(!CanCreate(discovery))throw new InvalidOperationException("Select a resolved live channel. Band bases, replay entries and unresolved channels cannot be saved as received stations.");
-        var id=discovery.Observation.P25Identity;
-        string identity=id==null?"":$"NAC {id.Nac:X3}"+(id.Wacn is int w?$" · WACN {w:X5}":"")+(id.SystemId is int s?$" · System {s:X3}":"")+(id.RfssId is int r?$" · RFSS {r}":"")+(id.SiteId is int site?$" · Site {site}":"");
-        string target=identity;
-        if(discovery.Observation.P25SiteAnnouncement is { } advertised)
-            target=(advertised.SystemId is int system?$"System {system:X3} · ":"")+$"RFSS {advertised.RfssId} · Site {advertised.SiteId} · target NAC not supplied";
-        return new FrequencyItem{Name=string.IsNullOrWhiteSpace(discovery.Name)?discovery.Label:discovery.Name,FrequencyHz=discovery.FrequencyHz!.Value,Mode="NFM",BandwidthHz=12500,Protocols="P25",Signaling=target,Tags="P25 discovery",
-            Notes=(string.IsNullOrWhiteSpace(discovery.Notes)?"":discovery.Notes+"\n\n")+$"Decoded label: {discovery.Label}\nDiscovery type: {discovery.Category}\nReceiving system context: {identity}\nLast observed: {discovery.LastSeen:O}\nSource: {discovery.Observation.Source}\nMonitored input: {discovery.Observation.FrequencyHz} Hz\nLatest announcement: {discovery.Observation.Information}\nSaved announcement; not proof of current activity. P25 voice playback and automatic following are not implemented."};
+        var channel=SiteChannelData.FromP25(discovery)??throw new InvalidOperationException("No resolved live channel.");
+        return channel.Draft(discovery.Name,discovery.Notes);
     }
 }

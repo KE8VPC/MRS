@@ -24,3 +24,5 @@ smoke-profile/
 runtime-v*/
 __pycache__/
 *.pyc
+
+decoders/voice/Sources/objects/

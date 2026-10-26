@@ -23,6 +23,7 @@ internal static class P25Tests
     }
     internal static void Run(Action<bool,string> check)
     {
+        VoiceIdTests.Run(check);
         check(P25Framer.EncodeNid(0x2937)==0x2937F88514ABAECC,"P25 BCH encoder agrees with independent OP25 NID vector");
         for(int bits=0;bits<=4;bits++)check(P25Framer.DecodeNid(0x2937F88514ABAECC^((1UL<<bits)-1),out int nac,out int duid,out int errors)&&nac==0x293&&duid==7&&errors==bits,$"P25 NID corrects {bits} bit errors within the conservative limit");
         check(!P25Framer.DecodeNid(0x2937F88514ABAECC^31,out _,out _,out _),"P25 NID rejects five errors beyond the preview correction limit");

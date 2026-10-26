@@ -28,7 +28,7 @@ internal sealed class AviationPipeline : IDisposable
         double width=mode switch{"acars"=>15000,"vdl2"=>25000,"adsb"=>2000000,_=>1600000};
         int minimum=mode switch{"acars"=>24000,"vdl2"=>50000,"adsb"=>2000000,_=>2083334};
         if(frame.Rate<minimum)return $"{mode}: needs at least {minimum:N0} samples/s";
-        if(Math.Abs((double)target-frame.Frequency)+width/2>Math.Min(frame.Rate,frame.Capture.UsableBandwidthHz)/2)return "Target channel does not fit the usable I/Q capture; tune capture closer or increase sample rate";
+        if(Math.Abs((double)target-frame.Frequency)+width/2>Math.Min(frame.Rate,frame.Capture.UsableBandwidthHz)/2)return $"Target channel does not fit: center {frame.Frequency/1e6:0.######} MHz · usable {frame.Capture.UsableBandwidthHz/1e6:0.###} MHz · required {width/1e6:0.###} MHz around {target/1e6:0.######} MHz. "+(frame.Capture.UsableBandwidthHz==1750000?"Check the HF hardware filter (1.75 MHz); disable it and use 9.6 MS/s on HackRF. ":"")+"Use Check / setup receiver for recommendations.";
         if(mode=="adsb"&&target!=1090000000||mode=="uat"&&target!=978000000)return "Use 1090 MHz for ADS-B or 978 MHz for UAT";
         return null;
     }

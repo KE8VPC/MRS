@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,12 +8,17 @@ using System.Windows.Media.Imaging;
 namespace MRS;
 public sealed class SpectrumView : FrameworkElement
 {
+    internal CsvBandPlans? FilePlans;
+    private CsvPlanMarker[] CsvVisible=>FilePlans?.Visible(Start,Start+Span,settings).Where(m=>m.Low!=m.High||settings.ShowChannelMarkers).ToArray()??[];
+
     private readonly WaterfallHistory history = new();
     private float[]? current, peak;
     private Point? pointer;
     private Point? dragOrigin;
     private FrequencyViewport dragView;
     private bool dragged;
+    private bool resizingSplit;
+    private bool OnDivider(Point p)=>p.X>=52&&Math.Abs(p.Y-(WaterTop-7))<=5;
     private FrequencyItem? adjustingMarker;
     private long adjustedHz;
     public event Action<Guid,long,long>? MarkerMoveRequested;
@@ -37,10 +42,14 @@ public sealed class SpectrumView : FrameworkElement
     private bool rf;
     // Preserve room for the plot, axis and waterfall in compact receiver windows.
     // Settings remain enabled; reference rows return when the panel grows.
-    private double RequestedPlanHeight => (settings.ShowBandPlan ? 44 : 0) + (settings.ShowArrlPlan ? 62 : 0) + (settings.ShowNifogPlan ? 44 : 0) + (settings.ShowTvPlan ? 44 : 0);
-    private double PlanHeight => rf && ActualHeight >= Math.Max(240,RequestedPlanHeight+140) ? RequestedPlanHeight : 0;
+    private bool HasUs => settings.ShowBandPlan && (UsBandPlan.VisibleBands(Start,Start+Span).Any() || settings.ShowChannelMarkers&&UsBandPlan.VisibleChannels(Start,Start+Span).Any());
+    private bool HasArrl => settings.ShowArrlPlan && ArrlPlan.Visible(Start,Start+Span).Any();
+    private bool HasNifog => settings.ShowNifogPlan && NifogPlan.Visible(Start,Start+Span).Any();
+    private bool HasTv => settings.ShowTvPlan && TvBandPlan.Visible(Start,Start+Span).Any();
+    private double RequestedPlanHeight => FilePlans!=null ? (CsvVisible.Length>0?44:0) : (HasUs?44:0)+(HasArrl?62:0)+(HasNifog?44:0)+(HasTv?44:0);
+    private double PlanHeight => rf&&!settings.HidePlans&&ActualHeight>=240 ? (settings.ExpandPlans?Math.Min(RequestedPlanHeight,ActualHeight*.4):Math.Min(44,RequestedPlanHeight)) : 0;
     private double MpxReferenceHeight => !rf && basebandName == "MPX" ? 42 : 0;
-    private double PlotHeight => Math.Max(20, ActualHeight * .38 - PlanHeight - MpxReferenceHeight);
+    private double PlotHeight => Math.Max(24, (ActualHeight - PlanHeight - MpxReferenceHeight - 62) * settings.SpectrumFraction);
     private double PlotTop => 16 + MpxReferenceHeight + (settings.BandPlanAtBottom ? 0 : PlanHeight);
     private double PlanTop => settings.BandPlanAtBottom ? 16 + PlotHeight + 38 : 16;
     private double WaterTop => 16 + PlotHeight + 38 + PlanHeight + MpxReferenceHeight;
@@ -68,7 +77,7 @@ public sealed class SpectrumView : FrameworkElement
     internal double CaptureCenter => captureStart + captureSpan / 2;
     internal double FullSpan => Math.Max(1, UsableStart + usableSpan - DisplayStart);
     internal double TunedCenter => channel?.Frequency ?? CaptureCenter;
-    internal void SetChannel(ChannelSettings value) { channel = value; receiveMode = value.Mode; InvalidateVisual(); }
+    internal void SetChannel(ChannelSettings value) { channel = value; receiveMode = value.Mode; Configure(settings); }
     internal bool IsRf => rf;
     internal void CenterView() { var view = View.CenterOn(TunedCenter); Configure(settings with { Pan = view.Pan }); }
     public event Action<DisplaySettings>? SettingsChanged;
@@ -83,6 +92,7 @@ public sealed class SpectrumView : FrameworkElement
         var next = value.Normalize();
         if(InteractionLocked)next=next with{Zoom=settings.Zoom,Pan=settings.Pan};
         if (next.PeakHold != settings.PeakHold) peak = current == null ? null : (float[])current.Clone();
+        if(rf&&channel!=null&&!InteractionLocked&&next.ViewMode!=2){var v=new FrequencyViewport(DisplayStart,FullSpan,next.Zoom,next.Pan);if(next.ViewMode==1||TunedCenter<v.Start+v.Span*.12||TunedCenter>v.Start+v.Span*.88)next=next with{Pan=v.CenterOn(TunedCenter).Pan};}
         settings = next; InvalidateVisual(); SettingsChanged?.Invoke(settings);
     }
     public void ResetPeak() { peak = current == null ? null : (float[])current.Clone(); InvalidateVisual(); }
@@ -90,9 +100,9 @@ public sealed class SpectrumView : FrameworkElement
     internal void SetRf(double center, int rate = RtlNative.SampleRate, bool allowTuning = true, double usableBandwidth = 0)
     {
         if (!double.IsFinite(center) || rate <= 0 || !double.IsFinite(usableBandwidth) || usableBandwidth < 0 || usableBandwidth > rate) throw new ArgumentOutOfRangeException(nameof(usableBandwidth));
-        bool keepHistory = rf;
+        bool keepHistory = rf;double previousCenter=VisibleCenter;
         FinishMarkerAdjustment(false); rf = true; canTune = allowTuning; captureStart = center - rate / 2.0; captureSpan = rate; usableSpan = usableBandwidth == 0 ? rate : usableBandwidth;
-        channel = null; if (!keepHistory) Clear(); else { current = peak = null; lastFrame = 0; InvalidateVisual(); } CaptureSpanChanged?.Invoke(FullSpan);
+        channel = null; if(keepHistory&&settings.ViewMode!=1)settings=settings with{Pan=View.CenterOn(previousCenter).Pan}; if (!keepHistory) Clear(); else { current = peak = null; lastFrame = 0; InvalidateVisual(); } CaptureSpanChanged?.Invoke(FullSpan);
     }
     internal void SetAudio() { FinishMarkerAdjustment(false); rf = false; basebandName = "Audio"; channel = null; captureStart = 0; captureSpan = usableSpan = AudioEngine.Rate / 2.0; Clear(); CaptureSpanChanged?.Invoke(captureSpan); }
     internal void SetBaseband(int rate, string name = "Audio") { SetAudio(); basebandName = name; captureSpan = usableSpan = rate / 2.0; CaptureSpanChanged?.Invoke(captureSpan); }
@@ -100,16 +110,16 @@ public sealed class SpectrumView : FrameworkElement
     {
         if (ActualWidth < 100 || ActualHeight < 140 || p.X < 52 || p.X > ActualWidth - 20) return null;
         double bottom = PlotTop + PlotHeight;
-        if (!(InPlan(p) || p.Y >= PlotTop && p.Y <= bottom || p.Y >= WaterTop && p.Y <= ActualHeight - 46)) return null;
+        if (!(InPlan(p) || p.Y >= PlotTop && p.Y <= bottom || p.Y >= WaterTop && p.Y <= ActualHeight - 8)) return null;
         return View.Frequency((p.X - 52) / (ActualWidth - 72));
     }
     public SpectrumView()
     {
         Focusable = true;
         ToolTipService.SetShowDuration(this,30000);
-        MouseMove += (_, e) => { var point = e.GetPosition(this); if(adjustingMarker!=null)PreviewMarkerAdjustment(point);else ContinueDrag(point); SetPointer(point); };
-        MouseLeftButtonDown += (_, e) => { if (FrequencyAt(e.GetPosition(this)) == null) return; if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)){if(BeginMarkerAdjustment(e.GetPosition(this))){CaptureMouse();Focus();}e.Handled=true;return;} BeginDrag(e.GetPosition(this)); CaptureMouse(); Focus(); e.Handled = true; };
-        LostMouseCapture += (_, _) => {dragOrigin = null;FinishMarkerAdjustment(false);};
+        MouseMove += (_, e) => { var point = e.GetPosition(this); if(resizingSplit){Configure(settings with{SpectrumFraction=(point.Y-47-PlanHeight-MpxReferenceHeight)/Math.Max(1,ActualHeight-PlanHeight-MpxReferenceHeight-62)});e.Handled=true;return;} Cursor=OnDivider(point)?Cursors.SizeNS:Cursors.Arrow; if(adjustingMarker!=null)PreviewMarkerAdjustment(point);else ContinueDrag(point); SetPointer(point); };
+        MouseLeftButtonDown += (_, e) => { if(OnDivider(e.GetPosition(this))){resizingSplit=true;CaptureMouse();e.Handled=true;return;} if (FrequencyAt(e.GetPosition(this)) == null) return; if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)){if(BeginMarkerAdjustment(e.GetPosition(this))){CaptureMouse();Focus();}e.Handled=true;return;} BeginDrag(e.GetPosition(this)); CaptureMouse(); Focus(); e.Handled = true; };
+        LostMouseCapture += (_, _) => {resizingSplit=false;dragOrigin = null;FinishMarkerAdjustment(false);};
         MouseLeave += (_, _) => SetPointer(null);
         MouseWheel += (_, e) =>
         {
@@ -117,8 +127,8 @@ public sealed class SpectrumView : FrameworkElement
             var p = e.GetPosition(this); if (FrequencyAt(p) == null) return;
             if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)&&InPlan(p)&&ToolTip is ReferenceToolTip {IsOpen:true} detail)
             {detail.Scroll(e.Delta);e.Handled=true;return;}
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) Configure(settings with { Pan = settings.Pan + (e.Delta > 0 ? -.08 : .08) });
-            else { var zoom = View.ZoomAt(settings.Zoom * (e.Delta > 0 ? 1.5 : 1 / 1.5), (p.X - 52) / (ActualWidth - 72)); Configure(settings with { Zoom = zoom.Zoom, Pan = zoom.Pan }); }
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) Configure(settings with { ViewMode=2, Pan = settings.Pan + (e.Delta > 0 ? -.08 : .08) });
+            else { var zoom = View.ZoomAt(settings.Zoom * (e.Delta > 0 ? 1.5 : 1 / 1.5), settings.ViewMode==1?View.Fraction(TunedCenter):(p.X - 52) / (ActualWidth - 72)); Configure(settings with { Zoom = zoom.Zoom, Pan = zoom.Pan }); }
             e.Handled = true;
         };
         KeyDown += (_, e) =>
@@ -128,8 +138,8 @@ public sealed class SpectrumView : FrameworkElement
             {
                 case Key.Add: case Key.OemPlus: CenterZoom(1.5); break;
                 case Key.Subtract: case Key.OemMinus: CenterZoom(1 / 1.5); break;
-                case Key.Left: Configure(settings with { Pan = settings.Pan - .05 }); break;
-                case Key.Right: Configure(settings with { Pan = settings.Pan + .05 }); break;
+                case Key.Left: Configure(settings with { ViewMode=2, Pan = settings.Pan - .05 }); break;
+                case Key.Right: Configure(settings with { ViewMode=2, Pan = settings.Pan + .05 }); break;
                 case Key.Home: ResetView(); break;
                 default: return;
             }
@@ -138,13 +148,18 @@ public sealed class SpectrumView : FrameworkElement
         MouseRightButtonUp += (_, e) =>
         {
             if (!rf || FrequencyAt(e.GetPosition(this)) is not { } hz) return;
-            var menu = new ContextMenu(); var save = new MenuItem { Header = $"Save {hz / 1000000:F6} MHz…" };
+            var menu = new ContextMenu();
+            var hide=new MenuItem{Header="Show band-plan strips",IsCheckable=true,IsChecked=!settings.HidePlans};hide.Click+=(_,_)=>Configure(settings with{HidePlans=!hide.IsChecked});menu.Items.Add(hide);
+            var expand=new MenuItem{Header="Expand band-plan details",IsCheckable=true,IsChecked=settings.ExpandPlans};expand.Click+=(_,_)=>Configure(settings with{ExpandPlans=expand.IsChecked});menu.Items.Add(expand);
+            var stats=new MenuItem{Header=$"{BinCount:N0} bins · {(BinCount>0?captureSpan/BinCount:0):0.##} Hz/bin · {settings.HistorySeconds:0.#} s history",IsEnabled=false};menu.Items.Add(stats);
+            var save = new MenuItem { Header = $"Save {hz / 1000000:F6} MHz…" };
             save.Click += (_, _) => SaveFrequencyRequested?.Invoke((long)Math.Round(hz)); menu.Items.Add(save);
             menu.PlacementTarget = this; menu.IsOpen = true; e.Handled = true;
         };
         MouseLeftButtonUp += (_, e) =>
         {
             Focus();
+            if(resizingSplit){resizingSplit=false;ReleaseMouseCapture();e.Handled=true;return;}
             if(adjustingMarker!=null){PreviewMarkerAdjustment(e.GetPosition(this));FinishMarkerAdjustment(FrequencyAt(e.GetPosition(this))!=null);ReleaseMouseCapture();e.Handled=true;return;}
             EndDrag(e.GetPosition(this), Keyboard.Modifiers.HasFlag(ModifierKeys.Control)); ReleaseMouseCapture(); e.Handled = true;
         };
@@ -158,7 +173,7 @@ public sealed class SpectrumView : FrameworkElement
         if (Math.Abs(point.X - origin.X) >= SystemParameters.MinimumHorizontalDragDistance || Math.Abs(point.Y - origin.Y) >= SystemParameters.MinimumVerticalDragDistance) dragged = true;
         if (!dragged || ActualWidth <= 72) return;
         var next = dragView.Drag((point.X - origin.X) / (ActualWidth - 72));
-        Configure(settings with { Pan = next.Pan });
+        Configure(settings with { ViewMode=2, Pan = next.Pan });
     }
     internal void EndDrag(Point point, bool selectMarker = false)
     {
@@ -169,17 +184,19 @@ public sealed class SpectrumView : FrameworkElement
     internal void ClickAt(Point point, bool selectMarker = false)
     {
         if (!rf || FrequencyAt(point) is not { } hz) return;
-        if (!selectMarker) { if (canTune) TuneRequested?.Invoke((long)Math.Round(hz)); return; }
+        if (!selectMarker) { if (canTune) TuneRequested?.Invoke(SnapFrequency(hz)); return; }
         var nearest = markers.Where(m => InView(m.FrequencyHz)).MinBy(m => Math.Abs(m.FrequencyHz - hz));
         if (nearest != null && Math.Abs(nearest.FrequencyHz - hz) / Span * (ActualWidth - 72) <= 6) MarkerSelected?.Invoke(nearest.Id);
     }
+    internal long SnapFrequency(double hz){double tolerance=Span*8/Math.Max(1,ActualWidth-72);var channels=FilePlans?.Visible(hz-tolerance,hz+tolerance,settings).Where(m=>m.Low==m.High&&!m.Uplink&&!m.Grid).Select(m=>m.Low)??UsBandPlan.Channels.Select(c=>c.Frequency);return TuneSnap.Apply(hz,settings.SnapMode,settings.SnapStepHz,channels,tolerance);}
     private void CenterZoom(double factor) { var view = View.ZoomAt(settings.Zoom * factor, .5); Configure(settings with { Zoom = view.Zoom, Pan = view.Pan }); }
     internal void SetPointer(Point? position)
     {
         pointer = position;
-        ToolTip = null;
+        ToolTip = rf && canTune && position is {} tunePoint && FrequencyAt(tunePoint) is {} tuneHz && settings.SnapMode!=0 ? $"Click tunes {SnapFrequency(tuneHz)/1000000.0:F6} MHz (snapped)" : null;
         if (rf && PlanHeight > 0 && position is { } p && InPlan(p) && FrequencyAt(p) is { } hz)
         {
+            if(FilePlans!=null){double tolerance=Span*8/Math.Max(1,ActualWidth-72);ToolTip=string.Join("\n\n",FilePlans.Visible(hz-tolerance,hz+tolerance,settings).Take(20).Select(m=>$"{m.Label} · {m.Plan}\n{m.Detail}"));InvalidateVisual();return;}
             var lines = (settings.ShowBandPlan ? UsBandPlan.VisibleBands(hz, hz + 1) : []).Select(b => $"{b.Name}: {b.Low/1000000.0:0.######}–{b.High/1000000.0:0.######} MHz\n{b.Source}").ToList();
             var nearest = (settings.ShowBandPlan && settings.ShowChannelMarkers ? UsBandPlan.Channels : []).Where(c => InView(c.Frequency)).OrderBy(c => Math.Abs(c.Frequency-hz)).FirstOrDefault();
             if (nearest != null && Math.Abs(nearest.Frequency-hz)/Span*(ActualWidth-72) <= 8)
@@ -240,13 +257,19 @@ public sealed class SpectrumView : FrameworkElement
         double left = 52, plotWidth = width - 72, top = PlotTop, plotHeight = PlotHeight;
         if (PlanHeight > 0)
         {
+            if(FilePlans!=null)DrawCsvPlans(dc,left,plotWidth,PlanTop);
+            else if(!settings.ExpandPlans)DrawCompactPlans(dc,left,plotWidth,PlanTop);
+            else {
             double rowTop=PlanTop;
-            if(settings.ShowBandPlan){DrawBandPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
-            if(settings.ShowArrlPlan){DrawArrlPlan(dc,left,plotWidth,rowTop);rowTop+=62;}
-            if(settings.ShowNifogPlan){DrawNifogPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
-            if(settings.ShowTvPlan)DrawTvPlan(dc,left,plotWidth,rowTop);
+            dc.PushClip(new RectangleGeometry(new Rect(left,PlanTop,plotWidth,PlanHeight)));
+            if(HasUs){DrawBandPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
+            if(HasArrl){DrawArrlPlan(dc,left,plotWidth,rowTop);rowTop+=62;}
+            if(HasNifog){DrawNifogPlan(dc,left,plotWidth,rowTop);rowTop+=44;}
+            if(HasTv)DrawTvPlan(dc,left,plotWidth,rowTop);
+            dc.Pop();}
+
         }
-        double waterTop = WaterTop, waterHeight = Math.Max(1, height - waterTop - 46);
+        double waterTop = WaterTop, waterHeight = Math.Max(1, height - waterTop - 8);
         double levelTop = settings.AutoSpectrum ? autoHigh : settings.SpectrumTop;
         double levelRange = settings.AutoSpectrum ? Math.Max(20, autoHigh - autoLow) : settings.SpectrumRange;
         var gridPen = new Pen(ColorBrush(settings.Grid), 1);
@@ -299,12 +322,12 @@ public sealed class SpectrumView : FrameworkElement
         DrawWaterfall(dc, new Rect(left, waterTop, plotWidth, waterHeight));
         for (int tick = 0; tick <= 4; tick++) Label(dc, (settings.HistorySeconds * tick / 4).ToString("0.#", CultureInfo.InvariantCulture) + "s", 6, waterTop + waterHeight * tick / 4 - 6);
         if (current == null) Label(dc, rf ? "Waiting for receiver data…" : "Start a source or load a test tone", left + 12, waterTop + 25);
-        DrawMarkers(dc, left, plotWidth, top, plotHeight, waterTop, height - 46);
+        DrawMarkers(dc, left, plotWidth, top, plotHeight, waterTop, height - 8);
+        if(rf&&!settings.HidePlans&&FilePlans!=null)DrawCsvChannelLines(dc,left,plotWidth,top,plotHeight);
         if(MpxReferenceHeight>0) DrawMpxReferences(dc,left,plotWidth,top,plotHeight,waterTop,waterTop+waterHeight);
-        DrawPointer(dc, left, plotWidth, top, plotHeight, waterTop, height - 46);
-        string units = rf ? "RF MHz · relative display dB" : basebandName == "MPX" ? "MPX kHz · relative display dB" : "Audio kHz · display dBFS";
-        Label(dc, $"{units} · {settings.Zoom:0.#}× zoom{(rf && current != null ? $" · {captureSpan/current.Length:0.##} Hz/bin · {current.Length:N0} bins" : "")} · {settings.HistorySeconds:0.#}s history{(MpxReferenceHeight>0 ? " · Markers: reference positions, not detections" : "")}", left, height - 30);
-        Label(dc, rf ? (canTune ? "Click: tune  |  Drag: pan  |  Ctrl+click: marker  |  Alt+drag: correct marker  |  Wheel: zoom" : "I/Q replay: recorded coverage  |  Drag: pan  |  Wheel: zoom") : "Drag: pan  |  Wheel: zoom  |  Home: full span", left, height - 16);
+        DrawPointer(dc, left, plotWidth, top, plotHeight, waterTop, height - 8);
+        dc.DrawRectangle(ColorBrush(settings.Grid),null,new Rect(left,waterTop-10,plotWidth,6));
+
     }
     private void DrawMpxReferences(DrawingContext dc,double left,double width,double top,double plotHeight,double waterTop,double bottom)
     {
@@ -330,6 +353,35 @@ public sealed class SpectrumView : FrameworkElement
             var label=Text(marker.Name,10,brush);double lx=Math.Clamp(x-label.Width/2,left,Math.Max(left,left+width-label.Width));
             if(lx>=lastRight+4 && label.Width<=width){dc.DrawText(label,new Point(lx,37));lastRight=lx+label.Width;}
         }
+    }
+    private void DrawCsvPlans(DrawingContext dc,double left,double width,double top)
+    {
+        double[] end={left,left};dc.PushClip(new RectangleGeometry(new Rect(left,top,width,PlanHeight)));
+        foreach(var group in CsvVisible.GroupBy(m=>(m.Low,m.High)).OrderBy(g=>g.Key.Low)){
+            var m=group.First();double x=Math.Max(left,left+View.Fraction(m.Low)*width),right=Math.Min(left+width,left+View.Fraction(m.High)*width);int lane=Array.FindIndex(end,e=>e<=x);if(lane<0)continue;
+            string title=m.Label+(group.Count()>1?$" (+{group.Count()-1})":"");var label=Text(title,10,ColorBrush(m.Grid?settings.Grid:settings.Text));double w=m.Low==m.High?Math.Min(label.Width+8,left+width-x):Math.Max(1,right-x);if(w<=0)continue;
+            var rect=new Rect(x,top+lane*21,w,19);var markerColor=m.Color.Length>0?m.Color:settings.Marker;var fill=ColorBrush(markerColor).Clone();fill.Opacity=.15;dc.DrawRectangle(fill,new Pen(ColorBrush(m.Grid?settings.Grid:markerColor),.7),rect);dc.PushClip(new RectangleGeometry(rect));DrawPlanLabel(dc,title,rect,10);dc.Pop();end[lane]=x+w+3;
+        }dc.Pop();
+    }
+    private void DrawCsvChannelLines(DrawingContext dc,double left,double width,double top,double height)
+    {
+        foreach(var group in CsvVisible.Where(m=>m.Low==m.High).GroupBy(m=>m.Low).Take(600)){
+            double x=left+View.Fraction(group.Key)*width;bool grid=group.All(m=>m.Grid);var pen=new Pen(ColorBrush(grid?settings.Grid:group.First().Color.Length>0?group.First().Color:settings.Marker),.65);if(grid)pen.DashStyle=DashStyles.Dash;dc.DrawLine(pen,new Point(x,top),new Point(x,top+height));
+        }
+    }
+    private void DrawCompactPlans(DrawingContext dc,double left,double width,double top)
+    {
+        var items=new List<(double Low,double High,string Label)>();
+        if(HasUs){items.AddRange(UsBandPlan.VisibleBands(Start,Start+Span).Select(b=>((double)b.Low,(double)b.High,b.Name)));if(settings.ShowChannelMarkers)items.AddRange(UsBandPlan.VisibleChannels(Start,Start+Span).Select(c=>((double)c.Frequency,(double)c.Frequency,c.Name)));}
+        if(HasArrl)items.AddRange(ArrlPlan.Visible(Start,Start+Span).Select(b=>((double)b.Low,(double)b.High,b.Label)));
+        if(HasNifog)items.AddRange(NifogPlan.Visible(Start,Start+Span).Select(c=>((double)c.Frequency,(double)c.Frequency,c.Name)));
+        if(HasTv)items.AddRange(TvBandPlan.Visible(Start,Start+Span).Select(c=>((double)c.Low,(double)c.High,$"TV RF {c.Number}")));
+        double[] occupied={left,left};
+        dc.PushClip(new RectangleGeometry(new Rect(left,top,width,PlanHeight)));
+        foreach(var item in items){double x=Math.Max(left,left+View.Fraction(item.Low)*width),right=Math.Min(left+width,left+View.Fraction(item.High)*width);int lane=Array.FindIndex(occupied,end=>end<=x);if(lane<0)continue;
+            var label=Text(item.Label,10,ColorBrush(settings.Text));double w=item.High>item.Low?Math.Max(1,right-x):Math.Min(label.Width+8,left+width-x);if(w<=0)continue;
+            var rect=new Rect(x,top+lane*21,w,19);var fill=ColorBrush(settings.Marker).Clone();fill.Opacity=.18;dc.DrawRectangle(fill,new Pen(ColorBrush(settings.Marker),.7),rect);dc.PushClip(new RectangleGeometry(rect));DrawPlanLabel(dc,item.Label,rect,10);dc.Pop();occupied[lane]=x+w+3;}
+        dc.Pop();
     }
     private void DrawBandPlan(DrawingContext dc, double left, double width, double top)
     {

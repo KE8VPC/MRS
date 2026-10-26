@@ -22,6 +22,7 @@ public sealed class AudioEngine : IDisposable
     private long processedSamples;
     internal event Action<byte[],int,int,double>? PcmReady;
     internal event Action? PcmBoundary;
+    internal event Action<byte[],int>? RecordingAudio;
     private WaveFormat RecordingFormat => new(Rate, 16, externalChannels);
     private static WaveFormat ListeningFormat => new(Rate, 16, 2);
     public volatile bool Monitor;
@@ -111,6 +112,7 @@ public sealed class AudioEngine : IDisposable
                 var samples = new float[count / 2];
                 for (int i = 0; i < samples.Length; i++) samples[i] = (short)(bytes[2 * i] | bytes[2 * i + 1] << 8) / 32768f;
                 double level = SignalMath.Level(samples);
+                if(RecordingAudio!=null)RecordingAudio.Invoke(SignalMath.ListeningPcm(samples,level,Squelch,1,rfGateOpen),channels);
                 if (Monitor && buffer != null)
                 {
                     var listen = SignalMath.ListeningPcm(samples, level, Squelch, Volume, rfGateOpen);

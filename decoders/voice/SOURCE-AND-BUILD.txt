@@ -1,0 +1,18 @@
+M.R.S. minimal P25 voice bridge — 2026-10-21
+
+Native binary: mrs_voice.dll, Windows x64.
+SHA256: 8DDF975DBC40BB3350F7CE0198B33B483715CBEDE5459CF9A8C9B3D73BA4B676
+Dependencies inspected with objdump: KERNEL32.dll and msvcrt.dll only.
+
+Sources/dsd: https://github.com/szechyjs/dsd revision 59423fa
+Downloaded source archive SHA256: 35F0A7E58BA95B9624B38D1372C28E46DBEDFCB9D02DAAE53F4840AB9D02A256
+Sources/mbelib: https://github.com/szechyjs/mbelib revision 9a04ed5
+Downloaded source archive SHA256: C99B3D3CDB1B96F86D855B82AE9D55A88050FDF38BE705FDB64336FA5259A573
+
+Copyright/license texts remain in each upstream source tree. mbelib and the DSD P25/FEC files used in this bridge have ISC-style licenses. The full DSD source tree also includes unrelated GPL D-Star files; these are not linked. See dsd/COPYRIGHT for the exact per-file terms and retained third-party notices.
+
+Build with PowerShell and a MinGW-w64 x64 GCC toolchain:
+  ./Sources/build.ps1 -Toolchain C:/path/to/mingw64/bin
+The script builds mbelib C files and the minimal C++ wrapper plus DSD P25 FEC/Hamming files. It statically links compiler runtimes. Generated objects go under Sources/objects and are excluded from releases. No DSD executable or DSD-FME runtime is used.
+
+mrs_voice.cpp exposes per-stream IMBE state, frame synthesis and P25 metadata FEC. The metadata encoder is for synthetic tests only. No radio hardware or transmit API is included. The host serializes FEC operations because upstream RS helpers retain mutable state. No encryption-key handling/decryption is implemented.

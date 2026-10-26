@@ -1,0 +1,10 @@
+DSD-FME digital voice helper
+Pinned binary: AW 2026-34-g69d3115, upstream Cygwin portable release downloaded as dsd-fme-20260715.zip.
+Project and matching source: https://github.com/lwvmobile/dsd-fme/tree/69d3115
+The matching source archive and upstream COPYRIGHT are included. No source modification is made.
+DEPENDENCIES.txt is the transitive PE DLL import closure; unrelated portable tools, keys, sample CSVs and shell executables are not bundled.
+M.R.S. launches only stdin/stdout PCM mode. No RTL hardware, TCP, UDP, rigctl, trunking, key, file logging, or reverse-mute options are passed.
+Dependency source projects: Cygwin (https://cygwin.com), GCC runtime (https://gcc.gnu.org), mbelib (https://github.com/lwvmobile/mbelib), Codec2 (https://github.com/drowe67/codec2), rtl-sdr (https://osmocom.org/projects/rtl-sdr), libusb (https://libusb.info), libsndfile (https://libsndfile.github.io/libsndfile), PulseAudio (https://www.freedesktop.org/wiki/Software/PulseAudio), D-Bus (https://www.freedesktop.org/wiki/Software/dbus), X.org libraries (https://www.x.org), FLAC/Ogg/Vorbis/Opus (https://xiph.org), LAME (https://lame.sourceforge.io), mpg123 (https://mpg123.org), GNU libiconv/gettext/ncurses (https://www.gnu.org).
+Cygwin binary/source package distributions: https://cygwin.com/packages/
+Binary SHA256: 28992D572B7196D601F6DF79608CDD51ECC6EBC183939D2AC5A2D254CDD8D2B5
+Source archive SHA256: 573D162A36052660E7593A57A48AA9BACE3BAD19B1A11733C811746FEB5B0B74

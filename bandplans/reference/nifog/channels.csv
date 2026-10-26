@@ -1,0 +1,2250 @@
+"downlink_mhz","label","source"
+"39.46","LLAW1 / LLAW1D +1","LLAW1 · Low band · Mobile RX / normally repeater output
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 39.46000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.86000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LLAW1D · Low band · Simplex / direct
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 39.46000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.46000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LLAW3 · Low band · Mobile TX / normally repeater input
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 45.86000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.46000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)"
+"39.48","LFIRE2 (proposed) / LFIRE2D (proposed) +1","LFIRE2 · Low band · Mobile RX / normally repeater output
+Fire* · Analog FM (5 kHz deviation)
+Mobile RX: 39.48000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.88000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LFIRE2D · Low band · Simplex / direct
+Fire* · Analog FM (5 kHz deviation)
+Mobile RX: 39.48000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.48000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LFIRE4 · Low band · Mobile TX / normally repeater input
+Fire* · Analog FM (5 kHz deviation)
+Mobile RX: 45.88000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.48000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)"
+"45.86","LLAW1 TX / LLAW3 +1","LLAW1 · Low band · Mobile TX / normally repeater input
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 39.46000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.86000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LLAW3 · Low band · Mobile RX / normally repeater output
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 45.86000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.46000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LLAW3D · Low band · Simplex / direct
+Law Enforcement · Analog FM (5 kHz deviation)
+Mobile RX: 45.86000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.86000 MHz · CTCSS 156.7 Hz
+
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)"
+"45.88","LFIRE2 (proposed) TX / LFIRE4 (proposed) +1","LFIRE2 · Low band · Mobile TX / normally repeater input
+Fire* · Analog FM (5 kHz deviation)
+Mobile RX: 39.48000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.88000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LFIRE4 · Low band · Mobile RX / normally repeater output
+Fire* · Analog FM (5 kHz deviation)
+Mobile RX: 45.88000 MHz · CTCSS 156.7 Hz
+Mobile TX: 39.48000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)
+
+LFIRE4D · Low band · Simplex / direct
+Fire · Analog FM (5 kHz deviation)
+Mobile RX: 45.88000 MHz · CTCSS 156.7 Hz
+Mobile TX: 45.88000 MHz · CTCSS 156.7 Hz
+Source labels LFIRE2/2D and LFIRE4 proposed; 39.4800 MHz pending exclusive fire intersystem assignment in this edition.
+CISA NIFOG 2.02 (January 2025), p. 28 (PDF p. 35)"
+"122.85","MULTICOM south/west","MULTICOM south/west · SAR operations · Simplex / direct
+Air deconfliction; not tests/exercises · AM
+Mobile RX: 122.85000 MHz · See local plan
+Mobile TX: 122.85000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"122.9","MULTICOM north/east","MULTICOM north/east · SAR operations · Simplex / direct
+Air deconfliction · AM
+Mobile RX: 122.90000 MHz · See local plan
+Mobile TX: 122.90000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"123.1","SAR civilian air","SAR civilian air · SAR operations · Simplex / direct
+Civilian air operations; not tests/exercises · AM
+Mobile RX: 123.10000 MHz · See local plan
+Mobile TX: 123.10000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"151.1375","VTAC11 / VTAC33 TX +1","VTAC11 · VHF simplex · Simplex / direct
+Tactical * · Analog NFM
+Mobile RX: 151.13750 MHz · CTCSS 156.7 Hz
+Mobile TX: 151.13750 MHz · CTCSS 156.7 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 29 (PDF p. 36)
+
+VTAC33 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater * · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 151.13750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC36 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater *• · Analog NFM
+Mobile RX: 151.13750 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)"
+"154.265","VFIRE22","VFIRE22 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.26500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.26500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.2725","VFIRE24","VFIRE24 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.27250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.27250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.28","VFIRE21","VFIRE21 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.28000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.28000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.2875","VFIRE25","VFIRE25 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.28750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.28750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.295","VFIRE23","VFIRE23 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.29500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.29500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.3025","VFIRE26","VFIRE26 · VHF mutual aid · Simplex / direct
+Fire Mutual Aid (Not available in Puerto Rico and the U.S Virgin Islands) · Analog NFM
+Mobile RX: 154.30250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 154.30250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"154.4525","VTAC12 / VTAC34 TX +1","VTAC12 · VHF simplex · Simplex / direct
+Tactical * · Analog NFM
+Mobile RX: 154.45250 MHz · CTCSS 156.7 Hz
+Mobile TX: 154.45250 MHz · CTCSS 156.7 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 29 (PDF p. 36)
+
+VTAC34 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater * · Analog NFM
+Mobile RX: 158.73750 MHz · CTCSS 156.7 Hz
+Mobile TX: 154.45250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC37 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater *• · Analog NFM
+Mobile RX: 154.45250 MHz · CTCSS 156.7 Hz
+Mobile TX: 158.73750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)"
+"155.16","VSAR16","VSAR16 · VHF mutual aid · Simplex / direct
+SAR Common* · Analog NFM
+Mobile RX: 155.16000 MHz · CTCSS 127.3 Hz
+Mobile TX: 155.16000 MHz · CTCSS 127.3 Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)
+
+VSAR16 · SAR operations · Simplex / direct
+Ground operations · Analog NFM
+Mobile RX: 155.16000 MHz · See local plan
+Mobile TX: 155.16000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"155.34","VMED28","VMED28 · VHF mutual aid · Simplex / direct
+EMS Mutual Aid · Analog NFM
+Mobile RX: 155.34000 MHz · Carrier squelch
+Mobile TX: 155.34000 MHz · CTCSS 156.7 Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)
+
+VMED28 · SAR operations · Simplex / direct
+EMS/medical support · Analog NFM
+Mobile RX: 155.34000 MHz · See local plan
+Mobile TX: 155.34000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"155.3475","VMED29","VMED29 · VHF mutual aid · Simplex / direct
+EMS Mutual Aid · Analog NFM
+Mobile RX: 155.34750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 155.34750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"155.475","VLAW31","VLAW31 · VHF mutual aid · Simplex / direct
+Law Enforcement Mutual Aid · Analog NFM
+Mobile RX: 155.47500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 155.47500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"155.4825","VLAW32","VLAW32 · VHF mutual aid · Simplex / direct
+Law Enforcement Mutual Aid · Analog NFM
+Mobile RX: 155.48250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 155.48250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required; tones may vary locally. Table shows VMED28 RX CSQ; footnote recommends 156.7 RX/TX except VSAR16. VFIRE excluded in PR/USVI.
+CISA NIFOG 2.02 (January 2025), p. 34 (PDF p. 41)"
+"155.7525","VCALL10","VCALL10 · VHF simplex · Simplex / direct
+Calling · Analog NFM
+Mobile RX: 155.75250 MHz · CTCSS 156.7 Hz
+Mobile TX: 155.75250 MHz · CTCSS 156.7 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 29 (PDF p. 36)"
+"156.8","Marine 16","Marine 16 · SAR operations · Simplex / direct
+Hailing/distress only · Analog FM
+Mobile RX: 156.80000 MHz · See local plan
+Mobile TX: 156.80000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"156.85","VHF Marine Ch. 17","VHF Marine Ch. 17 · SAR command · Simplex / direct
+SAR gateway · Analog FM (5 kHz deviation)
+Mobile RX: 156.85000 MHz · Carrier squelch
+Mobile TX: 156.85000 MHz · Not specified
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"157.05","Marine 21A","Marine 21A · SAR operations · Simplex / direct
+Maritime / ground-maritime SAR · Analog FM
+Mobile RX: 157.05000 MHz · See local plan
+Mobile TX: 157.05000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"157.075","Marine 81A","Marine 81A · SAR operations · Simplex / direct
+Alternate SAR working · Analog FM
+Mobile RX: 157.07500 MHz · See local plan
+Mobile TX: 157.07500 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"157.15","Marine 23A","Marine 23A · SAR operations · Simplex / direct
+Maritime / alternate SAR · Analog FM
+Mobile RX: 157.15000 MHz · See local plan
+Mobile TX: 157.15000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"157.175","Marine 83A","Marine 83A · SAR operations · Simplex / direct
+Ground-air / maritime-air-ground SAR · Analog FM
+Mobile RX: 157.17500 MHz · See local plan
+Mobile TX: 157.17500 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"157.25","VTAC17 TX","VTAC17 · VHF inland · Mobile TX / normally repeater input
+Tactical · Analog NFM
+Mobile RX: 161.85000 MHz · CTCSS 156.7 Hz
+Mobile TX: 157.25000 MHz · CTCSS 156.7 Hz
+Inland-area restriction; licensing/STA required. See counties/map on printed pp.32-33; not a nationwide inland assignment.
+CISA NIFOG 2.02 (January 2025), p. 31 (PDF p. 38)"
+"158.7375","VTAC13 / VTAC34 +3","VTAC13 · VHF simplex · Simplex / direct
+Tactical · Analog NFM
+Mobile RX: 158.73750 MHz · CTCSS 156.7 Hz
+Mobile TX: 158.73750 MHz · CTCSS 156.7 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 29 (PDF p. 36)
+
+VTAC34 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater * · Analog NFM
+Mobile RX: 158.73750 MHz · CTCSS 156.7 Hz
+Mobile TX: 154.45250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC35 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 158.73750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC37 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater *• · Analog NFM
+Mobile RX: 154.45250 MHz · CTCSS 156.7 Hz
+Mobile TX: 158.73750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC38 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater • · Analog NFM
+Mobile RX: 158.73750 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)"
+"159.4725","VTAC14 / VTAC33 +3","VTAC14 · VHF simplex · Simplex / direct
+Tactical · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 156.7 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 29 (PDF p. 36)
+
+VTAC33 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater * · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 151.13750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC35 · VHF tactical repeater · Mobile RX / normally repeater output
+Tactical Repeater · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 158.73750 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC36 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater *• · Analog NFM
+Mobile RX: 151.13750 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC38 · VHF tactical repeater · Mobile TX / normally repeater input
+Tactical Repeater • · Analog NFM
+Mobile RX: 158.73750 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 136.5 Hz
+Simplex and tactical repeater channels share frequencies. Border power limits; some VTAC channels excluded in PR/USVI. VTAC36-38 preferred over 33-35; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 30 (PDF p. 37)
+
+VTAC14 · SAR command · Simplex / direct
+SAR gateway · Analog NFM
+Mobile RX: 159.47250 MHz · CTCSS 156.7 Hz
+Mobile TX: 159.47250 MHz · CTCSS 156.7 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"161.85","VTAC17 / VTAC17D","VTAC17 · VHF inland · Mobile RX / normally repeater output
+Tactical · Analog NFM
+Mobile RX: 161.85000 MHz · CTCSS 156.7 Hz
+Mobile TX: 157.25000 MHz · CTCSS 156.7 Hz
+Inland-area restriction; licensing/STA required. See counties/map on printed pp.32-33; not a nationwide inland assignment.
+CISA NIFOG 2.02 (January 2025), p. 31 (PDF p. 38)
+
+VTAC17D · VHF inland · Simplex / direct
+Tactical · Analog NFM
+Mobile RX: 161.85000 MHz · CTCSS 156.7 Hz
+Mobile TX: 161.85000 MHz · CTCSS 156.7 Hz
+Inland-area restriction; licensing/STA required. See counties/map on printed pp.32-33; not a nationwide inland assignment.
+CISA NIFOG 2.02 (January 2025), p. 31 (PDF p. 38)"
+"162.0875","LE 1 TX","LE 1 · Federal VHF LE · Mobile TX / normally repeater input
+Tactical (Analog) · Analog NFM
+Mobile RX: 167.08750 MHz · Carrier squelch
+Mobile TX: 162.08750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"162.2625","LE 2 TX","LE 2 · Federal VHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 167.25000 MHz · NAC 68F (hex)
+Mobile TX: 162.26250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"162.4","Weather 162.4000","Weather 162.4000 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.40000 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.425","Weather 162.4250","Weather 162.4250 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.42500 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.45","Weather 162.4500","Weather 162.4500 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.45000 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.475","Weather 162.4750","Weather 162.4750 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.47500 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.5","Weather 162.5000","Weather 162.5000 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.50000 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.525","Weather 162.5250","Weather 162.5250 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.52500 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.55","Weather 162.5500","Weather 162.5500 · Weather · Receive only
+Receive-only broadcasts · Analog FM (5 kHz deviation)
+Mobile RX: 162.55000 MHz · Carrier squelch
+Mobile TX: Not assigned (receive only)
+U.S./Canada weather broadcasts; no mobile transmit assignment.
+CISA NIFOG 2.02 (January 2025), p. 37 (PDF p. 44)"
+"162.8375","LE 3 TX","LE 3 · Federal VHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 167.75000 MHz · NAC 68F (hex)
+Mobile TX: 162.83750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"163.2875","LE 4 TX","LE 4 · Federal VHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 168.11250 MHz · NAC 68F (hex)
+Mobile TX: 163.28750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"163.425","LE 5 TX","LE 5 · Federal VHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 168.46250 MHz · NAC 68F (hex)
+Mobile TX: 163.42500 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"164.7125","NC 1 TX","NC 1 · Federal VHF IR · Mobile TX / normally repeater input
+Incident Calling · Analog NFM
+Mobile RX: 169.53750 MHz · Carrier squelch
+Mobile TX: 164.71250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"165.25","IR 1 TX","IR 1 · Federal VHF IR · Mobile TX / normally repeater input
+Incident Command · Analog NFM
+Mobile RX: 170.01250 MHz · Carrier squelch
+Mobile TX: 165.25000 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"165.9625","IR 2 TX","IR 2 · Federal VHF IR · Mobile TX / normally repeater input
+Medical Evacuation (Direct) · Analog NFM
+Mobile RX: 170.41250 MHz · Carrier squelch
+Mobile TX: 165.96250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"166.575","IR 3 TX","IR 3 · Federal VHF IR · Mobile TX / normally repeater input
+Logistics Control · Analog NFM
+Mobile RX: 170.68750 MHz · Carrier squelch
+Mobile TX: 166.57500 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"167.0875","LE A / LE 1","LE A · Federal VHF LE · Simplex / direct
+Calling (Analog) · Analog NFM
+Mobile RX: 167.08750 MHz · Carrier squelch
+Mobile TX: 167.08750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)
+
+LE 1 · Federal VHF LE · Mobile RX / normally repeater output
+Tactical (Analog) · Analog NFM
+Mobile RX: 167.08750 MHz · Carrier squelch
+Mobile TX: 162.08750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"167.25","LE 2 / LE 6","LE 2 · Federal VHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 167.25000 MHz · NAC 68F (hex)
+Mobile TX: 162.26250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)
+
+LE 6 · Federal VHF LE · Simplex / direct
+Tactical (Direct for LE 2) · P25
+Mobile RX: 167.25000 MHz · NAC 68F (hex)
+Mobile TX: 167.25000 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"167.325","IR 4 TX","IR 4 · Federal VHF IR · Mobile TX / normally repeater input
+Interagency Convoy · Analog NFM
+Mobile RX: 173.03750 MHz · Carrier squelch
+Mobile TX: 167.32500 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"167.75","LE 3 / LE 7","LE 3 · Federal VHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 167.75000 MHz · NAC 68F (hex)
+Mobile TX: 162.83750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)
+
+LE 7 · Federal VHF LE · Simplex / direct
+Tactical (Direct for LE 3) · P25
+Mobile RX: 167.75000 MHz · NAC 68F (hex)
+Mobile TX: 167.75000 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"168.1125","LE 4 / LE 8","LE 4 · Federal VHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 168.11250 MHz · NAC 68F (hex)
+Mobile TX: 163.28750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)
+
+LE 8 · Federal VHF LE · Simplex / direct
+Tactical (Direct for LE 4) · P25
+Mobile RX: 168.11250 MHz · NAC 68F (hex)
+Mobile TX: 168.11250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"168.4625","LE 5 / LE 9","LE 5 · Federal VHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 168.46250 MHz · NAC 68F (hex)
+Mobile TX: 163.42500 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)
+
+LE 9 · Federal VHF LE · Simplex / direct
+Tactical (Direct for LE 5) · P25
+Mobile RX: 168.46250 MHz · NAC 68F (hex)
+Mobile TX: 168.46250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 36 (PDF p. 43)"
+"169.5375","NC 1 / IR 5","NC 1 · Federal VHF IR · Mobile RX / normally repeater output
+Incident Calling · Analog NFM
+Mobile RX: 169.53750 MHz · Carrier squelch
+Mobile TX: 164.71250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)
+
+IR 5 · Federal VHF IR · Simplex / direct
+Incident Calling (Direct) · Analog NFM
+Mobile RX: 169.53750 MHz · Carrier squelch
+Mobile TX: 169.53750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"170.0125","IR 1 / IR 6","IR 1 · Federal VHF IR · Mobile RX / normally repeater output
+Incident Command · Analog NFM
+Mobile RX: 170.01250 MHz · Carrier squelch
+Mobile TX: 165.25000 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)
+
+IR 6 · Federal VHF IR · Simplex / direct
+Incident Command (Direct) · Analog NFM
+Mobile RX: 170.01250 MHz · Carrier squelch
+Mobile TX: 170.01250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"170.4125","IR 2 / IR 7","IR 2 · Federal VHF IR · Mobile RX / normally repeater output
+Medical Evacuation (Direct) · Analog NFM
+Mobile RX: 170.41250 MHz · Carrier squelch
+Mobile TX: 165.96250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)
+
+IR 7 · Federal VHF IR · Simplex / direct
+Medical Evacuation · Analog NFM
+Mobile RX: 170.41250 MHz · Carrier squelch
+Mobile TX: 170.41250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"170.6875","IR 3 / IR 8","IR 3 · Federal VHF IR · Mobile RX / normally repeater output
+Logistics Control · Analog NFM
+Mobile RX: 170.68750 MHz · Carrier squelch
+Mobile TX: 166.57500 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)
+
+IR 8 · Federal VHF IR · Simplex / direct
+Logistics Control (Direct) · Analog NFM
+Mobile RX: 170.68750 MHz · Carrier squelch
+Mobile TX: 170.68750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"173.0375","IR 4 / IR 9","IR 4 · Federal VHF IR · Mobile RX / normally repeater output
+Interagency Convoy · Analog NFM
+Mobile RX: 173.03750 MHz · Carrier squelch
+Mobile TX: 167.32500 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)
+
+IR 9 · Federal VHF IR · Simplex / direct
+Interagency Convoy (Direct) · Analog NFM
+Mobile RX: 173.03750 MHz · Carrier squelch
+Mobile TX: 173.03750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 35 (PDF p. 42)"
+"282.8","SAR air working","SAR air working · SAR operations · Simplex / direct
+USCG/military air working · AM
+Mobile RX: 282.80000 MHz · See local plan
+Mobile TX: 282.80000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"345","SAR initial air contact","SAR initial air contact · SAR operations · Simplex / direct
+USCG/military air initial contact · AM
+Mobile RX: 345.00000 MHz · See local plan
+Mobile TX: 345.00000 MHz · See local plan
+SAR plan subject to USCG/FCC/FAA direction. Marine alternates as directed by USCG; non-maritime marine use needs authorization. See source for use restrictions.
+CISA NIFOG 2.02 (January 2025), p. 64 (PDF p. 71)"
+"409.9875","LE 10 / LE 16","LE 10 · Federal UHF LE · Mobile RX / normally repeater output
+Tactical (Analog) · Analog NFM
+Mobile RX: 409.98750 MHz · Carrier squelch
+Mobile TX: 418.98750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)
+
+LE 16 · Federal UHF LE · Simplex / direct
+Tactical (Direct for LE 10) · Analog NFM
+Mobile RX: 409.98750 MHz · Carrier squelch
+Mobile TX: 409.98750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"410.1875","LE 11 / LE 17","LE 11 · Federal UHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 410.18750 MHz · NAC 68F (hex)
+Mobile TX: 419.18750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)
+
+LE 17 · Federal UHF LE · Simplex / direct
+Tactical (Direct for LE 11) · P25
+Mobile RX: 410.18750 MHz · NAC 68F (hex)
+Mobile TX: 410.18750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"410.2375","NC 2 / IR 15","NC 2 · Federal UHF IR · Mobile RX / normally repeater output
+Incident Calling · Analog NFM
+Mobile RX: 410.23750 MHz · Carrier squelch
+Mobile TX: 419.23750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 15 · Federal UHF IR · Simplex / direct
+Incident Calling (Direct) · Analog NFM
+Mobile RX: 410.23750 MHz · Carrier squelch
+Mobile TX: 410.23750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"410.4375","IR 10 / IR 16","IR 10 · Federal UHF IR · Mobile RX / normally repeater output
+Ad hoc Assignment · Analog NFM
+Mobile RX: 410.43750 MHz · Carrier squelch
+Mobile TX: 419.43750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 16 · Federal UHF IR · Simplex / direct
+Ad hoc (Direct for IR 10) · Analog NFM
+Mobile RX: 410.43750 MHz · Carrier squelch
+Mobile TX: 410.43750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"410.6125","LE 12 / LE 18","LE 12 · Federal UHF LE · Mobile RX / normally repeater output
+Tactical · P25
+Mobile RX: 410.61250 MHz · NAC 68F (hex)
+Mobile TX: 419.61250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)
+
+LE 18 · Federal UHF LE · Simplex / direct
+Tactical (Direct for LE 12) · P25
+Mobile RX: 410.61250 MHz · NAC 68F (hex)
+Mobile TX: 410.61250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"410.6375","IR 11 / IR 17","IR 11 · Federal UHF IR · Mobile RX / normally repeater output
+Ad hoc Assignment · Analog NFM
+Mobile RX: 410.63750 MHz · Carrier squelch
+Mobile TX: 419.63750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 17 · Federal UHF IR · Simplex / direct
+Ad hoc (Direct for IR 11) · Analog NFM
+Mobile RX: 410.63750 MHz · Carrier squelch
+Mobile TX: 410.63750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"410.8375","IR 12 / IR 18","IR 12 · Federal UHF IR · Mobile RX / normally repeater output
+SAR Incident Command · Analog NFM
+Mobile RX: 410.83750 MHz · Carrier squelch
+Mobile TX: 419.83750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 18 · Federal UHF IR · Simplex / direct
+SAR Incident Command (Direct) · Analog NFM
+Mobile RX: 410.83750 MHz · Carrier squelch
+Mobile TX: 410.83750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 12 · SAR command · Mobile RX / normally repeater output
+SAR gateway · Analog NFM
+Mobile RX: 410.83750 MHz · Carrier squelch
+Mobile TX: 419.83750 MHz · CTCSS 167.9 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"413.1875","IR 13","IR 13 · Federal UHF IR · Simplex / direct
+Ad hoc Assignment · Analog NFM
+Mobile RX: 413.18750 MHz · Carrier squelch
+Mobile TX: 413.18750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"413.2125","IR 14","IR 14 · Federal UHF IR · Simplex / direct
+Interagency Convoy · Analog NFM
+Mobile RX: 413.21250 MHz · Carrier squelch
+Mobile TX: 413.21250 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"414.0375","LE B","LE B · Federal UHF LE · Simplex / direct
+Calling (Analog) · Analog NFM
+Mobile RX: 414.03750 MHz · Carrier squelch
+Mobile TX: 414.03750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"414.0625","LE 13","LE 13 · Federal UHF LE · Simplex / direct
+Tactical · P25
+Mobile RX: 414.06250 MHz · NAC 68F (hex)
+Mobile TX: 414.06250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"414.3125","LE 14","LE 14 · Federal UHF LE · Simplex / direct
+Tactical · P25
+Mobile RX: 414.31250 MHz · NAC 68F (hex)
+Mobile TX: 414.31250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"414.3375","LE 15","LE 15 · Federal UHF LE · Simplex / direct
+Tactical · P25
+Mobile RX: 414.33750 MHz · NAC 68F (hex)
+Mobile TX: 414.33750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"418.9875","LE 10 TX","LE 10 · Federal UHF LE · Mobile TX / normally repeater input
+Tactical (Analog) · Analog NFM
+Mobile RX: 409.98750 MHz · Carrier squelch
+Mobile TX: 418.98750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"419.1875","LE 11 TX","LE 11 · Federal UHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 410.18750 MHz · NAC 68F (hex)
+Mobile TX: 419.18750 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"419.2375","NC 2 TX","NC 2 · Federal UHF IR · Mobile TX / normally repeater input
+Incident Calling · Analog NFM
+Mobile RX: 410.23750 MHz · Carrier squelch
+Mobile TX: 419.23750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"419.4375","IR 10 TX","IR 10 · Federal UHF IR · Mobile TX / normally repeater input
+Ad hoc Assignment · Analog NFM
+Mobile RX: 410.43750 MHz · Carrier squelch
+Mobile TX: 419.43750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"419.6125","LE 12 TX","LE 12 · Federal UHF LE · Mobile TX / normally repeater input
+Tactical · P25
+Mobile RX: 410.61250 MHz · NAC 68F (hex)
+Mobile TX: 419.61250 MHz · NAC 68F (hex)
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 40 (PDF p. 47)"
+"419.6375","IR 11 TX","IR 11 · Federal UHF IR · Mobile TX / normally repeater input
+Ad hoc Assignment · Analog NFM
+Mobile RX: 410.63750 MHz · Carrier squelch
+Mobile TX: 419.63750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)"
+"419.8375","IR 12 TX","IR 12 · Federal UHF IR · Mobile TX / normally repeater input
+SAR Incident Command · Analog NFM
+Mobile RX: 410.83750 MHz · Carrier squelch
+Mobile TX: 419.83750 MHz · CTCSS 167.9 Hz
+For interoperability with federal stations; licensing/authorization required. See conditions pp.19-22. Analog receive defaults to CSQ unless tone is user-selectable.
+CISA NIFOG 2.02 (January 2025), p. 39 (PDF p. 46)
+
+IR 12 · SAR command · Mobile TX / normally repeater input
+SAR gateway · Analog NFM
+Mobile RX: 410.83750 MHz · Carrier squelch
+Mobile TX: 419.83750 MHz · CTCSS 167.9 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"453.2125","UCALL40 / UCALL40D","UCALL40 · UHF interoperability · Mobile RX / normally repeater output
+Calling · Analog NFM
+Mobile RX: 453.21250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.21250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UCALL40D · UHF interoperability · Simplex / direct
+Calling Direct · Analog NFM
+Mobile RX: 453.21250 MHz · CTCSS 156.7 Hz
+Mobile TX: 453.21250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"453.4625","UTAC41 / UTAC41D","UTAC41 · UHF interoperability · Mobile RX / normally repeater output
+Tactical Repeater · Analog NFM
+Mobile RX: 453.46250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.46250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UTAC41D · UHF interoperability · Simplex / direct
+Tactical Direct · Analog NFM
+Mobile RX: 453.46250 MHz · CTCSS 156.7 Hz
+Mobile TX: 453.46250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"453.7125","UTAC42 / UTAC42D","UTAC42 · UHF interoperability · Mobile RX / normally repeater output
+Tactical Repeater · Analog NFM
+Mobile RX: 453.71250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.71250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UTAC42D · UHF interoperability · Simplex / direct
+Tactical Direct · Analog NFM
+Mobile RX: 453.71250 MHz · CTCSS 156.7 Hz
+Mobile TX: 453.71250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"453.8625","UTAC43 / UTAC43D","UTAC43 · UHF interoperability · Mobile RX / normally repeater output
+Tactical Repeater · Analog NFM
+Mobile RX: 453.86250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.86250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UTAC43D · UHF interoperability · Simplex / direct
+Tactical Direct · Analog NFM
+Mobile RX: 453.86250 MHz · CTCSS 156.7 Hz
+Mobile TX: 453.86250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UTAC43 · SAR command · Mobile RX / normally repeater output
+SAR gateway · Analog NFM
+Mobile RX: 453.86250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.86250 MHz · CTCSS 156.7 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"458.2125","UCALL40 TX","UCALL40 · UHF interoperability · Mobile TX / normally repeater input
+Calling · Analog NFM
+Mobile RX: 453.21250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.21250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"458.4625","UTAC41 TX","UTAC41 · UHF interoperability · Mobile TX / normally repeater input
+Tactical Repeater · Analog NFM
+Mobile RX: 453.46250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.46250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"458.7125","UTAC42 TX","UTAC42 · UHF interoperability · Mobile TX / normally repeater input
+Tactical Repeater · Analog NFM
+Mobile RX: 453.71250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.71250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)"
+"458.8625","UTAC43 TX","UTAC43 · UHF interoperability · Mobile TX / normally repeater input
+Tactical Repeater · Analog NFM
+Mobile RX: 453.86250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.86250 MHz · CTCSS 156.7 Hz
+Nationwide UHF interoperability; border power limits; see source notes.
+CISA NIFOG 2.02 (January 2025), p. 38 (PDF p. 45)
+
+UTAC43 · SAR command · Mobile TX / normally repeater input
+SAR gateway · Analog NFM
+Mobile RX: 453.86250 MHz · CTCSS 156.7 Hz
+Mobile TX: 458.86250 MHz · CTCSS 156.7 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"462.95","MED-9 / MED-9D","MED-9 · UHF medical · Mobile RX / normally repeater output
+Dispatch* · Analog NFM
+Mobile RX: 462.95000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.95000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)
+
+MED-9D · UHF medical · Simplex / direct
+ · Analog NFM
+Mobile RX: 462.95000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 462.95000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"462.9625","MED-92 / MED-92D","MED-92 · UHF medical · Mobile RX / normally repeater output
+Dispatch* · Analog NFM
+Mobile RX: 462.96250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.96250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)
+
+MED-92D · UHF medical · Simplex / direct
+ · Analog NFM
+Mobile RX: 462.96250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 462.96250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"462.975","MED-10 / MED-10D","MED-10 · UHF medical · Mobile RX / normally repeater output
+Dispatch* · Analog NFM
+Mobile RX: 462.97500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.97500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)
+
+MED-10D · UHF medical · Simplex / direct
+ · Analog NFM
+Mobile RX: 462.97500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 462.97500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"462.9875","MED-102 / MED-102D","MED-102 · UHF medical · Mobile RX / normally repeater output
+Dispatch* · Analog NFM
+Mobile RX: 462.98750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.98750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)
+
+MED-102D · UHF medical · Simplex / direct
+ · Analog NFM
+Mobile RX: 462.98750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 462.98750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"463","MED-1 / MED-1D","MED-1 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.00000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.00000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)
+
+MED-1D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.00000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.00000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"463.0125","MED-12 / MED-12D","MED-12 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.01250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.01250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)
+
+MED-12D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.01250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.01250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"463.025","MED-2 / MED-2D","MED-2 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.02500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.02500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)
+
+MED-2D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.02500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.02500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"463.0375","MED-22 / MED-22D","MED-22 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.03750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.03750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)
+
+MED-22D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.03750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.03750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"463.05","MED-3 / MED-3D","MED-3 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.05000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.05000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)
+
+MED-3D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.05000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.05000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"463.0625","MED-32 / MED-32D","MED-32 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.06250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.06250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)
+
+MED-32D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.06250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.06250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"463.075","MED-4 / MED-4D","MED-4 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.07500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.07500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)
+
+MED-4D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.07500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.07500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"463.0875","MED-42 / MED-42D","MED-42 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.08750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.08750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)
+
+MED-42D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.08750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.08750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"463.1","MED-5 / MED-5D","MED-5 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.10000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.10000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)
+
+MED-5D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.10000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.10000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"463.1125","MED-52 / MED-52D","MED-52 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.11250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.11250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)
+
+MED-52D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.11250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.11250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"463.125","MED-6 / MED-6D","MED-6 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.12500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.12500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)
+
+MED-6D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.12500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.12500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"463.1375","MED-62 / MED-62D","MED-62 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.13750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.13750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)
+
+MED-62D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.13750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.13750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"463.15","MED-7 / MED-7D","MED-7 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.15000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.15000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)
+
+MED-7D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.15000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.15000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"463.1625","MED-72 / MED-72D","MED-72 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.16250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.16250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)
+
+MED-72D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.16250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.16250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"463.175","MED-8 / MED-8D","MED-8 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.17500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.17500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)
+
+MED-8D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.17500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.17500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"463.1875","MED-82 / MED-82D","MED-82 · UHF medical · Mobile RX / normally repeater output
+Medical · Analog NFM
+Mobile RX: 463.18750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.18750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)
+
+MED-82D · UHF medical · Simplex / direct
+Medical (Direct) · Analog NFM
+Mobile RX: 463.18750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 463.18750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"467.95","MED-9 TX","MED-9 · UHF medical · Mobile TX / normally repeater input
+Dispatch* · Analog NFM
+Mobile RX: 462.95000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.95000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"467.9625","MED-92 TX","MED-92 · UHF medical · Mobile TX / normally repeater input
+Dispatch* · Analog NFM
+Mobile RX: 462.96250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.96250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"467.975","MED-10 TX","MED-10 · UHF medical · Mobile TX / normally repeater input
+Dispatch* · Analog NFM
+Mobile RX: 462.97500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.97500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"467.9875","MED-102 TX","MED-102 · UHF medical · Mobile TX / normally repeater input
+Dispatch* · Analog NFM
+Mobile RX: 462.98750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 467.98750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"468","MED-1 TX","MED-1 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.00000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.00000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 41 (PDF p. 48)"
+"468.0125","MED-12 TX","MED-12 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.01250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.01250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"468.025","MED-2 TX","MED-2 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.02500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.02500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"468.0375","MED-22 TX","MED-22 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.03750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.03750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"468.05","MED-3 TX","MED-3 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.05000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.05000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"468.0625","MED-32 TX","MED-32 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.06250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.06250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 42 (PDF p. 49)"
+"468.075","MED-4 TX","MED-4 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.07500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.07500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"468.0875","MED-42 TX","MED-42 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.08750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.08750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"468.1","MED-5 TX","MED-5 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.10000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.10000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"468.1125","MED-52 TX","MED-52 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.11250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.11250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"468.125","MED-6 TX","MED-6 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.12500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.12500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 43 (PDF p. 50)"
+"468.1375","MED-62 TX","MED-62 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.13750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.13750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"468.15","MED-7 TX","MED-7 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.15000 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.15000 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"468.1625","MED-72 TX","MED-72 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.16250 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.16250 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"468.175","MED-8 TX","MED-8 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.17500 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.17500 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"468.1875","MED-82 TX","MED-82 · UHF medical · Mobile TX / normally repeater input
+Medical · Analog NFM
+Mobile RX: 463.18750 MHz · CTCSS 156.7 (recommended) Hz
+Mobile TX: 468.18750 MHz · CTCSS 156.7 (recommended) Hz
+Licensing required. CTCSS 156.7 RX/TX is the interoperability recommendation, not a verified local tone.
+CISA NIFOG 2.02 (January 2025), p. 44 (PDF p. 51)"
+"769.05625","7-US-01 / 7-US-01D","7-US-01 · 700 low power · Mobile RX / normally repeater output
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.05625 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 799.05625 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)
+
+7-US-01D · 700 low power · Simplex / direct
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.05625 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 769.05625 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"769.06875","7-US-02 / 7-US-02D","7-US-02 · 700 low power · Mobile RX / normally repeater output
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.06875 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 799.06875 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)
+
+7-US-02D · 700 low power · Simplex / direct
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.06875 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 769.06875 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"769.13125","7AG58 / 7AG58D","7AG58 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 769.13125 MHz · NAC F7E (hex)
+Mobile TX: 799.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)
+
+7AG58D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 769.13125 MHz · NAC F7E (hex)
+Mobile TX: 769.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"769.14375","7TAC51 / 7TAC51D","7TAC51 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 769.14375 MHz · NAC F7E (hex)
+Mobile TX: 799.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)
+
+7TAC51D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 769.14375 MHz · NAC F7E (hex)
+Mobile TX: 769.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"769.23125","DEPLOY A","DEPLOY A · 700 deployable trunk · Mobile RX / normally repeater output
+ · P25 trunked
+Mobile RX: 769.23125 MHz · Not specified
+Mobile TX: 799.23125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"769.24375","7CALL50 / 7CALL50D","7CALL50 · 700 interoperability · Mobile RX / normally repeater output
+Calling Channel * · P25
+Mobile RX: 769.24375 MHz · NAC F7E (hex)
+Mobile TX: 799.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)
+
+7CALL50D · 700 interoperability · Simplex / direct
+Calling Channel * · P25
+Mobile RX: 769.24375 MHz · NAC F7E (hex)
+Mobile TX: 769.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"769.38125","DEPLOY B","DEPLOY B · 700 deployable trunk · Mobile RX / normally repeater output
+ · P25 trunked
+Mobile RX: 769.38125 MHz · Not specified
+Mobile TX: 799.38125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"769.39375","7MED65 / 7MED65D","7MED65 · 700 interoperability · Mobile RX / normally repeater output
+EMS · P25
+Mobile RX: 769.39375 MHz · NAC F7E (hex)
+Mobile TX: 799.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)
+
+7MED65D · 700 interoperability · Simplex / direct
+EMS · P25
+Mobile RX: 769.39375 MHz · NAC F7E (hex)
+Mobile TX: 769.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"769.49375","7MED66 / 7MED66D","7MED66 · 700 interoperability · Mobile RX / normally repeater output
+EMS · P25
+Mobile RX: 769.49375 MHz · NAC F7E (hex)
+Mobile TX: 799.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)
+
+7MED66D · 700 interoperability · Simplex / direct
+EMS · P25
+Mobile RX: 769.49375 MHz · NAC F7E (hex)
+Mobile TX: 769.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"769.63125","7AG60 / 7AG60D","7AG60 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 769.63125 MHz · NAC F7E (hex)
+Mobile TX: 799.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)
+
+7AG60D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 769.63125 MHz · NAC F7E (hex)
+Mobile TX: 769.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"769.64375","7TAC52 / 7TAC52D","7TAC52 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 769.64375 MHz · NAC F7E (hex)
+Mobile TX: 799.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)
+
+7TAC52D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 769.64375 MHz · NAC F7E (hex)
+Mobile TX: 769.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"769.73125","DEPLOY C","DEPLOY C · 700 deployable trunk · Mobile RX / normally repeater output
+ · P25 trunked
+Mobile RX: 769.73125 MHz · Not specified
+Mobile TX: 799.73125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"769.74375","7TAC55 / 7TAC55D","7TAC55 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 769.74375 MHz · NAC F7E (hex)
+Mobile TX: 799.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7TAC55D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 769.74375 MHz · NAC F7E (hex)
+Mobile TX: 769.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"769.88125","DEPLOY D","DEPLOY D · 700 deployable trunk · Mobile RX / normally repeater output
+ · P25 trunked
+Mobile RX: 769.88125 MHz · Not specified
+Mobile TX: 799.88125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"769.89375","7FIRE63 / 7FIRE63D","7FIRE63 · 700 interoperability · Mobile RX / normally repeater output
+Fire · P25
+Mobile RX: 769.89375 MHz · NAC F7E (hex)
+Mobile TX: 799.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)
+
+7FIRE63D · 700 interoperability · Simplex / direct
+Fire · P25
+Mobile RX: 769.89375 MHz · NAC F7E (hex)
+Mobile TX: 769.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"769.99375","7FIRE64 / 7FIRE64D","7FIRE64 · 700 interoperability · Mobile RX / normally repeater output
+Fire · P25
+Mobile RX: 769.99375 MHz · NAC F7E (hex)
+Mobile TX: 799.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)
+
+7FIRE64D · 700 interoperability · Simplex / direct
+Fire · P25
+Mobile RX: 769.99375 MHz · NAC F7E (hex)
+Mobile TX: 769.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"770.13125","7AG67 / 7AG67D","7AG67 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 770.13125 MHz · NAC F7E (hex)
+Mobile TX: 800.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)
+
+7AG67D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 770.13125 MHz · NAC F7E (hex)
+Mobile TX: 770.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"770.14375","7TAC53 / 7TAC53D","7TAC53 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 770.14375 MHz · NAC F7E (hex)
+Mobile TX: 800.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)
+
+7TAC53D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 770.14375 MHz · NAC F7E (hex)
+Mobile TX: 770.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"770.24375","7TAC56 / 7TAC56D","7TAC56 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 770.24375 MHz · NAC F7E (hex)
+Mobile TX: 800.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7TAC56D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 770.24375 MHz · NAC F7E (hex)
+Mobile TX: 770.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"770.39375","7LAW61 / 7LAW61D","7LAW61 · 700 interoperability · Mobile RX / normally repeater output
+Law Enforcement · P25
+Mobile RX: 770.39375 MHz · NAC F7E (hex)
+Mobile TX: 800.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7LAW61D · 700 interoperability · Simplex / direct
+Law Enforcement · P25
+Mobile RX: 770.39375 MHz · NAC F7E (hex)
+Mobile TX: 770.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"770.49375","7LAW62 / 7LAW62D","7LAW62 · 700 interoperability · Mobile RX / normally repeater output
+Law Enforcement · P25
+Mobile RX: 770.49375 MHz · NAC F7E (hex)
+Mobile TX: 800.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7LAW62D · 700 interoperability · Simplex / direct
+Law Enforcement · P25
+Mobile RX: 770.49375 MHz · NAC F7E (hex)
+Mobile TX: 770.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"770.63125","7AG68 / 7AG68D","7AG68 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 770.63125 MHz · NAC F7E (hex)
+Mobile TX: 800.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)
+
+7AG68D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 770.63125 MHz · NAC F7E (hex)
+Mobile TX: 770.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"770.64375","7TAC54 / 7TAC54D","7TAC54 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 770.64375 MHz · NAC F7E (hex)
+Mobile TX: 800.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)
+
+7TAC54D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 770.64375 MHz · NAC F7E (hex)
+Mobile TX: 770.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"770.74375","7DATA69 / 7DATA69D","7DATA69 · 700 interoperability · Mobile RX / normally repeater output
+Mobile Data * · P25
+Mobile RX: 770.74375 MHz · NAC F7E (hex)
+Mobile TX: 800.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)
+
+7DATA69D · 700 interoperability · Simplex / direct
+Mobile Data * · P25
+Mobile RX: 770.74375 MHz · NAC F7E (hex)
+Mobile TX: 770.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"770.89375","7MOB59 / 7MOB59D","7MOB59 · 700 interoperability · Mobile RX / normally repeater output
+Mobile Repeater · P25
+Mobile RX: 770.89375 MHz · NAC F7E (hex)
+Mobile TX: 800.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7MOB59D · 700 interoperability · Simplex / direct
+Mobile Repeater · P25
+Mobile RX: 770.89375 MHz · NAC F7E (hex)
+Mobile TX: 770.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"770.99375","7GTAC57 / 7GTAC57D","7GTAC57 · 700 interoperability · Mobile RX / normally repeater output
+Other Public Safety · P25
+Mobile RX: 770.99375 MHz · NAC F7E (hex)
+Mobile TX: 800.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)
+
+7GTAC57D · 700 interoperability · Simplex / direct
+Other Public Safety · P25
+Mobile RX: 770.99375 MHz · NAC F7E (hex)
+Mobile TX: 770.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"773.00625","7MED86 / 7MED86D","7MED86 · 700 interoperability · Mobile RX / normally repeater output
+EMS · P25
+Mobile RX: 773.00625 MHz · NAC F7E (hex)
+Mobile TX: 803.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)
+
+7MED86D · 700 interoperability · Simplex / direct
+EMS · P25
+Mobile RX: 773.00625 MHz · NAC F7E (hex)
+Mobile TX: 773.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"773.10625","7TAC71 / 7TAC71D","7TAC71 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 773.10625 MHz · NAC F7E (hex)
+Mobile TX: 803.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)
+
+7TAC71D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 773.10625 MHz · NAC F7E (hex)
+Mobile TX: 773.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"773.11875","7AG78 / 7AG78D","7AG78 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 773.11875 MHz · NAC F7E (hex)
+Mobile TX: 803.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)
+
+7AG78D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 773.11875 MHz · NAC F7E (hex)
+Mobile TX: 773.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"773.25625","7CALL70 / 7CALL70D","7CALL70 · 700 interoperability · Mobile RX / normally repeater output
+Calling Channel ** · P25
+Mobile RX: 773.25625 MHz · NAC F7E (hex)
+Mobile TX: 803.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)
+
+7CALL70D · 700 interoperability · Simplex / direct
+Calling Channel ** · P25
+Mobile RX: 773.25625 MHz · NAC F7E (hex)
+Mobile TX: 773.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"773.35625","7MED87 / 7MED87D","7MED87 · 700 interoperability · Mobile RX / normally repeater output
+EMS · P25
+Mobile RX: 773.35625 MHz · NAC F7E (hex)
+Mobile TX: 803.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)
+
+7MED87D · 700 interoperability · Simplex / direct
+EMS · P25
+Mobile RX: 773.35625 MHz · NAC F7E (hex)
+Mobile TX: 773.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"773.50625","7FIRE83 / 7FIRE83D","7FIRE83 · 700 interoperability · Mobile RX / normally repeater output
+Fire · P25
+Mobile RX: 773.50625 MHz · NAC F7E (hex)
+Mobile TX: 803.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)
+
+7FIRE83D · 700 interoperability · Simplex / direct
+Fire · P25
+Mobile RX: 773.50625 MHz · NAC F7E (hex)
+Mobile TX: 773.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"773.60625","7TAC72 / 7TAC72D","7TAC72 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 773.60625 MHz · NAC F7E (hex)
+Mobile TX: 803.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)
+
+7TAC72D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 773.60625 MHz · NAC F7E (hex)
+Mobile TX: 773.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"773.61875","7AG80 / 7AG80D","7AG80 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 773.61875 MHz · NAC F7E (hex)
+Mobile TX: 803.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)
+
+7AG80D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 773.61875 MHz · NAC F7E (hex)
+Mobile TX: 773.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"773.75625","7TAC75 / 7TAC75D","7TAC75 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 773.75625 MHz · NAC F7E (hex)
+Mobile TX: 803.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7TAC75D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 773.75625 MHz · NAC F7E (hex)
+Mobile TX: 773.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"773.85625","7FIRE84 / 7FIRE84D","7FIRE84 · 700 interoperability · Mobile RX / normally repeater output
+Fire · P25
+Mobile RX: 773.85625 MHz · NAC F7E (hex)
+Mobile TX: 803.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)
+
+7FIRE84D · 700 interoperability · Simplex / direct
+Fire · P25
+Mobile RX: 773.85625 MHz · NAC F7E (hex)
+Mobile TX: 773.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"774.00625","7LAW81 / 7LAW81D","7LAW81 · 700 interoperability · Mobile RX / normally repeater output
+Law Enforcement · P25
+Mobile RX: 774.00625 MHz · NAC F7E (hex)
+Mobile TX: 804.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7LAW81D · 700 interoperability · Simplex / direct
+Law Enforcement · P25
+Mobile RX: 774.00625 MHz · NAC F7E (hex)
+Mobile TX: 774.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"774.10625","7TAC73 / 7TAC73D","7TAC73 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 774.10625 MHz · NAC F7E (hex)
+Mobile TX: 804.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)
+
+7TAC73D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 774.10625 MHz · NAC F7E (hex)
+Mobile TX: 774.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"774.11875","7AG85 / 7AG85D","7AG85 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 774.11875 MHz · NAC F7E (hex)
+Mobile TX: 804.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)
+
+7AG85D · 700 air-ground · Simplex / direct
+Air – Ground · P25
+Mobile RX: 774.11875 MHz · NAC F7E (hex)
+Mobile TX: 774.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"774.25625","7TAC76 / 7TAC76D","7TAC76 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 774.25625 MHz · NAC F7E (hex)
+Mobile TX: 804.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7TAC76D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 774.25625 MHz · NAC F7E (hex)
+Mobile TX: 774.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"774.35625","7LAW82 / 7LAW82D","7LAW82 · 700 interoperability · Mobile RX / normally repeater output
+Law Enforcement · P25
+Mobile RX: 774.35625 MHz · NAC F7E (hex)
+Mobile TX: 804.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7LAW82D · 700 interoperability · Simplex / direct
+Law Enforcement · P25
+Mobile RX: 774.35625 MHz · NAC F7E (hex)
+Mobile TX: 774.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"774.50625","7MOB79 / 7MOB79D","7MOB79 · 700 interoperability · Mobile RX / normally repeater output
+Mobile Repeater · P25
+Mobile RX: 774.50625 MHz · NAC F7E (hex)
+Mobile TX: 804.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7MOB79D · 700 interoperability · Simplex / direct
+Mobile Repeater · P25
+Mobile RX: 774.50625 MHz · NAC F7E (hex)
+Mobile TX: 774.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"774.51875","DEPLOY E","DEPLOY E · 700 deployable trunk · Mobile RX / normally repeater output
+Primary Control Channel · P25 trunked
+Mobile RX: 774.51875 MHz · Not specified
+Mobile TX: 804.51875 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"774.60625","7TAC74 / 7TAC74D","7TAC74 · 700 interoperability · Mobile RX / normally repeater output
+General Public Safety · P25
+Mobile RX: 774.60625 MHz · NAC F7E (hex)
+Mobile TX: 804.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)
+
+7TAC74D · 700 interoperability · Simplex / direct
+General Public Safety · P25
+Mobile RX: 774.60625 MHz · NAC F7E (hex)
+Mobile TX: 774.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"774.61875","7AG88 / 7AG88D","7AG88 · 700 air-ground · Mobile RX / normally repeater output
+Air – Ground · P25
+Mobile RX: 774.61875 MHz · NAC F7E (hex)
+Mobile TX: 804.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)
+
+7AG88D · 700 air-ground · Simplex / direct
+Air – Ground (LZ)* · P25
+Mobile RX: 774.61875 MHz · NAC F7E (hex)
+Mobile TX: 774.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"774.75625","7DATA89 / 7DATA89D","7DATA89 · 700 interoperability · Mobile RX / normally repeater output
+Mobile Data * · P25
+Mobile RX: 774.75625 MHz · NAC F7E (hex)
+Mobile TX: 804.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)
+
+7DATA89D · 700 interoperability · Simplex / direct
+Mobile Data * · P25
+Mobile RX: 774.75625 MHz · NAC F7E (hex)
+Mobile TX: 774.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"774.85625","7GTAC77 / 7GTAC77D","7GTAC77 · 700 interoperability · Mobile RX / normally repeater output
+Other Public Safety · P25
+Mobile RX: 774.85625 MHz · NAC F7E (hex)
+Mobile TX: 804.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)
+
+7GTAC77D · 700 interoperability · Simplex / direct
+Other Public Safety · P25
+Mobile RX: 774.85625 MHz · NAC F7E (hex)
+Mobile TX: 774.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"774.86875","DEPLOY F","DEPLOY F · 700 deployable trunk · Mobile RX / normally repeater output
+Secondary Control Channel · P25 trunked
+Mobile RX: 774.86875 MHz · Not specified
+Mobile TX: 804.86875 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"774.99375","7-US-03 / 7-US-03D","7-US-03 · 700 low power · Mobile RX / normally repeater output
+Low Power - PS · Analog NFM / P25
+Mobile RX: 774.99375 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 804.99375 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)
+
+7-US-03D · 700 low power · Simplex / direct
+Low Power - PS · Analog NFM / P25
+Mobile RX: 774.99375 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 774.99375 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"799.05625","7-US-01 TX","7-US-01 · 700 low power · Mobile TX / normally repeater input
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.05625 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 799.05625 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"799.06875","7-US-02 TX","7-US-02 · 700 low power · Mobile TX / normally repeater input
+Low Power - PS · Analog NFM / P25
+Mobile RX: 769.06875 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 799.06875 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"799.13125","7AG58 TX","7AG58 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 769.13125 MHz · NAC F7E (hex)
+Mobile TX: 799.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"799.14375","7TAC51 TX","7TAC51 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 769.14375 MHz · NAC F7E (hex)
+Mobile TX: 799.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"799.23125","DEPLOY A TX","DEPLOY A · 700 deployable trunk · Mobile TX / normally repeater input
+ · P25 trunked
+Mobile RX: 769.23125 MHz · Not specified
+Mobile TX: 799.23125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"799.24375","7CALL50 TX","7CALL50 · 700 interoperability · Mobile TX / normally repeater input
+Calling Channel * · P25
+Mobile RX: 769.24375 MHz · NAC F7E (hex)
+Mobile TX: 799.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"799.38125","DEPLOY B TX","DEPLOY B · 700 deployable trunk · Mobile TX / normally repeater input
+ · P25 trunked
+Mobile RX: 769.38125 MHz · Not specified
+Mobile TX: 799.38125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"799.39375","7MED65 TX","7MED65 · 700 interoperability · Mobile TX / normally repeater input
+EMS · P25
+Mobile RX: 769.39375 MHz · NAC F7E (hex)
+Mobile TX: 799.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"799.49375","7MED66 TX","7MED66 · 700 interoperability · Mobile TX / normally repeater input
+EMS · P25
+Mobile RX: 769.49375 MHz · NAC F7E (hex)
+Mobile TX: 799.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"799.63125","7AG60 TX","7AG60 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 769.63125 MHz · NAC F7E (hex)
+Mobile TX: 799.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"799.64375","7TAC52 TX","7TAC52 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 769.64375 MHz · NAC F7E (hex)
+Mobile TX: 799.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"799.73125","DEPLOY C TX","DEPLOY C · 700 deployable trunk · Mobile TX / normally repeater input
+ · P25 trunked
+Mobile RX: 769.73125 MHz · Not specified
+Mobile TX: 799.73125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"799.74375","7TAC55 TX","7TAC55 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 769.74375 MHz · NAC F7E (hex)
+Mobile TX: 799.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"799.88125","DEPLOY D TX","DEPLOY D · 700 deployable trunk · Mobile TX / normally repeater input
+ · P25 trunked
+Mobile RX: 769.88125 MHz · Not specified
+Mobile TX: 799.88125 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"799.89375","7FIRE63 TX","7FIRE63 · 700 interoperability · Mobile TX / normally repeater input
+Fire · P25
+Mobile RX: 769.89375 MHz · NAC F7E (hex)
+Mobile TX: 799.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"799.99375","7FIRE64 TX","7FIRE64 · 700 interoperability · Mobile TX / normally repeater input
+Fire · P25
+Mobile RX: 769.99375 MHz · NAC F7E (hex)
+Mobile TX: 799.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"800.13125","7AG67 TX","7AG67 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 770.13125 MHz · NAC F7E (hex)
+Mobile TX: 800.13125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"800.14375","7TAC53 TX","7TAC53 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 770.14375 MHz · NAC F7E (hex)
+Mobile TX: 800.14375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"800.24375","7TAC56 TX","7TAC56 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 770.24375 MHz · NAC F7E (hex)
+Mobile TX: 800.24375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"800.39375","7LAW61 TX","7LAW61 · 700 interoperability · Mobile TX / normally repeater input
+Law Enforcement · P25
+Mobile RX: 770.39375 MHz · NAC F7E (hex)
+Mobile TX: 800.39375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"800.49375","7LAW62 TX","7LAW62 · 700 interoperability · Mobile TX / normally repeater input
+Law Enforcement · P25
+Mobile RX: 770.49375 MHz · NAC F7E (hex)
+Mobile TX: 800.49375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"800.63125","7AG68 TX","7AG68 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 770.63125 MHz · NAC F7E (hex)
+Mobile TX: 800.63125 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 51 (PDF p. 58)"
+"800.64375","7TAC54 TX","7TAC54 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 770.64375 MHz · NAC F7E (hex)
+Mobile TX: 800.64375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 45 (PDF p. 52)"
+"800.74375","7DATA69 TX","7DATA69 · 700 interoperability · Mobile TX / normally repeater input
+Mobile Data * · P25
+Mobile RX: 770.74375 MHz · NAC F7E (hex)
+Mobile TX: 800.74375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 47 (PDF p. 54)"
+"800.89375","7MOB59 TX","7MOB59 · 700 interoperability · Mobile TX / normally repeater input
+Mobile Repeater · P25
+Mobile RX: 770.89375 MHz · NAC F7E (hex)
+Mobile TX: 800.89375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"800.99375","7GTAC57 TX","7GTAC57 · 700 interoperability · Mobile TX / normally repeater input
+Other Public Safety · P25
+Mobile RX: 770.99375 MHz · NAC F7E (hex)
+Mobile TX: 800.99375 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 46 (PDF p. 53)"
+"803.00625","7MED86 TX","7MED86 · 700 interoperability · Mobile TX / normally repeater input
+EMS · P25
+Mobile RX: 773.00625 MHz · NAC F7E (hex)
+Mobile TX: 803.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"803.10625","7TAC71 TX","7TAC71 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 773.10625 MHz · NAC F7E (hex)
+Mobile TX: 803.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"803.11875","7AG78 TX","7AG78 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 773.11875 MHz · NAC F7E (hex)
+Mobile TX: 803.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"803.25625","7CALL70 TX","7CALL70 · 700 interoperability · Mobile TX / normally repeater input
+Calling Channel ** · P25
+Mobile RX: 773.25625 MHz · NAC F7E (hex)
+Mobile TX: 803.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"803.35625","7MED87 TX","7MED87 · 700 interoperability · Mobile TX / normally repeater input
+EMS · P25
+Mobile RX: 773.35625 MHz · NAC F7E (hex)
+Mobile TX: 803.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"803.50625","7FIRE83 TX","7FIRE83 · 700 interoperability · Mobile TX / normally repeater input
+Fire · P25
+Mobile RX: 773.50625 MHz · NAC F7E (hex)
+Mobile TX: 803.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"803.60625","7TAC72 TX","7TAC72 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 773.60625 MHz · NAC F7E (hex)
+Mobile TX: 803.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"803.61875","7AG80 TX","7AG80 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 773.61875 MHz · NAC F7E (hex)
+Mobile TX: 803.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"803.75625","7TAC75 TX","7TAC75 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 773.75625 MHz · NAC F7E (hex)
+Mobile TX: 803.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"803.85625","7FIRE84 TX","7FIRE84 · 700 interoperability · Mobile TX / normally repeater input
+Fire · P25
+Mobile RX: 773.85625 MHz · NAC F7E (hex)
+Mobile TX: 803.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"804.00625","7LAW81 TX","7LAW81 · 700 interoperability · Mobile TX / normally repeater input
+Law Enforcement · P25
+Mobile RX: 774.00625 MHz · NAC F7E (hex)
+Mobile TX: 804.00625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"804.10625","7TAC73 TX","7TAC73 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 774.10625 MHz · NAC F7E (hex)
+Mobile TX: 804.10625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"804.11875","7AG85 TX","7AG85 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 774.11875 MHz · NAC F7E (hex)
+Mobile TX: 804.11875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"804.25625","7TAC76 TX","7TAC76 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 774.25625 MHz · NAC F7E (hex)
+Mobile TX: 804.25625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"804.35625","7LAW82 TX","7LAW82 · 700 interoperability · Mobile TX / normally repeater input
+Law Enforcement · P25
+Mobile RX: 774.35625 MHz · NAC F7E (hex)
+Mobile TX: 804.35625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"804.50625","7MOB79 TX","7MOB79 · 700 interoperability · Mobile TX / normally repeater input
+Mobile Repeater · P25
+Mobile RX: 774.50625 MHz · NAC F7E (hex)
+Mobile TX: 804.50625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"804.51875","DEPLOY E TX","DEPLOY E · 700 deployable trunk · Mobile TX / normally repeater input
+Primary Control Channel · P25 trunked
+Mobile RX: 774.51875 MHz · Not specified
+Mobile TX: 804.51875 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"804.60625","7TAC74 TX","7TAC74 · 700 interoperability · Mobile TX / normally repeater input
+General Public Safety · P25
+Mobile RX: 774.60625 MHz · NAC F7E (hex)
+Mobile TX: 804.60625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 48 (PDF p. 55)"
+"804.61875","7AG88 TX","7AG88 · 700 air-ground · Mobile TX / normally repeater input
+Air – Ground · P25
+Mobile RX: 774.61875 MHz · NAC F7E (hex)
+Mobile TX: 804.61875 MHz · NAC 293 (hex)
+Air-ground; state administration and licensing required. Aircraft may use either side of pair; airborne altitude/power restrictions apply. 7AG88D recommended for landing zones. RX F7E accepts any NAC.
+CISA NIFOG 2.02 (January 2025), p. 52 (PDF p. 59)"
+"804.75625","7DATA89 TX","7DATA89 · 700 interoperability · Mobile TX / normally repeater input
+Mobile Data * · P25
+Mobile RX: 774.75625 MHz · NAC F7E (hex)
+Mobile TX: 804.75625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 50 (PDF p. 57)"
+"804.85625","7GTAC77 TX","7GTAC77 · 700 interoperability · Mobile TX / normally repeater input
+Other Public Safety · P25
+Mobile RX: 774.85625 MHz · NAC F7E (hex)
+Mobile TX: 804.85625 MHz · NAC 293 (hex)
+Default TGID 1. RX NAC F7E accepts any NAC; it is a receiver setting, not an observed transmitted NAC. 7CALL50 primary / 7CALL70 secondary calling; see source restrictions.
+CISA NIFOG 2.02 (January 2025), p. 49 (PDF p. 56)"
+"804.86875","DEPLOY F TX","DEPLOY F · 700 deployable trunk · Mobile TX / normally repeater input
+Secondary Control Channel · P25 trunked
+Mobile RX: 774.86875 MHz · Not specified
+Mobile TX: 804.86875 MHz · Not specified
+Deployable trunk system: WACN BF7CC, System 101 (hex). NAC coordinated separately, not supplied. C/D unavailable above Line A in PA/NY/VT. Licensing required.
+CISA NIFOG 2.02 (January 2025), p. 54 (PDF p. 61)"
+"804.99375","7-US-03 TX","7-US-03 · 700 low power · Mobile TX / normally repeater input
+Low Power - PS · Analog NFM / P25
+Mobile RX: 774.99375 MHz · CTCSS 156.7 Hz / NAC F7E (hex)
+Mobile TX: 804.99375 MHz · CTCSS 156.7 Hz / NAC 293 (hex)
+Low-power itinerant; analog or digital, 2 W ERP limit; licensing required. RX NAC F7E accepts any NAC; default digital TGID 1.
+CISA NIFOG 2.02 (January 2025), p. 53 (PDF p. 60)"
+"806.0125","8CALL90 TX","8CALL90 · 800 interoperability · Mobile TX / normally repeater input
+Calling · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 806.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"806.5125","8TAC91 TX","8TAC91 · 800 interoperability · Mobile TX / normally repeater input
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 806.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"807.0125","8TAC92 TX","8TAC92 · 800 interoperability · Mobile TX / normally repeater input
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 807.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"807.5125","8TAC93 TX","8TAC93 · 800 interoperability · Mobile TX / normally repeater input
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 807.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"808.0125","8TAC94 TX","8TAC94 · 800 interoperability · Mobile TX / normally repeater input
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 853.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 808.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC94 · SAR command · Mobile TX / normally repeater input
+SAR gateway · Analog FM (4/5 kHz deviation)
+Mobile RX: 853.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 808.01250 MHz · CTCSS 156.7 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"
+"851.0125","8CALL90 / 8CALL90D","8CALL90 · 800 interoperability · Mobile RX / normally repeater output
+Calling · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 806.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8CALL90D · 800 interoperability · Simplex / direct
+Calling - Direct · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 851.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"851.5125","8TAC91 / 8TAC91D","8TAC91 · 800 interoperability · Mobile RX / normally repeater output
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 806.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC91D · 800 interoperability · Simplex / direct
+Tactical - Direct · Analog FM (4/5 kHz deviation)
+Mobile RX: 851.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 851.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"852.0125","8TAC92 / 8TAC92D","8TAC92 · 800 interoperability · Mobile RX / normally repeater output
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 807.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC92D · 800 interoperability · Simplex / direct
+Tactical - Direct · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 852.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"852.5125","8TAC93 / 8TAC93D","8TAC93 · 800 interoperability · Mobile RX / normally repeater output
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 807.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC93D · 800 interoperability · Simplex / direct
+Tactical - Direct · Analog FM (4/5 kHz deviation)
+Mobile RX: 852.51250 MHz · CTCSS 156.7 Hz
+Mobile TX: 852.51250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)"
+"853.0125","8TAC94 / 8TAC94D","8TAC94 · 800 interoperability · Mobile RX / normally repeater output
+Tactical · Analog FM (4/5 kHz deviation)
+Mobile RX: 853.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 808.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC94D · 800 interoperability · Simplex / direct
+Tactical - Direct · Analog FM (4/5 kHz deviation)
+Mobile RX: 853.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 853.01250 MHz · CTCSS 156.7 Hz
+NPSPAC analog FM; 4 kHz recommended deviation, 5 kHz permitted by cited rule; regional plans may differ. See source notes.
+CISA NIFOG 2.02 (January 2025), p. 59 (PDF p. 66)
+
+8TAC94 · SAR command · Mobile RX / normally repeater output
+SAR gateway · Analog FM (4/5 kHz deviation)
+Mobile RX: 853.01250 MHz · CTCSS 156.7 Hz
+Mobile TX: 808.01250 MHz · CTCSS 156.7 Hz
+SAR command gateway plan; substitute listed direct channel if no repeater. Marine 17 requires STA. See federal conditions pp.19-22.
+CISA NIFOG 2.02 (January 2025), p. 63 (PDF p. 70)"

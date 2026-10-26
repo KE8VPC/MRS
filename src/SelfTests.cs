@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using NAudio.Wave;
 
 namespace MRS;
@@ -13,11 +13,12 @@ public static class SelfTests
     {
         var lines = new List<string>();
         void Check(bool condition, string name) { if (!condition) throw new InvalidOperationException("FAIL: " + name); lines.Add("PASS: " + name); }
+        Update039Tests.Run(Check);Update038Tests.Run(Check);Update037Tests.Run(Check);Update036Tests.Run(Check);SensorTests.Run(Check);
         ReceiverRefinementTests.Run(Check);
         PagingTests.Run(Check);
         PagingManagementTests.Run(Check);
         DataInspectionTests.Run(Check);
-        AviationTests.Run(Check); DmrTests.Run(Check); TrunkTests.Run(Check);
+        AviationUpdateTests.Run(Check); TriggeredRecordingTests.Run(Check); FileBandPlanTests.Run(Check); AviationTests.Run(Check); DmrTests.Run(Check); TrunkTests.Run(Check);
         ReceiverFeatureTests.Run(Check);
         TvTests.Run(Check);
         RfSpectrumTests.Run(Check);

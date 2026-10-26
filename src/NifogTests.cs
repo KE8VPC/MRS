@@ -32,11 +32,10 @@ internal static class NifogTests
         string settingsPath=Path.Combine(AppContext.BaseDirectory,"nifog-test-profile",Guid.NewGuid().ToString("N"),"display.json");
         var panel=new DisplayPanel();panel.Initialize(settingsPath);DisplaySettings? changed=null;panel.Changed+=s=>changed=s;
         var body=(StackPanel)((ScrollViewer)panel.Content).Content;
-        var toggle=body.Children.OfType<System.Windows.Controls.HeaderedContentControl>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>()).Single(c=>c.Content?.ToString()=="Show CISA NIFOG channels");
-        toggle.IsChecked=true;panel.Save();
-        check(changed is {ShowNifogPlan:true,ShowBandPlan:false,ShowArrlPlan:false},"NIFOG checkbox publishes its own display setting without enabling other layers");
+        panel.SetReferencePlan("reference/nifog",true);panel.Save();
+        check(changed is {ShowNifogPlan:true,ShowBandPlan:false,ShowArrlPlan:false},"NIFOG manager selection publishes its own display setting without enabling other layers");
         var second=new DisplayPanel();DisplaySettings? loaded=null;second.Changed+=s=>loaded=s;second.Initialize(settingsPath);
-        check(loaded?.ShowNifogPlan==true,"NIFOG checkbox survives actual display-profile save and reload");
+        check(loaded?.ShowNifogPlan==true,"NIFOG manager selection survives actual display-profile save and reload");
         var view=new SpectrumView();view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));
         view.SetRf(155752500,960000);view.Configure(new DisplaySettings{ShowNifogPlan=true});double center=view.VisibleCenter;
         view.SetPointer(new Point(516,45));

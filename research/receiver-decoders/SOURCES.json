@@ -1,0 +1,46 @@
+{
+  "reviewed": "2026-10-24",
+  "status": "rtl_433 sensor/meter helper and original MRS burst inspector integrated in 0.35.0-preview1; remaining Mayhem references are research",
+  "sources": [
+    {
+      "project": "rtl_433",
+      "repository": "https://github.com/merbanan/rtl_433",
+      "commit": "406f9a33550a2b6b3d0d8a8a486417ce5b3f13ab",
+      "license": "GPL-2.0-or-later in inspected rtl_433.c; per-file review required",
+      "resources": [
+        "README.md",
+        "COPYING",
+        "conf/rtl_433.example.conf",
+        "src/rtl_433.c"
+      ],
+      "integration": "MRS-owned live/replay channel I/Q -> bounded stdin helper -> JSON events; no second hardware owner"
+    },
+    {
+      "project": "Mayhem",
+      "repository": "https://github.com/portapack-mayhem/mayhem-firmware",
+      "commit": "fd8edf69e326ab8b9be67c88de7eb2aaf5468c8f",
+      "license": "GPL-3.0 repository; check individual files and inherited dependencies before reuse",
+      "resources": [
+        "firmware/baseband/proc_ert.cpp",
+        "firmware/common/ert_packet.cpp",
+        "firmware/application/external/ert/ert_app.cpp",
+        "firmware/application/external/fpv_detect/ui_fpv_detect.cpp",
+        "firmware/baseband/proc_wmbus.cpp",
+        "firmware/baseband/fprotos/subghzdprotos.hpp",
+        "firmware/baseband/fprotos/weatherprotos.hpp"
+      ],
+      "integration": "Port algorithms/parsers and validate; ARM/ChibiOS/baseband images and PPMA apps are not Windows plugins"
+    },
+    {
+      "project": "rtlamr",
+      "repository": "https://github.com/bemasher/rtlamr",
+      "license": "AGPL-3.0-or-later in inspected source; review before integration",
+      "integration": "meter protocol reference / optional future backend; rtl_tcp receiver interface needs adaptation"
+    },
+    {
+      "project": "OpenDroneID",
+      "repository": "https://github.com/opendroneid/opendroneid-core-c",
+      "integration": "Remote ID payload codec reference; Wi-Fi/Bluetooth frame acquisition is separate and Windows adapter support must be verified"
+    }
+  ]
+}

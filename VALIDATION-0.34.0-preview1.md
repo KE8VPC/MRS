@@ -1,0 +1,13 @@
+# Validation — 0.34.0-preview1
+
+Final build: work/mrs-0340-preview1-check8.
+
+- Release publish succeeded. The existing NU1900 warning indicates unavailable NuGet vulnerability-feed metadata; no security audit is claimed.
+- 1,341 regression assertions passed in the final build's self-test.txt. New coverage includes embedded map loading, Ohio/lake/city reference data, sequential and stationary trail reports, duplicate/failed positions, long reporting gaps, rewind segmentation, source/live/replay separation, point/time limits, dateline handling, crowded trail rendering, exact HF-filter diagnosis and protocol recommendations.
+- Full UI/replay smoke passed in the same build's ui-smoke-result.txt. Setup application repaired the reproduced HackRF ADS-B conflict, preserved LNA/VGA and left reception stopped. Offline map drew three synthetic aircraft trails with zero map HTTP requests. Synthetic crowded rendering reached the 30,000-segment limit without issuing tile requests.
+- Visual review covered the setup conflict report, applied settings and offline map with regional city labels and readable aircraft captions. Final renderer batches trail paths, updates timed map state at most twice per second when visible, and bounds displayed segments. User pan/zoom/selection remains immediate.
+- Previous automatic I/Q, auto-squelch, railroad, decoder, replay and workspace checks remain in the suite. Synthetic automatic I/Q capture and railroad hide/reload persistence passed again in the final UI run.
+- Natural Earth source data was pinned to commit ca96624a56bd078437bca8184e78163e5039ad19. Original input hashes, derived-data hash, sources and transformation are in maps/SOURCE.json. The 1,391,985-byte compressed dataset is embedded in MRS.exe; no external map file, tile cache or network is required to display the regional reference map.
+- Packaging extracts runtime and source ZIPs and hash-compares every file against staging. The runtime contains seven reference CSVs and exactly the thirteen approved synthetic recordings. Private recordings, automatic smoke-test captures and collected site data are excluded.
+
+Automated checks used no live RF, audio hardware or transmission. On October 24, 2026, the user additionally demonstrated live HackRF ADS-B decoding, aircraft positions, offline-layer map display, zoom and a selected aircraft trail, and explicitly marked aviation map/trails acceptance complete. Remaining edge cases will be addressed if reported. Decoder-setup live checks and the separate 0.33 acceptance remain pending; both checklists are included. Offline mapping is regional, with no street/airport/airspace dataset. The optional online layer was not enabled in automated checks. APRS TX gain/start inconsistency remains deferred.

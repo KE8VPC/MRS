@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -7,7 +7,7 @@ using System.Windows.Media;
 namespace MRS;
 public sealed class FrequencyPanel : UserControl
 {
-    private FrequencyLibrary? library;
+    private FrequencyLibrary? library;internal int SavedEntryCount=>library?.Items.Count??0;
     private static int openEditors;
     private string path = "";
     private readonly TreeView tree = new() { Background = new SolidColorBrush(Color.FromRgb(10, 17, 27)), Foreground = Brushes.White, BorderBrush = Brushes.SlateGray };
@@ -19,6 +19,8 @@ public sealed class FrequencyPanel : UserControl
     private int pressClicks;
     private FrequencyItem? dragItem;
     public event Action? Changed;
+    internal event Action<FrequencyItem,FrequencyItem[]>? FolderScanRequested;
+    internal readonly FolderScanPanel ScanControls=new();
     public event Action<FrequencyItem>? TuneRequested;
     public Func<(long Frequency, string Mode)>? CurrentSettings { get; set; }
     public Func<double>? CurrentBandwidth { get; set; }
@@ -59,7 +61,8 @@ public sealed class FrequencyPanel : UserControl
         var filter = new StackPanel(); DockPanel.SetDock(filter, Dock.Top); dock.Children.Add(filter);
         filter.Children.Add(new TextBlock { Text = "Search frequencies, names, notes or protocols", Foreground = Brushes.LightSteelBlue, FontSize = 12, TextWrapping = TextWrapping.Wrap }); filter.Children.Add(search);
         search.TextChanged += (_, _) => {selection.Clear();anchor=null;Rebuild();};
-        var lower = new StackPanel(); DockPanel.SetDock(lower, Dock.Bottom); dock.Children.Add(lower);
+        var lower = new StackPanel(); var lowerScroll=new ScrollViewer{Content=lower,MaxHeight=220,VerticalScrollBarVisibility=ScrollBarVisibility.Auto}; DockPanel.SetDock(lowerScroll, Dock.Bottom); dock.Children.Add(lowerScroll);
+        lower.Children.Add(new Expander{Header="Saved-folder scan controls",Content=ScanControls,IsExpanded=true,Foreground=Brushes.LightSteelBlue});
         lower.Children.Add(new ScrollViewer { Content = details, MaxHeight = 160, VerticalScrollBarVisibility = ScrollBarVisibility.Auto }); lower.Children.Add(status);
         dock.Children.Add(tree);
         tree.SelectedItemChanged += (_, _) => { if(!selecting && (tree.SelectedItem as TreeViewItem)?.Tag is FrequencyItem item){focusedId=item.Id;SelectMany(item.Id,Keyboard.Modifiers);} ShowDetails(); };
@@ -78,6 +81,7 @@ public sealed class FrequencyPanel : UserControl
             Action("Show markers",()=>SetSelectedVisibility(true),selection.Count>0);Action("Hide markers",()=>SetSelectedVisibility(false),selection.Count>0);
             Action("Edit",EditSelected,selection.Count==1);Action("Delete",DeleteSelection,selection.Count>0);
             Action("Tune",()=>TuneRequested?.Invoke(item),selection.Count==1&&!item.IsFolder);
+            Action("Scan folder",()=>FolderScanRequested?.Invoke(item,FolderScanPlan.Create(RequireLibrary().Items,item.Id,ScanControls.Recursive.IsChecked==true,ScanControls.Hidden.IsChecked==true)),selection.Count==1&&item.IsFolder);
             menu.PlacementTarget=row;menu.IsOpen=true;e.Handled=true;
         };
         tree.PreviewMouseLeftButtonUp += (_, e) =>
@@ -213,6 +217,8 @@ public sealed class FrequencyPanel : UserControl
         var fresh=new FrequencyLibrary(path);fresh.SaveDiscoveries(observations,receiver);
         return true;
     }
+    internal (int Added,int Updated)? SaveSiteChannels(IEnumerable<SiteChannelData> channels){if(openEditors>0||string.IsNullOrEmpty(path))return null;return new FrequencyLibrary(path).SaveSiteChannels(channels);}
+    internal bool SaveNxdn(NxdnReception observation,string receiver){if(openEditors>0||observation.Context.Replay)return false;new FrequencyLibrary(path).SaveNxdn(observation,receiver);Rebuild();return true;}
     internal bool SaveDmr(DmrReception observation,string receiver)
     {
         if(openEditors>0||observation.Context.Replay)return false;

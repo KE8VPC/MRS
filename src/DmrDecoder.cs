@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 
 
 
@@ -10,6 +10,7 @@ internal sealed record DmrObservation(int ColorCode,int DataType,int? Slot,uint?
 
 {
 
+    public string Payload {get;init;}="";public int? GrantChannel{get;init;}public int? GrantSlot{get;init;}
     public string SystemType {get;init;}="DMR (type unknown)";
 
     public int? Network {get;init;} public int? Site {get;init;} public int? RestChannel {get;init;}

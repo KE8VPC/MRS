@@ -7,6 +7,7 @@ namespace MRS;
 public partial class P25CatalogPanel : UserControl
 {
     private P25Catalog live=new(),replay=new();
+    internal event Action<PacketObservation>? Received;internal P25Discovery[] LiveDiscoveries=>live.Rows.Select(r=>r.Value).ToArray();internal Panel CollectionArea=>(Panel)SourceChoice.Parent;internal System.Windows.Controls.DataGrid MonitorGrid=>Entries;
     internal event Action<FrequencyItem>? SaveFrequencyRequested;
     private P25Catalog Current=>SourceChoice.SelectedIndex==1?replay:live;
     internal int LiveCount=>live.Rows.Count;
@@ -15,7 +16,7 @@ public partial class P25CatalogPanel : UserControl
     internal void Initialize(string path){live=new P25Catalog(path);SetView();}
     internal void Observe(PacketObservation observation)
     {
-        (observation.Replay?replay:live).Observe(observation);
+        (observation.Replay?replay:live).Observe(observation);Received?.Invoke(observation);
         if(Search.Text.Length>0)CollectionViewSource.GetDefaultView(Current.Rows).Refresh();
         if(Entries.SelectedItem!=null){double scroll=Details.VerticalOffset;ShowDetails();Details.ScrollToVerticalOffset(scroll);}
     }
@@ -33,7 +34,7 @@ public partial class P25CatalogPanel : UserControl
     }
     private void SetView()
     {
-        if(Entries==null)return;Entries.ItemsSource=Current.Rows;CollectionViewSource.GetDefaultView(Current.Rows).Filter=Matches;UpdateStatus();
+        if(Entries==null)return;Entries.ItemsSource=Current.Rows;if(CollectionViewSource.GetDefaultView(Current.Rows).Filter==null)CollectionViewSource.GetDefaultView(Current.Rows).Filter=Matches;UpdateStatus();
     }
     private bool Matches(object row)
     {

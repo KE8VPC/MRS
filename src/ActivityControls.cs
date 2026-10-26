@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 namespace MRS;
 public partial class MainWindow
@@ -42,6 +42,8 @@ public partial class MainWindow
     }
     private void StartActivity()
     {
+        StopTrunk(false);
+        StopFolderScan("Folder scan stopped for activity discovery.");
         if(!ActivityLive||activityCapture==null||DisplaySettings.Clock-activity.LastFrame>1)
         {activityMessage="Start a live SDR receiver and wait for its RF spectrum.";return;}
         try
@@ -79,6 +81,7 @@ public partial class MainWindow
     }
     private void ResetActivity(string reason)
     {
+        Volatile.Write(ref triggerGate,null);
         StopActivity(reason);activityCapture=null;activityProcessed=-1;Spectrum.SetActivityLevels(null,null);
         if(ActivityControls.Options.AutoSquelch&&manualActivityThreshold is {} manual)
         {applyingActivity=true;try{RfSquelchSlider.Value=manual;}finally{applyingActivity=false;}}
@@ -111,6 +114,7 @@ public partial class MainWindow
             try{receiver.SetChannel(channel with{Frequency=hz});}
             catch(Exception ex){StopActivity("Scanner tuning stopped: "+ex.Message);}
         }
+        UpdateTriggerGate();
         if(time-activitySaved>=5){activitySaved=time;FlushActivity();}
     }
     private void RefreshActivity()

@@ -21,7 +21,7 @@ internal static class TvBandPlanTests
             var panel=new DisplayPanel();panel.Initialize(path);
             var body=(StackPanel)((ScrollViewer)panel.Content).Content;
             var toggles=body.Children.OfType<System.Windows.Controls.HeaderedContentControl>().Select(g=>(StackPanel)g.Content).SelectMany(g=>g.Children.OfType<CheckBox>());
-            toggles.Single(c=>c.Content?.ToString()=="Show TV RF channels (2–36)").IsChecked=true;
+            panel.SetReferencePlan("reference/tv",true);
             check(!toggles.Any(c=>c.Content?.ToString()?.Contains("pilot references")==true),"TV pilot control is removed");
             panel.Save();DisplaySettings? loaded=null;
             var restored=new DisplayPanel();restored.Changed+=s=>loaded=s;restored.Initialize(path);

@@ -1,0 +1,142 @@
+"start_mhz","end_mhz","label","source"
+"54","60","TV RF 2","TV RF 2: 54–60 MHz
+Center 57 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"60","66","TV RF 3","TV RF 3: 60–66 MHz
+Center 63 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"66","72","TV RF 4","TV RF 4: 66–72 MHz
+Center 69 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"76","82","TV RF 5","TV RF 5: 76–82 MHz
+Center 79 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"82","88","TV RF 6","TV RF 6: 82–88 MHz
+Center 85 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"174","180","TV RF 7","TV RF 7: 174–180 MHz
+Center 177 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"180","186","TV RF 8","TV RF 8: 180–186 MHz
+Center 183 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"186","192","TV RF 9","TV RF 9: 186–192 MHz
+Center 189 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"192","198","TV RF 10","TV RF 10: 192–198 MHz
+Center 195 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"198","204","TV RF 11","TV RF 11: 198–204 MHz
+Center 201 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"204","210","TV RF 12","TV RF 12: 204–210 MHz
+Center 207 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"210","216","TV RF 13","TV RF 13: 210–216 MHz
+Center 213 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"470","476","TV RF 14","TV RF 14: 470–476 MHz
+Center 473 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"476","482","TV RF 15","TV RF 15: 476–482 MHz
+Center 479 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"482","488","TV RF 16","TV RF 16: 482–488 MHz
+Center 485 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"488","494","TV RF 17","TV RF 17: 488–494 MHz
+Center 491 MHz
+RF 17 is allocated for non-broadcast use in Hawaii.
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"494","500","TV RF 18","TV RF 18: 494–500 MHz
+Center 497 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"500","506","TV RF 19","TV RF 19: 500–506 MHz
+Center 503 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"506","512","TV RF 20","TV RF 20: 506–512 MHz
+Center 509 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"512","518","TV RF 21","TV RF 21: 512–518 MHz
+Center 515 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"518","524","TV RF 22","TV RF 22: 518–524 MHz
+Center 521 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"524","530","TV RF 23","TV RF 23: 524–530 MHz
+Center 527 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"530","536","TV RF 24","TV RF 24: 530–536 MHz
+Center 533 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"536","542","TV RF 25","TV RF 25: 536–542 MHz
+Center 539 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"542","548","TV RF 26","TV RF 26: 542–548 MHz
+Center 545 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"548","554","TV RF 27","TV RF 27: 548–554 MHz
+Center 551 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"554","560","TV RF 28","TV RF 28: 554–560 MHz
+Center 557 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"560","566","TV RF 29","TV RF 29: 560–566 MHz
+Center 563 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"566","572","TV RF 30","TV RF 30: 566–572 MHz
+Center 569 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"572","578","TV RF 31","TV RF 31: 572–578 MHz
+Center 575 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"578","584","TV RF 32","TV RF 32: 578–584 MHz
+Center 581 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"584","590","TV RF 33","TV RF 33: 584–590 MHz
+Center 587 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"590","596","TV RF 34","TV RF 34: 590–596 MHz
+Center 593 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"596","602","TV RF 35","TV RF 35: 596–602 MHz
+Center 599 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."
+"602","608","TV RF 36","TV RF 36: 602–608 MHz
+Center 605 MHz
+Physical RF channel, not virtual program number. Allocation does not identify an active station or ATSC version.
+47 CFR 73.603; reviewed 2026-10-12; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-E/section-73.603; pilot: ATSC A/53 Part 2. Channel 37 is reserved for radio astronomy and is excluded."

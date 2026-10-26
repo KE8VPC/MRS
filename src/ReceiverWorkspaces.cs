@@ -27,10 +27,7 @@ public partial class MainWindow
     private readonly bool diagnosticWorkspace;
     private void OpenOtherReceiver(object sender,RoutedEventArgs e)
     {
-        string other=workspaceSlot=="A"?"B":"A";
-        var existing=Application.Current.Windows.OfType<MainWindow>().FirstOrDefault(w=>w.workspaceSlot==other && !w.closing && w.diagnosticWorkspace==diagnosticWorkspace);
-        if(existing!=null){if(existing.WindowState==WindowState.Minimized)existing.WindowState=WindowState.Normal;existing.Activate();return;}
-        var window=new MainWindow(diagnosticWorkspace,other);window.Show();
+        OpenFleetManager();
     }
     private bool ClaimReceiver(RtlNative.Device device,string? identity)
     {
@@ -70,12 +67,12 @@ public partial class MainWindow
             other.Stop();
             using(var ar=new IqReader(a))if(ar.Read()==null)throw new InvalidOperationException("A recording empty.");
             using(var br=new IqReader(bb))if(br.Read()==null)throw new InvalidOperationException("B recording empty.");
-            other.FrequencyBox.Text="145.825000";other.VolumeSlider.Value=.23;other.Packets.DecoderEnabled=true;other.Packets.SubaudibleEnabled=true;other.Packets.Grouped=false;other.Packets.HiddenP25Types=["NID header","TSBK"];
+            other.FrequencyBox.Text="145.825000";other.VolumeSlider.Value=.23;other.Packets.DecoderEnabled=true;other.Packets.SubaudibleEnabled=true;other.P25Packets.Grouped=false;other.P25Packets.HiddenP25Types=["NID header","TSBK"];
             string profile=other.dataFolder;other.Close();
             var restored=System.Text.Json.JsonSerializer.Deserialize<Preferences>(File.ReadAllText(Path.Combine(profile,"settings.json")));
             if(restored?.Frequency!="145.825000" || !restored.PacketDecoding || !restored.SubaudibleDecoding || restored.GroupP25Repeats || restored.HiddenP25Types?.Length!=2 || Math.Abs(restored.Volume-.23)>.001)throw new InvalidOperationException("B settings were not saved independently.");
             var reopened=new MainWindow(true,"B",profile){ShowInTaskbar=false,Left=-16000};
-            try{reopened.Show();if(reopened.FrequencyBox.Text!="145.825000" || !reopened.Packets.DecoderEnabled || !reopened.Packets.SubaudibleEnabled || !reopened.receiver.CaptureData || reopened.Packets.Grouped || !reopened.Packets.HiddenP25Types.SequenceEqual(new[]{"NID header","TSBK"}) || Math.Abs(reopened.VolumeSlider.Value-.23)>.001)throw new InvalidOperationException("B profile restore failed.");}finally{reopened.Close();}
+            try{reopened.Show();if(reopened.FrequencyBox.Text!="145.825000" || !reopened.Packets.DecoderEnabled || !reopened.Packets.SubaudibleEnabled || !reopened.receiver.CaptureData || reopened.P25Packets.Grouped || !reopened.P25Packets.HiddenP25Types.SequenceEqual(new[]{"NID header","TSBK"}) || Math.Abs(reopened.VolumeSlider.Value-.23)>.001)throw new InvalidOperationException("B profile restore failed.");}finally{reopened.Close();}
         }
         finally{Stop();if(!other.closing)other.Close();}
     }

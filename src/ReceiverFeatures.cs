@@ -56,6 +56,7 @@ public partial class MainWindow
     }
     private void RecordIq(object sender, RoutedEventArgs e)
     {
+        if(automaticIq.Armed){Log("Disarm automatic I/Q before starting a manual recording.");return;}
         if (!rfMode || receiver.IsReplay || receiver.AppliedFrequency == 0) { Log("Start live SDR reception before recording I/Q."); return; }
         var dialog = new SaveFileDialog { Filter = "M.R.S. I/Q recording|*.mrsiq", FileName = $"MRS-IQ-{workspaceSlot}-{DateTime.Now:yyyyMMdd-HHmmss}.mrsiq", Title = "Record captured RF I/Q" };
         if (dialog.ShowDialog(this) != true) return;

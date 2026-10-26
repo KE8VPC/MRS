@@ -7,6 +7,7 @@ internal static class SharedFrequencyTests
 {
     internal static void Run(Action<bool,string> check)
     {
+        FolderScanTests.Run(check);
         string root=Path.Combine(Path.GetTempPath(),"mrs-shared-"+Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(root);
         try

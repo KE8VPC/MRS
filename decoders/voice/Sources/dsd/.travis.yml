@@ -1,0 +1,26 @@
+language: cpp
+
+dist: trusty
+sudo: false
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:szechyjs/dsd'
+    packages:
+      - libmbe-dev
+      - libsndfile1-dev
+      - libitpp-dev
+      - portaudio19-dev
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - make
+  - make test

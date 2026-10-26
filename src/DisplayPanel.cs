@@ -35,6 +35,7 @@ public sealed class DisplayPanel : UserControl
     private bool updating, writable = true;
     public event Action<DisplaySettings>? Changed;
     public event Action? ClearPeakRequested;
+    public event Action? ManagePlansRequested;
     public DisplayPanel()
     {
         var body = new StackPanel { Margin = new Thickness(8) };
@@ -84,20 +85,10 @@ public sealed class DisplayPanel : UserControl
         Button(view, "Full span / center", () => Publish(settings with { Zoom = 1, Pan = .5 }));
         Button(view, "Center on tuned RF frequency", () => Publish(settings with { Pan = .5 }));
         view.Children.Add(new TextBlock { Text = "Wheel: zoom at pointer. Shift+wheel: pan. RF click: tune; Ctrl+click: select marker. Tab-focus the plot for +/- or arrows; Home resets.", TextWrapping = TextWrapping.Wrap, Foreground = Brushes.LightSteelBlue, FontSize = 11, Margin = new Thickness(0, 8, 0, 0) });
-        var plan = Group("U.S. band reference");
-        Check(plan, "Show U.S. band reference bar", s => s.ShowBandPlan, (s, v) => s with { ShowBandPlan = v });
-        Check(plan, "Include service channel markers", s => s.ShowChannelMarkers, (s, v) => s with { ShowChannelMarkers = v });
-        Check(plan, "Show ARRL operating recommendations", s => s.ShowArrlPlan, (s, v) => s with { ShowArrlPlan = v });
-        Check(plan, "Show CISA NIFOG channels", s => s.ShowNifogPlan, (s, v) => s with { ShowNifogPlan = v });
-        Check(plan, "Show TV RF channels (2â€“36)", s => s.ShowTvPlan, (s, v) => s with { ShowTvPlan = v });
-        plan.Children.Add(new TextBlock {Text="NIFOG 2.02: nationwide/federal interoperability, medical and SAR references. Hover for mobile RX/TX, tones/NAC and page. Markers do not indicate local activity.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,FontSize=11});
-        plan.Children.Add(new TextBlock { Text = "Reference bar position", Margin = new Thickness(0, 8, 0, 4) });
-        var planPosition = new ComboBox { ItemsSource = new[] { "Above spectrum", "Below spectrum" } };
-        System.Windows.Automation.AutomationProperties.SetName(planPosition, "Reference bar position");
-        plan.Children.Add(planPosition);
-        refresh.Add(s => planPosition.SelectedIndex = s.BandPlanAtBottom ? 1 : 0);
-        planPosition.SelectionChanged += (_, _) => { if (!updating) Publish(settings with { BandPlanAtBottom = planPosition.SelectedIndex == 1 }); };
-        plan.Children.Add(new TextBlock { Text = "ARRL: LF through microwave; local plans may differ. Hover to see overlapping uses. Recommendations do not set receiver mode or transmit privileges.", TextWrapping = TextWrapping.Wrap, Foreground = Brushes.LightSteelBlue, FontSize = 11 });        plan.Children.Add(new TextBlock { Text = "Selected FCC bands and channel centers; NOAA weather. Hover for source. Region 2 reference, not TX privileges. See BAND-PLAN.md for coverage and source dates.", TextWrapping = TextWrapping.Wrap, Foreground = Brushes.LightSteelBlue, FontSize = 11 });
+        var plan = Group("Bandplans");
+        Check(plan,"Show bandplans",s=>!s.HidePlans,(s,v)=>s with{HidePlans=!v});
+        Check(plan,"Show channel markers",s=>s.ShowChannelMarkers,(s,v)=>s with{ShowChannelMarkers=v});
+        Button(plan,"Manage bandplans…",()=>ManagePlansRequested?.Invoke());
         var level = Group("Display gain / contrast");
         Slider(level, "Display gain", -40, 40, s => s.GainDb, (s, v) => s with { GainDb = v }, " dB");
         Check(level, "Auto spectrum scale", s => s.AutoSpectrum, (s, v) => s with { AutoSpectrum = v });
@@ -171,6 +162,7 @@ public sealed class DisplayPanel : UserControl
     internal void SavePreset(string name) { presets[name] = settings; UpdatePresetList(); presetList.SelectedItem = name; Save(); }
     internal void LoadPreset(string name) { if (presets.TryGetValue(name, out var value)) Publish(value); }
     public void Reflect(DisplaySettings value) { settings = value.Normalize(); updating = true; foreach (var action in refresh) action(settings); updating = false; }
+    internal void SetReferencePlan(string p,bool show)=>Publish(p switch{"reference/us"=>settings with{ShowBandPlan=show},"reference/arrl"=>settings with{ShowArrlPlan=show},"reference/nifog"=>settings with{ShowNifogPlan=show},"reference/tv"=>settings with{ShowTvPlan=show},_=>settings});
     public void AcceptViewChange(DisplaySettings value) { Reflect(value); saveTimer.Stop(); saveTimer.Start(); }
     private void Publish(DisplaySettings value) { Reflect(value); Changed?.Invoke(settings); saveTimer.Stop(); saveTimer.Start(); }
     public void Save()

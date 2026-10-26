@@ -1,0 +1,25 @@
+M.R.S. sensor worker — rtl_433 source commit 406f9a33550a2b6b3d0d8a8a486417ce5b3f13ab
+Upstream: https://github.com/merbanan/rtl_433
+License: GPL-2.0-or-later; individual source notices retained. Corresponding modified
+source is Sources/rtl_433-406f9a3-mrs.zip. Sources/mrs-iq-channel.c is the original
+M.R.S. receive-only mixer/FIR bridge (u8/s8 input, cf32 output to preserve weak signals), not Mayhem code.
+
+Modification: src/rtl_433.c sets Windows stdin to binary mode before reading I/Q.
+Without this, control characters in piped samples can truncate or alter input.
+
+Build using MinGW-w64 GCC, CMake, Ninja (Windows x64):
+  cmake -S rtl_433 -B build -G Ninja -DENABLE_RTLSDR=OFF -DENABLE_SOAPYSDR=OFF -DENABLE_OPENSSL=OFF -DENABLE_THREADS=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXE_LINKER_FLAGS=-static
+  cmake --build build -j 3
+  gcc -O3 -static Sources/mrs-iq-channel.c -o mrs-iq-channel.exe -lm
+
+The bridge produces cf32 for inspection; M.R.S. converts to cu8 with user-selected
+digital gain for rtl_433. This preserves the pinned decoder's tested 8-bit demodulator behavior.
+
+M.R.S. exclusively supplies live/replay I/Q; these builds do not open an SDR.
+Runtime launches no network output or transmitter. rtl_433 itself still has upstream
+file/rtl_tcp and output facilities; M.R.S. only invokes raw stdin and JSON stdout.
+This is a pinned development snapshot reporting upstream version 25.12, not a claim
+that every catalog device has been tested. Meter selection: 149,154,160,223,228,282,290.
+161 (netIDM interpretation) omitted because upstream cannot reliably distinguish it
+from IDM. Raw fields remain available; meter consumption scaling is device-specific.
+Compiler/runtime license notices are under Licenses. No user recordings are included.

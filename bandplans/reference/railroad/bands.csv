@@ -1,0 +1,2 @@
+start_mhz,end_mhz,label,source
+160.207500,161.572500,Railroad AAR 007-097 (15 kHz centers),https://www.cisa.gov/sites/default/files/publications/NIFOG%20Ver%202.0_508%20version_FINAL%20-%2011%2015%2021_1%20%28002%29.pdf; display edges are half-spacing beyond first/last centers

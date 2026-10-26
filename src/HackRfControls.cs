@@ -70,6 +70,20 @@ public partial class MainWindow
             while (!condition() && clock.ElapsedMilliseconds < 6000) await Task.Delay(25);
             if (!condition()) throw new InvalidOperationException("HackRF UI did not acknowledge the requested state: " + RtlStatus.Text);
         }
+        var txWindow=new TransmitTestWindow(new RtlNative.Device(0,"Synthetic","MRS","Test","TX-SMOKE","HackRF"),"synthetic");
+        if(!txWindow.SafeInitialState)throw new InvalidOperationException("TX test must open unarmed with blank frequency and minimum gain/duration");
+        txWindow.ShowInTaskbar=false;txWindow.WindowStartupLocation=WindowStartupLocation.Manual;txWindow.Left=-16000;txWindow.Show();txWindow.UpdateLayout();
+        var txImage=new System.Windows.Media.Imaging.RenderTargetBitmap((int)txWindow.ActualWidth,(int)txWindow.ActualHeight,96,96,System.Windows.Media.PixelFormats.Pbgra32);txImage.Render(txWindow);
+        var txEncoder=new System.Windows.Media.Imaging.PngBitmapEncoder();txEncoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(txImage));
+        using(var txFile=System.IO.File.Create(System.IO.Path.Combine(AppContext.BaseDirectory,"ui-tx-test.png")))txEncoder.Save(txFile);
+        txWindow.Close();
+        var aprsWindow=new TransmitTestWindow(new RtlNative.Device(0,"Synthetic","MRS","Test","APRS-SMOKE","HackRF"),"synthetic",true);
+        if(!aprsWindow.SafeInitialState)throw new InvalidOperationException("APRS sender must open unarmed with no RF frequency");
+        aprsWindow.SyntheticPreview();aprsWindow.ShowInTaskbar=false;aprsWindow.WindowStartupLocation=WindowStartupLocation.Manual;aprsWindow.Left=-16000;aprsWindow.Show();aprsWindow.UpdateLayout();
+        var aprsImage=new System.Windows.Media.Imaging.RenderTargetBitmap((int)aprsWindow.ActualWidth,(int)aprsWindow.ActualHeight,96,96,System.Windows.Media.PixelFormats.Pbgra32);aprsImage.Render(aprsWindow);
+        var aprsEncoder=new System.Windows.Media.Imaging.PngBitmapEncoder();aprsEncoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(aprsImage));
+        using(var aprsFile=System.IO.File.Create(System.IO.Path.Combine(AppContext.BaseDirectory,"ui-aprs-transmit.png")))aprsEncoder.Save(aprsFile);
+        aprsWindow.Close();
         Stop(); ReceiverFamily.SelectedIndex = 1;
         if (SelectedSampleRate != 9600000 || HackRfControls.Visibility != Visibility.Visible || SamplingModeBox.IsEnabled || RtlGain.Visibility != Visibility.Collapsed)
             throw new InvalidOperationException("HackRF family did not expose the correct capabilities and controls.");

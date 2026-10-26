@@ -1,0 +1,13 @@
+# Activity-triggered I/Q — 0.33.0-preview1
+
+Start live SDR reception, tune the wanted channel, and wait about 1.2 seconds for the noise-floor estimate. Under Receiver > RF squelch, enable Auto squelch and choose a margin (8 dB is a starting point). Scanning is not required. The Receiver and Scan controls share the same automatic threshold, margin and spectrum-line settings. Moving the manual threshold slider disables automatic adjustment and retains that manual threshold. Disabling Auto restores the prior manual threshold. The gate and displayed FFT-bin threshold use different power units; the conversion is handled by M.R.S.
+
+Under Recording > Activity-triggered I/Q, choose a folder and click Arm automatic I/Q. It triggers on the tuned channel's integrated RF power reaching the RF threshold. Audio squelch can be bypassed without disabling the recording trigger. This is RF activity detection, including voice or digital signals; it does not depend on decoded messages or speech amplitude. It records the entire captured RF span, preserving channel, capture, gain and format metadata.
+
+Defaults: 1 second before the trigger, 2 seconds of quiet tail, 30-second maximum clip, and 1,024 MB of I/Q payload per arm session. Pre-trigger memory is capped at 64 MB (so the available duration may be shorter at high rates). Storage usage includes the full capture: 9.6 MS/s produces about 19.2 MB/second. Choose settings while disarmed; Arm takes a snapshot of them. Continuous activity produces successive clips. A file's duration can exceed the limit by at most one capture block.
+
+Files use unique MRS-AUTO names with receiver slot, UTC time and tuned frequency. Files are never automatically deleted or overwritten. The session budget resets on a new Arm; it is not a folder-wide quota. Small file headers add to the payload budget. Less than 256 MB free prevents a new clip; storage errors or capture queue overrun disarm recording and display the reason. Complete frames remain available; incomplete disk writes retain the normal I/Q incomplete-file status.
+
+Disarm finishes the current clip. Stop, disconnect, source replacement, replay and closing the app disarm recording; reconnect does not rearm it. Retuning/changing channel, mode, rate or gain finishes the prior clip and clears its pre-buffer. Recording waits for a valid calibrated threshold for the new channel. Manual I/Q recording and automatic I/Q recording are mutually exclusive. WAV recording remains manual in this release. Settings persist, armed state does not.
+
+Open generated .mrsiq files with the existing I/Q replay controls. Pre-trigger timestamps follow sample time, rather than the time spent flushing buffered data to disk.

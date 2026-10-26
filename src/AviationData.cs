@@ -52,12 +52,25 @@ internal static class AviationData
         catch(Exception ex) when(ex is JsonException or InvalidOperationException or FormatException){return null;}
     }
 }
+internal sealed record AircraftTrailPoint(DateTimeOffset Seen,double Latitude,double Longitude,int Segment,double? ReplaySeconds);
 internal sealed class AircraftRow
 {
     public string Identity {get;set;}="";public string Protocol {get;set;}="";public string Source {get;set;}="";public string SourceKey {get;set;}="";public string Callsign {get;set;}="";
     public DateTimeOffset LastSeen {get;set;} public DateTimeOffset? PositionSeen {get;set;} public DateTimeOffset? AltitudeSeen {get;set;} public DateTimeOffset? SpeedSeen {get;set;}
     public double? Latitude {get;set;} public double? Longitude {get;set;} public double? Altitude {get;set;} public double? Speed {get;set;}
     public int Count {get;set;} public bool Replay {get;set;}
+    public List<AircraftTrailPoint> Trail {get;}=[];
+    internal void AddPosition(AviationMessage m)
+    {
+        var now=m.Packet.ObservedUtc;double? seconds=m.Packet.PositionSeconds;var last=Trail.LastOrDefault();
+        if(last!=null&&now<last.Seen)return;
+        double gap=Replay&&seconds.HasValue&&last?.ReplaySeconds is {} previous?seconds.Value-previous:last==null?0:(now-last.Seen).TotalSeconds;
+        int segment=(last?.Segment??0)+(last!=null&&(gap>30||gap<0)?1:0);
+        if(last==null||last.Latitude!=m.Latitude||last.Longitude!=m.Longitude||segment!=last.Segment)Trail.Add(new(now,m.Latitude!.Value,m.Longitude!.Value,segment,seconds));
+        else Trail[^1]=last with{Seen=now,ReplaySeconds=seconds};
+        Trail.RemoveAll(p=>(now-p.Seen).TotalMinutes>10);
+        if(Trail.Count>300)Trail.RemoveRange(0,Trail.Count-300);
+    }
     public string Age=>$"{Math.Max(0,(DateTimeOffset.UtcNow-LastSeen).TotalSeconds):F0}s";
     public string PositionAge=>PositionSeen is {} t?$"{Math.Max(0,(DateTimeOffset.UtcNow-t).TotalSeconds):F0}s":"—";
     public string Position=>Latitude is {} lat&&Longitude is {} lon?$"{lat:F5}, {lon:F5}":"—";
@@ -76,7 +89,7 @@ internal sealed class AircraftTable
         if(!rows.TryGetValue(key,out var r))
         {if(rows.Count>=2000)rows.Remove(rows.MinBy(p=>p.Value.LastSeen).Key);rows[key]=r=new(){Identity=m.Identity,Protocol=m.Packet.Protocol,Source=m.Packet.Input,SourceKey=m.Packet.SourceKey??"",Replay=m.Packet.Replay};}
         r.LastSeen=m.Packet.ObservedUtc;r.Count++;if(m.Callsign.Length>0)r.Callsign=m.Callsign;
-        if(AviationData.Position(m.Latitude,m.Longitude)){r.Latitude=m.Latitude;r.Longitude=m.Longitude;r.PositionSeen=r.LastSeen;}
+        if(AviationData.Position(m.Latitude,m.Longitude)){r.AddPosition(m);r.Latitude=m.Latitude;r.Longitude=m.Longitude;r.PositionSeen=r.LastSeen;}
         if(m.Altitude!=null){r.Altitude=m.Altitude;r.AltitudeSeen=r.LastSeen;}if(m.Speed!=null){r.Speed=m.Speed;r.SpeedSeen=r.LastSeen;}
     }
     internal void Expire()=>rows.Where(p=>(DateTimeOffset.UtcNow-p.Value.LastSeen).TotalMinutes>15).Select(p=>p.Key).ToArray().ToList().ForEach(k=>rows.Remove(k));

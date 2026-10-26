@@ -1,5 +1,8 @@
 <Application x:Class="MRS.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
+    <!-- Nested workspaces share the dark content surface; headers keep their light native surface. -->
+    <Style TargetType="TabControl"><Setter Property="Background" Value="#101722"/><Setter Property="BorderBrush" Value="#35445B"/></Style>
+    <Style TargetType="TabItem"><Setter Property="Foreground" Value="#101722"/></Style>
     <Style TargetType="Window"><Setter Property="Background" Value="#101722"/><Setter Property="Foreground" Value="#E4EDF8"/><Setter Property="FontFamily" Value="Segoe UI"/><Setter Property="FontSize" Value="14"/></Style>
     <Style TargetType="Button"><Setter Property="Padding" Value="14,8"/><Setter Property="Margin" Value="0,0,8,0"/><Setter Property="Background" Value="#D3E9FA"/><Setter Property="Foreground" Value="#101722"/></Style>
     <Style TargetType="TextBlock"><Setter Property="VerticalAlignment" Value="Center"/></Style>

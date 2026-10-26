@@ -10,6 +10,7 @@ internal static class TrunkSignaling
     }
     internal static DmrObservation Enrich(DmrObservation o,byte[] p)
     {
+        o=o with{Payload=Convert.ToHexString(p)};
         int op=p[0]&63,fid=p[1];
         if(o.DataType is 1 or 2 && o.LinkValid && (p[0]&0x80)==0 && fid==0x10 && op is 4 or 7)
             return o with{SystemType="Capacity Plus",Source=(uint)Bits(p,56,16),Destination=(uint)Bits(p,24,24),Group=op==4,RestChannel=Bits(p,52,4),Detail="Capacity Plus full link control"};
@@ -17,6 +18,8 @@ internal static class TrunkSignaling
         bool valid=Crc16(p.AsSpan(0,10))==((p[10]<<8|p[11])^0xA5A5);
         o=o with{LinkValid=valid,Validation=valid?"Slot Golay + BPTC + CSBK CRC valid":"CSBK CRC failed; identifiers withheld",Detail=$"CSBK opcode {op:X2} · FID {fid:X2}"};
         if(!valid||(p[0]&0x40)!=0)return o;
+        if(fid==6&&op==3)return o with{SystemType="Connect Plus",Source=(uint)Bits(p,16,24),Destination=(uint)Bits(p,40,24),Group=p[9]==2,GrantChannel=p[8]>>4,GrantSlot=((p[8]>>3)&1)+1,Detail="Connect Plus channel grant; options "+p[9]};
+        if(fid==0&&op==49)return o with{SystemType="DMR Tier III",Source=(uint)Bits(p,56,24),Destination=(uint)Bits(p,32,24),Group=true,GrantChannel=Bits(p,16,12),GrantSlot=Bits(p,28,1)+1,Detail="Tier III group voice grant"};
         if(fid==0x10 && op==0x3E)
             return o with{SystemType="Capacity Plus",RestChannel=Bits(p,20,4),Detail=$"Capacity Plus channel status · fragment {Bits(p,16,2)} (0 continuation, 1 final, 2 first, 3 single)"};
         if(fid==0x10 && op==0x3B)

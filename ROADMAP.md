@@ -1,3 +1,154 @@
+# Current preview: 0.39.0-preview1
+
+Multiple receiver workspaces and a dedicated control/voice pool; automatic site-channel saving; separate channel/talkgroup records; mapped Con+/Tier III group grants; saved-map imports; view-only clear and newest-first controls. See UPDATE-0.39.0-preview1.md and ACCEPTANCE-0.39.0-preview1.md. Live acceptance and previous unfinished checks remain pending. Private reference data is excluded from clean-install packages.
+
+# Next update TODO - detailed Help and About (October 25, 2026)
+
+- Expand searchable offline Help with task-based setup guides, control/function explanations, recommended starting settings, examples and troubleshooting. Cover receiver roles, trunk following and channel mapping, site discovery, recording/VOX, bandplans and protocol-specific limits. Link relevant Help from each screen and distinguish supported, experimental and pending features.
+- Add an About section showing M.R.S. version/build information and third-party credits. For each required or optional dependency, identify its purpose, official project/source repository, bundled or separately installed status, version/revision where known, license and included license/source notices. Explain which features require each helper and link installation/troubleshooting instructions. Include applicable library, decoder, receiver-driver and map/data attribution sources; verify details against the dependencies actually shipped when implemented.
+
+Planning only: await the user's next explicit build instruction before implementation, application testing or packaging. The 0.39.0-preview1 release archives remain unchanged.
+
+# Queued requirements - private references and clean-install defaults (October 25, 2026)
+
+Fresh installs may include nationwide reference bandplans/channel allocations, but must not include localized systems, site/channel maps, saved frequency lists, talkgroup/radio aliases, paging assignments or historical reception data. Apply this boundary to runtime and source packages. Local operational data comes from explicit import, manual entry or user-enabled reception discovery. Reference allocations must not imply observed activity. Preserve existing user data during upgrades.
+
+A private, checksum-verified source snapshot and provenance notes are held outside the release tree at the task workspace's work/radio-reference-data-2026-10-25/README.md. It includes the user-supplied UniTrunker ODS and selected historical DSDPlus/programming references. Use it to develop imports, overlapping-source comparison and mapping behavior; do not bundle its datasets or silently seed installations from it. Identical copied files are duplicate evidence, not independent confirmations. UniTrunker-versus-DSDPlus cross-comparison remains to be performed.
+
+Queued functional work: dynamic Add/Remove receiver workspaces; system-scoped control-to-voice receiver assignments; automatic resolved site-channel saving into Frequency Manager; explicit unresolved/candidate maps; protocol-specific P25, Connect Plus, Capacity Plus and Tier III handling. Keep imported evidence and original labels. Await the user's explicit build instruction before implementation, application testing or packaging.
+
+# 0.38.0-preview2 - optional confirmation
+
+Adds saved tentative/noisy discovery views and per-profile optional repeat/map confirmation for Capacity Plus research. See UPDATE-0.38.0-preview2.md and ACCEPTANCE-0.38.0-preview2.md. Existing defaults and earlier acceptance remain.
+
+# 0.38.0-preview1 - experimental trunk following
+
+Implemented P25 Phase I C4FM group-grant following and initial Capacity Plus research/mapped group following, with shared saved profiles, allow/ignore/hold/skip, hang/maximum return and labels. Separate decoders retain control inside the same capture; optional hardware retunes explicitly suspend it. User-confirmed Cap+ carrier mapping is required; color code alone never groups systems. Live acceptance is pending. Phase II/CQPSK, other DMR trunk variants, two physical receiver coordination and automatic map inference remain future work. See UPDATE-0.38.0-preview1.md and the combined acceptance checklist.
+
+Carry all unfinished 0.37 and earlier checks. Broader sidebar cleanup and APRS TX gain/start remain deferred.
+
+# 0.35.0-preview1 — sensors, meters and inspection
+
+Implemented first three requested additions using a pinned rtl_433 Windows helper: default sensor/remote decoders, selected ERT/ORION/R900 meter profiles, and bounded envelope/tone burst inspection. Includes source-attributed device results, persistent aliases, raw JSON export and receiver-owned live/replay I/Q. New service navigation moves AX.25/APRS to Amateur, existing P25/DMR/paging to Public Safety / Business, and inspection/general observations to Analysis. Follow tuned / Center lock / Free view improves high-zoom tuning. Expanded railroad CSV layers are included and seeded only when absent, preserving edits. See SENSORS-METERS.md and ACCEPTANCE-0.35.0-preview1.md.
+
+No new trunk following or identification of the 154.463 MHz load-control format is claimed. DMR voice is user-confirmed; overall DMR sign-off awaits trunk following. Aviation map/trails, auto squelch and automatic I/Q recording remain accepted. This implementation supersedes the research-only status of rtl_433 and the deferred railroad inclusion below; further Mayhem-derived features remain research.
+
+# Requested next integration: sensor backend and Mayhem receiver references — October 24, 2026
+
+Add rtl_433 resources and implement a bounded Windows helper fed by M.R.S.-owned live/replay I/Q, with JSON device observations, aliases, counts, raw results and explicit validation. Initial targets are supported 315/433 MHz sensors/remotes and selected utility-meter families. Resource manifest and versioned catalog are under research/receiver-decoders/; see RTL433-MAYHEM-RESEARCH.md. Resources are now added; runtime integration and acceptance remain future work.
+
+Evaluate Mayhem ERT SCM/SCM+/IDM, SubGhzD, weather/TPMS, Wireless M-Bus, ProtoView and analog FPV detection for adaptation. Keep meter reading, 154 MHz utility load control, FPV activity, Broadcast Remote ID and proprietary DJI/video decoding separate. Mayhem embedded apps are not Windows plugins. Pin and review licenses/provenance before packaging code.
+
+Carry forward this suggestion round: organize service workspaces as Amateur, Public Safety / Business and Analysis (not Other), with protocol subtabs and a shared underlying decoder per protocol. Move AX.25/APRS out of Data into Amateur. Preserve Aviation and Spectrum access, user labels and separate service/protocol metadata; frequency suggestions must not override assignments. Background CW remains available outside Amateur. Implement Follow tuned / Center lock / Free view navigation so normal tuning keeps the channel visible at high zoom; preserve capture offset and overlapping waterfall history. These UI/navigation items are requested work, not implemented by this research update.
+
+Utility load-control tone decoding remains experimental future work; FCC lookup is deferred at user request. DMR voice is confirmed but overall sign-off awaits trunk following.
+
+# Queued for next update: expanded railroad dataset — October 24, 2026
+
+Expanded the limited starter railroad dataset into a CSV-only add-on with eight selectable layers, 467 channel definitions and 281 distinct centers: full original/splinter/NXDN AAR references plus ATCS, PTC, ITC, ACSES and telemetry. User requested inclusion in the next update while continuing to test 0.34. The temporary addition to the active working bandplan folder was moved back out after verifying it was unchanged; current testing retains the previous dataset. Include the expanded CSV folders in the next release and account for the increased CSV count in packaging validation. Original datasets and user labels are preserved. See RAILROAD-BANDPLAN.md for sources, overlap semantics and the flagged PTC-7 discrepancy. This is reference-data expansion, not a new decoder or live-RF validation. Aviation map/trails acceptance remains complete.
+
+# 0.34.0-preview1 — setup guidance and offline aviation trails
+
+Implemented requested next-pass items 1 and 5: shared decoder setup checks/recommendations, explicit HackRF HF-filter diagnosis, selected/all aircraft trails, and an embedded offline Natural Earth regional basemap. Includes all 0.33 automatic I/Q/auto-squelch/railroad features. See DECODER-SETUP.md, AVIATION-MAP.md and both 0.34/0.33 acceptance lists. Aviation map/trails live acceptance was completed by the user on October 24, 2026; later issues will be fixed as reported. Main receiver auto squelch and automatic I/Q recording were user accepted on October 24, 2026. Decoder-setup and railroad checks remain pending. Street-level offline detail, airport/airspace layers and persistent flight-history storage remain future work.
+
+# 0.33.0-preview1 — automatic I/Q captures and railroad references
+
+Implemented: bounded RF activity-triggered I/Q recording with pre-trigger buffer, quiet tail, maximum clips and session storage budget; verified existing main-receiver auto squelch shared with Scan; editable railroad CSV references (AAR 007–097, HOT and EOT). See AUTOMATIC-RECORDING.md, RAILROAD-BANDPLAN.md and ACCEPTANCE-0.33.0-preview1.md. Main receiver auto squelch and automatic I/Q recording passed user acceptance on October 24, 2026; railroad checks remain pending. Recording edge cases are retained as reference checks.
+
+Next requested pass: protocol setup/conflict guidance (item 1) and aircraft trails (selected/all) plus an offline usable aviation basemap (item 5). The offline map must remain usable without network access; data coverage, attribution, storage and updates should be explicit. These are planned, not included in 0.33.
+
+# 0.32.0-preview1 — implemented bandplan and status milestone
+
+Implemented: editable CSV spectrum references, site-selectable P25 channel maps collected from validated live control-channel observations, paired uplinks/downlinks, distinct calculated grids, and RX/TX/Idle indicator beside the clock. CSV edits reload without rebuilding. Pending observations are isolated by reception context; conflicting definitions retain evidence. See CSV-BANDPLANS.md for limits and ACCEPTANCE-0.32.0-preview1.md for new checks plus the carried-forward 0.31/0.30 checks. No trunk following or change to DMR/NXDN decoding is claimed. Earlier requested entries below are historical and superseded for this implemented subset.
+
+## Requested: P25 bandplans collected by site
+
+- Collect spectrum bandplan data from validated control-channel definitions and channel assignments, separately from the saved-frequency/scanning library.
+- Organize CSV datasets as `bandplans/p25/<WACN>-<system>/site-<RFSS>-<site>/channels.csv`, with site-specific `spacing.csv` for advertised identifier/base/spacing/offset/slot definitions. Example: `bandplans/p25/BEE00-348/site-001-022/`. The UI may display the friendly folder name `Site 22`.
+- Keep each observed LCN's downlink and uplink together in one channel record, with role, evidence/source, first/last seen and optional user label. Preserve LCN text and leading zeros. Unknown uplinks remain blank.
+- Preserve separate site membership even when sites share frequencies. Enable/show/hide sites independently; when selected overlays overlap, retain all contributing site identities in details rather than duplicating unreadable labels.
+- Attribute serving-site assignments only after system/RFSS/site identity is established; retain unresolved observations separately until then. Neighbor-site announcements belong to their explicitly advertised site, not automatically the monitored site.
+- Show actually observed channels separately from an optional calculated spacing grid; definitions alone do not mark every possible channel as observed. Flag conflicting definitions and preserve user labels and evidence.
+- This supersedes the earlier request to flatten site membership for the collected P25 bandplan. Planned feature; no current build change.
+
+## Requested: compact RX/TX indicator beside clock
+
+- Add a small indicator box or circle in the upper-right corner beside the clock, without adding another header row.
+- Green = receiver actively running; red = transmission actively running. TX takes display priority while transmitting; use neutral gray when stopped or idle.
+- Drive the indicator from actual receiver/transmitter lifecycle state, not merely an enabled control or selected mode. Clear TX on completion, cancellation or failure.
+- Include a short RX/TX/Idle tooltip and accessible state text. Planned future feature; not included in the current build.
+
+# 0.31.0-preview1 update
+
+**Acceptance update — October 24, 2026:** User confirmed hearing decoded DMR voice. Overall DMR sign-off remains pending completion and acceptance of trunk following. Trunk following is required future work, not a capability established by this voice result.
+
+Implemented: tuned-channel DMR and NXDN48/96 voice backend, DMR slot selection, concurrent CW candidates, bounded diagnostics and reset on tuning. Live acceptance pending. Validated structured NXDN channel records and automatic labeling remain future work. No new trunk following or key input.
+
+## 0.30.0-preview1 — workspace and P25 audio
+
+Implemented priorities 1–5: P25 gain/limiting, compact spectrum header/reference strips, remembered spectrum/waterfall divider, dedicated POCSAG/FLEX and consolidated P25 tabs, plus system/catalog and channel-activity split. See WORKSPACE-REFINEMENTS.md for scope and ACCEPTANCE-0.30.0-preview1.md for live checks. Historical requested items below are superseded for this implemented subset. CSV band plans, railroad dataset, Unitrunker import and automatic voice following remain future work.
+
+## Requested: compact spectrum workspace
+
+- Reduce oversized top header, logo/title margins and vertical padding. Remove the static RX / MANUAL TX TEST banner; keep actual active-transmission status in the relevant TX controls. Use a compact clock without the permanent OS synchronization explanation.
+- Move audio level to the right end of the CTCSS/DCS status strip. Keep tone status on the left; avoid a separate audio/header row. Remove redundant RF SPECTRUM / WATERFALL heading if the Spectrum tab already identifies the view.
+- Condense band-plan overlays: automatically hide no-match rows (such as NIFOG/TV outside their coverage), compact matched lanes with minimal gaps, and show detailed allocation text on hover or selection. Proposed default is at most two compact lanes plus an expand control for overlaps. Keep explicit per-plan show/hide and allow all band-plan lanes to collapse.
+- Add a draggable horizontal divider between spectrum and waterfall, independent of the Data pane split. Preserve the chosen ratio and enforce small usable minimum heights.
+- Remove permanent explanatory text beneath the waterfall. Put mouse/keyboard instructions in a help tooltip/menu and technical display statistics in an optional details view or existing toolbar status. Retain frequency and time axes.
+- Keep tune/step/shift/zoom controls compact in a single row when space allows, with sensible overflow at narrower window sizes. Reclaim saved vertical space for the plots.
+- Planned layout changes based on user screenshots; not yet implemented or packaged.
+
+## Requested: railroad CSV band plan
+
+- Include a dedicated U.S. railroad dataset in the planned bandplans/ CSV system, with verified AAR channel numbers, frequencies and spectrum labels.
+- Research authoritative current channel assignments before creating the dataset. Distinguish analog/digital channel numbering and mode suggestions where applicable.
+- Identify railroad telemetry allocations/channels separately (including HOT/EOT and relevant data systems) without implying decoder support or local occupancy.
+- Keep generic channel references separate from user-entered railroad/operator labels. Support the same plan selection, show/hide and reload behavior as other CSV plans.
+- Existing saved Railroad folder scanning remains separate. Dataset and spectrum overlay are planned, not implemented.
+
+## Requested: dedicated POCSAG / FLEX tab
+
+- Move paging decoder controls and POCSAG/FLEX observations from the general Data tab into a dedicated POCSAG / FLEX tab.
+- Keep message grouping/counts, wrapped payload summaries, source/capcode labels, ignore/restore rules, filtering, inspection and export available in that tab.
+- Preserve existing saved paging labels/rules and receiver/source attribution. Use a draggable split between messages and selected-message details, with compact collapsible diagnostics.
+- Coordinate with the planned P25 Systems consolidation and CTCSS/DCS move to receiver/spectrum status. These UI migrations remain planned, not completed.
+
+## Requested: editable external band-plan datasets
+
+- Replace hard-coded band-plan datasets with files in a working bandplans/ subdirectory. Ship default datasets there and allow users to add/edit plans without rebuilding M.R.S.
+- Format decision: CSV, confirmed by the user. Use one folder per plan under bandplans/, with optional bands.csv, channels.csv and spacing.csv files. Document columns for frequency ranges, channel/LCN markers, base/spacing rules, labels and optional modulation/filter suggestions. Accept human-readable MHz/kHz using invariant decimal parsing and convert to exact integer Hz internally. Preserve LCN text and leading zeros; flag date-converted identifiers rather than silently guessing. Support quoted fields and UTF-8 labels.
+- Include examples/templates and migrate existing datasets while preserving their labels and behavior. The extracted BEE00-348 map is an initial candidate for a custom plan.
+- Add plan selection, per-plan show/hide and Reload band plans. Validate files with useful filename/record errors; reject invalid entries without crashing or replacing a previously valid plan silently.
+- Keep user datasets intact during upgrades. Define a writable working-directory location and avoid requiring administrator rights for editing. Do not overwrite customized files with shipped defaults.
+- Distinguish reference channel mappings from live decoded system/site information. Define overlap precedence and make auto modulation/filter suggestions opt-in.
+- Planned only; current builds do not load the exported band-plan files.
+
+## Requested next: P25 workspace and audio refinements
+
+- Boost decoded P25 voice audio; provide separate P25 gain with limiting to avoid clipping without changing normal receiver audio.
+- Consolidate all P25 observations and decoder/voice controls from Data into P25 Systems, preserving filtering, grouping, inspection and export access.
+- Future split view inspired by the user's Unitrunker reference: system/site information in the upper pane; voice-channel activity in the lower pane, separated by a draggable divider.
+- Upper pane: WACN, system ID, NAC, RFSS/site, control/alternate channels and known channel/frequency mappings. Repeated status updates stay in place.
+- Lower pane: stable channel rows showing frequency/channel ID, talkgroup and label, source radio ID and label, call state, encryption indication and last activity where actually decoded. Unknown fields remain blank/unknown; stale calls visibly expire.
+- Keep a filterable event/history view available within P25 Systems. Use readable state colors plus text, compact controls and preserved user labels. Showing a grant does not imply voice following or audio decoding.
+- This is planned work, not included in the existing 0.29.0-preview1 package.
+
+## 0.29.0-preview1 — CW IDs and clear P25 voice
+
+Data now offers concurrent CW ID candidates and manually tuned P25 Phase I C4FM clear voice. See [VOICE-CW.md](VOICE-CW.md) and [acceptance checks](ACCEPTANCE-0.29.0-preview1.md). Live validation remains pending; AES key support, DMR voice, trunk following and automatic CW label association remain future work. Previous APRS TX gain instability is deferred; folder scan acceptance is partial.
+
+## 0.28.0-preview1 — Saved-folder scanning
+
+Implemented: right-click a saved frequency folder → Scan folder; saved frequency/mode/filter order, optional subfolders/hidden exclusion, dwell/quiet delay, maximum hold for control channels, Hold/Skip/Stop and current-channel status. See [FOLDER-SCANNING.md](FOLDER-SCANNING.md). Synthetic and UI validation are separate from pending live receiver acceptance. Prior APRS preview remains included; live APRS packet acceptance is still pending.
+
+# APRS transmit — 0.27.0-preview1
+
+Implemented manual status/position composition, preview, AX.25/AFSK/FM generation and single-packet native TX drain. Software independent decoder acceptance passed; live RF packet acceptance pending. Automatic channel access, beaconing, GPS and acknowledged messaging remain future work.
+
+# Manual HackRF TX test — 0.26.0-preview1
+
+Implemented bounded one-shot FM tone generation and explicit manual TX window. Native hardware reception/stop acceptance remains pending. APRS transmit framing, channel access, messages and beacons are not implemented.
+
 # HF reception increment — 0.25.0-preview1
 
 Implemented optional 1.75 MHz HackRF hardware filter with capture coverage validation and sampled ADC input diagnostics. Pending live HF acceptance, noise blanker, notch filter, AGC timing and passband shifting.
@@ -363,7 +514,7 @@ September 30, 2026: include weather stations, remote thermometers, vehicle TPMS,
 
 Build a reusable ASK/OOK and FSK burst/pulse analysis path with device-specific framing, checksum and field parsers. Target weather temperature/humidity/wind/rain/battery fields; TPMS sensor ID, pressure, temperature and status where present; and recognizable remote identifiers/button fields where the protocol exposes them. Preserve unknown fields and raw frames. Rolling/encrypted portions may be recognizable as structured traffic without their protected contents being decoded. An observed TPMS ID does not establish vehicle identity or wheel position.
 
-Integrate validated observations into Data with protocol/model, input frequency, source/replay status, timestamp, available signal quality, validation scope and raw bits/hex. Plan a sensor list with aliases, last-seen times, deduplicated burst counts, measurement history/units and export. Unknown signals should expose pulse timing and raw captures without speculative device labels. Support explicit saving of discovered devices/frequencies to Frequency Manager; no additional automatic starter folder is requested here.
+Integrate validated observations into Analysis > Sensors / Short-range devices (superseding the earlier Data placement), with protocol/model, input frequency, source/replay status, timestamp, available signal quality, validation scope and raw bits/hex. Plan a sensor list with aliases, last-seen times, deduplicated burst counts, measurement history/units and export. Unknown signals should expose pulse timing and raw captures without speculative device labels. Support explicit saving of discovered devices/frequencies to Frequency Manager; no additional automatic starter folder is requested here.
 
 Use live SDR I/Q and recorded I/Q first. Compatible conventional-radio data/baseband paths require separate validation; ordinary speaker audio is not a universal substitute. Plan independent 315 MHz and 433 MHz monitoring with two receiver workspaces. A single narrow capture cannot cover both simultaneously, and scanning can miss brief transmissions. Packet coverage is per device/protocol/version, not a claim to decode all devices sharing a frequency. Validate independent fixtures, repeats, damaged frames, noise, unit conversions, unknown-burst handling and actual device recordings before a release.
 
@@ -540,3 +691,11 @@ Signal-triggered recording: audio VOX and RF-triggered I/Q, pre-trigger buffer, 
 ## October 18 — receiver/display refinements, 0.23.0-preview1
 
 Implemented expanded filters, CW listening/pitch, tighter zoom, Hot signals/gradient trace, optional band-based manual tuning, larger steps, frequency-aligned RF waterfall history, compact navigation, collapsible sidebar sections, dark receiver labels, and the pending Frequency Manager fixes. Receiver auto squelch shares Scan settings and operates without scanning. See RECEIVER-DISPLAY.md and the carried-forward ACCEPTANCE-0.23.0-preview1.md. Local automated verification does not establish station acceptance. Timed scan resume, CW ID decoding, aircraft trails, protocol workspace reorganization and triggered recording remain pending.
+
+## Queued update delivered in 0.36.0-preview1
+
+Broadcast AM/FM and existing MPX/stereo views, Audio sidebar split and specifically requested Receiver changes, editable custom bandplan manager, searchable offline Help, structured NXDN control identities. See UPDATE-0.36.0-preview1.md and ACCEPTANCE-0.36.0-preview1.md. Broad sidebar cleanup and trunk following remain deferred/outstanding respectively.
+
+
+## 0.37.0-preview1
+Click-to-tune snapping, automatic MP3 VOX / combined I/Q, Aviation frequency alignment, sensor run/table counter clarification. Live user acceptance is pending. Trunk following and broader sidebar cleanup remain outstanding/deferred.

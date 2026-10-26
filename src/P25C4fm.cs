@@ -9,6 +9,7 @@ internal sealed class P25C4fm
         internal readonly double[] Window=new double[24];
         internal int Position,Count;
         internal readonly P25Framer Framer=new();
+        internal readonly P25VoiceFramer Voice=new();
         internal double Center,Scale=1800;
         internal int SinceSync=9999;
     }
@@ -22,10 +23,13 @@ internal sealed class P25C4fm
     private static readonly double SignMean=Signs.Average();
     private static readonly double SignEnergy=Signs.Sum(s=>(s-SignMean)*(s-SignMean));
     internal event Action<P25Message>? Message;
+    internal event Action<P25VoiceUnit>? VoiceUnit;
+    private long lastVoice=-10000;private int lastDuid=-1;
     internal long BadNid=>phases.Sum(p=>p.Framer.BadNid);
     internal long BadCrc=>phases.Sum(p=>p.Framer.BadCrc);
     internal P25C4fm()
     {
+        foreach(var p in phases)p.Voice.Unit+=u=>{if(u.Duid==lastDuid&&samples-lastVoice<480)return;lastDuid=u.Duid;lastVoice=samples;VoiceUnit?.Invoke(u);};
         foreach(var p in phases)p.Framer.Message+=m=>
         {
             string key=$"{m.Nac}:{m.Duid}:"+(m.PayloadValid?Convert.ToHexString(m.Raw):"header");
@@ -53,11 +57,11 @@ internal sealed class P25C4fm
                 if(Math.Abs(scale)>150 && Math.Abs(scale)<6000 && residual/24<scale*scale*.10)
                 {
                     phase.Scale=scale;phase.Center=center;phase.SinceSync=0;
-                    phase.Framer.Begin();
+                    phase.Framer.Begin();phase.Voice.Begin();
                     continue;
                 }
             }
-            if(phase.SinceSync<360)phase.Framer.Push(Slice((averaged-phase.Center)/phase.Scale));
+            if(phase.SinceSync<900){int dibit=Slice((averaged-phase.Center)/phase.Scale);phase.Framer.Push(dibit);phase.Voice.Push(dibit);}
         }
     }
     private static int Slice(double level)=>level>=0?(level>2.0/3?1:0):(level< -2.0/3?3:2);

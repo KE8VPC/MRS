@@ -24,7 +24,7 @@ public partial class MainWindow
     }
     private void RefreshBroadcast()
     {
-        bool visible = rfMode && receiver.AppliedChannel?.Mode == "WFM";
+        bool visible = rfMode && receiver.AppliedChannel?.Mode == "WFM" && FmTab.IsSelected && BroadcastTab.IsSelected;
         if ((BroadcastPanel.Visibility == Visibility.Visible) != visible)
         {
             BroadcastPanel.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
@@ -53,13 +53,13 @@ public partial class MainWindow
         var iq = RdsTests.Modulate(RdsTests.Signal(7, stereo:true),240000);
         // Explicit elapsed times, independent of fixture generation/write speed.
         WriteBroadcastFixture(path, iq);
-        PlayIq(path); SidebarTabs.SelectedIndex = 0;
+        PlayIq(path); SidebarTabs.SelectedIndex = 0;SelectWorkspace(FmTab);
         for (int n = 0; n < 600 && (receiver.Rds?.Ps != "MRS TEST" || receiver.Rds?.Text != "HELLO"); n++) await Task.Delay(20);
         if (receiver.Rds?.Ps != "MRS TEST" || receiver.Broadcast?.Stereo != true) throw new InvalidOperationException("Broadcast replay failed stereo/RDS acquisition.");
         receiver.ReplayPaused = true; await Task.Delay(100); RefreshBroadcast(); UpdateLayout(); capture("ui-broadcast-rf.png");
         RefreshPackets();
-        if(!Packets.ExportJson().Contains("Station metadata"))throw new InvalidOperationException("Data view did not collect decoded RDS metadata.");
-        WorkspaceTabs.SelectedItem=PacketsTab;await Task.Delay(100);UpdateLayout();capture("ui-data-rds.png");WorkspaceTabs.SelectedIndex=0;
+        if(!AnalysisPackets.ExportJson().Contains("Station metadata"))throw new InvalidOperationException("Data view did not collect decoded RDS metadata.");
+        SelectWorkspace(ObservationsTab);await Task.Delay(100);UpdateLayout();capture("ui-data-rds.png");SelectWorkspace(FmTab);
         BroadcastView.SelectedIndex = 1; RefreshBroadcast(); UpdateLayout(); capture("ui-broadcast-mpx.png");
         if (Spectrum.Visibility != Visibility.Collapsed || BroadcastPlot.FullSpan != 120000) throw new InvalidOperationException("MPX view did not expose the 240 kS/s composite span.");
         BroadcastView.SelectedIndex = 2; RefreshBroadcast(); UpdateLayout(); capture("ui-broadcast-audio.png");

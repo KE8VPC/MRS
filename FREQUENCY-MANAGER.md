@@ -101,3 +101,7 @@ The compact 0.11.0 ZIP still has separate libraries. This change and the broadca
 Acceptance: select an entry without retuning, open/cancel/save Edit, double-click to tune, select a range with Shift/arrows and delete/undo, and verify right-click actions while DMR auto-save is active. Changes must appear in the list and RF markers and survive restarting.
 
 Marker visibility correction (pending next package): separate Show markers / Hide markers actions apply to all highlighted entries as one undoable save. Both actions are also available on right-click. Saved entries remain in the frequency list; hiding changes spectrum/waterfall markers. A hidden parent folder continues to suppress its children. No selection produces an explanatory status instead of silently doing nothing.
+
+## Saved-folder scan
+
+Right-click a folder → Scan folder. See [FOLDER-SCANNING.md](FOLDER-SCANNING.md) for timing, subfolders, hidden-entry exclusion and live acceptance.

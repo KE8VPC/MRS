@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -11,7 +11,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>MRS</AssemblyName>
     <ApplicationIcon>MRS.ico</ApplicationIcon>
-    <Version>0.25.0-preview1</Version>
+    <Version>0.39.0-preview1</Version>
     <Company>Mike's Radio Software</Company>
     <Description>Windows radio workbench — audio foundation preview</Description>
   </PropertyGroup>
@@ -21,7 +21,10 @@
   <ItemGroup><Content Include="../native/HackRF/**/*" Link="Receivers/HackRF/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
   <ItemGroup><Content Include="../decoders/atsc/**/*" Link="Decoders/ATSC/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
 <ItemGroup><Content Include="../decoders/paging/**/*" Link="Decoders/Paging/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
-<ItemGroup><Content Include="../decoders/aviation/**/*" Link="Decoders/Aviation/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><EmbeddedResource Include="DmrVectors.tsv" /></ItemGroup></Project>
+<ItemGroup><Content Include="../decoders/aviation/**/*" Link="Decoders/Aviation/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><EmbeddedResource Include="DmrVectors.tsv" /></ItemGroup><ItemGroup><Content Include="../decoders/voice/**/*" Exclude="../decoders/voice/Sources/objects/**/*" Link="Decoders/Voice/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><Content Include="../decoders/digital/**/*" Link="Decoders/Digital/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><Content Include="../bandplans/**/*.csv" Link="bandplans/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup><ItemGroup><EmbeddedResource Include="../bandplans/reference/railroad/*.csv" LogicalName="MRS.Railroad.%(Filename)%(Extension)" /></ItemGroup><ItemGroup><EmbeddedResource Include="../maps/natural-earth-basemap.json.gz" LogicalName="MRS.OfflineBasemap" /></ItemGroup>  <ItemGroup><Content Include="../decoders/sensors/**/*" Link="Decoders/Sensors/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" /></ItemGroup>
+<ItemGroup><EmbeddedResource Include="../bandplans/railroad-expanded/01-aar-original/bands.csv" LogicalName="MRS.ExpandedRailroad.01-aar-original.bands.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/01-aar-original/channels.csv" LogicalName="MRS.ExpandedRailroad.01-aar-original.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/02-aar-splinter/bands.csv" LogicalName="MRS.ExpandedRailroad.02-aar-splinter.bands.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/02-aar-splinter/channels.csv" LogicalName="MRS.ExpandedRailroad.02-aar-splinter.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/03-aar-nxdn/bands.csv" LogicalName="MRS.ExpandedRailroad.03-aar-nxdn.bands.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/03-aar-nxdn/channels.csv" LogicalName="MRS.ExpandedRailroad.03-aar-nxdn.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/04-atcs/channels.csv" LogicalName="MRS.ExpandedRailroad.04-atcs.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/05-ptc/channels.csv" LogicalName="MRS.ExpandedRailroad.05-ptc.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/06-itc/channels.csv" LogicalName="MRS.ExpandedRailroad.06-itc.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/07-acses/channels.csv" LogicalName="MRS.ExpandedRailroad.07-acses.channels.csv" /><EmbeddedResource Include="../bandplans/railroad-expanded/08-telemetry/channels.csv" LogicalName="MRS.ExpandedRailroad.08-telemetry.channels.csv" /></ItemGroup>
+  <ItemGroup><Content Include="../Help/*.md" Link="Help/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" /></ItemGroup>
+</Project>
 
 
 

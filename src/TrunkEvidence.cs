@@ -30,3 +30,9 @@ internal sealed class TrunkEvidence
         pending[key]=(r.Seen,r.Seen+window,1,label);return 1;
     }
 }
+
+internal static class DiscoveryVisibility
+{
+ internal static bool Show(int mode,int confirmations)=>mode>=2||confirmations>=(mode==1?1:3);
+ internal static bool Unverified(DmrObservation f)=>f.SlotCorrections>1||(!f.LinkValid&&(f.DataType!=9||f.SlotCorrections!=0));
+}

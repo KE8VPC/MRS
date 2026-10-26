@@ -1,0 +1,33 @@
+{
+  "commit": "ca96624a56bd078437bca8184e78163e5039ad19",
+  "files": [
+    {
+      "name": "ne_50m_admin_0_countries",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_admin_0_countries.geojson",
+      "sha256": "3e458fc036ad0a66411f2c1e6cac49c5d7bfb81cb1123bc513b22511a2b7fdeb",
+      "bytes": 3083490
+    },
+    {
+      "name": "ne_50m_admin_1_states_provinces",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_admin_1_states_provinces.geojson",
+      "sha256": "69a0e06e640b2d505858ae1cb63034e4677f3000b35a98e16312932b98c426b9",
+      "bytes": 2325694
+    },
+    {
+      "name": "ne_10m_populated_places_simple",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_populated_places_simple.geojson",
+      "sha256": "fd3fa867a320cbd5c5b6bb5bc550afeec2939fb2cef688e508007282a55ac42f",
+      "bytes": 4932147
+    },
+    {
+      "name": "ne_50m_lakes",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_50m_lakes.geojson",
+      "sha256": "d350b75978b26fe839b797c2c529b2fb8f47fb3983c03f4964e36d5df9378a52",
+      "bytes": 876018
+    }
+  ],
+  "derived_sha256": "963bdbda452af6b6bee044c6c913dd305c42bbb4a1f630b28e6173b8128fceef",
+  "derivation": "Polygon outer rings at 4 decimal degrees; lakes as water layer; cities at 5 decimals; original scalerank/population retained. Regional reference detail, not street-level mapping.",
+  "date_checked": "2026-10-24",
+  "license": "Public domain; https://www.naturalearthdata.com/about/terms-of-use/"
+}

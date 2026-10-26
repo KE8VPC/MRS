@@ -26,6 +26,20 @@ public partial class MainWindow
                 time+=.15;ProcessActivity(bins,time);Spectrum.PushAt(bins,time);
             }
             for(int i=0;i<14;i++)Feed(false);
+            RfSquelchSlider.Value=-119;Feed(false);
+            automaticIqArm.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+            if(!automaticIq.Armed)throw new InvalidOperationException("Automatic recording UI failed to arm: "+automaticIqStatus.Text);
+            await Task.Delay(350);
+            await automaticIq.DrainAsync();
+            automaticIq.Disarm();await automaticIq.DrainAsync();
+            if(automaticIq.Clips==0||receiver.WorkerId!=worker)throw new InvalidOperationException("Automatic I/Q did not capture live synthetic receiver frames without restarting USB");
+            var autoFile=Directory.GetFiles(automaticFolder,"MRS-AUTO-*.mrsiq").First();
+            using(var autoReader=new System.IO.FileStream(autoFile,System.IO.FileMode.Open,System.IO.FileAccess.Read,System.IO.FileShare.Read)){if(autoReader.Length<1024)throw new InvalidOperationException("Automatic recording contains no receiver samples");}
+            automaticFormatBox.SelectedIndex=2;automaticIqArm.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+            if(!automaticIq.Armed||!automaticAudio.Armed)throw new InvalidOperationException("Combined MP3/IQ did not arm");
+            for(int i=0;i<15;i++){engine.FeedStereo(Update037Tests.Tone(2),true);await Task.Delay(20);}
+            await automaticAudio.DrainAsync();await automaticIq.DrainAsync();automaticIq.Disarm();await automaticAudio.FinishAsync().WaitAsync(TimeSpan.FromSeconds(30));await automaticIq.DrainAsync();
+            if(automaticAudio.Clips==0||automaticIq.Clips==0||receiver.WorkerId!=worker)throw new InvalidOperationException("Combined MP3/IQ did not produce both files without restarting capture");automaticFormatBox.SelectedIndex=0;
             StartActivity();if(!activity.Running||!Spectrum.InteractionLocked)throw new InvalidOperationException("Scanner failed to arm the locked viewport.");
             for(int i=0;i<12;i++)Feed(true);
             await WaitFor(()=>Math.Abs((receiver.AppliedChannel?.Frequency??0)-162400000)<1000);

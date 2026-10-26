@@ -5,8 +5,8 @@ using System.Text;
 using System.Text.Json;
 namespace MRS;
 
-// Only invoked in an owned child process. No TX exports or firmware update functions are loaded.
-internal sealed class HackRfNative
+// Native access is isolated in an owned child process. TX is an explicit bounded test command.
+internal sealed partial class HackRfNative
 {
     internal static string LibraryFolder => Path.Combine(AppContext.BaseDirectory, "Receivers", "HackRF");
     [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)] private static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
@@ -68,13 +68,13 @@ internal sealed class HackRfNative
                 {
                     var devices = ReadList(list);
                     if (args[0] == "--hackrf-probe") { Console.Write(JsonSerializer.Serialize(devices)); return 0; }
-                    if (args[0] != "--hackrf-worker" || args.Length < 6) throw new ArgumentException("Invalid HackRF worker arguments.");
+                    if (args[0] is not ("--hackrf-worker" or "--hackrf-tx-test" or "--hackrf-aprs-test") || args.Length < 6) throw new ArgumentException("Invalid HackRF worker arguments.");
                     uint index = uint.Parse(args[1]);
                     var selected = devices.SingleOrDefault(d => d.Index == index) ?? throw new IOException("Selected HackRF is no longer present.");
                     string? identity = args[5].Length == 0 ? null : Encoding.UTF8.GetString(Convert.FromBase64String(args[5]));
                     if (identity != null && ReceiverIdentity.UniqueKey(devices, selected) != identity) throw new IOException("HackRF identity changed; select the receiver again.");
                     native.Check(native.Get<OpenList>("device_list_open")(list, (int)index, out var device), "Open HackRF");
-                    try { native.Receive(device, long.Parse(args[2]), int.Parse(args[4]), int.Parse(args[3])); }
+                    try { if(args[0]=="--hackrf-aprs-test"){if(args.Length!=7)throw new ArgumentException("Missing APRS packet");var packet=JsonSerializer.Deserialize<AprsTransmit>(Encoding.UTF8.GetString(Convert.FromBase64String(args[6])))??throw new ArgumentException("Invalid APRS packet");packet.Validate();native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),3),packet.Waveform());}else if(args[0]=="--hackrf-tx-test")native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),int.Parse(args[4])));else native.Receive(device, long.Parse(args[2]), int.Parse(args[4]), int.Parse(args[3])); }
                     finally { native.Get<DeviceAction>("close")(device); }
                     return 0;
                 }

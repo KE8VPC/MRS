@@ -38,7 +38,7 @@ public sealed class TvPanel : UserControl
         var actions=new WrapPanel{Margin=new Thickness(0,8,0,0)};foreach(var button in new[]{setup,live,file,stop})actions.Children.Add(button);top.Children.Add(actions);
         top.Children.Add(new TextBlock{Text="One-time decoder setup needs internet and about 1.3 GB of runtime storage, plus download cache. ATSC 3.0 is not supported. Playback opens a separate TV window.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,FontSize=11,Margin=new Thickness(0,6,0,0)});
         var playback=new WrapPanel{Margin=new Thickness(0,8,0,0)};program.Items.Add(new TvProgram(0,"First available program"));program.SelectedIndex=0;playback.Children.Add(program);foreach(var button in new[]{programs,watch,play})playback.Children.Add(button);top.Children.Add(playback);
-        top.Children.Add(state);top.Children.Add(destination);root.Children.Add(log);Content=root;
+        top.Children.Add(state);top.Children.Add(destination);root.Children.Add(log);Content=root;var clearView=new Button{Content="Clear monitoring view"};top.Children.Add(clearView);clearView.Click+=(_,_)=>log.Clear();
         state.Text=TvRuntime.Available?"Decoder runtime found. Ready to attempt ATSC 1.0 reception.":"Use Set up TV decoder before the first attempt.";
         setup.Click+=async(_,_)=>await Setup();live.Click+=async(_,_)=>await Decode(true);file.Click+=async(_,_)=>await Decode(false);
         stop.Click+=(_,_)=>cancellation?.Cancel();watch.Click+=(_,_)=>Play(true);play.Click+=(_,_)=>Play(false);programs.Click+=async(_,_)=>await ReadPrograms();

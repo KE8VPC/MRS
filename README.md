@@ -1,3 +1,63 @@
+# Current preview: 0.39.0-preview1
+
+Multiple receiver workspaces and a dedicated control/voice pool; automatic site-channel saving; separate channel/talkgroup records; mapped Con+/Tier III group grants; saved-map imports; view-only clear and newest-first controls. See UPDATE-0.39.0-preview1.md and ACCEPTANCE-0.39.0-preview1.md. Live acceptance and previous unfinished checks remain pending. Private reference data is excluded from clean-install packages.
+
+# 0.38.0-preview2 - optional confirmation
+
+Adds saved tentative/noisy discovery views and per-profile optional repeat/map confirmation for Capacity Plus research. See UPDATE-0.38.0-preview2.md and ACCEPTANCE-0.38.0-preview2.md. Existing defaults and earlier acceptance remain.
+
+# Current preview: 0.38.0-preview1
+
+See UPDATE-0.38.0-preview1.md and ACCEPTANCE-0.38.0-preview1.md for experimental P25 Phase I C4FM / Capacity Plus group following, system profiles and confirmed carrier maps. Test the carried-forward 0.37 acceptance with this build. Keep the complete extracted folder together.
+
+# Previous preview: 0.37.0-preview1
+
+See UPDATE-0.37.0-preview1.md and ACCEPTANCE-0.37.0-preview1.md for click snapping, MP3 VOX, Aviation field alignment and sensor counter clarification. Keep the full extracted folder together; previous acceptance results are carried forward.
+
+# 0.36.0-preview1
+
+Broadcast AM/FM and MPX/stereo views, Audio sidebar, editable custom bandplans, searchable offline Help, and NXDN control identities. See UPDATE-0.36.0-preview1.md and ACCEPTANCE-0.36.0-preview1.md. Extract the complete ZIP; keep Help, bandplans, Receivers and Decoders beside MRS.exe. Existing acceptance results are carried forward. No trunk following is added; broader sidebar cleanup remains deferred.
+
+# 0.35.0-preview1
+
+Adds sensor/remote and selected utility-meter reception through rtl_433, experimental pulse/tone inspection, grouped service navigation, spectrum follow/lock/free navigation and expanded railroad CSV references. See [SENSORS-METERS.md](SENSORS-METERS.md) and [ACCEPTANCE-0.35.0-preview1.md](ACCEPTANCE-0.35.0-preview1.md). Extract the whole ZIP into a new folder; keep Decoders and Receivers beside MRS.exe. Live acceptance for the new decoders is pending. DMR voice is confirmed but trunk following remains unfinished. Previously accepted automatic I/Q, auto squelch and aviation map/trails remain closed.
+
+# 0.34.0-preview1
+
+Decoder setup checks are under Receiver and accessible from Aviation. Aircraft maps now include selected/all trails and a bundled offline regional basemap with land, state/province boundaries, lakes and city labels. Online streets remain optional. This build includes all 0.33 recording, auto-squelch and railroad features. Test ACCEPTANCE-0.34.0-preview1.md and ACCEPTANCE-0.33.0-preview1.md together; both are included. Read DECODER-SETUP.md and AVIATION-MAP.md for behavior and coverage.
+
+# 0.33.0-preview1
+
+Activity-triggered I/Q recording is under Recording. Receiver > RF squelch offers Auto without scanning. Railroad CSV references are available in Bandplans; older working folders can add them with Create missing reference CSVs. Read AUTOMATIC-RECORDING.md, RAILROAD-BANDPLAN.md and ACCEPTANCE-0.33.0-preview1.md. Previous acceptance checks carry forward. Protocol setup guidance and aircraft trails with an offline aviation basemap are planned for the next pass.
+
+# 0.32.0-preview1 — CSV site bandplans and RX/TX status
+
+Editable spectrum bandplans now load from the working `bandplans/` directory. The Bandplans tab supports reload, folder selection, site visibility, uplinks and an optional calculated grid. Live validated P25 collection writes system/site channel pairs and definitions separately from saved frequencies. The approved RX/TX/Idle light is beside the clock. See [CSV-BANDPLANS.md](CSV-BANDPLANS.md) and [ACCEPTANCE-0.32.0-preview1.md](ACCEPTANCE-0.32.0-preview1.md); prior digital-voice acceptance remains carried forward.
+
+# 0.31.0-preview1 — DMR/NXDN voice and concurrent CW ID
+
+See [DIGITAL-VOICE.md](DIGITAL-VOICE.md) and [ACCEPTANCE-0.31.0-preview1.md](ACCEPTANCE-0.31.0-preview1.md). This adds a tuned-channel DSD-FME voice backend with DMR slot selection, NXDN48/NXDN96 selection, polarity and gain. Live speech quality remains to be validated. CTCSS/DCS stays above Spectrum.
+
+## 0.30.0-preview1 — workspace and P25 audio
+
+Implemented priorities 1–5: P25 gain/limiting, compact spectrum header/reference strips, remembered spectrum/waterfall divider, dedicated POCSAG/FLEX and consolidated P25 tabs, plus system/catalog and channel-activity split. See WORKSPACE-REFINEMENTS.md for scope and ACCEPTANCE-0.30.0-preview1.md for live checks. Historical requested items below are superseded for this implemented subset. CSV band plans, railroad dataset, Unitrunker import and automatic voice following remain future work.
+
+## 0.29.0-preview1 — CW IDs and clear P25 voice
+
+Data now offers concurrent CW ID candidates and manually tuned P25 Phase I C4FM clear voice. See [VOICE-CW.md](VOICE-CW.md) and [acceptance checks](ACCEPTANCE-0.29.0-preview1.md). Live validation remains pending; AES key support, DMR voice, trunk following and automatic CW label association remain future work. Previous APRS TX gain instability is deferred; folder scan acceptance is partial.
+
+## 0.28.0-preview1 — Saved-folder scanning
+
+Implemented: right-click a saved frequency folder → Scan folder; saved frequency/mode/filter order, optional subfolders/hidden exclusion, dwell/quiet delay, maximum hold for control channels, Hold/Skip/Stop and current-channel status. See [FOLDER-SCANNING.md](FOLDER-SCANNING.md). Synthetic and UI validation are separate from pending live receiver acceptance. Prior APRS preview remains included; live APRS packet acceptance is still pending.
+
+# Current preview: 0.27.0-preview1 — manual APRS transmit
+
+See APRS-TRANSMIT.md and ACCEPTANCE-0.27.0-preview1.md. Explicit single-send status/position packets; live RF packet acceptance pending.
+
+# Current preview: 0.26.0-preview1 — manual HackRF TX test
+
+See HACKRF-TX-TEST.md. RX remains the default; the manually enabled test emits a brief FM tone. Hardware TX acceptance is pending.
+
 # Current preview: 0.25.0-preview1 — HF reception
 
 See HF-RECEPTION.md and ACCEPTANCE-0.25.0-preview1.md. Optional narrow HackRF hardware filter and input-level diagnostics; live HF acceptance pending.

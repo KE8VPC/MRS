@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -36,6 +36,7 @@ public partial class PacketPanel : UserControl
         }
         menu.PlacementTarget=P25FilterButton;menu.IsOpen=true;
     }
+    internal DataGrid MonitorGrid=>PacketGrid;
     private readonly ObservableCollection<PacketObservation> rows=new();
     private readonly ObservableCollection<DataSummaryRow> summaryRows=new();
     private readonly Dictionary<string,DataSummaryRow> summaryIndex=new();
@@ -68,7 +69,7 @@ public partial class PacketPanel : UserControl
         var packet=item is DataSummaryRow grouped?grouped.Latest:(PacketObservation)item;
         if(ShowIgnored.IsChecked!=true && pagingRules.Ignored(packet))return false;
         if(packet.Protocol=="P25 Phase I" && hiddenP25Types.Contains(packet.Kind))return false;
-        if(ShowInvalid.IsChecked!=true && !packet.IsValidated)return false;
+        if(ShowInvalid.IsChecked!=true && !packet.IsValidated && packet.Protocol!="CW / Morse")return false;
         string filter=FilterText.Text.Trim();
         return filter.Length==0 || $"{(item is DataSummaryRow labels?labels.SourceLabel:packet.SourceLabel)} {(item is DataSummaryRow ds?string.Join(" ",ds.Recipients):packet.To)} {packet.Protocol} {packet.Callsign} {packet.Destination} {packet.Path} {packet.Source} {packet.Information} {packet.Description}".Contains(filter,StringComparison.OrdinalIgnoreCase);
     }

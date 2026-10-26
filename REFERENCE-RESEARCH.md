@@ -36,7 +36,7 @@ Read-only inspection of `%APPDATA%\Unitrunker` found an Ohio MARCS-IP XML snapsh
 
 ## fldigi saved working directory
 
-Inspected `C:\Users\wapak\fldigi.files` read-only on September 29, 2026. `fldigi.prefs` records version 4.1.15; no executable or populated local help/rig-definition directory establishes an installed binary version or complete feature documentation. `fldigi_def.xml` contains 824 setting elements after removing XML-invalid control characters in memory for inspection only. The original was unchanged. Future import must diagnose malformed input and preview any repair instead of silently rewriting it. Stored settings and mode-state entries are feature clues, not proof of active use or RF interoperability. Personal contact logs and service credentials are not needed for this feature inventory.
+Inspected `%USERPROFILE%\fldigi.files` read-only on September 29, 2026. `fldigi.prefs` records version 4.1.15; no executable or populated local help/rig-definition directory establishes an installed binary version or complete feature documentation. `fldigi_def.xml` contains 824 setting elements after removing XML-invalid control characters in memory for inspection only. The original was unchanged. Future import must diagnose malformed input and preview any repair instead of silently rewriting it. Stored settings and mode-state entries are feature clues, not proof of active use or RF interoperability. Personal contact logs and service credentials are not needed for this feature inventory.
 
 Evidence includes 16 frequency entries, 27 palette files, a macro definition file, per-mode/per-band state, and a frequency-analysis CSV with UTC, frequency, frequency error, peak amplitude and dBV fields. Preserve RF dial frequency, rig sideband and audio carrier offset as separate frequency-memory fields. These saved frequencies are historical examples, not current allocation guidance.
 
@@ -56,3 +56,8 @@ These are roadmap refinements only. No fldigi code, personal profile, macros or 
 
 Packet robustness and independent A/B workspaces first; then Unitrunker import with preview/rollback and P25 control-channel inspection; then validated voice following/decoding. POCSAG/FLEX, tone signaling, weak-signal amateur modes, external modem/radio interfaces and the remaining all-in-one scope stay separate, explicitly tracked milestones. Hardware acceptance and component licensing remain feature-specific gates, not blanket parity claims.
 
+
+
+## rtl_433 and Mayhem receiver inventory — October 24, 2026
+
+See [RTL433-MAYHEM-RESEARCH.md](RTL433-MAYHEM-RESEARCH.md) and research/receiver-decoders/SOURCES.json for pinned upstream revisions, inspected source paths, meter/drone distinctions, licensing and Windows integration limits. rtl_433 is the first requested sensor backend; Mayhem ERT, SubGhzD and FPV detection are adaptation references. No runtime integration or build is claimed by this research update.

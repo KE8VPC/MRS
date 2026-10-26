@@ -51,12 +51,12 @@ internal static class BandPlanTests
         view.Configure(view.Settings.ColorsFrom(DisplaySettings.Theme("Light")));view.SetRf(10368000000L,100000000);
         Capture(view,"ui-arrl-microwave-light.png");
         view.Configure(new DisplaySettings {ShowArrlPlan=true,ShowBandPlan=true,BandPlanAtBottom=true});
-        view.SetRf(146000000,6000000);view.SetPointer(new Point(516,200));
+        view.SetRf(146000000,6000000);view.SetPointer(new Point(516,225));
         check(view.ToolTip?.ToString()?.Contains("ARRL")==true,"Bottom overlay hover uses relocated bar bounds");
         long tuned=0;view.TuneRequested += hz=>tuned=hz;
         view.ClickAt(new Point(516,50));check(tuned==146000000,"Bottom placement preserves spectrum click frequency");
         tuned=0;view.ClickAt(new Point(516,300));check(tuned==146000000,"Bottom placement preserves waterfall click frequency");
-        tuned=0;view.ClickAt(new Point(516,115));check(tuned==0,"Frequency-axis gap does not accidentally tune");
+        tuned=0;view.ClickAt(new Point(516,190));check(tuned==0,"Frequency-axis gap does not accidentally tune");
         var bottomSaved=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(view.Settings));
         check(bottomSaved?.BandPlanAtBottom==true && bottomSaved.ColorsFrom(DisplaySettings.Theme("Light")).BandPlanAtBottom,"Overlay placement persists independently of theme");
         Capture(view,"ui-band-plan-bottom.png");

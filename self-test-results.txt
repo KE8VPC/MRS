@@ -1,3 +1,222 @@
+PASS: Channel drafts do not store current talkgroup in channel name or notes
+PASS: Live site channel creates scoped folder hierarchy
+PASS: Site updates preserve user names/notes and paired uplink
+PASS: Same frequency at different sites remains independently scoped
+PASS: Neighbor channels belong to advertised target, not receiving site
+PASS: Neighbor system change does not invent its WACN from receiving context
+PASS: DMR site save retains site/CC without transient talkgroup or radio
+PASS: Failed control data cannot silently create a verified site entry
+PASS: Control grants expose two distinct calls for a voice receiver pool
+PASS: Pool allocation honors ignored talkgroups
+PASS: Pool allocation respects skip suppression
+PASS: Independent DSD-FME Connect Plus group grant vector decodes LCN/slot/TG/source
+PASS: Mapped Connect Plus grant selects its own protocol voice call
+PASS: Imported map waits for its configured network/site before following
+PASS: A different decoded network cannot use an imported site's map
+PASS: Connect Plus private grants are not followed as group calls
+PASS: Tier III group grant extracts 12-bit physical channel and selected slot
+PASS: Tier III grant requires explicit protocol-specific carrier mapping
+PASS: Corrupt Tier III payload never supplies an actionable grant
+PASS: DSDPlus import preserves slot-pair mapping, unresolved count and unconfirmed status
+PASS: Conflicting imported OTA pair is rejected without changing source
+PASS: P25 import retains channel ID as text and explicit historical provenance
+PASS: Raw and grouped monitoring rows share full last-received timestamps
+PASS: Five-device ownership accepts independent receiver 1
+PASS: Five-device ownership accepts independent receiver 2
+PASS: Five-device ownership accepts independent receiver 3
+PASS: Five-device ownership accepts independent receiver 4
+PASS: Five-device ownership accepts independent receiver 5
+PASS: Device ownership prevents opening a sixth workspace on an already claimed SDR
+PASS: Following rejects failed control CRC
+PASS: Header-only P25 cannot authorize a call
+PASS: P25 grants must originate on selected control frequency
+PASS: Missing identifier table stays unresolved
+PASS: Phase II grants are not sent to Phase I voice
+PASS: Encrypted grant does not authorize following
+PASS: Allow list excludes other talkgroups
+PASS: Ignore list excludes selected talkgroup
+PASS: Hold excludes different talkgroup
+PASS: CRC-valid resolved Phase I grant selects expected frequency/group/NAC
+PASS: A new group does not preempt active call
+PASS: Received voice extends hang time
+PASS: Quiet hang returns to control
+PASS: Skip suppresses immediate regrant for five seconds
+PASS: Skipped group becomes eligible after timeout
+PASS: Maximum call timer cannot be extended indefinitely by audio
+PASS: Serving NAC/site change discards old call
+PASS: Unconfirmed DMR carrier map cannot authorize following
+PASS: Capacity Plus needs repeated matching group status
+PASS: LSN 3 maps to carrier LCN 2 slot 1
+PASS: LSN 4 maps to carrier LCN 2 slot 2
+PASS: Rest hopping waits for three observations
+PASS: Repeated rest LSN uses confirmed map
+PASS: Color code change stops selected profile rather than merging systems
+PASS: Duplicate carrier LCNs are rejected
+PASS: Independent MMDVM CSBK passes payload CRC and bounded Cap+ parser
+PASS: Both Cap+ activity banks retain LSN and talkgroup
+PASS: Cap+ follower rejects CSBK corruption bit 0
+PASS: Cap+ follower rejects CSBK corruption bit 1
+PASS: Cap+ follower rejects CSBK corruption bit 2
+PASS: Cap+ follower rejects CSBK corruption bit 3
+PASS: Cap+ follower rejects CSBK corruption bit 4
+PASS: Cap+ follower rejects CSBK corruption bit 5
+PASS: Cap+ follower rejects CSBK corruption bit 6
+PASS: Cap+ follower rejects CSBK corruption bit 7
+PASS: Cap+ follower rejects CSBK corruption bit 8
+PASS: Cap+ follower rejects CSBK corruption bit 9
+PASS: Cap+ follower rejects CSBK corruption bit 10
+PASS: Cap+ follower rejects CSBK corruption bit 11
+PASS: Cap+ follower rejects CSBK corruption bit 12
+PASS: Cap+ follower rejects CSBK corruption bit 13
+PASS: Cap+ follower rejects CSBK corruption bit 14
+PASS: Cap+ follower rejects CSBK corruption bit 15
+PASS: Cap+ follower rejects CSBK corruption bit 16
+PASS: Cap+ follower rejects CSBK corruption bit 17
+PASS: Cap+ follower rejects CSBK corruption bit 18
+PASS: Cap+ follower rejects CSBK corruption bit 19
+PASS: Cap+ follower rejects CSBK corruption bit 20
+PASS: Cap+ follower rejects CSBK corruption bit 21
+PASS: Cap+ follower rejects CSBK corruption bit 22
+PASS: Cap+ follower rejects CSBK corruption bit 23
+PASS: Cap+ follower rejects CSBK corruption bit 24
+PASS: Cap+ follower rejects CSBK corruption bit 25
+PASS: Cap+ follower rejects CSBK corruption bit 26
+PASS: Cap+ follower rejects CSBK corruption bit 27
+PASS: Cap+ follower rejects CSBK corruption bit 28
+PASS: Cap+ follower rejects CSBK corruption bit 29
+PASS: Cap+ follower rejects CSBK corruption bit 30
+PASS: Cap+ follower rejects CSBK corruption bit 31
+PASS: Cap+ follower rejects CSBK corruption bit 32
+PASS: Cap+ follower rejects CSBK corruption bit 33
+PASS: Cap+ follower rejects CSBK corruption bit 34
+PASS: Cap+ follower rejects CSBK corruption bit 35
+PASS: Cap+ follower rejects CSBK corruption bit 36
+PASS: Cap+ follower rejects CSBK corruption bit 37
+PASS: Cap+ follower rejects CSBK corruption bit 38
+PASS: Cap+ follower rejects CSBK corruption bit 39
+PASS: Cap+ follower rejects CSBK corruption bit 40
+PASS: Cap+ follower rejects CSBK corruption bit 41
+PASS: Cap+ follower rejects CSBK corruption bit 42
+PASS: Cap+ follower rejects CSBK corruption bit 43
+PASS: Cap+ follower rejects CSBK corruption bit 44
+PASS: Cap+ follower rejects CSBK corruption bit 45
+PASS: Cap+ follower rejects CSBK corruption bit 46
+PASS: Cap+ follower rejects CSBK corruption bit 47
+PASS: Cap+ follower rejects CSBK corruption bit 48
+PASS: Cap+ follower rejects CSBK corruption bit 49
+PASS: Cap+ follower rejects CSBK corruption bit 50
+PASS: Cap+ follower rejects CSBK corruption bit 51
+PASS: Cap+ follower rejects CSBK corruption bit 52
+PASS: Cap+ follower rejects CSBK corruption bit 53
+PASS: Cap+ follower rejects CSBK corruption bit 54
+PASS: Cap+ follower rejects CSBK corruption bit 55
+PASS: Cap+ follower rejects CSBK corruption bit 56
+PASS: Cap+ follower rejects CSBK corruption bit 57
+PASS: Cap+ follower rejects CSBK corruption bit 58
+PASS: Cap+ follower rejects CSBK corruption bit 59
+PASS: Cap+ follower rejects CSBK corruption bit 60
+PASS: Cap+ follower rejects CSBK corruption bit 61
+PASS: Cap+ follower rejects CSBK corruption bit 62
+PASS: Cap+ follower rejects CSBK corruption bit 63
+PASS: Cap+ follower rejects CSBK corruption bit 64
+PASS: Cap+ follower rejects CSBK corruption bit 65
+PASS: Cap+ follower rejects CSBK corruption bit 66
+PASS: Cap+ follower rejects CSBK corruption bit 67
+PASS: Cap+ follower rejects CSBK corruption bit 68
+PASS: Cap+ follower rejects CSBK corruption bit 69
+PASS: Cap+ follower rejects CSBK corruption bit 70
+PASS: Cap+ follower rejects CSBK corruption bit 71
+PASS: Cap+ follower rejects CSBK corruption bit 72
+PASS: Cap+ follower rejects CSBK corruption bit 73
+PASS: Cap+ follower rejects CSBK corruption bit 74
+PASS: Cap+ follower rejects CSBK corruption bit 75
+PASS: Cap+ follower rejects CSBK corruption bit 76
+PASS: Cap+ follower rejects CSBK corruption bit 77
+PASS: Cap+ follower rejects CSBK corruption bit 78
+PASS: Cap+ follower rejects CSBK corruption bit 79
+PASS: Cap+ follower rejects CSBK corruption bit 80
+PASS: Cap+ follower rejects CSBK corruption bit 81
+PASS: Cap+ follower rejects CSBK corruption bit 82
+PASS: Cap+ follower rejects CSBK corruption bit 83
+PASS: Cap+ follower rejects CSBK corruption bit 84
+PASS: Cap+ follower rejects CSBK corruption bit 85
+PASS: Cap+ follower rejects CSBK corruption bit 86
+PASS: Cap+ follower rejects CSBK corruption bit 87
+PASS: Cap+ follower rejects CSBK corruption bit 88
+PASS: Cap+ follower rejects CSBK corruption bit 89
+PASS: Cap+ follower rejects CSBK corruption bit 90
+PASS: Cap+ follower rejects CSBK corruption bit 91
+PASS: Cap+ follower rejects CSBK corruption bit 92
+PASS: Cap+ follower rejects CSBK corruption bit 93
+PASS: Cap+ follower rejects CSBK corruption bit 94
+PASS: Cap+ follower rejects CSBK corruption bit 95
+PASS: First fragment cannot publish partial Cap+ groups
+PASS: Fragmented Cap+ status assembles bounded group list
+PASS: Stale continuation is discarded
+PASS: Truncated TG list cannot invent missing groups
+PASS: Independent OP25 voice passes matching grant NAC/group gate
+PASS: Wrong NAC never reaches followed audio
+PASS: Wrong group never reaches followed audio
+PASS: Intentional capture reacquisition retains received P25 identifier table
+PASS: Optional confirmation permits a single status with an entered unconfirmed map
+PASS: Optional confirmation permits candidate rest mapping after one observation
+PASS: Optional evidence confirmation does not turn failed CRC into an actionable P25 grant
+PASS: Discovery modes expose tentative and rejected evidence only when selected
+PASS: CRC-failed and heavily corrected candidates remain labeled unverified
+PASS: Existing saved profiles keep confirmation enabled by default
+PASS: Optional confirmation persists per profile
+PASS: Real I/Q worker decodes received IDEN/grant and selects in-span P25 voice
+PASS: Stop discards queued followed audio
+PASS: Step snapping retains exact 6.25 kHz channel centers
+PASS: Snap off preserves exact 1 Hz click resolution
+PASS: Bandplan snapping honors FM channel offsets
+PASS: A distant bandplan channel cannot capture a click
+PASS: Spectrum and waterfall clicks share snap selection
+PASS: Ctrl marker selection bypasses click tuning
+PASS: VOX conversion supports mono mixdown and stereo preservation
+PASS: Recording tap is independent of muted speakers and volume
+PASS: Recording tap respects the RF audio gate
+PASS: VOX threshold/pre-roll/tail produce one finalized MP3
+PASS: Encoded MP3 duration includes pre-trigger and quiet tail
+PASS: MP3 plays through an independent Windows decoder
+PASS: Successful MP3 encoding removes only its temporary WAV
+PASS: Continuous VOX segments at the maximum clip duration
+PASS: Stereo MP3 remains stereo and bounded in length
+PASS: Stereo MP3 remains stereo and bounded in length
+PASS: Source boundaries keep automatic audio clips separate
+PASS: NXDN location without a valid control header cannot create an identity
+PASS: NXDN valid service announcement retains system/site/RAN/location
+PASS: NXDN parser consumes one identity per valid control frame
+PASS: NXDN CRC failures cannot populate identities
+PASS: NXDN partial control state cannot cross a reset
+PASS: AM channel centers distinguish supplemental 530 from 117 broadcast channels
+PASS: FM channels 201–300 retain exact 200 kHz centers
+PASS: NXDN save annotates idempotently while preserving user labels and notes
+PASS: Replay NXDN observation cannot create a live saved frequency
+PASS: Offline help topics are available beside executable
+PASS: Help search matches multiple functional keywords
+PASS: Help search does not invent matches
+PASS: Broadcast CSV seed contains 218 channel centers
+PASS: Broadcast reference seeding preserves edited CSVs
+PASS: Custom plan validation retains quoted labels, colors and extra metadata
+PASS: Invalid imported frequency fails validation before save
+PASS: Sensor JSON retains identity, measurement, backend check and replay-relative time
+PASS: Malformed and diagnostic JSON do not become device observations
+PASS: Sensor JSON length is bounded
+PASS: Missing integrity and identity remain explicit unknowns
+PASS: Sensor grouping separates live/replay and physical source
+PASS: Float-to-decoder gain preserves faint signals with bounded clipping and nonfinite handling
+PASS: Sensor and meter spans fit offset HackRF capture and choose bounded native rates
+PASS: Meter setup rejects a span truncated by the HF filter
+PASS: Unsupported sample formats are rejected before starting workers
+PASS: Experimental burst inspection retains bounded pulse timing across an OOK burst
+PASS: Quiet constant I/Q does not create a validated device or burst
+PASS: Integrated burst gate rejects quiet varying noise rather than triggering on individual peaks
+PASS: Expanded railroad resources seed eight valid CSV layers
+PASS: Expanded railroad migration preserves existing custom files
+PASS: Follow tuned keeps the channel visible at maximum zoom
+PASS: Center lock centers the tuned channel independently of capture center
+PASS: Free view preserves independent viewport when tuning
 PASS: CW appends mode index without changing legacy I/Q recording modes
 PASS: Optional band defaults choose AM at 1000000
 PASS: Optional band defaults choose WFM at 100100000
@@ -53,6 +272,58 @@ PASS: Comparison detects exact changed bit and decoded field/text differences
 PASS: Comparison refuses received NID versus decoded TSBK bit comparisons
 PASS: Comparison pairs decoder fields by identity independent of JSON order
 PASS: Paging comparison tracks added removed changed fields without fabricating bit differences
+PASS: Offline basemap loads bundled vector geometry and city labels without tile downloads
+PASS: Offline basemap contains Lima Ohio regional context
+PASS: Offline basemap includes state boundaries and lake geometry
+PASS: Sequential aircraft positions form a trail
+PASS: Repeated identical positions do not consume trail storage
+PASS: Failed-validation messages do not add trail positions
+PASS: Repeated stationary reports refresh the trail anchor without a false reporting gap
+PASS: Missing position interval over 30 seconds breaks the trail
+PASS: Replay rewind starts a new trail segment
+PASS: Live and replay trails remain separate
+PASS: Aircraft trails are bounded to 300 positions per source identity
+PASS: Trail storage expires points older than ten minutes
+PASS: Dateline crossings do not draw a line across the map
+PASS: Crowded offline trail rendering is bounded and does not request tiles
+PASS: Decoder setup identifies the exact HF filter and usable-capture conflict
+PASS: ADS-B profile restores the user's successful HackRF capture baseline
+PASS: Raw I/Q ADS-B setup does not incorrectly reject the listening audio filter
+PASS: HD Radio setup requires centered capture
+PASS: Paging setup accepts the user's successful 6 kHz POCSAG filter
+PASS: CW setup preserves supported direct-sampling HF reception
+PASS: DMR setup checks discriminator listening mode
+PASS: Decoder setup detects incompatible direct-sampling configuration
+PASS: Automatic I/Q does not record noise below threshold
+PASS: Automatic clip preserves pre-trigger, signal and quiet tail samples
+PASS: Buffered pre-trigger frames retain increasing sample-derived replay timestamps
+PASS: Automatic clips preserve capture and tuned-channel metadata
+PASS: Disarmed automatic recorder ignores new activity
+PASS: Continuous signal rotates clips at maximum duration and finalizes on disarm
+PASS: Retuning splits recordings without mixing channel identities
+PASS: Automatic recording disk errors disarm with a visible failure
+PASS: Session payload budget disarms before exceeding storage limit
+PASS: Budget stop retains clean readable clips
+PASS: Automatic recording bounds invalid duration and storage settings
+PASS: Railroad CSV includes 91 exact AAR reference centers with leading zero channel labels
+PASS: Railroad CSV identifies police mutual aid and separate HOT/EOT telemetry references
+PASS: Reference seeding preserves user-edited railroad CSV
+PASS: All packaged reference datasets round-trip through CSV
+PASS: CSV preserves quoted commas, quotes and multiline labels
+PASS: Uplinks hidden by default
+PASS: Uplink toggle exposes paired marker
+PASS: Plan hide removes its overlay
+PASS: Pending definition attaches only after full serving-site identity
+PASS: Repeated grants preserve leading zeros, user label and single row
+PASS: Replay and invalid frames cannot populate live site files
+PASS: Neighbor announcement belongs to advertised site
+PASS: Conflicting LCN definitions retained and flagged
+PASS: Malformed edited file is never overwritten by collector
+PASS: Invalid CSV has visible validation error
+PASS: Unidentified observations never cross a receiver epoch
+PASS: Late identifier definition resolves a pending channel within its original context
+PASS: Changed site identity cannot reuse prior site's cached definition
+PASS: Calculated grid is separately marked as not observed
 PASS: Aviation retains decoded identity position and replay provenance
 PASS: Aviation rejects malformed worker JSON
 PASS: Aviation rejects out-of-range positions
@@ -338,6 +609,32 @@ PASS: HackRF rejects unsupported gain token 600
 PASS: HackRF rejects unsupported gain token 16777735
 PASS: HackRF rejects unsupported gain token 16777776
 PASS: HackRF rejects unsupported gain token 16793352
+PASS: APRS sender produces valid direct AX.25 UI/FCS
+PASS: APRS position format has fixed-width coordinates and symbol
+PASS: APRS TX path has no already-repeated flags
+PASS: APRS coordinate rounding carries minutes into degrees
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS sender rejects invalid address/payload/coordinates
+PASS: APRS AFSK waveform decodes to exactly one intended frame
+PASS: APRS AFSK waveform decodes to exactly one intended frame
+PASS: APRS FM I/Q demodulates to the exact transmitted packet
+PASS: Maximum APRS form fits the bounded three-second transmitter
+PASS: Native eight MS/s APRS waveform has the expected bounded sample count
+PASS: Manual TX accepts supported test band 145500000
+PASS: Manual TX accepts supported test band 446000000
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 1090000000, Gain = 0, Seconds = 1 }
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 162400000, Gain = 0, Seconds = 1 }
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 145500000, Gain = -1, Seconds = 1 }
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 145500000, Gain = 21, Seconds = 1 }
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 145500000, Gain = 0, Seconds = 0 }
+PASS: TX test rejects unsupported frequency/gain/duration: TxTestPlan { Frequency = 145500000, Gain = 0, Seconds = 4 }
+PASS: TX tone uses bounded signed I/Q amplitude and one millisecond period
+PASS: TX waveform matches one kHz FM with 2.5 kHz nominal deviation including wrap boundary
 PASS: HF setting survives transport token without changing gains
 PASS: Older gain tokens retain automatic filter selection
 PASS: HF transport retains high sampling rate and narrow actual capture coverage
@@ -377,12 +674,12 @@ PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (78 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (77 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (33 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (78 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
@@ -791,6 +1088,28 @@ PASS: Packet history retains at most 500 observations
 PASS: Packet export respects the active filter
 PASS: Clearing packet history removes prior observations
 PASS: Malformed frames with valid checksums are bounded and do not crash the parser
+PASS: Digital discriminator conversion bounds invalid and overrange values
+PASS: DMR output preserves slot stereo and expands 8k to 48k
+PASS: NXDN mono duplicates into 48k stereo
+PASS: Digital reset preserves selected mode
+PASS: Digital voice explicitly disables without changing receiver
+PASS: P25 +12 dB gain boosts quiet audio about fourfold
+PASS: P25 limiter preserves polarity and avoids PCM overflow
+PASS: Spectrum split normalizes invalid and out-of-range settings
+PASS: P25 voice native FEC round trip DUID 0
+PASS: P25 voice single-bit metadata repair DUID 0
+PASS: P25 voice native FEC round trip DUID 5
+PASS: P25 voice single-bit metadata repair DUID 5
+PASS: P25 voice native FEC round trip DUID 10
+PASS: P25 voice single-bit metadata repair DUID 10
+PASS: Independent OP25 clear HDU/LDU vectors produce exactly 18 IMBE frames without phase duplicates
+PASS: IMBE independent 1011-Hz reference synthesizes expected tone (1012 Hz)
+PASS: AES-256 header/ESS never produces clear audio
+PASS: Late entry without encryption metadata remains muted
+PASS: CW ID at 12 WPM with noise: KE8VPC
+PASS: CW ID at 20 WPM with noise: KE8VPC
+PASS: CW ID at 25 WPM with noise: KE8VPC
+PASS: Broadband noise does not produce CW IDs
 PASS: P25 BCH encoder agrees with independent OP25 NID vector
 PASS: P25 NID corrects 0 bit errors within the conservative limit
 PASS: P25 NID corrects 1 bit errors within the conservative limit
@@ -901,6 +1220,14 @@ PASS: Neighbor frequency draft does not mislabel the target with receiving-site 
 PASS: Clearing an operator name restores the decoded label
 PASS: Annotation length rejection leaves the previous values intact
 PASS: Catalog limit reports skipped new entries while existing discoveries keep updating
+PASS: Folder scan preserves depth-first saved order, mode/filter, excludes unrelated entries
+PASS: Folder scan direct-only and hidden exclusion
+PASS: Folder scan hidden ancestor exclusion
+PASS: Folder scan uses immutable snapshot when library changes
+PASS: Folder scan quiet channel dwell
+PASS: Folder scan waits quiet delay after activity
+PASS: Folder scan maximum hold advances continuous control channel
+PASS: Folder scan explicit hold overrides maximum until released
 PASS: Shared migration preserves A and imports B hierarchy
 PASS: Shared migration leaves legacy B file unchanged
 PASS: Receiver B import is persistent and runs only once
@@ -938,8 +1265,8 @@ PASS: NIFOG proposed and geographically limited entries keep source qualificatio
 PASS: NIFOG shared-frequency hover preserves simplex, repeater input and output aliases
 PASS: NIFOG markers use channel centers rather than invented allocation ranges
 PASS: NIFOG visibility persists independently of other layers and theme
-PASS: NIFOG checkbox publishes its own display setting without enabling other layers
-PASS: NIFOG checkbox survives actual display-profile save and reload
+PASS: NIFOG manager selection publishes its own display setting without enabling other layers
+PASS: NIFOG manager selection survives actual display-profile save and reload
 PASS: NIFOG independent bar hover reports channel provenance without tuning
 PASS: NIFOG shared-frequency details wrap and retain overflow in a bounded scroll view (overflow 382, width 599)
 PASS: NIFOG overflow details can scroll while the pointer stays over the marker

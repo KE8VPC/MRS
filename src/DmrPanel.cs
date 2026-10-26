@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+using System.IO;
+using System.Collections.Concurrent;
 
 
 
@@ -124,7 +125,7 @@ public sealed class DmrPanel : UserControl
 
         public string Routing{get;set;}="";
 
-        public string Confidence=>Count>=3?"Repeated observations":"Single observation";
+        public bool Unverified{get;init;}public int Corrections{get;set;}public string Confidence=>Unverified?$"UNVERIFIED / noisy; corrections {Corrections}":Count>=3?"Repeated observations":"Tentative / single observation";
 
         public int Count{get;set;}public string LastSeen=>Seen.ToLocalTime().ToString("HH:mm:ss");public DateTimeOffset Seen;internal readonly Dictionary<string,(int Count,DmrReception Reception,bool Saved)> Confirmations=[];internal readonly HashSet<int> SlotSet=[];internal readonly HashSet<uint> Groups=[],RadioSet=[];internal DmrReception? Latest;
 
@@ -134,10 +135,12 @@ public sealed class DmrPanel : UserControl
 
 
 
+    private readonly ListCollectionView rowView;
     private readonly TrunkEvidence evidence=new();private readonly DmrPipeline pipeline=new();private readonly ObservableCollection<Row> rows=[];
 
 
 
+    private readonly ComboBox discoveryMode=new(){Width=220,ItemsSource=new[]{"Confirmed observations only","Include tentative observations","Include noisy / CRC-failed"},SelectedIndex=0};private string discoverySettings="";
     private readonly CheckBox enable=new(){Content="Decode DMR / Cap+ and LTR",Foreground=Brushes.White};
 
 
@@ -154,7 +157,7 @@ public sealed class DmrPanel : UserControl
 
 
 
-    internal event Action<bool>? EnabledChanged;internal event Action<PacketObservation>? Observation;internal Func<DmrReception,bool>? SaveChannel;
+    internal (DmrReception Reception,int Count)[] ExistingDiscoveries=>rows.Where(r=>!r.Unverified&&r.Latest!=null).Select(r=>(r.Latest!,r.Count)).ToArray();internal Panel CollectionArea{get;private set;}=null!;internal DataGrid MonitorGrid=>grid;internal event Action<DmrReception>? Received;internal event Action<bool>? EnabledChanged;internal event Action<PacketObservation>? Observation;internal Func<DmrReception,bool>? SaveChannel;
 
 
 
@@ -178,19 +181,19 @@ public sealed class DmrPanel : UserControl
 
 
 
-        var controls=new WrapPanel();controls.Children.Add(enable);controls.Children.Add(save);var clear=new Button{Content="Clear channel observations"};clear.Click+=(_,_)=>{rows.Clear();evidence.Clear();};controls.Children.Add(clear);head.Children.Add(controls);head.Children.Add(status);
+        var controls=new WrapPanel();CollectionArea=head;controls.Children.Add(enable);controls.Children.Add(save);controls.Children.Add(discoveryMode);var clear=new Button{Content="Clear channel observations"};clear.Click+=(_,_)=>{rows.Clear();evidence.Clear();};controls.Children.Add(clear);head.Children.Add(controls);head.Children.Add(status);
 
 
 
-        head.Children.Add(new TextBlock{Text="Select NFM, typically 12.5–16 kHz. DMR / Cap+ control IDs and LTR Standard outbound signaling run alongside FM audio. NET/SITE appear only when decoded; equal color codes never merge frequencies. LTR area/home/group is not a unique system ID. Rows require three matching observations: DMR within 10 seconds, LTR within 60 seconds. Auto-save needs repeated confirmed observations; your labels stay intact. No digital voice or trunk following. Use Data for raw fields.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,Margin=new Thickness(0,6,0,8)});
+        head.Children.Add(new TextBlock{Text="Select NFM, typically 12.5–16 kHz. DMR / Cap+ control IDs and LTR Standard outbound signaling run alongside FM audio. NET/SITE appear only when decoded; equal color codes never merge frequencies. LTR area/home/group is not a unique system ID. Confirmed-only requires three matching observations: DMR within 10 seconds, LTR within 60 seconds. Optional tentative/noisy views show weaker evidence with explicit labels. Auto-save needs repeated confirmed observations; your labels stay intact. Use the controls above for DMR/NXDN voice. Use Trunk following for P25 / mapped Capacity Plus following. Raw DMR/LTR fields are in Analysis.",TextWrapping=TextWrapping.Wrap,Foreground=Brushes.LightSteelBlue,Margin=new Thickness(0,6,0,8)});
 
 
 
-        foreach(var (title,path,width) in new[]{("MHz","MHz",110),("Protocol","Protocol",70),("Identity","Identity",100),("System type","SystemTypes",150),("Network (wire)","NetworkIds",150),("Site (wire)","SiteIds",150),("Routing / status","Routing",260),("Slots","Slots",65),("Talkgroups","Talkgroups",150),("Radio IDs","Radios",180),("Evidence","Confidence",145),("Count","Count",60),("Last seen","LastSeen",80),("Replay","Replay",60),("Source","Source",220)})grid.Columns.Add(new DataGridTextColumn{Header=title,Binding=new Binding(path),Width=width});
+        foreach(var (title,path,width) in new[]{("MHz","MHz",110),("Protocol","Protocol",70),("Identity","Identity",100),("Evidence","Confidence",210),("System type","SystemTypes",150),("Network (wire)","NetworkIds",150),("Site (wire)","SiteIds",150),("Routing / status","Routing",260),("Slots","Slots",65),("Talkgroups","Talkgroups",150),("Radio IDs","Radios",180),("Count","Count",60),("Last seen","LastSeen",80),("Replay","Replay",60),("Source","Source",220)})grid.Columns.Add(new DataGridTextColumn{Header=title,Binding=new Binding(path),Width=width});
 
 
 
-        grid.ItemsSource=rows;root.Children.Add(grid);Content=root;
+        rowView=new ListCollectionView(rows);grid.ItemsSource=rowView;RefreshDiscoveryView();root.Children.Add(grid);Content=root;
 
 
 
@@ -205,6 +208,11 @@ public sealed class DmrPanel : UserControl
     }
 
 
+
+    private void RefreshDiscoveryView(){if(rowView.Filter==null)rowView.Filter=item=>item is Row r&&(discoveryMode.SelectedIndex>=2||!r.Unverified&&(discoveryMode.SelectedIndex==1||r.Count>=3));rowView.Refresh();}
+    internal void InitializeDiscovery(string file){discoverySettings=file;try{if(File.Exists(file))discoveryMode.SelectedIndex=Math.Clamp(JsonSerializer.Deserialize<int>(File.ReadAllText(file)),0,2);}catch{discoveryMode.SelectedIndex=0;}RefreshDiscoveryView();discoveryMode.SelectionChanged+=(_,_)=>{try{File.WriteAllText(discoverySettings,JsonSerializer.Serialize(discoveryMode.SelectedIndex));}catch(Exception ex){status.Text="Discovery preference: "+ex.Message;}RefreshDiscoveryView();};}
+
+    internal void DiscoverySmoke(Action<string> capture,Action show){rows.Clear();rows.Add(new(){Frequency=461150000,CC=6,Protocol="DMR",Identity="CC 6",Count=1,Seen=DateTimeOffset.UtcNow,Source="Synthetic tentative"});rows.Add(new(){Frequency=461150000,CC=14,Protocol="DMR",Identity="CC 14",Count=4,Unverified=true,Corrections=2,Seen=DateTimeOffset.UtcNow,Source="Synthetic CRC-failed"});discoveryMode.SelectedIndex=1;if(grid.Items.Count!=1)throw new InvalidOperationException("Tentative discovery filter failed: "+grid.Items.Count+" / mode "+discoveryMode.SelectedIndex);discoveryMode.SelectedIndex=2;if(grid.Items.Count!=2)throw new InvalidOperationException("Noisy discovery filter failed");show();UpdateLayout();capture("ui-dmr-noisy-discovery.png");discoveryMode.SelectedIndex=0;if(grid.Items.Count!=0)throw new InvalidOperationException("Unverified evidence leaked into confirmed-only view");rows.Clear();}
 
     internal async Task Smoke()
 
@@ -280,12 +288,12 @@ public sealed class DmrPanel : UserControl
 
 
 
-            int evidenceCount=evidence.Observe(reception);if(evidenceCount<3)continue;
-            var row=rows.FirstOrDefault(r=>r.Frequency==hz&&r.CC==f.ColorCode&&r.Protocol==f.Protocol&&r.Identity==f.Identity&&r.Replay==reception.Context.Replay&&r.Source==reception.Context.Source);
+            Received?.Invoke(reception);int evidenceCount=evidence.Observe(reception);if(!DiscoveryVisibility.Show(discoveryMode.SelectedIndex,evidenceCount))continue;bool unverified=DiscoveryVisibility.Unverified(f);
+            var row=rows.FirstOrDefault(r=>r.Frequency==hz&&r.CC==f.ColorCode&&r.Protocol==f.Protocol&&r.Identity==f.Identity&&r.Replay==reception.Context.Replay&&r.Source==reception.Context.Source&&r.Unverified==unverified);
 
 
 
-            if(row==null){if(rows.Count>=500)rows.RemoveAt(0);row=new(){Count=evidenceCount-1,Frequency=hz,CC=f.ColorCode,Protocol=f.Protocol,Identity=f.Identity,Source=reception.Context.Source,Replay=reception.Context.Replay};rows.Add(row);}
+            if(row==null){if(rows.Count>=500)rows.RemoveAt(0);row=new(){Count=Math.Max(0,evidenceCount-1),Unverified=unverified,Frequency=hz,CC=f.ColorCode,Protocol=f.Protocol,Identity=f.Identity,Source=reception.Context.Source,Replay=reception.Context.Replay};rows.Add(row);}
 
 
 
@@ -297,7 +305,7 @@ public sealed class DmrPanel : UserControl
 
 
 
-            row.Count++;if(f.SystemType!="DMR (type unknown)"){row.Types.Remove("DMR (type unknown)");row.Types.Add(f.SystemType);}else if(row.Types.Count==0)row.Types.Add(f.SystemType);
+            row.Count=Math.Max(row.Count+1,evidenceCount);row.Corrections=Math.Max(row.Corrections,f.SlotCorrections);if(f.SystemType!="DMR (type unknown)"){row.Types.Remove("DMR (type unknown)");row.Types.Add(f.SystemType);}else if(row.Types.Count==0)row.Types.Add(f.SystemType);
 
             if(f.Network is {} net&&row.Networks.Count<32)row.Networks.Add(net.ToString());if(f.Site is {} site&&row.Sites.Count<32)row.Sites.Add(site.ToString());if(f.Detail.Length>0)row.Routing=f.TrunkSummary;
 
@@ -309,7 +317,7 @@ public sealed class DmrPanel : UserControl
 
 
 
-            Observation?.Invoke(new(reception.Seen,reception.Context.Source,reception.Context.Replay,hz,reception.Context.PositionSeconds,f.Validation,f.Source?.ToString()??"",f.Destination?.ToString()??"","",f.Protocol=="LTR"?f.Detail:f.DataType==-2?"Short link control":f.DataType==3?"Control signaling":f.LinkValid?"Full link control":"Slot identification",summary,null,f.Raw,f.Protocol,f.DataType==3?f.LinkValid:true,SourceKey:reception.Context.Key,DecoderJson:JsonSerializer.Serialize(f)));
+            Observation?.Invoke(new(reception.Seen,reception.Context.Source,reception.Context.Replay,hz,reception.Context.PositionSeconds,f.Validation,f.Source?.ToString()??"",f.Destination?.ToString()??"","",f.Protocol=="LTR"?f.Detail:f.DataType==-2?"Short link control":f.DataType==3?"Control signaling":f.LinkValid?"Full link control":"Slot identification",summary,null,f.Raw,f.Protocol,!unverified&&(f.DataType==3?f.LinkValid:true),SourceKey:reception.Context.Key,DecoderJson:JsonSerializer.Serialize(f)));
 
 
 
@@ -321,7 +329,7 @@ public sealed class DmrPanel : UserControl
 
 
 
-        if(save.IsChecked==true)foreach(var row in rows.Where(r=>!r.Replay))foreach(var entry in row.Confirmations.Where(c=>c.Value.Count>=3&&!c.Value.Saved&&(c.Value.Reception.Fields.DataType!=3||c.Value.Reception.Fields.LinkValid)).ToArray())
+        if(save.IsChecked==true)foreach(var row in rows.Where(r=>!r.Replay&&!r.Unverified))foreach(var entry in row.Confirmations.Where(c=>c.Value.Count>=3&&!c.Value.Saved&&(c.Value.Reception.Fields.DataType!=3||c.Value.Reception.Fields.LinkValid)).ToArray())
 
 
 
@@ -329,7 +337,7 @@ public sealed class DmrPanel : UserControl
 
 
 
-        if(changed)grid.Items.Refresh();status.Text=error!=null?"Save failed: "+error:!Enabled?"DMR / LTR off":!nfm?"DMR / LTR: select NFM on the current SDR channel":$"DMR / LTR searching / receiving · {rows.Count} confirmed identities · {evidence.Progress(DateTimeOffset.UtcNow)} · dropped {pipeline.Dropped}";
+        if(changed)RefreshDiscoveryView();status.Text=error!=null?"Save failed: "+error:!Enabled?"DMR / LTR off":!nfm?"DMR / LTR: select NFM on the current SDR channel":$"DMR / LTR searching / receiving · {rows.Count(r=>!r.Unverified&&r.Count>=3)} repeated / {rows.Count(r=>!r.Unverified&&r.Count<3)} tentative / {rows.Count(r=>r.Unverified)} noisy identities · {evidence.Progress(DateTimeOffset.UtcNow)} · dropped {pipeline.Dropped}";
 
 
 

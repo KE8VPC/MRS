@@ -1,0 +1,15 @@
+# Multiple receivers and voice assignments
+
+Keywords: Add receiver Remove receiver five devices RTL HackRF control voice pool group priority serial
+
+Open Receivers at the top of M.R.S. Add receiver creates another workspace. Open activates a saved workspace. Set a descriptive name, Role, Trunk group and receiver priority, then Save assignment. Device selection, gain, sample rate and listening output remain in each receiver window. Select and start each physical SDR there. Added workspaces retain their individual settings; the old A/B settings locations remain compatible. Removing a receiver closes it and removes its workspace definition, while preserving its recordings, frequencies and profile files. Reusing an old workspace ID can restore its retained receiver settings.
+
+Roles are Independent, Trunk control and Trunk voice. Use exactly the same explicit group on a control receiver and its voice receivers. Use separate groups for unrelated systems/sites. Lower receiver-priority numbers are chosen first. Multiple eligible group calls can use different available voice receivers; active calls are not preempted. Stop an independent scan before assigning a receiver to a trunk role. Voice workspaces must already be receiving live quadrature I/Q and support the requested frequency/filter.
+
+Start following in the Trunk following tab of the control workspace. It retains its control/rest capture and dispatches frequency, protocol, group, slot and NAC where applicable to voice workspaces in its group. Voice decoding begins only after the target reports the requested channel within usable capture. Pool assignment permits that dedicated voice receiver to retune; the single-receiver Allow hardware retunes option applies to the control/independent capture, not to a separately assigned voice SDR.
+
+Quiet/maximum timers release a voice lease. Stopping/closing control releases its assignments while other live receivers stay running. Manual tuning or Stop on an assigned voice receiver pauses its pool eligibility. Use Resume voice pool or re-save its role to make it eligible again. Assignment failure also pauses that receiver for review. Skip and Ignore current on an assigned voice workspace forward to its control workspace. A serving identity change discards obsolete assignments. Group and role changes stop following.
+
+Each voice workspace uses its own speaker/output and existing P25/DMR voice gain controls. MP3 VOX can record its decoded audio. Idle dedicated voice receivers suppress raw discriminator buzz. This is in-process coordination: open receivers through the same M.R.S. instance. Separately launched copies do not share a voice pool.
+
+Five virtual receivers, two simultaneous voice assignments and independent control tuning are covered by local tests. Actual USB bandwidth, CPU load, hardware sensitivity, reconnect and live call completion need acceptance with your radios. Ambiguous/default dongle serials require manual selection; the application does not guess a unique identity or open the same device twice in its workspace set.

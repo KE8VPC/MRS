@@ -7,6 +7,8 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        if(e.Args.Length==2&&e.Args[0]=="--sensor-fixture-test"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),Task.Run(()=>SensorTests.Fixtures(e.Args[1])).GetAwaiter().GetResult());Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),ex.ToString());Shutdown(1);}return;}
+        if(e.Args.Length==2&&e.Args[0]=="--export-bandplans"){CsvBandPlans.Seed(Path.GetFullPath(e.Args[1]));Shutdown(0);return;}
         if(e.Args.Length==2&&e.Args[0]=="--trunk-flat-test")
         {
             try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"trunk-test.txt"),TrunkTests.Analyze(e.Args[1]));Shutdown(0);}
@@ -75,9 +77,9 @@ public partial class App : Application
             catch (Exception ex) { File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "self-test.txt"), ex.ToString()); Shutdown(1); }
             return;
         }
-        var window = new MainWindow(e.Args.Contains("--ui-smoke"));
+        var window = new MainWindow(e.Args.Contains("--ui-smoke")||e.Args.Contains("--fleet-smoke"));
         MainWindow = window;
-        if (e.Args.Contains("--ui-smoke"))
+        if (e.Args.Contains("--ui-smoke")||e.Args.Contains("--fleet-smoke"))
         {
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             string diagnosticError = Path.Combine(AppContext.BaseDirectory, "ui-smoke-error.txt");
@@ -88,7 +90,7 @@ public partial class App : Application
             window.Left = -16000;
             window.Loaded += async (_, _) =>
             {
-                try { await window.RenderSmokeTest(Path.Combine(AppContext.BaseDirectory, "ui-smoke.png")); File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"ui-smoke-result.txt"),"PASS: all UI smoke assertions completed"); window.Close(); Shutdown(0); }
+                try { if(e.Args.Contains("--fleet-smoke"))await window.RenderUpdate039Smoke(_=>{});else await window.RenderSmokeTest(Path.Combine(AppContext.BaseDirectory, "ui-smoke.png")); File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"ui-smoke-result.txt"),"PASS: all UI smoke assertions completed"); window.Close(); Shutdown(0); }
                 catch (Exception ex) { File.WriteAllText(Path.Combine(AppContext.BaseDirectory, "ui-smoke-error.txt"), ex.ToString()); window.Close(); Shutdown(1); }
             };
         }

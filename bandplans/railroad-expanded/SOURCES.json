@@ -1,0 +1,28 @@
+{
+  "checked": "2026-10-24",
+  "channel_definitions": 467,
+  "unique_centers": 281,
+  "layers": {
+    "01-aar-original": 97,
+    "02-aar-splinter": 90,
+    "03-aar-nxdn": 182,
+    "04-atcs": 19,
+    "05-ptc": 38,
+    "06-itc": 14,
+    "07-acses": 15,
+    "08-telemetry": 12
+  },
+  "sources": [
+    "https://www.radioreference.com/db/aid/7747",
+    "https://www.jemcom.com/uploads/1/1/8/9/118921460/jem_radio_user_guide.pdf",
+    "https://railroads.dot.gov/sites/fra.dot.gov/files/2023-02/WiDTL%20Phase3.pdf",
+    "https://railroads.dot.gov/sites/fra.dot.gov/files/fra_net/15787/PTC%20Desense%20Mitigation%20Phase%201_final.pdf"
+  ],
+  "notes": [
+    "Generated standard AAR grids from verified numeric endpoints/steps; original labels, not copied database descriptions.",
+    "Analog and NXDN aliases intentionally coexist as independent layers.",
+    "NXDN center steps are 7500 Hz; 6250 Hz is the channel-mode width, not this table spacing.",
+    "PTC channel 7 published base/mobile mismatch retained and flagged.",
+    "Reported reference centers do not establish active local occupancy or decoder support."
+  ]
+}

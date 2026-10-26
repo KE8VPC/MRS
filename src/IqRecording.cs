@@ -89,6 +89,15 @@ internal sealed class IqRecording : IDisposable
         Error = "I/Q recording stopped because storage could not keep up. Complete frames remain readable; the file is marked incomplete.";
         queue.Writer.TryComplete(); return false;
     }
+    internal async Task WriteBuffered(IqFrame frame,long elapsedTicks)
+    {
+        if(Error!=null)throw new IOException(Error);
+        frame.Capture.Validate(frame.Data.Length);
+        frame.Channel?.Validate();
+        if(frame.Channel is {} channel&&!channel.Fits(frame.Frequency,frame.Capture.UsableBandwidthHz))throw new IOException("Channel exceeds recorded capture coverage.");
+        await queue.Writer.WriteAsync(frame with{ElapsedTicks=elapsedTicks});
+        if(Error!=null)throw new IOException(Error);
+    }
     public void Dispose() { queue.Writer.TryComplete(); writerTask.GetAwaiter().GetResult(); }
 }
 

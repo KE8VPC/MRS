@@ -14,6 +14,7 @@ internal static class HackRfTests
         { var g = new HackRfGain(lna,vga,amp); check(HackRfGain.Decode(g.Token) == g, $"HackRF gain round trip LNA {lna}, VGA {vga}, amplifier {amp}"); }
         foreach (int bad in new[] {-1000,0,600,new HackRfGain(7,2).Token,new HackRfGain(48,2).Token,new HackRfGain(8,63).Token})
         { bool rejected=false;try{HackRfGain.Decode(bad);}catch(ArgumentException){rejected=true;}check(rejected,"HackRF rejects unsupported gain token " + bad); }
+        TransmitTests.Run(check);
         HfTests.Run(check);
         CaptureOffsetTests.Run(check);
         int gain = new HackRfGain().Token;
