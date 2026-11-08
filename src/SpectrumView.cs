@@ -593,7 +593,7 @@ public sealed class SpectrumView : FrameworkElement
             var entry = group.First(); double x = left + View.Fraction(entry.FrequencyHz) * width;
             var brush = ColorBrush(settings.UseEntryColors ? entry.Color : settings.Marker);
             dc.DrawLine(new Pen(brush, 1), new Point(x, top), new Point(x, top + plotHeight)); dc.DrawLine(new Pen(brush, .7), new Point(x, waterTop), new Point(x, bottom));
-            string name = entry.Name.Length > 22 ? entry.Name[..21] + "…" : entry.Name; if (group.Count() > 1) name += $" (+{group.Count() - 1})";
+            string labelName=DiscoveryNames.Label(entry);string name = labelName.Length > 32 ? labelName[..31] + "…" : labelName; if (group.Count() > 1) name += $" (+{group.Count() - 1})";
             var text = Text(name, 11, brush); double labelX = Math.Clamp(x + 3, left, Math.Max(left, left + width - text.Width - 8));
             int lane = Array.FindIndex(occupied, end => end <= labelX);
             if (lane >= 0) { occupied[lane] = labelX + text.Width + 12; dc.DrawRectangle(ColorBrush(settings.Background), null, new Rect(labelX, top + 2 + lane * 19, text.Width + 6, 18)); dc.DrawText(text, new Point(labelX + 3, top + 3 + lane * 19)); }

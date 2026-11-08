@@ -1,3 +1,7 @@
+# Latest release: 0.47.0-preview1
+
+Saved discoveries can be reviewed, cleaned up, imported and exported through Frequencies. Start with a Library backup. See UPDATE-0.47.0-preview1.md, DISCOVERY-EXCHANGE.md and ACCEPTANCE-0.47.0-preview1.md. Earlier release sections below are historical.
+
 # Latest release: 0.46.0-preview1
 
 See UPDATE-0.46.0-preview1.md for the combined following/Fox Hunt/offline-map update and ACCEPTANCE-0.46.0-preview1.md for station checks. Extract the full release ZIP into a new folder and run MRS.exe. Earlier release notes below are retained as history.

@@ -1,3 +1,7 @@
+# Current release: 0.47.0-preview1 — saved discovery management
+
+Includes informative generic spectrum labels, scope-aware new discovery organization, reviewable cleanup and optional selected-grid snapping with raw-frequency retention. Added versioned bundle/JSON and channel/catalog CSV exchange, legacy-list import, selected-folder export, system/site/TG/radio/map catalog persistence, backups, Undo and conflict-preserving import. This is the data-exchange foundation for a future sharing website; there is no upload/site implementation. Operational saved lists are not rewritten automatically. Details: DISCOVERY-EXCHANGE.md and the 0.47 update/validation/acceptance documents.
+
 # Current release: 0.46.0-preview1
 
 User authorized the combined build November 4, 2026. This release includes the pending dedicated P25 history/audio path, mapped DMR identity/metadata, receiver-pool lifecycle and mixed-coverage fixes, primary Fox Hunt with trend/rough-area modeling, GPX metadata and shared local offline detail. See UPDATE-0.46.0-preview1.md, VALIDATION-0.46.0-preview1.md and ACCEPTANCE-0.46.0-preview1.md. Pending-source entries below are development history now included in this release; their no-packaging statements describe those earlier passes. Live field acceptance remains open as listed in the current checklist.

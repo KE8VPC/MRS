@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 namespace MRS;
-public sealed class FrequencyPanel : UserControl
+public sealed partial class FrequencyPanel : UserControl
 {
     private FrequencyLibrary? library;internal int SavedEntryCount=>library?.Items.Count??0;
     private static int openEditors;
@@ -58,6 +58,8 @@ public sealed class FrequencyPanel : UserControl
         Button("Show markers", () => SetSelectedVisibility(true));
         Button("Hide markers", () => SetSelectedVisibility(false));
         Button("Reload", () => Initialize(path));
+        Button("Import / export",()=>CreateSharingWindow().ShowDialog());
+        Button("Clean up…",()=>CreateCleanupWindow().ShowDialog());
         var filter = new StackPanel(); DockPanel.SetDock(filter, Dock.Top); dock.Children.Add(filter);
         filter.Children.Add(new TextBlock { Text = "Search frequencies, names, notes or protocols", Foreground = Brushes.LightSteelBlue, FontSize = 12, TextWrapping = TextWrapping.Wrap }); filter.Children.Add(search);
         search.TextChanged += (_, _) => {selection.Clear();anchor=null;Rebuild();};

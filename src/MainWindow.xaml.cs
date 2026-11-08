@@ -65,6 +65,7 @@ public partial class MainWindow : Window
         Spectrum.CaptureSpanChanged += _ => RefreshNavigation();
         FrequencyBox.KeyDown += async (_, e) => { if (e.Key == System.Windows.Input.Key.Enter) { e.Handled = true; await TuneText(FrequencyBox.Text); } };
         DisplayControls.Initialize(Path.Combine(dataFolder, "display.json"));
+        FrequencyManager.SharingCatalog = DiscoveryCatalog;
         FrequencyManager.CurrentBandwidth = () => receiver.AppliedChannel?.Width ?? SelectedBandwidth;
         FrequencyManager.CurrentSettings = () => rfMode ? (tunedHz, tunedMode) : (0L, "NFM");
         FrequencyManager.Changed += () => Spectrum.SetMarkers(FrequencyManager.Markers);

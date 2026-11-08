@@ -11,7 +11,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>MRS</AssemblyName>
     <ApplicationIcon>MRS.ico</ApplicationIcon>
-    <Version>0.46.0-preview1</Version>
+    <Version>0.47.0-preview1</Version>
     <Company>Mike's Radio Software</Company>
     <Description>Windows radio workbench — audio foundation preview</Description>
   </PropertyGroup>

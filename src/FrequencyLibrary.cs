@@ -23,6 +23,7 @@ public sealed record FrequencyItem
     public string Name { get; init; } = "";
 
     public long FrequencyHz { get; init; }
+    public long? OriginalFrequencyHz { get; init; }
 
     public string Mode { get; init; } = "NFM";
 
@@ -52,7 +53,7 @@ public sealed record FrequencyItem
 
     public SignalActivity? Activity {get;init;}
 
-    public override string ToString() => IsFolder ? Name : $"{Name} · {FrequencyHz / 1000000m:0.######} MHz · {Mode} {Protocols}";
+    public override string ToString() => IsFolder ? Name : $"{Name} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
 
 }
 
@@ -60,7 +61,7 @@ public sealed partial class FrequencyLibrary
 
 {
 
-    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false);
+    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false, List<DiscoveryRecord>? Records = null);
 
     private bool receiverBImported;
 
@@ -71,8 +72,10 @@ public sealed partial class FrequencyLibrary
     private string? revision;
 
     private List<FrequencyItem> items;
+    private List<DiscoveryRecord> records=[];
+    internal IReadOnlyList<DiscoveryRecord> Records=>records.AsReadOnly();
 
-    private readonly Stack<List<FrequencyItem>> undo = new();
+    private readonly Stack<(List<FrequencyItem> Items,List<DiscoveryRecord> Records)> undo = new();
 
     public IReadOnlyList<FrequencyItem> Items => items.AsReadOnly();
 
@@ -92,9 +95,10 @@ public sealed partial class FrequencyLibrary
 
             var document = JsonSerializer.Deserialize<Document>(revision) ?? throw new IOException("Empty frequency library.");
 
-            if (document.Version != 1) throw new IOException("Unsupported frequency-library version.");
+            if (document.Version is not(1 or 2)) throw new IOException("Unsupported frequency-library version.");
 
             receiverBImported = document.ReceiverBImported;
+            records=document.Records??[]; DiscoveryExchange.ValidateRecords(records);
 
             items = document.Items ?? throw new IOException("Missing frequency entries.");
 
@@ -124,7 +128,7 @@ public sealed partial class FrequencyLibrary
 
             if (!double.IsFinite(node.BandwidthHz) || node.BandwidthHz < 0 || node.BandwidthHz > 1000000000) throw new IOException("Invalid saved bandwidth.");
 
-            if (node.Mode == null || node.Modulation == null || node.Protocols == null || node.Signaling == null || node.Notes == null || node.Tags == null) throw new IOException("Missing entry fields.");
+            if (node.SiteScope == null || node.ChannelRoles == null || node.ChannelIds == null || node.EvidenceStatus == null || node.DmrIdentifiers == null || node.Mode == null || node.Modulation == null || node.Protocols == null || node.Signaling == null || node.Notes == null || node.Tags == null) throw new IOException("Missing entry fields.");
 
             if(node.DmrIdentifiers is { } ids&&(ids.Length>20608))throw new IOException("Invalid DMR identifier list.");
 
@@ -156,11 +160,12 @@ public sealed partial class FrequencyLibrary
 
     }
 
-    private void Commit(List<FrequencyItem> next, bool keepUndo = true)
+    private void Commit(List<FrequencyItem> next, bool keepUndo = true, List<DiscoveryRecord>? catalog=null)
 
     {
 
         Validate(next);
+        DiscoveryExchange.ValidateRecords(catalog??records);
 
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
@@ -170,7 +175,7 @@ public sealed partial class FrequencyLibrary
 
         if (disk != revision) throw new IOException("The library changed in another window. Click Reload before editing again.");
 
-        string json = JsonSerializer.Serialize(new Document(1, next, receiverBImported), new JsonSerializerOptions { WriteIndented = true });
+        string json = JsonSerializer.Serialize(new Document((catalog??records).Count>0?2:1, next, receiverBImported,catalog??records), new JsonSerializerOptions { WriteIndented = true });
 
         string temp = path + ".tmp";
 
@@ -178,9 +183,9 @@ public sealed partial class FrequencyLibrary
 
         if (File.Exists(path)) File.Replace(temp, path, path + ".bak", true); else File.Move(temp, path);
 
-        if (keepUndo) undo.Push(items);
+        if (keepUndo) undo.Push((items,records));
 
-        items = next; revision = json;
+        items = next; records=catalog??records; revision = json;
 
         fileLock.Dispose();
 
@@ -295,13 +300,10 @@ public sealed partial class FrequencyLibrary
     internal void SaveNxdn(NxdnReception observation,string receiver)
     {
         if(observation.Context.Replay||observation.Context.FrequencyHz is not {} hz||hz<=0)return;
-        var item=items.Where(i=>!i.IsFolder&&Math.Abs(i.FrequencyHz-hz)<=1000).MinBy(i=>Math.Abs(i.FrequencyHz-hz));
-        if(item==null){SaveDiscoveries([new ActivityDiscovery(Guid.NewGuid(),hz,"NFM",8000,8000,observation.Seen,observation.Seen,1,0)],receiver);item=items.Where(i=>!i.IsFolder&&Math.Abs(i.FrequencyHz-hz)<=1000).MinBy(i=>Math.Abs(i.FrequencyHz-hz));}if(item==null)return;
-        string id=$"NXDN SYS {observation.Identity.System} SITE {observation.Identity.Site} RAN {observation.Identity.Ran}";
-        if(item.Signaling.Contains(id,StringComparison.Ordinal))return;
-        string protocols=item.Protocols is "" or "Unknown"?"NXDN":item.Protocols.Contains("NXDN",StringComparison.OrdinalIgnoreCase)?item.Protocols:item.Protocols+"; NXDN";
-        string signaling=(item.Signaling+"; "+id).Trim(';',' ');if(signaling.Length>4000)throw new IOException("Signaling metadata limit reached; export before adding more identifiers.");
-        var next=items.ToList();next[next.FindIndex(i=>i.Id==item.Id)]=item with{Protocols=protocols,Signaling=signaling};Commit(next,false);
+        var id=observation.Identity;string scope=$"NXDN:System {id.System}:Site {id.Site}:RAN {id.Ran}";string identity=$"NXDN SYS {id.System} SITE {id.Site} RAN {id.Ran}";
+        var unscoped=items.Where(i=>!i.IsFolder&&i.FrequencyHz==hz&&i.SiteScope.Length==0).ToArray();var old=items.FirstOrDefault(i=>!i.IsFolder&&i.FrequencyHz==hz&&i.SiteScope==scope)??(unscoped.Length==1?unscoped[0]:null);
+        if(old!=null){string protocols=old.Protocols is "" or "Unknown"?"NXDN":old.Protocols.Contains("NXDN",StringComparison.OrdinalIgnoreCase)?old.Protocols:old.Protocols+"; NXDN";string signaling=old.Signaling.Contains(identity,StringComparison.Ordinal)?old.Signaling:(old.Signaling+"; "+identity).Trim(';',' ');if(signaling.Length>4000)throw new IOException("Signaling metadata limit reached.");var updated=old with{SiteScope=scope,Protocols=protocols,Signaling=signaling,ChannelLastSeen=observation.Seen};if(DiscoveryNames.Generated(old.Name))updated=updated with{Name=DiscoveryNames.Label(updated)};var next=items.ToList();next[next.IndexOf(old)]=updated;Commit(next,false);return;}
+        SaveSiteChannels([new("NXDN",["NXDN","System "+id.System,"Site "+id.Site],scope,hz,"","Observed carrier",identity+$"; Location {id.Location}",Evidence:"Observed",Seen:observation.Seen)]);
     }
 
     internal void SaveDmr(DmrReception reception,string receiver)
@@ -370,7 +372,7 @@ public sealed partial class FrequencyLibrary
 
     }
 
-    public void Undo() { if (undo.TryPeek(out var previous)) { Commit(previous, false); undo.Pop(); } }
+    public void Undo() { if (undo.TryPeek(out var previous)) { Commit(previous.Items, false,previous.Records); undo.Pop(); } }
 
     public IEnumerable<FrequencyItem> VisibleEntries()
 

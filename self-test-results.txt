@@ -16,6 +16,44 @@ PASS: A removed startup restore cannot reactivate its old map
 PASS: Closing a map invalidates an in-progress import
 PASS: Preference write failure retains usable loaded map and reports the problem
 PASS: Fox Hunt and Aviation map choices remain independent
+PASS: Discovery marker uses known network/site/CC
+PASS: Custom spectrum labels remain authoritative
+PASS: Frequency formatting trims zeros without losing 6.25 kHz precision
+PASS: Explicit channel grid corrects a measured offset inside tolerance
+PASS: Default and out-of-tolerance frequencies remain exact
+PASS: Share export removes notes by default and activity receiver identity
+PASS: Discovery bundle includes independent talkgroups, radio labels and inferred site records
+PASS: Library backup retains notes
+PASS: Exact frequency/folder round trip .mrsdiscovery
+PASS: Catalog relationship round trip .mrsdiscovery
+PASS: Exact frequency/folder round trip .json
+PASS: Catalog relationship round trip .json
+PASS: Exact frequency/folder round trip .csv
+PASS: Catalog relationship round trip .csv
+PASS: Catalog CSV independently preserves talkgroup/radio/system/site records
+PASS: Existing version-one saved frequency file can be imported without starting over
+PASS: Missing scope metadata is rejected before import
+PASS: Import preview has no write side effects
+PASS: Approved import commits channels and catalog together
+PASS: Catalog survives restart in the frequency library
+PASS: Repeated discovery import is idempotent
+PASS: Undo restores both channels and catalog as a single batch
+PASS: Cleanup preview does not mutate the saved list
+PASS: Cleanup preserves raw frequency and notes while applying selected snapping
+PASS: Cleanup produces an informative name and a timestamped backup
+PASS: Cleanup Undo restores original names, folders, frequency and metadata
+PASS: Stale in-memory preview cannot overwrite later edits
+PASS: Another window's newer disk revision is preserved
+PASS: Import fills missing fields and preserves conflicting nonblank local fields
+PASS: Same frequency at different sites is not merged
+PASS: Conflicting duplicate labels are preserved for review
+PASS: Compatible exact duplicates can be consolidated
+PASS: Unsupported discovery schema is rejected
+PASS: Malformed cyclic imported folders are rejected
+PASS: Bundle rejects unexpected/traversal entries without extracting files
+PASS: Selected-folder cleanup includes its descendants
+PASS: Selected cleanup leaves unrelated entries untouched
+PASS: Selected export includes ancestors and related catalog only, without siblings or other systems
 PASS: Connect Plus waits for repeated valid mapped grants
 PASS: Connect Plus retains its mapped carrier, slot and expected color code
 PASS: Connect Plus ended assignment is not available from stale cached data
@@ -1036,17 +1074,17 @@ PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (36 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (44 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (101 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (87 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (72 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (75 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
