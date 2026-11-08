@@ -15,6 +15,9 @@ internal sealed class TransmitTestWindow:Window
     private readonly Button send=new(){Content="Transmit test tone"},stop=new(){Content="STOP TX",IsEnabled=false};
     private readonly TextBlock status=new(){Text="Not transmitting",TextWrapping=TextWrapping.Wrap};
     private Process? worker;
+    private readonly TextBox licensedCall=new();private readonly ComboBox licenseClass=new(){ItemsSource=new[]{"Select license class","Technician","General","Advanced","Amateur Extra"},SelectedIndex=0};
+    private readonly CheckBox licenseValid=new(){Content="I am the authorized control operator with a current U.S. license"},localRules=new(){Content="My location, frequency, emission and station operation comply with applicable rules"},equipment=new(){Content="I checked actual output, filtering, power limits and antenna/load; gain is not power"};
+    private TxDeclaration Declaration()=>new("United States",licensedCall.Text.Trim().ToUpperInvariant(),licenseClass.SelectedItem?.ToString()??"",licenseValid.IsChecked==true,localRules.IsChecked==true,equipment.IsChecked==true);
     internal event Action<bool>? Transmitting;
     private readonly bool aprs;
     private readonly TextBox call=new(),path=new(),message=new(){MaxLength=80},latitude=new(),longitude=new();
@@ -39,7 +42,7 @@ internal sealed class TransmitTestWindow:Window
         var panel=new StackPanel();root.Children.Add(new ScrollViewer{Content=panel,VerticalScrollBarVisibility=ScrollBarVisibility.Auto});
         panel.Children.Add(new TextBlock{Text=aprs?"Manual APRS · AX.25 / 1200-baud AFSK":"Short FM test · 1 kHz tone · ±2.5 kHz deviation",FontWeight=FontWeights.Bold});
         panel.Children.Add(new TextBlock{Text="Reception on this HackRF is stopped. RF amplifier stays off. Use a dummy load or a suitable antenna and an authorized clear frequency. Do not cable the transmitter directly into another receiver. No automatic repeat or restart.",TextWrapping=TextWrapping.Wrap,Margin=new Thickness(0,10,0,12)});
-        foreach(var pair in new (string,Control)[]{("Frequency MHz (144–148 or 420–450)",frequency),("TX gain dB — start at 0; not calibrated power",gain),("Duration seconds",duration)}){if(aprs&&pair.Item2==duration)continue;panel.Children.Add(new TextBlock{Text=pair.Item1});panel.Children.Add(pair.Item2);}
+        foreach(var pair in new (string,Control)[]{("Frequency MHz (144.1–148 or 430–450; emission must fit)",frequency),("TX gain dB — start at 0; not calibrated power",gain),("Duration seconds",duration)}){if(aprs&&pair.Item2==duration)continue;panel.Children.Add(new TextBlock{Text=pair.Item1});panel.Children.Add(pair.Item2);}
         if(aprs)
         {
             panel.Children.Add(new TextBlock{Text="Listen for a clear channel before opening this window. No automatic busy-channel check, beaconing, retries or acknowledgements. Blank path sends directly. Position uses the house symbol.",TextWrapping=TextWrapping.Wrap});
@@ -47,6 +50,9 @@ internal sealed class TransmitTestWindow:Window
             foreach(var item in new (string,Control)[]{("Your callsign / SSID",call),("Path (optional, up to two comma-separated addresses)",path),("Packet type",kind),("Status text / position comment",message),("Latitude, decimal degrees (position only)",latitude),("Longitude, decimal degrees (position only)",longitude),("Packet preview",preview)}){packetFields.Children.Add(new TextBlock{Text=item.Item1});packetFields.Children.Add(item.Item2);}
             foreach(var field in new[]{call,path,message,latitude,longitude})field.TextChanged+=(_,_)=>PreviewPacket();kind.SelectionChanged+=(_,_)=>PreviewPacket();PreviewPacket();
         }
+        panel.Children.Add(new TextBlock{Text="TX authorization · U.S. amateur only · operator declaration (not independently verified)",TextWrapping=TextWrapping.Wrap,FontWeight=FontWeights.Bold});
+        panel.Children.Add(new TextBlock{Text="Callsign (without SSID)"});panel.Children.Add(licensedCall);panel.Children.Add(licenseClass);foreach(var c in new[]{licenseValid,localRules,equipment})panel.Children.Add(c);
+        foreach(var field in new[]{frequency,licensedCall})field.TextChanged+=(_,_)=>armed.IsChecked=false;gain.SelectionChanged+=(_,_)=>armed.IsChecked=false;duration.SelectionChanged+=(_,_)=>armed.IsChecked=false;licenseClass.SelectionChanged+=(_,_)=>armed.IsChecked=false;foreach(var c in new[]{licenseValid,localRules,equipment})c.Unchecked+=(_,_)=>armed.IsChecked=false;
         footer.Children.Add(armed);footer.Children.Add(send);footer.Children.Add(stop);footer.Children.Add(status);if(aprs)footer.Children.Add(history);
         send.Click+=Send;stop.Click+=(_,_)=>StopTx();Closing+=(_,_)=>StopTx();
     }
@@ -61,12 +67,14 @@ internal sealed class TransmitTestWindow:Window
             if(!decimal.TryParse(frequency.Text,NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture,out var mhz))throw new ArgumentException("Enter frequency in MHz.");
             var plan=new TxTestPlan(checked((long)(mhz*1000000)),(int)gain.SelectedItem,aprs?3:(int)duration.SelectedItem);plan.Validate();
             AprsTransmit? packet=aprs?ReadPacket():null;if(packet!=null)preview.Text=packet.Preview;
+            var declaration=Declaration();string permit=TransmitAuthorization.Issue(declaration,plan,identity);
+            if(packet!=null&&!packet.Source.Split('-')[0].Equals(declaration.Callsign,StringComparison.OrdinalIgnoreCase))throw new InvalidOperationException("APRS source must match the declared control-operator callsign.");
             if(!ReceiverOwnership.Acquire(this,device.Index,identity,"HackRF transmit test",out string message,"HackRF"))throw new InvalidOperationException(message);
-            armed.IsChecked=false;packetFields.IsEnabled=false;send.IsEnabled=false;frequency.IsEnabled=gain.IsEnabled=duration.IsEnabled=armed.IsEnabled=false;stop.IsEnabled=true;
+            foreach(var c in new Control[]{licensedCall,licenseClass,licenseValid,localRules,equipment})c.IsEnabled=false;armed.IsChecked=false;packetFields.IsEnabled=false;send.IsEnabled=false;frequency.IsEnabled=gain.IsEnabled=duration.IsEnabled=armed.IsEnabled=false;stop.IsEnabled=true;
             var start=new ProcessStartInfo(Environment.ProcessPath!){UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(var arg in new[]{aprs?"--hackrf-aprs-test":"--hackrf-tx-test",device.Index.ToString(),plan.Frequency.ToString(CultureInfo.InvariantCulture),plan.Gain.ToString(),plan.Seconds.ToString(),Convert.ToBase64String(Encoding.UTF8.GetBytes(identity))})start.ArgumentList.Add(arg);
             if(packet!=null)start.ArgumentList.Add(Convert.ToBase64String(Encoding.UTF8.GetBytes(System.Text.Json.JsonSerializer.Serialize(packet))));
-            status.Text="Preparing transmission…";status.Foreground=Brushes.DarkOrange;
+            start.Environment[TransmitAuthorization.Variable]=permit;status.Text="Preparing transmission…";status.Foreground=Brushes.DarkOrange;
             using var process=Process.Start(start)??throw new InvalidOperationException("Cannot start TX worker");worker=process;
             var errors=process.StandardError.ReadToEndAsync();
             var reader=Task.Run(async()=>{while(await process.StandardOutput.ReadLineAsync() is {} line){if(line=="TX_STARTED")await Dispatcher.InvokeAsync(()=>{if(process.HasExited)return;Transmitting?.Invoke(true);status.Text=aprs?$"TRANSMITTING APRS · {mhz} MHz":$"TRANSMITTING · {mhz} MHz · {plan.Seconds} second test";status.Foreground=Brushes.Red;if(packet!=null)history.AppendText($"{DateTime.Now:HH:mm:ss} TX started: {packet.Preview}\n");});else if(line=="TX_STOPPED")await Dispatcher.InvokeAsync(()=>Transmitting?.Invoke(false));}});
@@ -77,7 +85,7 @@ internal sealed class TransmitTestWindow:Window
             status.Foreground=Brushes.Black;if(packet!=null)history.AppendText($"{DateTime.Now:HH:mm:ss} {status.Text}\n");
         }
         catch(Exception ex){status.Text=ex.Message;status.Foreground=Brushes.DarkRed;}
-        finally{Transmitting?.Invoke(false);worker=null;ReceiverOwnership.Release(this);packetFields.IsEnabled=true;send.IsEnabled=true;stop.IsEnabled=false;frequency.IsEnabled=gain.IsEnabled=duration.IsEnabled=armed.IsEnabled=true;armed.IsChecked=false;}
+        finally{foreach(var c in new Control[]{licensedCall,licenseClass,licenseValid,localRules,equipment})c.IsEnabled=true;Transmitting?.Invoke(false);worker=null;ReceiverOwnership.Release(this);packetFields.IsEnabled=true;send.IsEnabled=true;stop.IsEnabled=false;frequency.IsEnabled=gain.IsEnabled=duration.IsEnabled=armed.IsEnabled=true;armed.IsChecked=false;}
     }
     private void StopTx()
     {

@@ -1,0 +1,59 @@
+M.R.S. 0.41 receive helpers, Windows x64
+
+mrs-ani.exe: GPL-2.0; selected decoder sources from russinnes/fsync-mdc1200-decode,
+commit 287356a99d4493b45b3fd447b276150262e9c871. Original core copyright Matthew
+Kaufman; see Sources/ani notices and COPYING. No upstream Linux audio/network main
+is compiled. Our stdin bridge feeds 48-kHz mono PCM16 into the MDC/FleetSync cores.
+Local changes: zero-initialize decoder allocations, bound FleetSync message writes,
+correct failed fourth ECC-word sentinel, suppress nonexistent MDC single-frame extras.
+
+mrs-weak.exe: combined GPL-3.0 executable. FT8/FT4 core is MIT ft8_lib commit
+9fec6ca39886edbf96f4f5e71edc76da5074e871 (kgoba/ft8_lib); WSPR core is GPL-3.0
+Guenael/rtlsdr-wsprd commit 1ca9b83dd2562ce9ef2453aacdd5bc3aab982c7d. FFTW3f 3.3.11
+is linked statically (GPL-2.0-or-later), source tarball and COPYING included.
+Original upstream notices remain. Local FT changes: portable stpcpy replacement and
+expanded FT4 candidate timing search. WSPR disables wisdom/hashtable file access;
+no RTL hardware, network uploader or daemon main is used. Wrapper accepts bounded,
+length-framed 12-kHz float audio; WSPR mixes/filters to 375 complex samples/s.
+
+mrs-lora.exe: GPL-3.0 selected standalone LoRa headers from MeshSDR-Android commit
+81d6d80acbf43e536dd0248f5a689f9cc7a77b39. See Sources/lora/README-LICENSE.md,
+LICENSE and embedded notices for mmmaly/LoraReceiverStandalone, gr-lora_sdr and
+KissFFT provenance. Only these selected C++ headers are included; no Android app,
+signing keys, RF recordings or binaries were imported. Our wrapper accepts CF32
+and linearly resamples 2x–4x bandwidth input to the PHY's 2x bandwidth rate, emitting
+packet status, CRC/recovery method, sync and approximate source sample position.
+It requires MRS Decoders/Sensors/mrs-iq-channel.exe for raw I/Q channel extraction.
+
+Build with MSYS2 MinGW-w64 GCC/G++ 16.2 and FFTW3f 3.3.11 development/static library:
+  powershell -File Sources/build-windows.ps1 -ToolchainBin C:\msys64\mingw64\bin
+The build links static runtime libraries and uses a 16-MB worker stack. If building
+FFTW from the bundled pristine tarball, configure a MinGW static single-precision
+build (--enable-float --disable-shared --enable-static) and install into the same
+toolchain prefix. MSYS2's optimized archive may give different binary hashes;
+SHA256.json describes the supplied helpers, not a reproducible-build guarantee.
+
+Sources and authoritative upstream documentation:
+https://github.com/russinnes/fsync-mdc1200-decode
+https://github.com/kgoba/ft8_lib
+https://github.com/Guenael/rtlsdr-wsprd
+https://www.fftw.org/download.html
+https://github.com/engperini/MeshSDR-Android
+https://github.com/meshtastic/firmware
+https://github.com/meshcore-dev/MeshCore
+
+All three helpers are receive-only pipes. MRS owns the radio. No external process
+opens a radio, transmits, changes the PC clock or uploads decoded observations.
+Physical CRC/FEC evidence is not station authentication. Private mesh payloads
+remain opaque. See Help for supported payloads and live acceptance limits.
+
+0.41 preview2 local timing changes: the weak helper accepts an optional 0..1-second
+window-padding argument; expands the waterfall to the received frame length; widens
+timing search; and reports approximate dt_error using the FT8/FT4 0.5-second
+reference convention plus analysis/filter compensation for the MRS audio frontend.
+Raw window offset remains available. This estimate includes uncalibrated receiver
+latency and remote station error; it is not hardware UTC timestamping.
+
+0.43 local bridge change: FT8/FT4 SNR is estimated from decoded-tone matched-filter signal power and off-signal median noise, normalized to 2500 Hz. This does not repurpose sync score. Source is mrs_weak.c; known-noise calibration is in Update043Tests.cs. Numerical equivalence to WSJT-X and live RF acceptance are not claimed.
+
+0.44 adds a bounded --tones FT8|FT4|WSPR standard-message encoder interface to mrs-weak.exe, using the existing retained upstream FT8/WSPR encoder sources and notices. The native helper itself does not access a radio or network. M.R.S. performs phase-shaped, quantized streaming I/Q modulation and authorization separately. No JS8 backend source is bundled; the optional API bridge needs separately installed/configured JS8Call.

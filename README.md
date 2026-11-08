@@ -1,3 +1,45 @@
+# Latest release: 0.46.0-preview1
+
+See UPDATE-0.46.0-preview1.md for the combined following/Fox Hunt/offline-map update and ACCEPTANCE-0.46.0-preview1.md for station checks. Extract the full release ZIP into a new folder and run MRS.exe. Earlier release notes below are retained as history.
+
+# Current preview: 0.45.0-preview1
+
+Fox Hunt adds receive-only GPS-tagged signal-strength trails, offline mapping, private CSV logging and GPX export. Configure the GPS COM port and baud in Amateur → Fox Hunt; use fixed receiver RF gain. This release also fixes the APRS preset Tune-field overwrite. See UPDATE-0.45.0-preview1.md, Help/fox-hunt.md and ACCEPTANCE-0.45.0-preview1.md. The live GPS serial probe passed; GPS+SDR road/field acceptance remains open. No Fox Hunt transmission or position upload.
+
+# Previous preview: 0.44.0-preview1
+
+Operator-controlled HackRF FT8/FT4/WSPR transmit, opt-in receive-only APRS-IS iGate, external JS8Call bridge, low-band receive presets, HF beacon/HFGCS references and checkbox contrast fixes. See [release notes](UPDATE-0.44.0-preview1.md), [validation](VALIDATION-0.44.0-preview1.md) and [acceptance](ACCEPTANCE-0.44.0-preview1.md). Native SDR JS8 remains planned; the bridge requires separately configured JS8Call. No RF transmission or live APRS reporting was performed for build validation.
+
+Earlier preview notes follow as history. PSK Reporter ingestion/software metadata was accepted by user screenshot on 0.43; new RF and APRS acceptance remains open.
+
+# Previous preview: 0.43.0-preview1
+
+Weak-signal table/timing cleanup, measured SNR estimates, callsign colors/watch/ignore/session tracking, protocol-cycle clearing, UTC/local display, newest-first migration, VHF/UHF defaults and opt-in PSK Reporter. See UPDATE-0.43.0-preview1.md for implemented scope and limits. This supersedes the matching queued requests below, retained as history. Live RF and PSK Reporter/map acceptance remain pending; no automated live report or RF transmission is performed.
+
+# Previous preview: 0.42.0-preview1
+
+Discovery references, Amateur quick tuning, aviation message consolidation and retune continuity, annotated sidebar cleanup, and default-locked U.S. amateur TX safeguards. See UPDATE-0.42.0-preview1.md for implemented scope and limitations; live acceptance remains pending. This implementation supersedes the corresponding November 1 queued requests below, which remain request history. Broader marine/business packs and new decoder engines remain future work.
+
+# M.R.S. — listening, decoding and signal discovery
+
+A radio workbench for enthusiasts who enjoy discovering unknown signals as well as monitoring familiar services. Common frequency/channel references should help explain what a listener may have found and provide a starting point for listening, decoding and learning. See [Project overview](PROJECT-OVERVIEW.md) for this direction, reference-data principles and the distinction between implemented and planned features.
+
+# Latest preview: 0.41.0-preview2
+
+NIST-referenced decoder timing, received-station estimates, automatic RX correction and overlapping FT8/FT4 windows. Windows time is unchanged. See UPDATE-0.41.0-preview2.md and Help/weak-timing.md. Includes preview1 decoders; live RF acceptance remains pending.
+
+## Previous preview
+
+# Latest preview: 0.41.0-preview1
+
+SAME/EAS, DTMF, MDC1200/FleetSync, FT8/FT4/WSPR and experimental direct-SDR Meshtastic/MeshCore receive workspaces. Includes the 0.40 receiver assignments, PPM and FLEX work. See UPDATE-0.41.0-preview1.md and ACCEPTANCE-0.41.0-preview1.md. Extract the complete ZIP and keep companion folders. New live RF acceptance remains pending.
+
+## Previous release
+
+# Latest preview: 0.40.0-preview1
+
+Direct saved receiver assignments, RX PPM calibration, readable FLEX line breaks, detailed searchable Help and About/dependency sources. See UPDATE-0.40.0-preview1.md and ACCEPTANCE-0.40.0-preview1.md. Extract the full ZIP; keep native helpers, Help, data and notices together. Saving a role does not start hardware. Live acceptance is separate from local tests.
+
 # Current preview: 0.39.0-preview1
 
 Multiple receiver workspaces and a dedicated control/voice pool; automatic site-channel saving; separate channel/talkgroup records; mapped Con+/Tier III group grants; saved-map imports; view-only clear and newest-first controls. See UPDATE-0.39.0-preview1.md and ACCEPTANCE-0.39.0-preview1.md. Live acceptance and previous unfinished checks remain pending. Private reference data is excluded from clean-install packages.

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
@@ -19,7 +19,9 @@ internal sealed class RtlReceiver : IDisposable
     private CancellationTokenSource? cancellation;
     private readonly object recordingSync = new();
     private IqRecording? recording;
+    internal DateTimeOffset ReplayStartedUtc { get; private set; }
     internal bool IsReplay { get; private set; }
+    internal double AppliedPpm { get; private set; }
     internal string Backend { get; private set; } = "RTL";
     internal bool IsHackRf => Backend == "HackRF";
     internal string ReceiverName => IsHackRf ? "HackRF" : "RTL-SDR";
@@ -34,7 +36,7 @@ internal sealed class RtlReceiver : IDisposable
     {
         if (IsReplay || AppliedFrequency == 0) throw new IOException("Start a live SDR source and wait for data before recording I/Q.");
         FinishIq();
-        lock (recordingSync) recording = new IqRecording(path, metadata with { SamplingMode = SamplingMode, RequestedGain = RequestedGain, Backend = Backend });
+        lock (recordingSync) recording = new IqRecording(path, metadata with { SamplingMode = SamplingMode, RequestedGain = RequestedGain, Backend = Backend, FrequencyCorrectionPpm=AppliedPpm });
     }
     internal void FinishIq()
     {
@@ -168,11 +170,11 @@ internal sealed class RtlReceiver : IDisposable
             File.Move(target + ".tmp", target, true);
         }
     }
-    internal void Start(uint index, long frequency, int gain, bool wide, bool fixture = false, int sampleRate = RtlNative.SampleRate, int fixtureSeconds = 1, string? identity = null, string? mode = null, double bandwidth = 0, bool agc = true, int samplingMode = 0, string backend = "RTL", CaptureOffset? captureOffset = null)
+    internal void Start(uint index, long frequency, int gain, bool wide, bool fixture = false, int sampleRate = RtlNative.SampleRate, int fixtureSeconds = 1, string? identity = null, string? mode = null, double bandwidth = 0, bool agc = true, int samplingMode = 0, string backend = "RTL", CaptureOffset? captureOffset = null, double ppm = 0)
     {
         Stop();
         if (backend is not ("RTL" or "HackRF")) throw new ArgumentException("Unknown receiver backend.");
-        Backend = backend; SamplingMode = samplingMode;
+        Backend = backend; _ = FrequencyCalibration.HardwareHz(frequency,ppm); AppliedPpm=ppm; SamplingMode = samplingMode;
         Offset = IsHackRf ? captureOffset ?? new CaptureOffset(false) : new CaptureOffset(false);
         pendingCaptureTune = null;
         stopping = false;
@@ -185,7 +187,7 @@ internal sealed class RtlReceiver : IDisposable
         if (IsHackRf) frequency = Offset.Center(initialChannel, sampleRate, gain);
         Interlocked.Exchange(ref requestedFrequency, frequency);
         desiredChannel = initialChannel;
-        var worker = IsHackRf ? Launch(fixture ? "--hackrf-fixture" : "--hackrf-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), fixtureSeconds.ToString()) : fixture ? Launch("--rtl-fixture", sampleRate.ToString(), fixtureSeconds.ToString(), gain.ToString(), samplingMode.ToString(), frequency.ToString()) : Launch("--rtl-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), samplingMode.ToString());
+        var worker = IsHackRf ? Launch(fixture ? "--hackrf-fixture" : "--hackrf-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), fixtureSeconds.ToString(), ppm.ToString(System.Globalization.CultureInfo.InvariantCulture)) : fixture ? Launch("--rtl-fixture", sampleRate.ToString(), fixtureSeconds.ToString(), gain.ToString(), samplingMode.ToString(), frequency.ToString()) : Launch("--rtl-worker", index.ToString(), frequency.ToString(), gain.ToString(), sampleRate.ToString(), identity == null ? "" : Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(identity)), samplingMode.ToString(), ppm.ToString(System.Globalization.CultureInfo.InvariantCulture));
         process = worker;
         cancellation = new CancellationTokenSource();
         var token = cancellation.Token;
@@ -287,7 +289,7 @@ internal sealed class RtlReceiver : IDisposable
     }
     internal IqMetadata StartReplay(string path, bool paused = false)
     {
-        Stop(); var reader = new IqReader(path); IsReplay = true; SamplingMode = reader.Metadata.SamplingMode; Backend = reader.Metadata.Backend;
+        Stop(); var reader = new IqReader(path); IsReplay = true; ReplayStartedUtc=reader.Metadata.StartedUtc; AppliedPpm=reader.Metadata.FrequencyCorrectionPpm; SamplingMode = reader.Metadata.SamplingMode; Backend = reader.Metadata.Backend;
         ReplayPaused = paused; ReplayFinished = false; ReplayReady = false; replayPosition = replayDuration = 0; seekTicks = -1;
         cancellation = new CancellationTokenSource(); var token = cancellation.Token;
         pump = Task.Run(async () =>

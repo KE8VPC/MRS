@@ -1,6 +1,387 @@
+# Current release: 0.46.0-preview1
+
+User authorized the combined build November 4, 2026. This release includes the pending dedicated P25 history/audio path, mapped DMR identity/metadata, receiver-pool lifecycle and mixed-coverage fixes, primary Fox Hunt with trend/rough-area modeling, GPX metadata and shared local offline detail. See UPDATE-0.46.0-preview1.md, VALIDATION-0.46.0-preview1.md and ACCEPTANCE-0.46.0-preview1.md. Pending-source entries below are development history now included in this release; their no-packaging statements describe those earlier passes. Live field acceptance remains open as listed in the current checklist.
+
+## Mixed receiver coverage source follow-up - November 4, 2026
+
+Reproduced an untunable first grant blocking later supported calls in the pool dispatcher. Dispatch now skips the unavailable target and continues evaluating later grants without claiming a tune or voice decode for the skipped call. The new five-receiver assertion failed before the change and passed afterward along with the existing pool/lifecycle checks. Compilation and scoped whitespace checks passed. Evidence: VALIDATION-PENDING-FLEET-LIFECYCLE.md. No release ZIP or live hardware test.
+
+## Receiver-pool lifecycle source follow-up - November 4, 2026
+
+Reproduced maximum-call expiry immediately redispatching the same retired cached grant because dispatch used an earlier snapshot. Available-call selection now happens after expired/excluded leases retire. Control-side Allow/Ignore/Hold changes also release already assigned excluded voice calls, retain eligible simultaneous calls, and leave the released receiver eligible for fresh qualifying grants.
+
+Full local suite passed 1,927 assertions; three DMR mapped-profile scenarios, selective-filter changes with two P25 voice receivers, and six P25 voice/log regression cases passed. Evidence and pre-fix reproduction are recorded in VALIDATION-PENDING-FLEET-LIFECYCLE.md. These are synthetic/local checks; installed/live following acceptance remains open. No release ZIP, device operation, installation or Git publishing in this continuation.
+
+## DMR mapped following source follow-up - November 4, 2026
+
+Applied the shared receiver-pool/history review to Capacity Plus, Connect Plus and Tier III. Fixed DMR terminators to require matching TG/slot and bound/expected color code. A first matching validated full LC can bind an unknown voice color code; an established code does not switch during that assignment. Confirmed voice CC/source metadata survives into audio/history attribution.
+
+Added protocol/slot/CC to current-call headers, retained history, Session logs and CSV export. Optional per-carrier CC (0–15) now survives editor save/reload and optional color_code CSV; old CSV remains compatible and imports remain unconfirmed. Explicit control-carrier codes are checked separately from network/site identity. Cap+ honors an explicitly mapped carrier CC.
+
+Dedicated voice workspaces now show assignment status and pause/resume/skip controls instead of an unrelated default profile editor. Three synthetic mapped-profile UI cases passed for repeat confirmation, researched carrier/slot dispatch, metadata/history, release, fresh-grant renewal and pause/resume. The full local suite passed 1,922 assertions, including 37 DMR following assertions; six P25 voice/log regression cases and receiver-fleet UI checks also passed; final evidence is in VALIDATION-PENDING-DMR-FOLLOWING.md. This is not a live DMR/AMBE decode or system acceptance. No release ZIP, live hardware operation or Git publishing in this continuation.
+
+## P25 decoded-audio / log path verification - November 4, 2026
+
+Extended local coverage from synthetic tune assignments to actual P25 voice I/Q through the production downconverter, voice decoder, identity/encryption gating and receiver-window logs. Independent OP25 clear voice vectors recover 18 voice frames, including signed I/Q with +250 kHz capture offset; wrong TG/NAC, encrypted and unknown-encryption cases stay muted. A generated P25 terminator is decoded through that same path.
+
+The terminator test reproduced an ended call being immediately redispatched from a cached grant. Fixed natural call/hang/maximum release to retire only that cached assignment; other calls remain eligible and fresh qualifying control evidence can offer the same TG/channel again. The six-case synthetic control/tune/voice/log UI test passed with one decoded-audio record per clear call on both receiver histories and Session logs, with matching TG/frequency/NAC/label/source attribution. Control observations in this UI test are constructed decoded grants, tune acknowledgement uses a synthetic receiver worker, and RF input is generated test I/Q: this is not hardware or full-system field acceptance. The complete suite passed 1,885 local assertions and the six-case voice/log integration passed. Final evidence is in VALIDATION-PENDING-TRUNK-AUDIO.md. No release ZIP or live RF/GPS operation in this pass.
+
+## Pending update integration review - November 4, 2026
+
+Reviewed the pending source batch across dedicated P25 history, Fox Hunt and shared offline maps. Fixed a Windows preference-file lifetime issue that could block saving Remove/replacement during asynchronous startup map restore. Added explicit measurement count/time and current/historical snapshot labels to Fox estimates; live measurement pauses and backwards clock changes hide the previous model area. Captured cancellation tokens before background work so canceled/disposed work cannot read a disposed token source. Aligned NAC table/Session log/CSV presentation to hexadecimal identifiers.
+
+Added regression checks for startup removal during loading, stale/historical/clock-change estimate presentation and NAC formatting. Combined field checklist: ACCEPTANCE-PENDING-NEXT.md. The full suite passed 1,872 local assertions; synthetic dedicated-receiver and Fox/Aviation UI checks passed. Local verification is recorded in VALIDATION-PENDING-INTEGRATION.md. No release ZIP, installation, Git publishing or live hardware/network reporting is performed by this review.
+
+## Shared offline map source follow-up - November 4, 2026
+
+Extended the pending local road-detail support to Aviation. Aircraft and trails render above the optional offline detail; importing a file switches the online tile option off. Added independent per-receiver Aviation/Fox Hunt map-choice persistence (path only, no copied map data), graceful missing/corrupt-file handling, retained prior detail on invalid replacement, explicit remove, and in-progress import/disposal guards. Automatic preference restore rejects UNC paths and oversized/invalid preference data. No network maps or receiver/decoder operations are activated by restore.
+
+Sixteen local map preference/race checks and offline Aviation rendering checks passed; the full suite passed 1,863 assertions. Evidence is recorded in VALIDATION-PENDING-OFFLINE-MAPS.md. Optional public road file remains separate from the release. No new version, ZIP, installation, live device test or Git publishing in this continuation. Earlier session-only Fox map loading notes are superseded by this saved-reference behavior.
+
+## Fox Hunt source improvements - November 4, 2026
+
+Continued the queued Fox Hunt batch without release packaging: moved to a primary service-neutral tab; added a smoothed signal trend with stale/noise/quality withholding; background opt-in local rough-area estimator with spatial thinning, fixed-scope/usable-signal/GPS checks, one-road/flat-signal/alternative-location/subset ambiguity checks; clearly differentiated receiver/measurements/model-area markers. Estimates are experimental model spread, not calibrated accuracy or measured bearings. New points and scope changes invalidate the previous estimate.
+
+Added optional bounded local WGS84 GeoJSON road/place/boundary detail import, labels/provenance/coverage information and source controls. Embedded Natural Earth remains the base map; MBTiles and automatic regional downloading are not implemented. Prepared an optional public Census Auglaize County road file outside the repository/base release; it contains no user measurements or known transmitter. Full RF/noise/GPS metadata now survives GPX export. The full local suite passed 1,847 assertions and synthetic offline UI checks passed; evidence is recorded in VALIDATION-PENDING-FOX-TOOLS.md; live field acceptance remains open. Older queued notes below are historical scope; no new version or ZIP generated here.
+
+## Dedicated voice history source fix - November 4, 2026
+
+Continued source work on the reported missing P25 dedicated-voice history. Added explicit assignment, acknowledged tune, first decoded audio, release/failure events mirrored to voice/control history and Session logs; available TG label/radio/NAC and receiver names; active-call header across tabs; newest-first bounded history, clear/export; scrollable setup keeps history visible. Dedicated voice now releases when the call/hang ends rather than waiting for the maximum lease timer. External model assignment emits its own Assigned event without a duplicate Start. Local regression suite passed 1,815 assertions and the synthetic receiver UI/dispatch checks passed; final UI recheck recorded in VALIDATION-PENDING-TRUNK-HISTORY.md. Awaiting next explicitly requested release; no new ZIP/version or live hardware test in this pass. Existing field confirmation remains audible voice on second SDR, with full following acceptance open.
+
+## Dedicated P25 voice receiver history - field report November 2, 2026
+
+User reports voice audible from the second SDR during the dedicated control/voice test, but no visible talkgroup/tuned-call log on that receiver; only the control receive monitor has activity. Treat audio reception as reported live evidence, not full trunk-following acceptance. Source review found AssignExternal sets Active directly after Start, bypassing Offer's Follow event; it does not emit the previously described Assigned event. Successful fleet assignment also is not written to Session log. Missing dedicated assignment history is confirmed in code; a completely empty history/display may involve an additional UI issue and has not been reproduced locally.
+
+Next authorized implementation: explicit assignment/tune-success/call-end/release/failure history with receiver/control names, TG and available label, frequency, available radio/NAC and timestamps; visible current-call status on voice and a consolidated control-side assignment view. Preserve distinction between received grants, attempted assignments, successful tuning and decoded audio. Retain records after call completion and make history accessible without a clipped table; test real external-assignment path and bounded history. No build or runtime change during this review.
+
+## ERT utility-meter research reference - November 2, 2026
+
+User reference: https://en.wikipedia.org/wiki/Encoder_receiver_transmitter . ERT (Encoder Receiver Transmitter) is associated with automatic utility-meter reading, including electric/gas/water endpoints. Primary implementation references: https://github.com/bemasher/rtlamr , https://github.com/bemasher/rtlamr/wiki/Protocol and https://github.com/merbanan/rtl_433/blob/master/src/devices/ert_idm.c . Distinguish SCM (total consumption), SCMplus (extended ID/counter), IDM (interval history/status), and NetIDM (different generation/consumption layout); raw counts require model-specific scaling and are not inherently kWh/gallons. ERT reading is not evidence that the earlier 154 MHz suspected load-control recording is ERT.
+
+Current source already selects rtl_433 ERT SCM/SCMplus/IDM in Analysis > Sensors / meters / bursts > Utility meters, with upstream recorded-fixture tests around 912.6 MHz. This is existing integration/replay evidence, not live acceptance of every meter. NetIDM protocol 161 is not selected by the current MeterProtocols list; do not claim it supported. Investigate upstream NetIDM crash report https://github.com/merbanan/rtl_433/issues/3684 before enabling it. Follow-on work can improve named RF presets, per-meter history/counter rollover and reset handling, explicit units/scaling, and supported-model identification. Prefer the existing rtl_433 I/Q path; rtlamr is useful as an independent protocol/reference decoder, with its AGPL-3.0 terms reviewed before any code reuse/distribution. No build, live capture or device changes for this research request.
+
+## MeshCore sniffer implementation reference - reviewed November 2, 2026
+
+User supplied https://github.com/mytechnotalent/meshcore-sniffer as a research reference for expanding the existing experimental direct-SDR mesh work. This MIT-licensed project targets ESP32-S3 plus an SX1262 LoRa transceiver using RadioLib; its hardware performs the LoRa demodulation, so it is not a drop-in HackRF/RTL I/Q decoder. Useful comparison areas: header/route/payload-type parsing, transport/path offsets, advertisements/public keys, raw packet export and modem settings. Its source US preset is 910.525 MHz, 62.5 kHz BW, SF7, CR 4/5, sync 0x12 and 16-symbol preamble; treat this as that project's preset, not a universal regional allocation/default.
+
+Before reuse, compare current official MeshCore wire-format/crypto definitions and independent packet fixtures. README and code differ on some defaults and public-channel decryption; the formatter attempts public-key group decryption without checking the message MAC and can render incompletely initialized output for non-block-aligned ciphertext. Do not adopt it as a validated decoder unchanged. Short source/destination hashes and two-byte MACs can collide; they alone do not establish unique node identity, packet identity or complete topology. Preserve raw bytes and validation status; verify signatures/authentication before presenting authenticated identities/plaintext. Retain applicable MIT/third-party notices if code is reused. Reference only: no decoder change, firmware flashing, RF transmission or new build authorized by this link.
+
+## Fox Hunt field-test evidence for next estimator/map batch
+
+Private user GPX files and exactly matching automatic CSVs were analyzed locally against a user-provided known transmitter reference. Do not copy source coordinates, route files or the known local transmitter into application releases. All exported points matched their CSV timestamps/power values; GPS quality/freshness and fixed per-session hardware metadata were present. The user confirmed an RF-amplifier change between the two sessions, correctly reflected in CSV metadata; compare sessions separately without an assumed gain normalization.
+
+The recordings demonstrate why the requested estimator needs safeguards: a strongest observed point can be kilometres from the known source; substantial strength variation appears within a small position cluster; many farther observations sit near the estimated floor; and route coverage can remain one-sided despite hundreds of points. Weight/withhold low-margin data, avoid treating stationary duplicates as independent evidence, keep increasing strength distinct from getting closer, and report ambiguity instead of a confident point when coverage/model fit is weak. Do not diagnose a measurement software defect from fading alone.
+
+Preserve full RF scope (including amplifier state), noise/peak/squelch evidence and GPS quality in future standalone exports where practical; current GPX extensions omit context that the CSV retains. Use synthetic/anonymized cases for public regression tests. A public county Census TIGER/Line road layer was used successfully as local analysis context; detailed offline road rendering remains queued application work. Primary Fox Hunt navigation, trend display, rough estimate/uncertainty and improved offline maps remain next-build items. No new build was performed during this review.
+
+## Next Fox Hunt batch: primary workspace and detailed offline maps
+
+User requests Fox Hunt as a primary tab alongside Aviation and Broadcast, recognizing its use across radio services. Move it out of Amateur; retain receive-only, service-neutral labels and unchanged TX safeguards. Update contextual Help and navigation. This is queued for the next authorized build, not a new standalone package now.
+
+Improve offline maps beyond Natural Earth's regional detail: roads/highways with names, town/local-area labels, water and useful local reference detail; pan/zoom/follow/fit must work without internet. Provide user-selected regional map packs/import, clear coverage/version/storage metadata and attribution. Keep large packs optional and separate from the base application; no private/local radio systems or user GPS tracks in fresh-install data. Evaluate public U.S. Census TIGER/Line road/boundary datasets and documented offline-capable map archives (such as raster MBTiles). Vector packs require their styles/fonts and renderer to work fully offline. Check format/provenance/licensing, bounded file loading and missing-coverage behavior before choosing the implementation. Do not bulk-cache standard OpenStreetMap public tiles: that service's offline-prefetch policy forbids this. Sources reviewed: https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html ; https://operations.osmfoundation.org/policies/tiles/ .
+
+Current user-supplied GPX tracks are private analysis inputs and must stay outside application release packages. Analyze them locally; do not send coordinates to geocoding/tile services or publish a transmitter estimate. GPX analysis also informs the queued uncertainty/coverage checks, without claiming an estimator is already implemented.
+
+## Next Fox Hunt batch: strength trend and rough transmitter estimate
+
+User requests a rough transmitter spot once enough usable measurements have been gathered, following discussion of stronger/weaker indicators. Queue an opt-in estimated-source overlay alongside a smoothed increasing / decreasing / steady strength indicator and recent dB change. Not implemented in 0.45; await the next explicit build instruction.
+
+Estimator scope: use one comparable fixed-frequency/device/gain/filter/capture session and validated fresh GPS positions. Thin repeated/stationary observations into spatial/time groups so a large point count alone cannot satisfy coverage requirements. Require meaningful spatial spread, route-direction diversity, usable strength variation and signal evidence before offering a location. Reject stale/invalid/simulated positions, mixed settings, clearly unsuitable noise-only/clipped data and unsupported source scenarios. Model a single sufficiently stationary transmitter; explicitly mark unknown/changing-power or multiple-emitter situations as limitations.
+
+Evaluate a bounded, background robust spatial search using relative power with unknown transmitter level/path loss treated as nuisance parameters. Assess alternative candidate locations and sensitivity to subsets/outliers; do not simply promote the strongest receiver measurement into an estimated transmitter position. Do not invent a calibrated confidence percentage or meter accuracy. A single straight road can leave left/right or along-route ambiguity: retain multiple possible areas or withhold a pin when geometry is insufficient. More samples along the same path are not equivalent to additional route coverage.
+
+UI: show Collecting / Not enough coverage / Ambiguous / Rough estimate with plain-language reasons. Show an uncertainty/search area and an optional clearly differentiated estimated-source marker only when supported; keep it visually separate from receiver position and strongest measured point. An arrow to an estimate must be labeled as heading toward an estimated area, never an antenna bearing or measured direction. Invalidate/recompute on session changes and stale evidence; preserve raw observations. No estimate should trigger tuning, transmission, reporting or route instructions automatically.
+
+Validation before release: synthetic known-source routes with varied coverage, unknown output/path-loss conditions and noise/outliers; straight-line/mirrored solutions; stationary/duplicated samples; weak/flat/non-transmitting data; changing-power/multiple-source failures; setting changes; bounded processing and UI responsiveness. Compare model sensitivity and coverage, not an unsupported promise of real-world accuracy. Actual field localization remains separate acceptance. Resume-policy refinements can be considered independently; current stop/pause behavior remains unchanged.
+
+# Current preview: 0.45.0-preview1 — initial Fox Hunt
+
+User authorized adding Fox Hunt and building for a road-trip trial. Initial implementation: Amateur workspace, USB GPS NMEA COM reader, selectable/saved port and baud, checksummed RMC/GGA fix status and freshness, fixed-gain live receiver measurements, optional matching noise evidence, offline colored route, local CSV and full-session GPX, explicit manual stationary fallback, bounded storage/display, no-data pauses and stop-on-RF-configuration-change. No transmitter estimate, triangulation/TDOA, directional bearing entry, online map downloads or automatic TX/location reporting.
+
+The user identifies a u-blox 7 on COM6 at 57600 baud and explicitly authorizes access for testing. A brief live read through the new M.R.S. serial backend succeeded with a fresh fix, 4 satellites, HDOP 5.77 and no checksum errors in the sample; exact coordinates are not stored in release documentation. No SDR was opened for that probe. GPS+SDR route/field acceptance remains open. The COM port was released afterward.
+
+Also includes the source fix for APRS preset/manual Tune targets being overwritten by current RX, plus weak-mode changes unnecessarily resetting APRS edits. Existing APRS reporting/aprs.fi and 80/160 m presets remain user-accepted. Digital TX RF reception remains unconfirmed. Earlier notes below are history; Fox Hunt's initial scope above supersedes its old not-implemented status, with advanced direction-finding methods still queued.
+
+## Digital TX trial: apparent transmit, reception unconfirmed
+
+November 1, 2026: user reports apparent transmission but no reception reports, with low HackRF output limiting confirmation. Keep digital TX acceptance OPEN / UNCONFIRMED; do not count an FT8/FT4/WSPR RF decode or completed contact as passed. Output-power limitation is user-reported, not independently diagnosed. No settings, source, build or package changes made for this report.
+
+## Low-band presets accepted — 0.44.0-preview1
+
+November 1, 2026: user confirms 80 m and 160 m. Missing low-band presets marked PASS. Digital RF transmit/contact acceptance and IBP/HFGCS reference acceptance remain separate. No new build or package generated.
+
+## Live APRS reporting accepted — 0.44.0-preview1
+
+November 1, 2026: user confirms reporting works; aprs.fi screenshot shows KE8VPC-15 and qAO,KE8VPC in the received path with repeated position updates. Mark the basic live RF-to-APRS-IS / downstream aprs.fi reporting path PASS. Extended reconnect/filter/duplicate behavior is not separately live-signed-off. APRS preset/Tune-field correction remains a separate next-build item. No new build or package generated; published ZIPs unchanged. See ACCEPTANCE-0.44.0-preview1.md.
+
+## Pending next build: Amateur preset target overwritten by current RX
+
+User screenshot after 0.44: APRS North America selected at 144.390 MHz, but the Tune field shows the previous FT8 dial at 14.074 MHz. Source fix separates the preset/manual tuning target from actual RX status. Receiver channel-change notifications update only the actual RX label; selecting a preset still loads its target, and manual target edits remain possible. Weak-mode changes refresh only the weak-signal preset bar instead of resetting APRS selection/edits. Shared fix applies to APRS and FT8/FT4/WSPR preset bars. No automatic retune on tab switches. Source reviewed; pending UI/live acceptance in the next authorized build. No new build, package or RF operation performed for this report; 0.44 release ZIPs unchanged.
+
+# Current preview: 0.44.0-preview1
+
+The user's "build when ready" authorizes the reviewed batch. Implemented in this preview: checkbox contrast, six missing low-band presets, bounded native HackRF FT8/FT4/WSPR transmission, standard supervised/manual/optional peer sequence, default-off receive-only APRS-IS reporting, a local external JS8Call API bridge, IBP CW beacon/HFGCS starter references and HF observation logging. See UPDATE-0.44.0-preview1.md for exact limits and ACCEPTANCE-0.44.0-preview1.md for open live checks.
+
+Outstanding from that scope: native direct-SDR JS8 encode/decode (the new bridge does not route HackRF I/Q), broader regional HF/VHF/UHF beacon catalogs, optional numbers/HFGCS transcription, external CAT/PTT and ADIF logging. Numbers-station schedules are linked to original sources, not republished. The HFGCS starter uses four dated 2022 official reference channels. No unrestricted TX, copied local data, automatic heartbeat/Internet-to-RF gating or unattended WSPR repeat was added.
+
+Local generated-waveform, quantized-I/Q, mock network and UI checks are distinct from actual hardware/RF/QSO, installed JS8Call/radio and live APRS-IS/aprs.fi acceptance. No such live tests were performed. Prior user acceptance remains recorded, including 0.43 PSK Reporter ingestion/software metadata. The earlier review/build holds and "not implemented" statements below are historical and are superseded only for the specific implemented items above.
+
+## Historical request notes and remaining roadmap
+
+## Review pending: HF discovery — numbers stations, HFGCS and CW beacons
+
+User requests considering numbers stations and HFGCS alongside the previously discussed amateur CW beacon references. Add receive-only service/reference groups with quick tuning, modes, UTC/local schedules where sourced, plain-language descriptions, recordings and observation notes. Amateur CW beacons should remain under Amateur references; HF military/utility and numbers-station research fit Analysis / HF monitoring. Keep distinct service identities rather than treating HFGCS as a numbers-station network.
+
+Numbers stations: sourced station designators, aliases, reported modes/frequencies and dated schedule references, with last-confirmed/unknown/inactive status and uncertainty. Evaluate Priyom and other original monitoring organizations for provenance and redistribution terms; link where republishing is not permitted. Do not ship a copied third-party schedule without appropriate rights. Separate numbers broadcasts, channel markers and ordinary military/utility voice/data. Optional future CW/spoken-group transcription can capture received groups with confidence and raw recordings; this is not decryption or a claim to know operational meaning/operator identity. Identification from frequency alone is tentative.
+
+HFGCS: source USB voice monitoring centers and network descriptions, including known EAM/SKYKING terminology as descriptions of received format, not inferred operational significance. Historical USAF flight-information documents list 8992/11175 kHz and other channels, but those documents' dates must stay visible; do not label a legacy table as verified current activity or imply all frequencies always simulcast. Check newer authoritative references where available. Provide quick tune, per-frequency activity/recording and raw timestamped logs, with optional future phonetic-group transcription requiring verification. Receiving a message does not reveal encrypted/encoded meaning and does not itself indicate an emergency or threat level.
+
+CW beacons: build the previously discussed amateur receive-reference plan with International Beacon Project and regional HF/VHF/UHF entries, callsign, frequency, grid, schedule/source date and CW identifier monitoring. Schedule matching is an expectation, not confirmation of reception. Keep all three catalog groups independent of TX permission; discovery markers must never unlock military, utility or beacon transmission.
+
+Sources reviewed for planning: https://priyom.org/ ; https://priyom.org/about ; https://www.numbers-stations.com/ ; historical official USAF Flight Information Handbook (2018), https://www.columbus.af.mil/Portals/39/documents/New%20Students/FIH_1MAR18.pdf . Beacon/network data needs source review before dataset implementation. User review/build hold remains active; no code, package, scheduled monitoring, RF operation or recording started.
+
+## Review pending: missing 80m / 160m weak-signal presets
+
+User reports missing low-band defaults. Added six sourced receive references from the WSJT-X frequency table: FT8 160m 1.840 MHz and 80m 3.573 MHz; FT4 80m 3.575 MHz plus its separate Region 3 3.568 MHz provisional reference; WSPR 160m 1.836600 MHz and 80m 3.568600 MHz. No 160m FT4 default exists in the reviewed upstream table, so do not invent one; custom presets remain available. Skip special DXpedition FT8 channels for this common-default fix. USB dial labels, regional metadata and source notes retained. Pending CSV now has 42 presets; the released 0.43 ZIP remains unchanged. Review/build hold stays active.
+
+## Next-build scope requested: APRS reporting and FT8 / FT4 / WSPR / JS8 transmit
+
+User explicitly requests APRS-IS receive-only iGate reporting (with aprs.fi downstream visibility) together with FT8, FT4, WSPR and JS8 transmission in the next authorized build. This expands the earlier FT8-only proposal and supersedes its exclusion of those other transmit modes. The review hold remains active: this request adds scope, but is not an instruction to build or perform RF/network operations now. Carry the reported tracking/rules checkbox contrast fixes into the same batch.
+
+FT8 and FT4: standard operator-supervised CQ/answer and contact sequencing, manual control and optional Auto-sequence, using each mode's actual slot timing (15 s FT8; 7.5 s FT4), generated-message preview and valid local/peer addressing. Retain the earlier FT8 waveform, timing, retry/stop, half-duplex receiver-restoration and General-class TX-policy requirements; apply mode-specific occupied bandwidth and emissions checks.
+
+WSPR: valid callsign/grid/power message and waveform, correct two-minute frame scheduling and actual transmission duration, user-selected supported dial/audio frequency and declared/calibrated output power as appropriate. No QSO handshake/auto-sequence is implied: WSPR is a beacon mode. Any repeat/duty-cycle schedule must be explicit, bounded and stopped/disarmed on fault or user Halt. Reported power must not be inferred from an uncalibrated HackRF gain value.
+
+JS8: not currently implemented as a receive decoder or protocol backend. Include JS8 receive/encode integration as a dependency for meaningful directed messaging and transmit/receive handling, assessing backend/source licensing and supported speeds/timing. Provide supported callsign-addressed messaging and manual TX, with any heartbeat/automatic reply/repeat behavior individually opt-in; do not treat JS8 as FT8 QSO sequencing or claim a full JS8Call feature clone. Define supported features/speeds and validate interoperability before release claims.
+
+APRS: include the separately described opt-in RF-to-APRS-IS iGate with eligible validated live packets, loop/path restrictions, credentials and software identity; aprs.fi is a downstream display to verify, not a guaranteed direct upload endpoint. No Internet-to-RF gating, RF digipeating or automatic APRS beacons are added by this reporting request.
+
+All new RF TX remains default-disabled, explicitly armed and constrained by a separate reviewed license/jurisdiction/emission policy. User states U.S. General-class privileges; preserve declaration-versus-verification wording and actual band-edge checks. Existing decoder-only NIST/RX timing does not by itself establish RF-start accuracy. Include fresh timing, late-start refusal, actual hardware transition latency, watchdog/Halt, per-mode limits and suitable output/filtering checks. Support native HackRF first as scoped in the prior request; external transceiver CAT/PTT is a separate choice. Generated waveform/interoperability and simulated timing/state tests precede any separately authorized RF acceptance. No over-the-air test, live APRS upload or new build has been started for this scope update.
+
+## Review pending: APRS Internet reporting / receive-only iGate and aprs.fi
+
+User requests APRS data reporting and identifies aprs.fi as a desired destination/display. Plan opt-in forwarding of eligible live RF-decoded APRS packets to APRS-IS, from which aprs.fi and other APRS-IS consumers can display the data. Do not treat aprs.fi's read API as a packet-upload endpoint or promise immediate/complete map display. Confirm the current service documentation during implementation and label socket delivery separately from verified downstream visibility.
+
+Use an explicit configured iGate callsign/SSID and user-supplied APRS-IS credentials, verified login before uploads, M.R.S. software/version identification, visible connection/gating status and independent enable/disable. APRS-IS read-only login (-1) does not authorize uploads, even though an RF receive-only iGate uploads eligible packets. Initial scope excludes Internet-to-RF gating, RF retransmission/digipeating and automatic station/position beacons; those require separate choices and appropriate RF safeguards. No credentials, position or callsign should be guessed or published by this planning request.
+
+Gate validated live APRS UI frames (AX.25 control 0x03 / PID 0xf0), preserving packet addresses/content and applicable RF path, with the proper receive-only qAO construct. Exclude replay/synthetic/bad-FCS/PASSALL data, non-APRS AX.25 traffic, network-origin loops (TCPIP/TCPXX including encapsulated paths), generic queries and explicit NOGATE/RFONLY paths. Handle third-party packets according to the official rules rather than blind string matching. Use bounded duplicate suppression, line-size/CRLF validation, reconnect backoff and fresh data; do not upload a historical capture backlog after reconnect. Internet ingress is not authenticated RF evidence. Keep gating separate from display clearing/filtering, with any ignore/report interaction explicit. Preserve source/receiver/frequency provenance locally without misrepresenting unavailable fields on the network.
+
+Validation: generated frames and a local mock APRS-IS server first, then separately enabled user live gating and downstream aprs.fi visibility. Primary sources: https://www.aprs-is.net/Connecting.aspx ; https://www.aprs-is.net/IGateDetails.aspx ; https://www.aprs-is.net/q.aspx ; official aprs.fi documentation. User review/build hold remains active. No implementation, connection, upload, RF operation or build authorized during this review.
+
+## Review pending: full FT8 transmit and QSO sequencing
+
+User requests full FT8 transmit with proper contact sequencing and states they hold a General-class amateur license. Queue an explicitly armed, operator-supervised FT8 QSO workflow, not arbitrary wideband TX enablement. Review/build hold remains in effect; no code, package or RF operation authorized during this review. Initial scope is standard FT8 contacts; do not silently expand to FT4/WSPR/JS8 TX, contest/DXpedition multi-stream modes or unattended automatic answering.
+
+Plan CQ and answering-CQ workflows, select decoded station, local callsign/grid, peer callsign/grid, generated message preview, measured receive reports, report/R-report/RR73/73 progression, manual message selection, optional Auto-sequence, transmit-even/odd selection and explicit Enable TX/Halt TX. Use valid messages directed to the active local/peer pair to advance; other-station traffic, stale/replayed/unresolved identities and duplicate decodes must not advance a contact. Bound retries and total session duration; halt/re-arm on completion, timeout, source/device/frequency change, clock discontinuity, backend failure or loss of timing confidence. Preserve emergency Stop and RX/TX indication.
+
+Generate valid 77-bit FT8 messages, CRC/FEC and continuous-phase GFSK waveform with appropriate shaping and actual occupied-bandwidth checks. The encoder library exists, but on-air FT8 waveform generation, scheduled RF output and QSO sequencing are not yet implemented. Use 15-second UTC even/odd slots and measure/calibrate real HackRF startup/drain and RX/TX transition latency. Existing decoder-only NIST correction/RX timing consensus does not establish RF-start synchronization. Require an appropriate fresh timing reference for scheduled TX; test deadline misses and reject late starts rather than transmitting in the peer's slot. HackRF is half-duplex; plan receive restoration using the same device and optional dedicated RX device without disrupting other receiver ownership/recordings.
+
+Extend the reviewed TX policy with U.S. General-class band/emission privileges for the supported FT8 bands; retain jurisdiction and operator declarations as declarations, not verified licensing. Check the entire RF emission including USB dial/audio offset against approved segments, equipment limits and local restrictions. Do not simply relax the existing 3-second NFM test plan or copy its broad envelope into digital HF. Assess HackRF actual output level, spectral purity/filtering and any external radio/PA path before hardware acceptance; gain is not calibrated output power. Confirm CW/identification and station-operation obligations as applicable. Source reviews: WSJT-X user guide standard exchange/auto-sequencing; ARRL frequency/emission privilege references; official HackRF hardware documentation.
+
+Validation progression: deterministic message/state/timing tests, independent WSJT-X decode of generated audio/IQ, non-radiating scheduled-output tests, then separately authorized suitable RF tests. A queued feature is not permission to transmit during development. Contact logging/ADIF and external-radio CAT/PTT can be assessed as subsequent additions rather than silently included.
+
+## Review pending: tracking-window checkbox contrast
+
+User reports the Watched calls only checkbox label in Heard transmitting stations is black against the dark window background and unreadable. Set an explicit theme-appropriate foreground for the tracking toolbar checkbox/labels and review the other newly added dialog toolbars for the same inherited-color issue. Preserve readable grid text on its light background. Screenshot evidence supplied after 0.43 live reporting test. Record as a contrast bug, not an acceptance pass. User explicitly requires no build until this review is complete; collect further feedback and await a build instruction. No implementation or packaging performed for this report.
+
+Additional screenshot: Callsign watch, ignore and colors also has unreadable black checkbox labels for Highlight CQ and Exclude ignored senders from PSK Reporter (separate from hiding rows). Include both in the same theme/foreground fix. Keep dropdown/grid text dark on their light surfaces and review rule-editor feedback text as well. Review/build hold remains in effect.
+
+## Live reporting confirmed — 0.43.0-preview1
+
+User screenshot confirms PSK Reporter ingestion and map display of M.R.S. version and configured rig metadata on November 1, 2026. See ACCEPTANCE-0.43.0-preview1.md for evidence and remaining boundaries. Other weak-signal/live acceptance remains open; release ZIPs unchanged.
+
+# Previous preview: 0.43.0-preview1
+
+Weak-signal table/timing cleanup, measured SNR estimates, callsign colors/watch/ignore/session tracking, protocol-cycle clearing, UTC/local display, newest-first migration, VHF/UHF defaults and opt-in PSK Reporter. See UPDATE-0.43.0-preview1.md for implemented scope and limits. This supersedes the matching queued requests below, retained as history. Live RF and PSK Reporter/map acceptance remain pending; no automated live report or RF transmission is performed.
+
+## Queued: weak-signal callsign ignore controls
+
+Add an editable persistent callsign ignore list and a quick Ignore callsign action from a parsed decode. Default matching is the transmitting/sender callsign; destination/either matching must be explicit. Provide Show ignored and Unignore/manage actions, preserving raw evidence and stored decode data rather than deleting it. Apply ignore before watch/CQ display highlighting; distinguish ignored from invalid/unresolved decodes. Hiding a callsign does not stop reception/decoding of other stations. Protocol-cycle view clearing must not erase ignore rules. Keep display-ignore separate from external reporting policy: do not silently use a hidden row as permission to upload or silently change reporting selection; any ignore-to-report exclusion setting should be explicit. No build or PSK Reporter upload authorized by this request.
+
+## Queued: weak-signal highlighting and callsign tracking
+
+User requests configurable color highlighting and tracking for FT8, FT4 and related weak-signal modes: highlight CQ calls using a user-defined color and watched callsigns using separate colors. Build on correctly parsed sender, destination, CQ/type and grid fields rather than matching arbitrary summary/diagnostic text. CQ is a general call, not a destination callsign; support directed CQ modifiers and leave hashed/unresolved callsigns unresolved. Preserve the original decoded message.
+
+Provide an accessible highlighting settings/rules editor with enable/disable, color preview, user-defined foreground/background with contrast checks, and editable callsign watchlist. Start with CQ/general-call and exact normalized callsign rules, allowing sender/destination/either selection. Callsign suffix/portable matching should be explicit rather than silently treating distinct identifiers as identical. Define visible rule priority, with a watched-call rule above general CQ highlighting, and distinguish persistent rule colors from the transient selected-row indication. Color must supplement readable text. Avoid regex-only configuration for ordinary users.
+
+Track watched callsigns across received decodes with first/last seen, count, protocol, receive dial frequency/band, available audio offset, parsed reported grid and latest message. Keep sender observations separate from a callsign merely mentioned as the destination; do not infer presence/transmission from being addressed. Provide a quick Add to watchlist action from a decoded row and a filtered/follow-callsign view. Received grid is general reported location, not verified precise position. Keep watches persistent, preserve user choices, and make view clearing/protocol-cycle auto-clear independent of the watchlist and session tracking history; provide an explicit clear tracking action. Switching protocol/receiver should retain source attribution and not conflate stale records with current activity. WSPR requires mode-appropriate rules (no CQ/destination field); JS8 and other unimplemented decoders remain future integrations. No automatic TX, spotting, sound notification or map feature is implied by this request. Queued for the next authorized build; no implementation/package started for highlighting.
+
+## Next update: VHF/UHF weak-signal receive presets
+
+Added 14 sourced FT8/FT4/WSPR USB dial references to the shared Amateur preset CSV using the WSJT-X default frequency table: 6m (including FT8 intercontinental), 4m, 2m, 1.25m, 70cm and 23cm where the upstream table defines a mode frequency. IARU regional scope is retained in notes and non-global labels. No 70cm FT4 default was invented: the reviewed upstream table has none; user-defined presets remain available. These entries use the existing per-mode quick-tune controls and public bandplan layer in the next build. No additional decoder engines or TX permission implied. Existing user-edited working CSVs remain protected; reference refresh/merge for those installations should preserve edits. No new package created.
+
+## Next update: newest-first across protocol views
+
+User authorized setting all protocol monitoring views to newest on top. Shared MonitorOrder now defaults to newest-first, including Amateur, Aviation, paging, public-safety/business and Analysis/radio-data monitoring tables. On first use of the new code, legacy boolean sort preferences migrate to newest-first; versioned settings then retain any subsequent explicit oldest/newest choice. This applies at application startup in the next executable; existing running installations and the 0.42 release ZIP remain unchanged. Source change only; no new build/package created.
+
+# Current preview: 0.42.0-preview1
+
+Volume track click-to-position (wheel adjustment preserved), discovery references, Amateur quick tuning, aviation message consolidation and retune continuity, annotated sidebar cleanup, and default-locked U.S. amateur TX safeguards. See UPDATE-0.42.0-preview1.md for implemented scope and limitations; live acceptance remains pending. This implementation supersedes the corresponding November 1 queued requests below, which remain request history. Broader marine/business packs and new decoder engines remain future work.
+
+# Current preview: 0.41.0-preview2
+
+NIST reference and FT8/FT4 received-station timing, overlapping windows and clock-drift handling. Live RF acceptance remains pending.
+
+## Queued: Amateur tuning and editable channel presets (November 1, 2026)
+
+User requests direct tuning within Amateur, specifically AX.25 / APRS, with an APRS receive preset and editable common local repeater/simplex presets. Provide a compact preset selector, editable MHz field and explicit Tune action, showing the actual receiver frequency and keeping manual/frequency-manager/scan changes synchronized. Tune the active receiver through the shared receiver path, applying appropriate receive mode/filter settings and preserving decoder continuity where compatible. Do not tune automatically merely when browsing/editing presets. Handle audio-only/replay or unavailable/busy receivers explicitly.
+
+Include a clearly regional APRS starting preset, verifying its frequency/source during implementation; for the U.S./North American reference assess 144.390 MHz NFM. Allow users to add, rename, edit, delete and persist local repeater/simplex presets, including label, receive frequency, mode/bandwidth and optional tone/protocol/notes. Keep reference presets and user-local data separate; preserve edits and avoid shipping personal station lists. Where practical share saved Frequency Manager entries/folders rather than maintain competing channel lists. Repeater input/offset information may be retained as metadata but must not trigger transmission. All tuning here is receive-only; TX authorization remains separate. Validate restart persistence, actual tuned-frequency display and appropriate APRS settings in the next authorized batch. No implementation or rebuild started.
+
+## Queued: per-protocol Amateur quick-tune presets (November 1, 2026)
+
+Extend the Amateur tuning/preset request to FT8, FT4, WSPR, JS8 and other supported or future protocol tabs with common operating frequencies. Each implemented mode should expose relevant band/frequency presets and a direct Tune action in its own workspace, plus editable saved user presets/manual entry. Switching FT8/FT4/WSPR mode must refresh the appropriate choices without silently retuning. JS8 is a future decoder; presets do not imply it is implemented. Apply the same pattern when other requested decoders are implemented.
+
+Source and review regional common operating/dial frequencies during implementation. Label dial versus signal/occupied-channel frequency explicitly; weak-signal USB dial presets must not be mistaken for audio-offset signal centers. Include mode, receive filter and band/region metadata where appropriate. Follow actual shared receiver tuning, preserve timing/window reset behavior on retunes and show unavailable/replay/busy states. Let users add/edit/remove local presets without overwriting bundled references on update; reuse the shared reference/frequency system where practical. Preset browsing/editing does not auto-tune; explicit Tune performs a receive-only operation. No TX activation or new decoder implementation is authorized by this preset request. Queued for the next authorized build; no rebuild started.
+
+## Queued: consolidate aviation messages under Aviation (November 1, 2026)
+
+User screenshot shows decoded ACARS message rows in Analysis > Messages / CW / inspector. Incorporate aviation message history and inspection into the Aviation workspace so monitoring does not require switching to Analysis. Cover ACARS, VDL2 and supported ADS-B/Mode S/UAT raw/detail messages; retain aircraft/map access. Provide an Aviation Messages / Inspector view with protocol/filter controls, newest-first ordering, clear/reset distinctions, selected-message validation/source details, raw inspection and export. Preserve receiver/frequency/time attribution, bounded history and existing decoder data; do not duplicate decoding workers or reset reception when switching views. Route ordinary aviation message display out of the generic Analysis message list while retaining genuinely cross-protocol diagnostic tools where useful. Verify clear/filter/export and retune attribution alongside the queued folder-scan fixes. No message content from the screenshot needs to be copied into fixtures. Queued for the next authorized batch; no build started.
+
+## Queued: Manage bandplans button text encoding (November 1, 2026)
+
+User screenshot shows a replacement/corrupted glyph after “Manage bandplans” in the Display sidebar. Inspect the source label and encoding path; use clean “Manage bandplans...” or another verified supported label, and check adjacent UI labels for the same corruption. Screenshot alone does not establish whether this is source mojibake or font/rendering failure. Verify the button in the built UI during the next authorized batch. Queued only; no rebuild started.
+
+## Queued: targeted Receiver sidebar text cleanup (November 1, 2026)
+
+User annotated five text areas for removal from the Receiver sidebar. Remove the visible text and reclaim its layout space, preserving the related controls and behavior:
+
+1. The device detail block below the device selector: HackRF serial text and the unique-identity/selection-and-sampling-restoration explanation. Keep the device dropdown and its identifying information.
+2. The note below Reconnect same receiver on loss: “Requires a unique non-default serial. Stop cancels retries.” Keep the reconnect checkbox.
+3. “HackRF quadrature I/Q · no RTL direct-sampling branch.”
+4. “HackRF receive gain · applies on selection.” Keep LNA/VGA controls.
+5. The note below Enable RF amplifier: “Mayhem: select HackRF mode. RX only; antenna power off. Hardware changes briefly pause USB reception.” Keep the amplifier checkbox.
+
+Corrected annotated request: keep the Decoder setup checks heading/expander, protocol dropdown and Apply recommended settings button. Remove only the text block beneath the button: Current receiver, the capture-fit diagnostic paragraph, Recommendation text and the Applying stops reception explanation. Collapse the removed text space before RF squelch. Retain detailed guidance in Help/tooltips as appropriate. This supersedes the earlier interpretation to remove the entire section.
+
+Recording sidebar annotated request: remove the explanatory paragraph in Automatic recording / VOX between Storage limit MB and the Arm/Disarm buttons, beginning “I/Q uses the calibrated RF threshold” and ending “retune starts a separate clip.” Collapse its layout space. Keep the folder/path, recording-format selector, threshold/stereo/pre-trigger/quiet-tail/maximum-duration/storage controls, Arm/Disarm buttons and current recording status/errors. Preserve the removed operational/encoding details in recording Help/tooltips as appropriate; recording behavior is unchanged by this visual cleanup.
+
+Retain useful setup explanations in relevant Help/tooltips rather than permanent sidebar rows. This is the specific annotated cleanup now requested; broader sidebar redesign remains deferred. Queue for the next authorized implementation/build batch; no build started.
+
+## Queued: transmission authorization safeguards (November 1, 2026)
+
+User requires transmission disabled unless appropriately authorized. See PROJECT-OVERVIEW.md, Transmission safeguards. Plan default-disabled TX, jurisdiction/license privileges, declared versus checked authorization status, a separate reviewed TX policy, emission/band-edge and applicable equipment checks, deliberate session arming, timeout/Stop and shared enforcement across APRS/manual/helper RF start paths. Editable receive references/imports must never grant TX permission. Missing or unsupported authorization coverage leaves TX blocked. A license lookup alone is insufficient; ISM/license-free does not imply unrestricted SDR transmission. Queued only: current preview has not been changed to implement this interlock. No build authorized.
+
+## Project direction: enthusiast signal discovery (November 1, 2026)
+
+Make common-frequency/channel identification and learning a core product feature, alongside decoding. See PROJECT-OVERVIEW.md. Expand editable, sourced references for HF aviation, ACARS/VDL2, WWV/time standards, ISM bands and published channelized services. Offer compact spectrum labels, plain-language service descriptions, region/mode/setup guidance, decoder availability and optional saved-folder/scan additions. Frequency/band matches suggest candidates; they do not establish an observed signal's identity. Preserve tentative discoveries, unknowns and user labels. Keep public reference packs separate from private local monitoring data. Current aviation CSV additions are a starting point; WWV and broader ISM/channel coverage require a sourced coverage review in a future authorized batch. Documentation/planning only; no rebuild authorized.
+
+## HF aviation reference data prepared (November 1, 2026)
+
+Added HF voice (26 station/network entries), VOLMET (4) and HFDL (46) reference CSV layers with station/network, USB mode, sources and coverage limits; see AVIATION-FREQUENCIES.md. Include in the next authorized build and the queued opt-in known-frequency folder import. HFDL decoding remains unimplemented. No rebuild authorized.
+
+## Aviation frequency reference data prepared (November 1, 2026)
+
+Added 20 deduplicated ACARS monitoring centers and a separate 136.975 MHz VDL2 reference CSV. Nine ACARS centers have published monitoring references; eleven retain user-supplied candidate status. See AVIATION-FREQUENCIES.md. Existing CSV packaging includes these in the next authorized build; existing ZIPs remain unchanged. Queue opt-in Frequency Manager addition/import into Aviation / ACARS and Aviation / VDL2 folders, preserving labels, deduplicating existing entries and retaining candidate/source metadata. Generic frequency-manager CSV import is not implemented by this data-only change. Pair this with the scan/retune continuity investigation below; no rebuild authorized.
+
+## Queued: folder-scan decoder continuity and tuned-frequency synchronization (November 1, 2026)
+
+User reports that scanning a saved ACARS frequency folder stops aviation decoding after a receiver/frequency change. Manual tuning through Frequency Manager also leaves the Aviation frequency field/status targeting the previous channel. Screenshot shows a selected 131.55 MHz ACARS entry while Aviation still displays 129.35 MHz; selection alone is not proof of a completed tune. Reproduce both an actual Tune/double-click action and folder-scan retunes before identifying the cause.
+
+Preserve the enabled decoder through compatible scan/manual retunes on the same receiver. Update its channel target and frequency display from the actual applied receiver tune, reset incomplete acquisition state at channel boundaries, and resume reception automatically once settled. Keep observations attributed to the correct frequency/source and prevent buffered packets from being assigned to the next channel. A single receiver can receive only its current usable capture: scanning away does not provide simultaneous reception of the previous channel. For incompatible mode, bandwidth or capture settings, show an explicit paused/unsupported reason and resume when compatible rather than silently stopping or displaying stale receiving status. Define whether each frequency field follows the receiver or is an independent target; show any intentional difference clearly.
+
+Cross-check Aviation (ACARS, VDL2, ADS-B/Mode S, UAT) and other decoder workspaces for the same lifecycle/display issue, including paging, DMR/LTR/NXDN, P25, Amateur modes and Analysis. Exercise folder scan, next/previous channel, manual Tune/double-click, spectrum click-to-tune, scan stop/resume and capture restart as applicable. Respect explicit decoder Stop, deliberate protocol changes and receiver ownership/trunk-following assignments. Check dwell/settling requirements and report when dwell is too short for acquisition. Add a focused ACARS folder-scan acceptance case plus cross-protocol checks, distinguishing local/replay verification from live RF acceptance.
+
+Queued bug investigation and behavior refinement only; no implementation or rebuild authorized by this TODO.
+
+## Queued: additional Amateur and Broadcast decoders
+
+User-requested additions, queued for a future authorized build:
+
+- Amateur: D-STAR; C4FM / Yaesu System Fusion; PSK31; RTTY; SSTV.
+- Broadcast: DRM (Digital Radio Mondiale).
+
+Plan receive identification/header information and voice/audio or text decoding appropriate to each mode. Assess compatible decoder/vocoder backends and licensing during implementation. These requests do not claim existing support or authorize a build by themselves.
+
+## Queued: Amateur — SSTV image reception
+
+User requested adding SSTV to the decoder list. Planned placement: Amateur → SSTV. Support reception from SDR-demodulated audio, Windows audio input and WAV replay; assess decoder backends and licenses during implementation. Provide automatic mode detection plus manual selection for supported modes, progressive image display, slant/alignment adjustment, reset/clear and image saving with reception frequency, mode, time and source metadata. Preserve original samples and partial-image/failed-sync states. Keep SSTV distinct from WEFAX and clearly distinguish band-reference markers from working decoder support. Validate with generated/known recordings before separate live RF acceptance. Receive-only scope; await an explicit build instruction before implementation or packaging.
+
+## Queued: Home Automation / IoT — Zigbee
+
+User requested this addition and has multiple Wi-Fi/Zigbee-controlled devices, including Philips Hue lighting, for eventual real-world testing. Planned placement: Analysis → Home Automation / IoT. Confirm each device/bridge model and radio protocol before implementation; do not assume every device uses both Wi-Fi and Zigbee.
+
+Start with receive-only 2.4 GHz IEEE 802.15.4/Zigbee capture through HackRF, selected-channel monitoring and optional channel scanning with explicit coverage/missed-burst limitations. Show channel, available PAN/network and device addresses, frame types, packet counts, CRC status, relative signal level and raw packet export. Separate discovered addresses from verified device identities; allow user labels and preserve source/provenance.
+
+Follow with user-supplied network/application-key support for the user's own network and supported Zigbee device-report parsing, including suitable lighting/device-state information for Hue test hardware. Preserve encrypted/unknown payloads explicitly when keys or parsers are unavailable. Retain raw packets and distinguish local/replay checks from live device acceptance. Assess existing decoder backends and licenses during the authorized implementation batch.
+
+Wi-Fi/802.11 capture and any Hue bridge/API integration are separate research/integration paths; this Zigbee item does not promise generic Wi-Fi payload decoding or automatic device control. No pairing, commands or device/network changes are authorized by this planning request. Await an explicit build instruction before implementation or packaging.
+
+## Queued: Home Automation / IoT — Wi-Fi
+
+User requested Wi-Fi viewing on the feature list. Planned placement: Analysis → Home Automation / IoT → Wi-Fi, alongside the separately queued Zigbee view.
+
+Start with a Windows Wi-Fi adapter network survey: SSID, BSSID, channel/frequency, signal strength and advertised security/capabilities where available. Handle adapter capability, Windows permissions, unavailable/no-data states and stale observations explicitly.
+
+Follow with packet inspection and PCAP/PCAPNG capture/import/export through a compatible Wi-Fi adapter and capture backend. Evaluate monitor-mode/Npcap support and licensing; show the actual capture capabilities and distinguish host-interface traffic from raw over-the-air 802.11 frames. Expose management/control frames, visible addresses, retries, packet counts and radio metadata only when the capture source supplies them. Preserve original packets and validation/provenance.
+
+For the user's own network, assess optional key-assisted inspection with appropriate session/handshake material. Do not promise that a password alone decrypts all WPA2/WPA3 sessions or application encryption. No automatic device/network changes or credential collection are part of this planning request.
+
+Later share GPS logging/map components with Fox Hunt for BSSID-specific signal-strength trails and coverage maps. Keep access points with the same SSID distinct, record adapter/channel metadata and present relative measurements rather than a precise transmitter location. A Wi-Fi adapter is the initial capture path; HackRF RF activity viewing and SDR-based Wi-Fi decoding are separate capabilities/research.
+
+Queued only; await an explicit build instruction before implementation, capture testing or packaging.
+
+## Queued: Cellular survey — receive-only
+
+User requested adding the cellular survey concept to the roadmap. Planned placement: Analysis → Cellular survey. Start with cellular band/channel references and HackRF spectrum activity measurements: observed frequency range, approximate occupied bandwidth, relative signal level/noise and observation time/source. Label measured energy separately from positively identified cellular signals. Frequency coverage is not a guarantee of full-channel capture or decoder support.
+
+Assess receive-only LTE cell search and supported broadcast-information decoding, followed by suitable 5G NR broadcast metadata where feasible. Potential fields include physical cell ID, channel number, bandwidth/configuration and network identifiers only when actually decoded. Evaluate SDR/backend compatibility, decoder licensing, CPU/sample-rate requirements and replay support before choosing a backend. Carrier/operator labels must come from decoded identifiers or an explicitly identified reference source, not a spectrum-shape guess.
+
+Show tower downlink and phone uplink distinctions, intermittent/absent activity, capture coverage and stale/unresolved states. HackRF's 1 MHz–6 GHz range excludes higher-frequency millimeter-wave bands, and its sample-rate/usable-bandwidth limits prevent complete capture of some wide cellular channels. An uplink burst is not proof of a specific phone, person or reliable phone-presence detection.
+
+Scope is spectrum survey and public broadcast/network metadata. No call/message content interception, subscriber identification, base-station impersonation, network attachment or cellular transmission is part of this item. Separate synthetic/replay validation from actual live RF acceptance. Queued only; await an explicit build instruction before implementation or packaging.
+
+## Queued: Aviation — Drones / Remote ID
+
+User requested drone detection on the feature plan. Planned placement: Aviation → Drones / Remote ID. Prioritize passive standard Broadcast Remote ID reception, evaluating OpenDroneID decoding and compatible Bluetooth, Wi-Fi Beacon and Wi-Fi NAN capture sources. Check actual adapter/driver/transport coverage; ordinary Wi-Fi network discovery, generic BLE scanning, rtl_433 sensor support and RF energy detection are not equivalent to Remote ID decoding.
+
+Show broadcast drone identifier, message source/transport, reported position, altitude, velocity, signal strength where supplied, last-seen age, trails and raw-message export. Distinguish standard-drone control-station location from add-on-module takeoff location. Preserve unavailable fields and source provenance. Label coordinates/identities as received claims unless independently authenticated; do not infer a person's identity from a broadcast identifier. Handle stale/no-position and conflicting observations explicitly.
+
+Later investigate DJI-specific DroneID with HackRF as a separate decoder/research path. Assess model/firmware compatibility, capture bandwidth/sample rate, frequency coverage, decoder licensing and CPU requirements. Do not promise all DJI models or conflate proprietary DroneID with standard Broadcast Remote ID. RF control/video-link activity surveys can supplement observation but must not label energy alone as a confirmed drone.
+
+Coverage is partial: absent messages do not establish absence of drones. No universal detection range, automatic access to video feeds, device control or transmission is promised. Keep synthetic/replay checks separate from known-drone live acceptance. Await an explicit build instruction before implementation, RF testing or packaging.
+
+## Queued: Fox Hunt — GPS signal-strength mapping
+
+Planned Amateur workspace name: Fox Hunt. User has a USB GPS dongle. Investigate its NMEA/COM interface, then plan GPS-tagged channel power/noise measurements, a colored trail/grid, gain/filter metadata and clear no-fix/coverage states. Use fixed receiver gain and bandwidth for meaningful relative comparisons; multipath and changing transmit power limit localization. Present a general search area, not a precise triangulated point. Manual directional bearings and coherent-hardware integration can follow. GPS position alone and NIST time do not synchronize RF samples. This feature is not implemented in this timing rebuild.
+
+## Previous preview
+
+# Current preview: 0.41.0-preview1
+
+Adds SAME/EAS, DTMF, MDC1200/FleetSync, FT8/FT4/WSPR and experimental direct-SDR Meshtastic/MeshCore reception. See the 0.41 update and live acceptance checklist. Next priorities remain live validation, expanded mesh payload/history support and P25/DMR trunk-following acceptance; no extra release is authorized merely by listing these.
+
+## Previous preview
+
+# Current preview: 0.40.0-preview1
+
+Implements direct receiver/control/voice selection with explicit saved/unsaved feedback, assignment persistence checks, fractional RX PPM correction for RTL/HackRF, readable FLEX control escapes, expanded offline Help and About/dependency sources. See UPDATE-0.40.0-preview1.md and ACCEPTANCE-0.40.0-preview1.md. These supersede the October 25–27 queued sections below; those remain request history. Live hardware acceptance and prior unfinished checks are still pending. No new sidebar overhaul or APRS TX change.
+
 # Current preview: 0.39.0-preview1
 
 Multiple receiver workspaces and a dedicated control/voice pool; automatic site-channel saving; separate channel/talkgroup records; mapped Con+/Tier III group grants; saved-map imports; view-only clear and newest-first controls. See UPDATE-0.39.0-preview1.md and ACCEPTANCE-0.39.0-preview1.md. Live acceptance and previous unfinished checks remain pending. Private reference data is excluded from clean-install packages.
+
+# TODO - simplify receiver management and trunk voice assignment (October 27, 2026)
+
+User reports Add / Remove / Assign receiver workflow is confusing and awkward for trunk voice following. Redesign the workflow around an explicit receiver list showing name, physical device, running/stopped state, role, assigned control/site and current voice activity. Make Add receiver, device selection/start, rename and Remove discoverable, with clear feedback that removing a workspace preserves saved data. Provide direct control-receiver and voice-receiver selection in the trunk-following workspace; avoid requiring users to coordinate matching free-text group names across separate windows. Show eligible receivers, why a receiver is unavailable, assignment priority and a clear release/resume action. Preserve existing device-ownership protection, receiver settings, independent workspaces and control/voice routing; explain idle, paused and failed states plainly. Include a short setup walkthrough in expanded Help. Resolve final layout during the authorized implementation round, with an end-to-end usability check for one control plus one or more voice receivers.
+
+Additional user report: assignment options need work and assignments could not be saved; user is unsure whether the workflow or persistence failed. Treat this as an open functional bug, not assumed operator error. Reproduce Save assignment from the existing UI, check required role/group/device inputs, success/error feedback, the persisted receiver definition and reload/restart behavior. Distinguish saved configuration from whether an SDR is open/running and eligible for voice assignment. The redesigned UI must clearly show unsaved changes, actionable validation errors, successful saving and the assignment currently in effect. Verify one-control/one-voice and multiple-voice setup, changed assignments and restart persistence. No cause or fix is confirmed yet.
+
+Queued usability redesign; await the user's explicit build instruction before implementation, application testing or packaging.
+
+# TODO - FLEX escaped line breaks (October 27, 2026)
+
+User reports some FLEX messages show literal \r\n escape text rather than readable line breaks. Investigate the paging helper JSON output, parsing and message display to locate whether escaping occurs in the payload or formatting. Render actual CR/LF and confirmed escaped line-break sequences appropriately in the message detail view; keep summary rows compact and preserve original raw decoder output/export evidence. Avoid blanket unescaping of unrelated backslashes or double-decoding JSON. Verify with real affected output when available and a representative regression case.
+
+Screenshot evidence received October 27: literal \n appears at message boundaries in both FLEX table summaries and selected-data details, on complete and reassembled messages. Selected data reports checksum passed; this does not establish the escaping source. Inspect helper output and shared message-text handling before attributing it to reception or only the table renderer. Use redacted/synthetic text for regression fixtures; do not copy intercepted personal/medical message contents into source, docs or test data.
+
+Queued bug report; await the user's explicit build instruction before implementation, application testing or packaging.
+
+# TODO - receiver PPM correction options (October 27, 2026)
+
+Add per-receiver manual frequency-error correction in parts per million (PPM), with enable/disable, signed fractional entry, reset to zero and saved settings tied to device identity where reliable. Show requested RF frequency and applied correction clearly. Keep oscillator calibration separate from capture offset, tuning step, channel snapping and saved channel frequencies; do not rewrite a channel frequency to compensate for hardware error. Apply consistently across live tuning, scanning, spectrum labeling, decoder targeting and control/voice assignments, using backend capabilities with explicit unsupported status where needed. Include calibration guidance and positive/negative correction examples in Help. Preserve original I/Q and its capture metadata; replay must not silently apply a live-device correction twice.
+
+Queued only; await the user's explicit build instruction before implementation, application testing or packaging.
 
 # Next update TODO - detailed Help and About (October 25, 2026)
 
@@ -699,3 +1080,11 @@ Broadcast AM/FM and existing MPX/stereo views, Audio sidebar split and specifica
 
 ## 0.37.0-preview1
 Click-to-tune snapping, automatic MP3 VOX / combined I/Q, Aviation frequency alignment, sensor run/table counter clarification. Live user acceptance is pending. Trunk following and broader sidebar cleanup remain outstanding/deferred.
+
+## Queued: PSK Reporter software and receiver identity
+
+User requests M.R.S. identification in PSK Reporter monitor metadata (Using / Rig). Include decoderSoftware with the actual M.R.S. version/build (for example M.R.S. 0.43.0-preview1 only if that is the actual future build), optional rigInformation describing the actual selected receiver model, and optional editable antennaInformation. Do not expose hardware serials, private device identifiers or file paths. Rig description can be edited to reflect an external radio/audio input instead of falsely identifying the SDR. Keep metadata associated with its reporting receiver; review behavior if several receivers share one callsign/grid. Protocol support for rigInformation is documented but its service template/display handling must be verified during integration; do not promise an exact popup layout or prepopulate hardware from unrelated receivers. Source: https://pskreporter.info/pskdev.html . Opt-in reporting remains unimplemented; no reports sent or new build authorized.
+
+## Queued: optional PSK Reporter reception reports
+
+Official DLL PDF and current UDP/IPFIX developer protocol were reviewed. User requested this on the next feature list alongside Fox Hunt. An opt-in feature will report resolved transmitting callsigns, receiver callsign/grid, mode, RF frequency and UTC time. SNR may be omitted until a real estimate exists; sync score is not SNR. Exclude replay/synthetic/unresolved records, batch and deduplicate per service guidance, and show transmission status without claiming UDP delivery is confirmed. No reports have been submitted and implementation is not included in preview2.

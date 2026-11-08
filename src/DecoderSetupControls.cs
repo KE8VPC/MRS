@@ -13,7 +13,7 @@ public partial class MainWindow
     {
         DecoderSetupHost.Children.Add(setupProfile);
         var apply=new Button{Content="Apply recommended settings",ToolTip="Stops reception and finalizes recordings before applying the profile"};DecoderSetupHost.Children.Add(apply);
-        DecoderSetupHost.Children.Add(setupReport);DecoderSetupHost.Children.Add(setupResult);
+        setupReport.Visibility=Visibility.Collapsed;DecoderSetupHost.Children.Add(setupReport);DecoderSetupHost.Children.Add(setupResult);
         setupProfile.SelectionChanged+=(_,_)=>{requestedSetupTarget=null;setupResult.Text="";RefreshDecoderSetup();};
         apply.Click+=(_,_)=>ApplyDecoderRecommendation();RefreshDecoderSetup();
     }

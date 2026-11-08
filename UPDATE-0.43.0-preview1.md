@@ -1,0 +1,15 @@
+# M.R.S. 0.43.0-preview1 — weak-signal workspace and reporting
+
+Extract the complete Windows ZIP into a new folder and run MRS.exe. Keep companion Help, bandplans, Receivers and Decoders folders. Existing monitoring profiles and user station lists remain separate; private local data is not included.
+
+- Compact FT8/FT4/WSPR table: UTC/local time, mode, estimated dB SNR, DT, audio Hz and decoded message. Label, Type, Validation and repeated diagnostics are removed from main rows. Selected decode details and timing controls are expandable; full raw/CRC/sync evidence remains in Inspect/export.
+- Correct sender/destination/CQ/grid interpretation. CQ is a general call, not a callsign; Maidenhead locators remain location fields. Unresolved hashes remain unresolved and are ineligible for reporting.
+- FT8/FT4 SNR now uses decoded-tone signal/noise power normalized to 2500 Hz noise bandwidth. It is an approximate measurement, not sync score or a claim of numerical equivalence to WSJT-X. Missing estimates remain blank. WSPR retains backend SNR.
+- UTC/local display preference; newest first across protocol monitoring tables with one-time legacy preference migration and preservation of later explicit sort choices.
+- Auto-clear off / every cycle / every two cycles, using FT8 15 s, FT4 7.5 s and WSPR 120 s completed windows. Display clearing does not reset tracking or queued reports.
+- Persistent CQ colors, prioritized callsign watch/ignore rules, exact sender/destination/either and explicit portable/base matching. Automatic foreground contrast; selected-row color remains distinct. Right-click sender watch/ignore/unignore/follow. Heard-station session tracking retains source, mode, frequency, grid, timestamps, count and message. Destination mentions are not transmissions.
+- Compact NIST/reference status, PC-offset gauge, decoder correction, cycle progress and counters. Detailed controls remain available; Windows clock is unchanged.
+- Added 14 VHF/UHF FT8/FT4/WSPR dial references from 6m through 23cm with regional labels. No unsupported 70cm FT4 default or new JS8 decoder is invented. Shared reference data is editable; existing user-edited working CSVs are preserved.
+- Optional PSK Reporter integration, OFF at every startup. Valid live SDR USB FT8/FT4 only, resolved senders and actual RF frequency (dial + audio offset). Continuous queue, randomized roughly five-minute batching/duplicate suppression, optional SNR, selected receiver family/rig and antenna, actual M.R.S. version. Reporting ignores can be configured separately from display hiding. Failed sends remain queued; UDP sent does not confirm delivery. Receiver callsign/grid and optional descriptions are shared only after explicit enable. No automated test sends live reports.
+
+This update does not complete P25/DMR trunk following or add another decoder family. TX safeguards remain separate; PSK reports are Internet traffic, not RF transmission. See Help/weak-view.md, Help/psk-reporter.md, VALIDATION-0.43.0-preview1.md and ACCEPTANCE-0.43.0-preview1.md. Live RF and service/map acceptance remain pending.

@@ -48,8 +48,8 @@ public partial class MainWindow : Window
         SampleRateBox.SelectedIndex = 0;
         PopulateBandwidth();
         if (diagnostic) dataFolder = diagnosticRoot ?? Path.Combine(AppContext.BaseDirectory, "smoke-profile", Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dataFolder);
-        InitializeFilePlans();InitializeTrunkFollowing();InitializeFleet();InitializeSiteSaving();InitializeMonitoringViews();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
+        Directory.CreateDirectory(dataFolder);Aviation.ConfigureOfflineDetail(dataFolder);
+        InitializeFilePlans();InitializeTrunkFollowing();InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
         receiver.RawIq+=_=>{if(!receiver.IsReplay)Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());};
         PagingPackets.InitializePagingRules(Path.Combine(dataFolder,"paging-rules.json"));
         P25Systems.Initialize(Path.Combine(dataFolder,"p25-discoveries.json"));
@@ -172,7 +172,7 @@ public partial class MainWindow : Window
             if (receiver.IsRecording) IqRecordLabel.Text = $"I/Q: {receiver.RecordedBytes / 1000000.0:0.0} MB · approx. {activeRate * 120.0 / 1000000:0} MB/min";
             RefreshPlayback();
             RefreshBroadcast();
-            RefreshPackets();TickTrunk();TickFleet();TickSiteSaving();TickMonitoringViews();
+            RefreshPackets();TickTrunk();TickFleet();TickCalibration();TickSiteSaving();TickMonitoringViews();TickRadioData();TickFoxHunt();
             Spectrum.Tick();
         };
         timer.Start();
@@ -229,6 +229,7 @@ public partial class MainWindow : Window
             if (receiver.IsHackRf && receiver.Offset.Enabled)
             { try { await receiver.Retune(item.FrequencyHz, channel); } catch (Exception ex) { Log(ex.Message); } return; }
             if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) { receiver.SetChannel(channel); return; }
+            try { await receiver.Retune(item.FrequencyHz, channel); } catch(Exception ex){ Log(ex.Message); } return;
         }
         if (RtlDevices.SelectedItem is not RtlNative.Device) { Log("Select an SDR receiver before tuning."); return; }
         StartRtl(FrequencyManager, new RoutedEventArgs());
@@ -282,10 +283,10 @@ public partial class MainWindow : Window
         { RtlStatus.Text = "Enter a frequency in " + (SelectedHackRf ? "1–6000 MHz" : SamplingModes.Range(SelectedSamplingMode)) + ". Use a decimal point for MHz."; return; }
         if (!ReferenceEquals(sender, FrequencyManager)) ApplyBandMode((long)Math.Round(mhz * 1000000));
         CaptureOffset offset;
-        try { offset = ReadCaptureOffset(); if (SelectedHackRf) offset.Center(SelectedChannel((long)Math.Round(mhz * 1000000)), SelectedSampleRate, SelectedGain); }
+        try { _=SelectedPpm; offset = ReadCaptureOffset(); if (SelectedHackRf) offset.Center(SelectedChannel((long)Math.Round(mhz * 1000000)), SelectedSampleRate, SelectedGain); }
         catch (Exception ex) { RtlStatus.Text = ex.Message; Log(ex.Message); return; }
         int selectedGain = SelectedGain;
-        if (!ReferenceEquals(sender, FrequencyManager) && rfMode && !receiver.IsReplay && device.Index == activeDevice && receiver.SamplingMode == SelectedSamplingMode && SelectedSampleRate == activeRate && selectedGain == activeGain && ReceiveDemodulator.Modes[FmMode.SelectedIndex] == tunedMode && receiver.AppliedChannel?.Width == SelectedBandwidth && receiver.AppliedChannel?.Agc == (ChannelAgc.IsChecked == true))
+        if (!ReferenceEquals(sender, FrequencyManager) && rfMode && !receiver.IsReplay && device.Index == activeDevice && receiver.SamplingMode == SelectedSamplingMode && SelectedSampleRate == activeRate && selectedGain == activeGain && SelectedPpm == receiver.AppliedPpm && ReceiveDemodulator.Modes[FmMode.SelectedIndex] == tunedMode && receiver.AppliedChannel?.Width == SelectedBandwidth && receiver.AppliedChannel?.Agc == (ChannelAgc.IsChecked == true))
         { await LiveTune((long)Math.Round(mhz * 1000000)); return; }
         Stop();
         try
@@ -299,11 +300,11 @@ public partial class MainWindow : Window
             savedReceiverIdentity = identity; recoveryAttempts = 0;
             if (identity != null && SelectedHackRf) savedCaptureOffsets[identity] = offset;
             if (identity != null) savedSampling[identity] = SelectedSamplingMode;
-            recoveryPlan = identity == null ? null : new RecoveryPlan(identity, frequency, activeRate, gain, FmMode.SelectedIndex == 1, tunedMode, SelectedBandwidth, ChannelAgc.IsChecked == true, SelectedSamplingMode, SelectedBackend, offset);
+            recoveryPlan = identity == null ? null : new RecoveryPlan(identity, frequency, activeRate, gain, FmMode.SelectedIndex == 1, tunedMode, SelectedBandwidth, ChannelAgc.IsChecked == true, SelectedSamplingMode, SelectedBackend, offset, SelectedPpm);
             if (identity == null) Log("Receiver serial is absent, generic or duplicated. Selection is manual; automatic reconnect is unavailable for this receiver.");
             rfMode = true; engine.StartExternal(2);
             Spectrum.SetRf(frequency, activeRate); SpectrumTitle.Text = "RF SPECTRUM / WATERFALL";
-            receiver.Start(device.Index, frequency, gain, FmMode.SelectedIndex == 1, sampleRate: activeRate, identity: identity, mode: tunedMode, bandwidth: SelectedBandwidth, agc: ChannelAgc.IsChecked == true, samplingMode: SelectedSamplingMode, backend: SelectedBackend, captureOffset: offset);
+            receiver.Start(device.Index, frequency, gain, FmMode.SelectedIndex == 1, sampleRate: activeRate, identity: identity, mode: tunedMode, bandwidth: SelectedBandwidth, agc: ChannelAgc.IsChecked == true, samplingMode: SelectedSamplingMode, backend: SelectedBackend, captureOffset: offset, ppm: SelectedPpm);
             SourceLabel.Text = $"{(receiver.IsReplay ? "I/Q REPLAY" : receiver.ReceiverName)} · {frequency / 1000000.0:F6} MHz";
             RtlStatus.Text = SourceLabel.Text + " · waiting for USB data…";
             Started(); Log($"Starting {device.Name} at {frequency} Hz; {((ComboBoxItem)FmMode.SelectedItem).Content}. Gain, rate, mode and filter selections apply live; Start / Apply starts or reopens the selected source.");
@@ -381,6 +382,7 @@ public partial class MainWindow : Window
     private void StopSource(object sender, RoutedEventArgs e) { Stop(!receiver.IsReplay); Log("Source stopped."); }
     private void Stop(bool clearReplay = true)
     {
+        if(!weakTxHandoff)weakTransmitWindow?.Halt("Source stopped");
         StopTrunk(false);
         automaticIq.Disarm("Disarmed · receiver stopped");automaticAudio.Disarm("Disarmed - source stopped");
         Volatile.Write(ref triggerGate,null);
@@ -598,7 +600,7 @@ public partial class MainWindow : Window
         Aviation.Observe(AviationData.Parse(AviationTests.PositionJson,"adsb",AviationTests.Context)!);
         Aviation.Observe(AviationData.Parse(AviationTests.PositionJson.Replace("ABCDEF","123456").Replace("40.5","40.7").Replace("84.2","84.5"),"adsb",AviationTests.Context)!);
         Aviation.ShowMapForTest();Aviation.Refresh();WorkspaceTabs.SelectedItem=AviationTab;UpdateLayout();Capture("ui-aviation.png");
-        RenderTrunkSmoke(Capture);RenderAviationUpdateSmoke(Capture);RenderUpdate036Smoke(Capture);await RenderUpdate037Smoke(Capture);await RenderUpdate039Smoke(Capture);
+        RenderTrunkSmoke(Capture);RenderAviationUpdateSmoke(Capture);RenderUpdate036Smoke(Capture);await RenderUpdate037Smoke(Capture);await RenderUpdate039Smoke(Capture);await RenderUpdate040Smoke(Capture);
         SelectWorkspace(ObservationsTab);AnalysisPackets.ClearRows();AnalysisPackets.SetFilter("");
         var flood=new PacketObservation(DateTimeOffset.UtcNow,"Synthetic DMR",true,451600000,null,"Slot Golay + BPTC valid","","","","Slot identification","CC 0 slot 1 data type 3",null,"ABCD","DMR",true);
         for(int batch=0;batch<100;batch++){for(int n=0;n<100;n++)AnalysisPackets.Add(flood with{ObservedUtc=DateTimeOffset.UtcNow});if(batch%10==0){WorkspaceTabs.SelectedIndex=0;UpdateLayout();SelectWorkspace(ObservationsTab);}await System.Windows.Threading.Dispatcher.Yield(System.Windows.Threading.DispatcherPriority.Background);}

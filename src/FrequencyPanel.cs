@@ -188,6 +188,7 @@ public sealed class FrequencyPanel : UserControl
     });
     private FrequencyLibrary RequireLibrary() => library ?? throw new InvalidOperationException("Library is unavailable. Resolve the file error and Reload.");
     private string? legacyPath;
+    internal int ImportReferences(string folder,IEnumerable<ListeningPreset> entries){int count=RequireLibrary().AddReferences(folder,entries);Rebuild();Notify($"Added {count} references; existing matches preserved.");return count;}
     public void Release() => FrequencyLibrary.Saved -= LibrarySaved;
     private void LibrarySaved(FrequencyLibrary sender, string file)
     {

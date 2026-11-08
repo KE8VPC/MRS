@@ -1,0 +1,14 @@
+# M.R.S. 0.40.0-preview1
+
+This preview simplifies saved receiver assignments, adds manual RX PPM correction, fixes readable FLEX line breaks and expands offline Help/About.
+
+- Receivers is now nonmodal, with a setup guide, device/source state, role, direct control dropdown and voice-receiver checklist. Save assignments writes all affected definitions together and confirms success; invalid/unsaved changes are explicit. Reload/reopen/restart preserve saved routing. No matching free-text groups are required for new assignments. Legacy settings remain readable. Removing/changing a control releases dependent voice roles. Open receiver selects/starts the physical SDR in its own workspace; saving roles does not start hardware.
+- Trunk following has Assign control / voice receivers access. Eligibility and paused/closed/stopped states are explained; Resume voice pool is available in the manager.
+- Receiver > Frequency calibration / PPM adds enabled/signed fractional adjustment, save by unique device identity and reset. Stop before editing, Save, then Start / Apply. Positive PPM increases native RX tune commands; nominal RF coordinates, capture offset and saved channel frequencies stay separate. RTL-SDR and HackRF RX retunes use correction consistently. This does not calibrate/resample the sample clock or modify TX. Manual/automatic I/Q preserve PPM provenance; replay does not apply correction twice.
+- Readable alphanumeric FLEX details translate the helper's printable CR/LF/TAB escapes; summaries stay compact. Original Information, DecoderJson and export evidence remain unchanged. Complete/reassembled messages share the fix. Other protocols and unknown escape sequences are not blanket-unescaped.
+- About shows version/build and feature dependencies, expected file status, locations, pinned versions where known, source links and notices. Presence is not a decoder probe. Keep complete helper folders and licenses. RTL and TV runtime setup remain separate where required.
+- Help has 32 searchable offline topics, including new quick start, trunk walkthrough, recording guide, PPM, paging troubleshooting and dependency sources. Source links are clickable; F1/context access remains.
+
+Extract the whole ZIP into a new folder. Existing user files are not release defaults. In Receivers save a Trunk control role, open/start distinct SDRs, check voice receivers on the control and Save assignments. Then Start following from the control's configured trunk profile. Read ACCEPTANCE-0.40.0-preview1.md for this release and carried-forward checks.
+
+No live RF/USB/TX acceptance is claimed from local tests. P25/DMR following scope is unchanged: Phase I C4FM and supported mapped Cap+/Con+/Tier III group calls. Broader sidebar cleanup, APRS TX intermittency and unsupported protocols remain deferred.

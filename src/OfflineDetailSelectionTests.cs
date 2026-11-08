@@ -1,0 +1,32 @@
+using System.IO;
+using System.Text.Json;
+namespace MRS;
+internal static class OfflineDetailSelectionTests
+{
+ internal static async Task Run(Action<bool,string> check)
+ {
+  string root=Path.Combine(Path.GetTempPath(),"MRS-Map-Choice-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(root);
+  string map=Path.Combine(root,"roads.geojson"),second=Path.Combine(root,"second.geojson"),settings=Path.Combine(root,"map.json");
+  File.WriteAllText(map,FoxAnalysisTests.SyntheticRoads);File.WriteAllText(second,FoxAnalysisTests.SyntheticRoads.Replace("Synthetic local detail","Second test map"));
+  try{
+   using(var fresh=new OfflineDetailSelection()){await fresh.Configure(settings);check(fresh.Current==null&&!File.Exists(settings),"Fresh map selection does not create localized defaults");await fresh.Load(map);check(fresh.Current?.Features.Count==3&&fresh.SelectedPath==Path.GetFullPath(map),"Explicit local map load activates geometry and preserves its full path");}
+   string original=File.ReadAllText(settings);using(var restored=new OfflineDetailSelection()){await restored.Configure(settings);check(restored.Current?.Name=="Synthetic local detail","Saved offline detail restores from a local reference after restart");var prior=restored.Current;string bad=Path.Combine(root,"bad.geojson");File.WriteAllText(bad,"{invalid");bool failed=false;try{await restored.Load(bad);}catch(JsonException){failed=true;}check(failed&&ReferenceEquals(prior,restored.Current)&&File.ReadAllText(settings)==original,"Invalid replacement preserves loaded map and saved selection");check(restored.Status.Contains("previous map retained"),"Failed replacement explains that previous detail remains active");}
+   File.Move(map,map+".missing");using(var missing=new OfflineDetailSelection()){await missing.Configure(settings);check(missing.Current==null&&missing.Status.Contains("unavailable")&&File.ReadAllText(settings)==original,"Missing map on restart is reported without rewriting the preference");}File.Move(map+".missing",map);
+   using(var removal=new OfflineDetailSelection()){await removal.Configure(settings);removal.Remove();check(removal.Current==null&&removal.SelectedPath.Length==0,"Remove detail clears the active map reference");}using(var after=new OfflineDetailSelection()){await after.Configure(settings);check(after.Current==null&&after.Status.Length==0,"Removed offline detail stays removed on restart");}
+   File.WriteAllText(settings,"{corrupt");using(var corrupt=new OfflineDetailSelection()){await corrupt.Configure(settings);check(corrupt.Current==null&&corrupt.Status.Contains("unavailable")&&File.ReadAllText(settings)=="{corrupt","Corrupt map preference is reported and preserved for review");}
+   File.WriteAllText(settings,new string('x',9000));using(var large=new OfflineDetailSelection()){await large.Configure(settings);check(large.Status.Contains("too large"),"Saved map preferences are size bounded");}
+   File.WriteAllText(settings,JsonSerializer.Serialize(new{Version=1,Path=@"\\invalid-host\share\roads.geojson"}));using(var unc=new OfflineDetailSelection()){await unc.Configure(settings);check(unc.Current==null&&unc.Status.Contains("local drive"),"Automatic map restore does not open UNC network paths");}
+   var loaded=FoxOfflineDetail.Load(map);var other=FoxOfflineDetail.Load(second);
+   var gate=new TaskCompletionSource<FoxOfflineDetail>(TaskCreationOptions.RunContinuationsAsynchronously);
+   using(var pending=new OfflineDetailSelection(_=>gate.Task)){await pending.Configure(Path.Combine(root,"remove-race.json"));var loading=pending.Load(map);pending.Remove();gate.SetResult(loaded);await loading;check(pending.Current==null,"Removing detail during loading prevents a late map from reappearing");}
+   var slow=new TaskCompletionSource<FoxOfflineDetail>(TaskCreationOptions.RunContinuationsAsynchronously);
+   using(var latest=new OfflineDetailSelection(p=>p==map?slow.Task:Task.FromResult(other))){await latest.Configure(Path.Combine(root,"latest.json"));var old=latest.Load(map);await latest.Load(second);slow.SetResult(loaded);await old;check(ReferenceEquals(latest.Current,other)&&latest.SelectedPath==second,"Latest map selection wins over an earlier delayed import");}
+   string restoreRace=Path.Combine(root,"restore-race.json");File.WriteAllText(restoreRace,JsonSerializer.Serialize(new{Version=1,Path=map}));var restoreGate=new TaskCompletionSource<FoxOfflineDetail>(TaskCreationOptions.RunContinuationsAsynchronously);
+   using(var restoreRemoval=new OfflineDetailSelection(_=>restoreGate.Task)){var restoring=restoreRemoval.Configure(restoreRace);restoreRemoval.Remove();using(var saved=JsonDocument.Parse(File.ReadAllText(restoreRace)))check(saved.RootElement.GetProperty("Path").GetString()==""&&restoreRemoval.Status.Length==0,"Removing during startup map restore can save without a Windows file-sharing conflict");restoreGate.SetResult(loaded);await restoring;check(restoreRemoval.Current==null,"A removed startup restore cannot reactivate its old map");}
+   var closed=new TaskCompletionSource<FoxOfflineDetail>(TaskCreationOptions.RunContinuationsAsynchronously);var selection=new OfflineDetailSelection(_=>closed.Task);var task=selection.Load(map);selection.Dispose();closed.SetResult(loaded);await task;check(selection.Current==null,"Closing a map invalidates an in-progress import");
+   string blocked=Path.Combine(root,"directory-preference.json");Directory.CreateDirectory(blocked);using(var blockedSelection=new OfflineDetailSelection()){await blockedSelection.Configure(Path.Combine(root,"initial.json"));await blockedSelection.Configure(blocked);await blockedSelection.Load(map);check(blockedSelection.Current!=null&&blockedSelection.Status.Contains("could not save"),"Preference write failure retains usable loaded map and reports the problem");}
+   // Each receiver/workspace supplies its own settings path; clearing one must not affect another.
+   string fox=Path.Combine(root,"fox.json"),air=Path.Combine(root,"aviation.json");using(var a=new OfflineDetailSelection())using(var b=new OfflineDetailSelection()){await a.Configure(fox);await b.Configure(air);await a.Load(map);await b.Load(second);a.Remove();check(b.Current?.Name=="Second test map"&&JsonDocument.Parse(File.ReadAllText(air)).RootElement.GetProperty("Path").GetString()==second,"Fox Hunt and Aviation map choices remain independent");}
+  }finally{foreach(var file in Directory.GetFiles(root))File.Delete(file);foreach(var dir in Directory.GetDirectories(root))Directory.Delete(dir);Directory.Delete(root);}
+ }
+}

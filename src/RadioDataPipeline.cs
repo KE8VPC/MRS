@@ -1,0 +1,70 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text.Json;
+using System.Threading.Channels;
+namespace MRS;
+// Bounded receive-only helper session; no device, socket, upload or transmitter ownership.
+internal sealed class RadioDataPipeline:IDisposable
+{
+ private sealed record WeakJob(PacketContext Context,long Slot,double Correction,long Epoch);
+ private sealed class Session(PacketContext context){internal readonly PacketContext Context=context;internal readonly CancellationTokenSource Cancel=new();internal readonly Channel<byte[]> Input=Channel.CreateBounded<byte[]>(64);internal Task Work=Task.CompletedTask;internal PacketContext Latest=context;internal readonly Dictionary<int,WeakJob> Jobs=[];internal int Job;internal bool Failed;}
+ private readonly object gate=new();private Session? active;private string mode="",state="Off";private bool disposed;private long drops,decoded;private readonly Queue<PacketObservation> results=[];private double timeOffset,requestedOffset;private long timingEpoch;private string timingEvent="";internal event Action? ClockJump;private readonly float[] ring=new float[257];private readonly double[] taps=Filter();private int cursor,phase;private long slot=-1;private readonly List<float> window=[];private PacketContext? windowContext;private int windowJob;private double sampleTime;private bool hasTime;
+ internal readonly record struct Cycle(string Source,string Mode,long Slot,long Epoch);
+ private readonly Queue<Cycle> completedCycles=[];
+ internal Cycle[] DrainCycles(){lock(gate){var result=completedCycles.ToArray();completedCycles.Clear();return result;}}
+ internal (double Progress,double Period,long Decoded,long Dropped,string State) Progress{get{lock(gate){double period=mode=="FT4"?7.5:mode=="WSPR"?120:15;return(Math.Clamp((window.Count-(mode=="WSPR"?0:12000))/12000.0,0,period),period,decoded,drops,mode.Length==0?"Off":active==null?"Waiting for source":active.Failed?state:"Receiving");}}}
+ internal bool Enabled{get{lock(gate)return mode.Length>0;}}internal string Status{get{lock(gate)return state+(timingEvent.Length>0?" · "+timingEvent:"")+$" · decoded {decoded} · dropped {drops}";}}
+ internal void Configure(string value,double offset=0){lock(gate){ResetCore();mode=value;timeOffset=requestedOffset=offset;state=value.Length==0?"Off":"Waiting for a source";}}
+ internal void Reset(){lock(gate){ResetCore();state=mode.Length>0?"Source changed — waiting for fresh samples":"Off";}}
+ private void ResetCore(){timingEpoch++;timingEvent="";active?.Input.Writer.TryComplete();active?.Cancel.Cancel();active=null;window.Clear();slot=-1;cursor=phase=0;Array.Clear(ring);windowContext=null;windowJob=0;hasTime=false;}
+ internal void SetTimeOffset(double value){if(!double.IsFinite(value)||Math.Abs(value)>86410)throw new ArgumentOutOfRangeException(nameof(value));lock(gate){if(Math.Abs(requestedOffset-value)>.005)timingEpoch++;requestedOffset=value;}}
+ internal long TimingEpoch{get{lock(gate)return timingEpoch;}}
+ internal double AppliedOffset{get{lock(gate)return timeOffset;}}
+ internal void Complete(){lock(gate){if(active is { } s){if(mode is "FT8" or "FT4" or "WSPR"){int size=mode=="FT4"?90000:mode=="WSPR"?1440000:180000,pad=mode=="WSPR"?0:12000;if(slot>=0&&windowContext!=null&&window.Count>=size+pad-100){while(window.Count<size+2*pad)window.Add(0);SubmitWindow(s,size+2*pad);window.Clear();state="Source ended — final window queued";}}s.Input.Writer.TryComplete();}}}
+ private void SubmitWindow(Session s,int count){byte[] frame=new byte[4+count*4];BitConverter.GetBytes(count).CopyTo(frame,0);Buffer.BlockCopy(window.ToArray(),0,frame,4,count*4);if(Queue(s,frame))s.Jobs[windowJob++]=new(windowContext!,slot,timeOffset,timingEpoch);}
+ private static double[] Filter(){var h=new double[257];double sum=0;for(int i=0;i<h.Length;i++){double x=i-128;h[i]=(x==0?2*4500.0/48000:Math.Sin(2*Math.PI*4500*x/48000)/(Math.PI*x))*(.54-.46*Math.Cos(2*Math.PI*i/256));sum+=h[i];}for(int i=0;i<h.Length;i++)h[i]/=sum;return h;}
+ internal void FeedPcm(ReadOnlySpan<byte> pcm,int channels,PacketContext context,double utcSeconds,bool trackClock=false){if(channels is not (1 or 2))return;var values=new double[pcm.Length/(2*channels)];for(int i=0;i<values.Length;i++){int at=i*channels*2;double v=System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(pcm.Slice(at,2));if(channels==2)v=(v+System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(pcm.Slice(at+2,2)))/2;values[i]=v;}Feed(values,context,utcSeconds,trackClock);}
+ internal void Feed(double[] samples,PacketContext context,double startSeconds,bool trackClock=false)
+ {
+  lock(gate){if(disposed||mode.Length==0)return;if(active==null||active.Context.Key!=context.Key){ResetCore();var s=new Session(context);active=s;string selected=mode;s.Work=Task.Run(()=>Run(s,selected));}var session=active;if(session.Failed)return;session.Latest=context;
+   if(mode is "Signaling" or "SAME" or "DTMF" or "ANI"){byte[] data=new byte[samples.Length*2];for(int i=0;i<samples.Length;i++)System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(data.AsSpan(i*2,2),(short)Math.Clamp(double.IsFinite(samples[i])?samples[i]:0,short.MinValue,short.MaxValue));Queue(session,data);return;}
+   int size=mode=="FT4"?90000:mode=="WSPR"?1440000:180000,pad=mode=="WSPR"?0:12000;double period=size/12000.0;
+   if(Math.Abs(requestedOffset-timeOffset)>.005){timeOffset=requestedOffset;timingEpoch++;timingEvent="Timing correction applied; partial window discarded";window.Clear();slot=-1;windowContext=null;state="Timing correction changed — reacquiring a complete window";}
+   if(!hasTime){sampleTime=startSeconds;hasTime=true;}
+   else if(trackClock){double error=startSeconds-sampleTime;if(Math.Abs(error)>.5){sampleTime=startSeconds;timingEpoch++;timingEvent="Clock/source discontinuity; reacquisition";ClockJump?.Invoke();window.Clear();slot=-1;windowContext=null;drops++;state="Clock/source discontinuity — reacquiring";}else sampleTime+=Math.Clamp(error*.01,-.001,.001);}
+   for(int i=0;i<samples.Length;i++){ring[cursor]=(float)((double.IsFinite(samples[i])?samples[i]:0)/32768.0);if(++phase==4){phase=0;double t=sampleTime+i/48000.0+timeOffset;
+    if(slot<0){long now=(long)Math.Floor(t/period);slot=t-now*period<.05?now:now+1;windowContext=context;}
+    double begin=slot*period-pad/12000.0;
+    if(t>=begin){if(window.Count==0){int missing=(int)Math.Round((t-begin)*12000);for(int k=0;k<Math.Min(pad,missing);k++)window.Add(0);}
+     double value=0;int at=cursor;for(int n=0;n<taps.Length;n++){value+=ring[at]*taps[n];if(--at<0)at=256;}window.Add((float)value);
+     if(window.Count>=size+2*pad){SubmitWindow(session,size+2*pad);window.RemoveRange(0,size);slot++;windowContext=context;if(Math.Abs(t-(slot*period+pad/12000.0))>.05){timingEvent="Stream clock drift; reacquisition";window.Clear();slot=-1;windowContext=null;state="Stream clock drift — reacquiring a complete window";}else state=$"{mode} decoding completed window";}
+     else state=$"{mode} collecting {Math.Max(0,(window.Count-pad)/12000.0):0.0}/{period:0.0} s + margin";
+    }
+   }if(++cursor==257)cursor=0;}sampleTime+=samples.Length/48000.0;
+  }
+ }
+ private bool Queue(Session s,byte[] bytes){if(s.Jobs.Count<2&&s.Input.Writer.TryWrite(bytes))return true;drops++;state="Decoder backlog — source reset required";s.Failed=true;s.Cancel.Cancel();s.Input.Writer.TryComplete();return false;}
+ private static Process Worker(string path,params string[] args){if(!File.Exists(path))throw new FileNotFoundException("Missing helper; extract the complete ZIP",path);var p=new Process{StartInfo=new(path){UseShellExecute=false,CreateNoWindow=true,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Path.GetDirectoryName(path)!}};foreach(var a in args)p.StartInfo.ArgumentList.Add(a);return p;}
+ private async Task Run(Session s,string selected)
+ {
+  Process? process=null;try{string root=Path.Combine(AppContext.BaseDirectory,"Decoders");bool signal=selected is "Signaling" or "SAME" or "DTMF",ani=selected=="ANI";process=signal?Worker(Path.Combine(root,"Paging","multimon-ng.exe"),"--json","-q","-a","EAS","-a","DTMF","-t","raw","-"):ani?Worker(Path.Combine(root,"RadioData","mrs-ani.exe")):Worker(Path.Combine(root,"RadioData","mrs-weak.exe"),selected,selected=="WSPR"?"0":"1");process.Start();using var kill=s.Cancel.Token.Register(()=>{try{process.Kill(true);}catch{}});string error="";var stderr=SensorPipeline.Lines(process.StandardError,l=>error=l,s.Cancel.Token);var stdout=SensorPipeline.Lines(process.StandardOutput,line=>{lock(gate){if(active!=s)return;try{if(line.Contains("\"done\"")){if(s.Jobs.Remove(s.Job++,out var done)){if(completedCycles.Count>=512)completedCycles.Dequeue();completedCycles.Enqueue(new(done.Context.Key,selected,done.Slot,done.Epoch));}return;}var job=s.Jobs.GetValueOrDefault(s.Job);var ctx=selected is "Signaling" or "SAME" or "DTMF" or "ANI"?s.Latest:job?.Context??s.Context;if(job!=null){var node=System.Text.Json.Nodes.JsonNode.Parse(line)!;node["mrs_epoch"]=job.Epoch;node["mrs_slot"]=job.Slot;node["mrs_correction"]=job.Correction;line=node.ToJsonString();}var observation=signal?RadioDataParse.Signaling(line,ctx):RadioDataParse.Json(line,ctx);if(observation!=null){if(results.Count>=500)results.Dequeue();results.Enqueue(observation);decoded++;}}catch(JsonException){}}},s.Cancel.Token);
+   var resample=new PagingResampler();await foreach(var data in s.Input.Reader.ReadAllAsync(s.Cancel.Token)){byte[] bytes=data;if(signal){var v=new double[data.Length/2];for(int i=0;i<v.Length;i++)v[i]=System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(data.AsSpan(i*2,2))/2.5;bytes=resample.Convert(v);}await process.StandardInput.BaseStream.WriteAsync(bytes,s.Cancel.Token);await process.StandardInput.BaseStream.FlushAsync(s.Cancel.Token);}process.StandardInput.Close();await process.WaitForExitAsync(s.Cancel.Token);await Task.WhenAll(stdout,stderr);if(process.ExitCode!=0)throw new IOException(error.Length>0?error:"Decoder worker failed");
+  }catch(OperationCanceledException){}catch(Exception ex){lock(gate){s.Failed=true;s.Input.Writer.TryComplete();if(active==s)state="Decoder stopped: "+ex.Message;}}finally{try{if(process is {HasExited:false})process.Kill(true);}catch{}process?.Dispose();}
+ }
+ internal PacketObservation[] Drain(){lock(gate){var a=results.ToArray();results.Clear();return a;}}public void Dispose(){lock(gate){disposed=true;ResetCore();}}
+}
+internal static class RadioDataParse
+{
+ internal static PacketObservation? Signaling(string line,PacketContext c){using var d=JsonDocument.Parse(line);var j=d.RootElement;string S(string k)=>j.TryGetProperty(k,out var v)?v.ToString():"";string name=S("demod_name"),text,kind,validation,protocol;bool valid=false;
+  if(name=="DTMF"){text=S("digit");if(text.Length!=1||!"0123456789ABCD*#".Contains(text))return null;protocol="DTMF";kind="Tone digit";validation="Tone detection — no checksum";}
+  else if(name=="EAS"){protocol="SAME / EAS";if(S("end_of_message")=="NNNN"){text="NNNN";kind="End of message";validation="End-marker candidate";}else{string raw=S("header_begin")+S("last_message");var m=System.Text.RegularExpressions.Regex.Match(raw,@"^ZCZC-([A-Z]{3})-([A-Z]{3})-((?:[0-9]{6}-?)+)\+([0-9]{4})-([0-9]{7})-([^-]{1,8})-$");kind="Alert header";validation="Two of three headers agree (helper); not authenticated";valid=m.Success;if(!valid)validation="Malformed SAME header";text=raw;if(valid){string eventCode=m.Groups[2].Value;var names=new Dictionary<string,string>{{"RWT","Required Weekly Test"},{"RMT","Required Monthly Test"},{"TOR","Tornado Warning"},{"SVR","Severe Thunderstorm Warning"},{"FFW","Flash Flood Warning"},{"EVI","Evacuation Immediate"},{"EAN","Emergency Action Notification"}};text+=$" · originator {m.Groups[1].Value} · event {eventCode} {names.GetValueOrDefault(eventCode,"")} · area codes {m.Groups[3].Value} · duration HHMM {m.Groups[4].Value} · issue UTC day/time JJJHHMM {m.Groups[5].Value} · sender {m.Groups[6].Value.Trim()}";}}}else return null;
+  return new(DateTimeOffset.UtcNow,c.Source,c.Replay,c.FrequencyHz,c.PositionSeconds,validation,"","","",kind,text,null,"",protocol,valid,SourceKey:c.Key,DecoderJson:line);
+ }
+ internal static PacketObservation? Json(string line,PacketContext c){using var doc=JsonDocument.Parse(line);var j=doc.RootElement;string S(string key)=>j.TryGetProperty(key,out var v)?v.ToString():"";string p=S("protocol");if(p.Length==0)return null;string from="",to="",kind="Decoded message",text=S("text"),validation="";
+  if(p=="MDC1200"){from=S("unit");kind="Radio signaling";text=$"Unit {from} (0x{int.Parse(from):X4}) · op {S("op")} · arg {S("arg")} · frames {S("frames")} · extra {S("extra")}";validation="MDC decoder packet checks passed";}
+  else if(p=="FleetSync"){from=$"{S("from_fleet")}-{S("from_unit")}";to=$"{S("to_fleet")}-{S("to_unit")}";kind="Radio signaling";text=$"{from} → {to} · cmd {S("cmd")}/{S("subcmd")} · FleetSync II {S("fsync2")} · payload {S("payload")}";validation="FleetSync decoder packet checks passed";}
+  else if(p is "FT8" or "FT4"){var parsed=WeakDecode.From(new PacketObservation(DateTimeOffset.UtcNow,c.Source,c.Replay,c.FrequencyHz,c.PositionSeconds,"","","","","",text,null,"",p,true,DecoderJson:line));from=parsed.Sender;to=parsed.Destination;validation="LDPC / CRC passed; sync score is not SNR";string estimated=j.TryGetProperty("dt_error",out var dt)?dt.GetDouble().ToString("0.000",System.Globalization.CultureInfo.InvariantCulture):"unavailable";text+=$" · audio {S("audio_hz")} Hz · estimated DT {estimated} s · window offset {S("dt")} s · sync score {S("sync_score")}";}
+  else if(p=="WSPR"){from=S("call");kind="Propagation beacon";text+=$" · grid {S("grid")} · power {S("power_dbm")} dBm · audio {S("audio_hz")} Hz · SNR {S("snr_db")} dB · drift {S("drift")}";validation="WSPR FEC decode; no message CRC";}else return null;
+  return new(DateTimeOffset.UtcNow,c.Source,c.Replay,c.FrequencyHz,c.PositionSeconds,validation,from,to,"",kind,text,null,"",p,p!="WSPR",SourceKey:c.Key,DecoderJson:line);
+ }
+}

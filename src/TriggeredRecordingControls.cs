@@ -81,7 +81,6 @@ public partial class MainWindow
 
         Slider("Storage limit MB (per recorder)",64,16384,p=>p.BudgetMb,(p,v)=>p with{BudgetMb=(int)v},64);
 
-        body.Children.Add(new TextBlock{Text="I/Q uses the calibrated RF threshold. MP3 uses squelched listening audio before speaker volume (including decoded voice); mono 64 kbps or stereo 128 kbps. Both uses audio VOX for both recorders. Encoding is background work; temporary PCM files count toward the MP3 storage limit. Failed encodes retain WAV evidence and report an error. Settings apply at Arm. Stop/disconnect disarms; retune starts a separate clip.",Foreground=Brushes.LightSteelBlue,TextWrapping=TextWrapping.Wrap,FontSize=11,Margin=new Thickness(0,6,0,4)});
 
         var actions=new WrapPanel();actions.Children.Add(automaticIqArm);actions.Children.Add(automaticIqStop);body.Children.Add(actions);body.Children.Add(automaticIqStatus);
 
@@ -102,7 +101,7 @@ public partial class MainWindow
 
                 if(automaticFormat!=0)automaticAudio.Arm(automaticFolder,workspaceSlot,new(voxThreshold,automaticOptions.PreSeconds,automaticOptions.TailSeconds,automaticOptions.MaximumSeconds,automaticOptions.BudgetMb,voxStereo));
 
-                try{if(automaticFormat!=1)automaticIq.Arm(automaticFolder,workspaceSlot,new(3,DateTimeOffset.UtcNow,receiver.AppliedChannel!.Mode=="WFM",receiver.RequestedGain,recoveryPlan?.Identity,receiver.AppliedChannel.Mode,receiver.SamplingMode,receiver.Backend),automaticOptions);}catch{automaticAudio.Disarm();throw;}Save();
+                try{if(automaticFormat!=1)automaticIq.Arm(automaticFolder,workspaceSlot,new(3,DateTimeOffset.UtcNow,receiver.AppliedChannel!.Mode=="WFM",receiver.RequestedGain,recoveryPlan?.Identity,receiver.AppliedChannel.Mode,receiver.SamplingMode,receiver.Backend,receiver.AppliedPpm),automaticOptions);}catch{automaticAudio.Disarm();throw;}Save();
 
 
 

@@ -1,3 +1,370 @@
+PASS: Fresh map selection does not create localized defaults
+PASS: Explicit local map load activates geometry and preserves its full path
+PASS: Saved offline detail restores from a local reference after restart
+PASS: Invalid replacement preserves loaded map and saved selection
+PASS: Failed replacement explains that previous detail remains active
+PASS: Missing map on restart is reported without rewriting the preference
+PASS: Remove detail clears the active map reference
+PASS: Removed offline detail stays removed on restart
+PASS: Corrupt map preference is reported and preserved for review
+PASS: Saved map preferences are size bounded
+PASS: Automatic map restore does not open UNC network paths
+PASS: Removing detail during loading prevents a late map from reappearing
+PASS: Latest map selection wins over an earlier delayed import
+PASS: Removing during startup map restore can save without a Windows file-sharing conflict
+PASS: A removed startup restore cannot reactivate its old map
+PASS: Closing a map invalidates an in-progress import
+PASS: Preference write failure retains usable loaded map and reports the problem
+PASS: Fox Hunt and Aviation map choices remain independent
+PASS: Connect Plus waits for repeated valid mapped grants
+PASS: Connect Plus retains its mapped carrier, slot and expected color code
+PASS: Connect Plus ended assignment is not available from stale cached data
+PASS: Connect Plus fresh control evidence can renew an ended assignment
+PASS: Connect Plus unconfirmed maps stay blocked in normal mode
+PASS: Connect Plus optional confirmation keeps tentative attribution
+PASS: Connect Plus expected site requires decoded identity
+PASS: Connect Plus foreign network stops use of this map
+PASS: DMR Tier III waits for repeated valid mapped grants
+PASS: DMR Tier III retains its mapped carrier, slot and expected color code
+PASS: DMR Tier III ended assignment is not available from stale cached data
+PASS: DMR Tier III fresh control evidence can renew an ended assignment
+PASS: DMR Tier III unconfirmed maps stay blocked in normal mode
+PASS: DMR Tier III optional confirmation keeps tentative attribution
+PASS: DMR Tier III expected site requires decoded identity
+PASS: DMR Tier III foreign network stops use of this map
+PASS: Cap+ exposes both researched slots on one mapped carrier
+PASS: Retiring one Cap+ slot does not remove another slot's call
+PASS: Confirmed Cap+ rest signaling moves to its researched carrier frequency
+PASS: Explicit control-carrier color code remains an identity check in tentative mode
+PASS: Independent MMDVM full LC can confirm the expected DMR call identity
+PASS: A terminator from another color code cannot end the followed DMR call
+PASS: A terminator on the other DMR slot cannot end the followed call
+PASS: A terminator for another TG cannot end the followed call
+PASS: Failed LC validation cannot end the followed call
+PASS: Matching validated slot/TG/color terminator ends the intended DMR call
+PASS: Unknown-color late entry does not accept an unbound terminator
+PASS: Unknown map color can bind to a matching validated full LC
+PASS: A followed call does not switch color code after binding
+PASS: Matching full LC can restore the call identity after interference
+PASS: Invalid headers do not update confirmed voice metadata
+PASS: Validated DMR voice identifiers are retained for audio/history attribution
+PASS: A different color code cannot overwrite an established voice identity
+PASS: DMR call-end history retains protocol, slot and confirmed color code
+PASS: DMR CSV import retains optional color code while keeping imported maps unconfirmed
+PASS: Legacy DMR map CSV without color code remains compatible
+PASS: Out-of-range map color codes are rejected
+PASS: Fox trend compares robust recent windows for increasing power
+PASS: Fox trend distinguishes decreasing power
+PASS: Fox trend reports steady reception
+PASS: Fox trend expires after a reception gap
+PASS: Fox does not infer a reliable trend without noise evidence
+PASS: Fox noise-only observations cannot show stronger/closer guidance
+PASS: Fox needs enough temporal coverage for a trend
+PASS: Fox does not bridge route gaps for trend comparison
+PASS: Fox trend also supports five-second logging intervals
+PASS: Synthetic surrounding route yields a rough source area: Rough estimate 64 spatial groups · model spread ≈ 0.7 km; not a calibrated confidence radius. Assumes one stationary transmitter with stable output.
+PASS: Synthetic estimated area is close to the model source without exact-coordinate promises
+PASS: Fox estimate reports model spread without invented confidence percentage
+PASS: Flat power cannot establish a transmitter location
+PASS: Unknown noise reference withholds a source area
+PASS: Near-floor route cannot yield a source pin
+PASS: Possible clipping withholds source estimates
+PASS: Poor GPS quality does not support a source estimate
+PASS: Stale fixes cannot support historical source estimates
+PASS: Manual locations are excluded from automatic source estimates
+PASS: Gain changes reject a mixed source-estimation session
+PASS: Automatic RF gain is rejected by the estimator
+PASS: A long single-road route cannot masquerade as triangulation
+PASS: Stationary duplicates do not inflate source coverage
+PASS: Random spatial power is not accepted as a stable source model
+PASS: Unknown constant receiver/transmitter power offset does not move the model area
+PASS: Background source search supports cancellation
+PASS: Stopped Fox session estimates are explicitly historical
+PASS: Live Fox estimate hides its area after measurements pause
+PASS: A stopped session remains available for deliberate historical review
+PASS: Backwards clock changes cannot make an estimate appear freshly calculated
+PASS: Source-area status retains sample count and measurement time
+PASS: GPX preserves per-observation RF gain/noise/GPS context
+PASS: Local GeoJSON imports road/place/boundary names and provenance
+PASS: Offline geometries are frozen for safe background import
+PASS: Projected/out-of-range map coordinates are rejected
+PASS: Custom-CRS map files require explicit WGS84 conversion
+PASS: Empty local maps do not replace usable offline detail
+PASS: Dedicated trunk I/Q path recovers the independent 18-frame clear P25 voice fixture
+PASS: Decoded trunk audio retains the assigned TG and voice frequency
+PASS: Followed clear voice contains synthesized PCM and updates decoded sample counts
+PASS: A generated P25 terminator ends the actual followed I/Q call with its TG retained
+PASS: Wrong talkgroup I/Q remains muted without stale audio from the previous call
+PASS: Wrong NAC I/Q cannot produce followed audio
+PASS: Encrypted P25 fixture remains muted through the complete trunk I/Q worker
+PASS: Voice I/Q without encryption metadata cannot create a decoded-audio success
+PASS: Signed I/Q with +250 kHz capture offset follows the correct digital voice channel
+PASS: Stopping a followed call discards queued audio rather than playing it under a later assignment
+PASS: Dedicated StartExternal emits one explicit assignment with TG/frequency
+PASS: External assignment does not restart its model twice
+PASS: External model reports voice rather than control monitoring
+PASS: Dedicated call end retains assigned TG and frequency
+PASS: Trunk history NAC uses hexadecimal consistently with P25 identifiers
+PASS: Unknown or invalid NAC is left blank instead of appearing as an identifier
+PASS: A mismatched NAC cannot retire another system's available call
+PASS: Finished assignment removes only its cached grant, preserving other calls
+PASS: A fresh valid grant permits the same talkgroup/channel to be followed again
+PASS: Lease eligibility accepts positive unfiltered groups only
+PASS: Current allow list applies to existing lease eligibility
+PASS: Current hold applies to existing lease eligibility
+PASS: Ignore takes precedence over a held talkgroup
+PASS: Clearing filters restores eligibility without a receiver pause
+PASS: Assignment/tune events do not claim decoded audio
+PASS: Fox GPS decodes independently checksummed GGA coordinates
+PASS: Fox GPS retains satellites, HDOP and altitude
+PASS: Fox RMC UTC date/speed/course are distinct from receive time
+PASS: Fox GPS fix expires after three seconds without fresh position
+PASS: Fox accepts multi-GNSS talker and southern/western hemispheres
+PASS: Valid-checksum no-fix RMC immediately invalidates the previous position
+PASS: Fox rejects coordinates with invalid minutes
+PASS: Fox rejects GGA zero-quality fix
+PASS: Simulator NMEA cannot become a live GPS fix
+PASS: Dead-reckoned-only GGA is not treated as a current GPS position
+PASS: Fox drops bad NMEA checksum
+PASS: Fox geodesic separation has expected distance
+PASS: Windows GPS DCB interop layout is exactly 28 bytes
+PASS: Fox RF window drops invalid powers
+PASS: Fox RF data cannot silently remain fresh after source stops
+PASS: Fox RF queue stays bounded
+PASS: Fox blocks automatic RTL RF gain before creating a log
+PASS: Fox never records a location without a fix
+PASS: Fox never invents RF power for a GPS-only observation
+PASS: Fox pauses points on stale GPS rather than reusing old position
+PASS: Fox averages RF power in linear units and retains peak separately
+PASS: Fox retains sample count, noise evidence and route segment
+PASS: Gain changes cannot contaminate the current comparable session
+PASS: Position-source changes cannot silently mix into a session
+PASS: Signal-only logging excludes closed-squelch power readings
+PASS: Fox starts a new route segment after a long measurement gap
+PASS: GPX export preserves measured points and discontinuous segments
+PASS: Fox CSV flushes each row with invariant RF/channel metadata
+PASS: Fox will not overwrite an existing log
+PASS: Fox map colors distinguish relative weaker/stronger measurements
+PASS: General license data segment and own-call identification accepted
+PASS: Technician profile blocks HF FT8 outside 10 m
+PASS: HFGCS/listening references never unlock TX
+PASS: Entire digital emission must fit reviewed data segment
+PASS: Encoded sender must match declaration
+PASS: License confirmation required on every armed session
+PASS: Digital worker permit binds exact message, slot, gain and device
+PASS: Digital permit blocks edited audio offset
+PASS: Digital permit blocks a different device
+PASS: FT8 scheduler reserves startup lead
+PASS: FT8 scheduled parity is correct
+PASS: FT8 encoder produces complete standard channel symbols
+PASS: FT8 waveform has protocol lead and finite phase-shaped samples
+PASS: FT8 newly encoded waveform decodes end to end
+PASS: FT4 scheduler reserves startup lead
+PASS: FT4 scheduled parity is correct
+PASS: FT4 encoder produces complete standard channel symbols
+PASS: FT4 waveform has protocol lead and finite phase-shaped samples
+PASS: FT4 newly encoded waveform decodes end to end
+PASS: WSPR scheduler reserves startup lead
+PASS: WSPR scheduled parity is correct
+PASS: WSPR encoder produces complete standard channel symbols
+PASS: WSPR waveform has protocol lead and finite phase-shaped samples
+PASS: WSPR newly encoded waveform decodes end to end
+PASS: Actual quantized streaming I/Q generator decodes after independent real-channel extraction
+PASS: WSPR I/Q remains modulated after 80 seconds (phase-table index cannot overflow)
+PASS: Unsupported free-text TX cannot silently become a different format
+PASS: WSPR rejects unrepresentable power levels
+PASS: Other-destination report cannot advance selected QSO
+PASS: Replay cannot advance transmit exchange
+PASS: Answering QSO advances received report to reciprocal R-report
+PASS: Answering QSO emits final 73 after peer RR73
+PASS: Final 73 completes and stops exchange
+PASS: Calling-side received grid advances to report
+PASS: Calling-side received R-report advances to RR73
+PASS: Received peer 73 completes QSO
+PASS: iGate retains original body/path and uses receive-only qAO
+PASS: iGate excludes recordings
+PASS: iGate never uploads old backlog
+PASS: Generic non-APRS AX.25 UI payloads are not reported
+PASS: iGate drops generic queries
+PASS: iGate blocks Internet-origin third-party frames
+PASS: iGate honors third-party NOGATE
+PASS: RF-only third-party header is correctly unwrapped
+PASS: RF content cannot inject APRS-IS lines
+PASS: APRS-IS line respects 512-byte limit including CRLF
+PASS: iGate independently rejects bad original FCS
+PASS: iGate accepts only UI control and no-layer-3 PID
+PASS: Beacon schedule band offsets follow ten-second stagger
+PASS: Beacon schedule repeats every three minutes
+PASS: JS8 API always includes required params object
+PASS: Local APRS-IS server receives explicit station/software login
+PASS: No upload before verified login
+PASS: Verified mock APRS-IS session accepts fresh RF frame
+PASS: iGate duplicates suppressed across changing RF observations
+PASS: Local server receives one receive-only iGate packet
+PASS: Disable immediately stops further APRS reports
+PASS: JS8 bridge writes valid commands to local mock backend
+PASS: JS8 bridge receives framed local API events
+PASS: Weak message semantics: CQ WY0V EN12
+PASS: Shared From/To parsed: CQ WY0V EN12
+PASS: Weak message semantics: KJ4WXH WB3FME FM19
+PASS: Shared From/To parsed: KJ4WXH WB3FME FM19
+PASS: Weak message semantics: CQ DX W2XYZ FN42
+PASS: Shared From/To parsed: CQ DX W2XYZ FN42
+PASS: Weak message semantics: K1ABC W2XYZ RR73
+PASS: Shared From/To parsed: K1ABC W2XYZ RR73
+PASS: Weak message semantics: <...> W2XYZ -10
+PASS: Shared From/To parsed: <...> W2XYZ -10
+PASS: Weak message semantics: K1ABC <...> -10
+PASS: Shared From/To parsed: K1ABC <...> -10
+PASS: Hashed/unresolved sender is never invented
+PASS: Free text is not a sender callsign
+PASS: Measured SNR distinct from absent value; no sync-score substitution
+PASS: Watch highlight takes priority over CQ
+PASS: Ignore rule matches transmitting sender
+PASS: Sender ignore does not hide a station merely addressed
+PASS: Explicit destination ignore supported
+PASS: Portable/base matching is explicit
+PASS: Tracking counts sender observations, not destination mentions
+PASS: Reporter accepts validated live FT8 with known source frequency
+PASS: Reporter coalesces repeated CQ decodes before upload
+PASS: Reporter excludes replay
+PASS: Reporter excludes audio without known RF frequency
+PASS: Reporter excludes unresolved transmitters
+PASS: Reporter honors explicit ignored-row exclusion
+PASS: Reporting works without SNR
+PASS: Periodic reporting batch contains two stations, not one send per cycle
+PASS: PSK IPFIX header length/network order and datagram bound
+PASS: PSK set aligned and bounded
+PASS: PSK set aligned and bounded
+PASS: PSK set aligned and bounded
+PASS: PSK set aligned and bounded
+PASS: PSK set aligned and bounded
+PASS: PSK set aligned and bounded
+PASS: PSK sends actual transmitting callsign
+PASS: PSK RF frequency includes USB audio offset
+PASS: PSK mode, automatic source and sender grid correctly encoded
+PASS: PSK signed SNR encoded independently from synchronization score
+PASS: PSK receiver metadata includes actual M.R.S. version and selected rig
+PASS: Reporter suppresses repeat upload inside five minutes
+PASS: Reporting toggle does not defeat duplicate suppression
+PASS: Reporting disable clears pending queue
+PASS: Synthetic failed-send test queued
+PASS: Failed UDP reports remain queued without false delivery claim
+PASS: Diagnostic profile cannot activate live PSK Reporter transport
+PASS: Legacy sort settings migrate once to newest first
+PASS: Explicit later oldest-first choice survives restart
+PASS: Known-noise FT8 waveform decodes at -5 dB
+PASS: FT8 power-derived SNR -5.7 within 3.5 dB of injected -5.0 dB (2500 Hz reference)
+PASS: Known-noise FT8 waveform decodes at -15 dB
+PASS: FT8 power-derived SNR -16.1 within 3.5 dB of injected -15.0 dB (2500 Hz reference)
+PASS: Known-noise FT4 waveform decodes at -5 dB
+PASS: FT4 power-derived SNR -5.7 within 3.5 dB of injected -5.0 dB (2500 Hz reference)
+PASS: Known-noise FT4 waveform decodes at -10 dB
+PASS: FT4 power-derived SNR -10.6 within 3.5 dB of injected -10.0 dB (2500 Hz reference)
+PASS: TX denies missing authorization before hardware access
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = Unknown, Callsign = K1ABC, LicenseClass = Technician, CurrentLicense = True, LocalRulesChecked = True, EquipmentChecked = True }
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = United States, Callsign = , LicenseClass = Technician, CurrentLicense = True, LocalRulesChecked = True, EquipmentChecked = True }
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = United States, Callsign = K1ABC, LicenseClass = Novice, CurrentLicense = True, LocalRulesChecked = True, EquipmentChecked = True }
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = United States, Callsign = K1ABC, LicenseClass = Technician, CurrentLicense = False, LocalRulesChecked = True, EquipmentChecked = True }
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = United States, Callsign = K1ABC, LicenseClass = Technician, CurrentLicense = True, LocalRulesChecked = False, EquipmentChecked = True }
+PASS: TX denies missing/unsupported declaration: TxDeclaration { Country = United States, Callsign = K1ABC, LicenseClass = Technician, CurrentLicense = True, LocalRulesChecked = True, EquipmentChecked = False }
+PASS: TX rejects emission crossing supported edges or receive-only service 144100000
+PASS: TX rejects emission crossing supported edges or receive-only service 148000000
+PASS: TX rejects emission crossing supported edges or receive-only service 430000000
+PASS: TX rejects emission crossing supported edges or receive-only service 450000000
+PASS: TX rejects emission crossing supported edges or receive-only service 162400000
+PASS: TX rejects emission crossing supported edges or receive-only service 131550000
+PASS: TX rejects emission crossing supported edges or receive-only service 1090000000
+PASS: TX declaration bound to exact request and device
+PASS: TX rejects changed gain after arming
+PASS: TX rejects changed device
+PASS: TX rejects expired authorization
+PASS: ACARS decoder selection follows channel without disabling
+PASS: Aviation survives acquisition boundary
+PASS: Explicit Aviation Stop survives retune
+PASS: Reference import adds one saved channel
+PASS: Repeated reference import is deduplicated
+PASS: Reference import preserves existing same-frequency/mode labels regardless of protocol label
+PASS: Reference import persists on reload
+PASS: Reference import validates entire batch before saving
+PASS: Rejected reference batch preserves library
+PASS: Reference CSV usable for receiver presets/import: aviation-acars
+PASS: Reference CSV usable for receiver presets/import: aviation-vdl2
+PASS: Reference CSV usable for receiver presets/import: aviation-hf-voice
+PASS: Reference CSV usable for receiver presets/import: aviation-hf-volmet
+PASS: Reference CSV usable for receiver presets/import: aviation-hf-hfdl
+PASS: Reference CSV usable for receiver presets/import: amateur-presets
+PASS: Reference CSV usable for receiver presets/import: time-stations
+PASS: NTP four-timestamp calculation removes server processing and estimates UTC offset
+PASS: Stale NIST reference expires instead of claiming fresh synchronization
+PASS: NTP reference exposes delay uncertainty and fresh age
+PASS: Truncated NTP packet rejected
+PASS: Unsynchronized NTP server rejected
+PASS: NTP Kiss-o'-Death/rate-limit response rejected
+PASS: Unmatched NTP originate timestamp rejected
+PASS: NTP client-mode packet cannot be accepted as server time
+PASS: Missing NTP receive timestamp rejected
+PASS: Excessive NTP root dispersion rejected
+PASS: NTP era rollover after 2036 resolves near the client date
+PASS: Single received station cannot authorize automatic timing
+PASS: Duplicate station in the same slot does not inflate timing evidence
+PASS: Multiple CRC-valid stations and slots establish signed receive timing consensus
+PASS: Outlying station clock is excluded from receive timing
+PASS: WSPR no-CRC evidence is excluded from FT timing
+PASS: Invalid FT decodes cannot update timing
+PASS: Changing receiver/source discards old timing evidence
+PASS: Manual timing reset removes station estimates
+PASS: Overlapping FT4 window decodes a transmission extending beyond the ordinary slot boundary
+PASS: Pending timing corrections invalidate prior-window estimator epochs
+PASS: Decoder-only correction is applied after safely discarding incomplete acquisition
+PASS: Live clock jump discards acquisition, invalidates old timing evidence and remains visible
+PASS: SAME decodes structured event, county code, time and replay evidence
+PASS: DTMF tone candidates are not called checksum-validated
+PASS: Malformed tone results rejected
+PASS: Malformed SAME header cannot become validated alert
+PASS: Mesh protobuf rejects overflowing port identifiers
+PASS: Truncated mesh protobuf rejected
+PASS: Meshtastic public AES-CTR nonce/packet payload round-trip
+PASS: Public Meshtastic text decoded with identity and authentication limitation
+PASS: CRC-failed LoRa cannot supply mesh application text
+PASS: Wrong LoRa sync remains separate unverified evidence
+PASS: Public payload decoding toggle preserves opaque envelope
+PASS: MeshCore Public channel text and short MAC verified
+PASS: MeshCore corrupted public MAC does not expose claimed text
+PASS: Integrated same audio replay decodes expected message and source context (Waiting for a source · decoded 1 · dropped 0)
+PASS: same seek/retune resets decoder acquisition
+PASS: Integrated dtmf audio replay decodes expected message and source context (Waiting for a source · decoded 3 · dropped 0)
+PASS: dtmf seek/retune resets decoder acquisition
+PASS: Integrated mdc1200 audio replay decodes expected message and source context (Waiting for a source · decoded 1 · dropped 0)
+PASS: mdc1200 seek/retune resets decoder acquisition
+PASS: Integrated fleetsync audio replay decodes expected message and source context (Waiting for a source · decoded 1 · dropped 0)
+PASS: fleetsync seek/retune resets decoder acquisition
+PASS: Integrated ft8 audio replay decodes expected message and source context (Source ended — final window queued · decoded 1 · dropped 0)
+PASS: ft8 seek/retune resets decoder acquisition
+PASS: Integrated ft4 audio replay decodes expected message and source context (Source ended — final window queued · decoded 1 · dropped 0)
+PASS: ft4 seek/retune resets decoder acquisition
+PASS: Integrated wspr audio replay decodes expected message and source context (WSPR decoding completed window · decoded 1 · dropped 0)
+PASS: wspr seek/retune resets decoder acquisition
+PASS: Direct IQ channel bridge and LoRa demodulator recover generated mesh packet (Receiving Meshtastic · SF11 / 250 kHz / CR4/5 · frames 2 · dropped 0)
+PASS: Mesh seek/retune reacquires a fresh capture
+PASS: Signed fractional PPM command correction in both directions
+PASS: Disabled calibration leaves nominal tune unchanged
+PASS: Invalid calibration rejected: NaN
+PASS: Invalid calibration rejected: ∞
+PASS: Invalid calibration rejected: 201
+PASS: Invalid calibration rejected: -201
+PASS: FLEX control escapes render readable details and compact table text
+PASS: Readable paging formatting preserves raw payload and checksum evidence
+PASS: Paging display does not blanket-unescape arbitrary backslash sequences
+PASS: FLEX normalization does not change POCSAG or numeric payloads
+PASS: Actual CR/LF and escaped controls share stable readable line endings
+PASS: Direct control/voice selection creates isolated routing without typed group names
+PASS: Unchecking a voice receiver releases its saved assignment
+PASS: Voice assignment rejects an independent control target with actionable validation
+PASS: Direct receiver assignments round-trip across disk/restart
+PASS: Legacy receiver definitions remain compatible
+PASS: I/Q records PPM provenance while keeping nominal RF coordinates
+PASS: About dependency catalog identifies helpers and HTTPS source links
 PASS: Channel drafts do not store current talkgroup in channel name or notes
 PASS: Live site channel creates scoped folder hierarchy
 PASS: Site updates preserve user names/notes and paired uplink
@@ -664,22 +1031,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (54 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (18 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (64 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (36 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (77 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (101 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (78 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (72 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring

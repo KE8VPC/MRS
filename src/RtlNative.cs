@@ -69,6 +69,8 @@ internal static class RtlNative
                 Console.Write(JsonSerializer.Serialize(devices));
                 return 0;
             }
+            double ppm=args.Length>7?double.Parse(args[7],System.Globalization.CultureInfo.InvariantCulture):0;
+            uint Calibrate(uint hz){long value=FrequencyCalibration.HardwareHz(hz,ppm);if(value<1||value>uint.MaxValue||!SamplingModes.CanTune((uint)value,args.Length>6?int.Parse(args[6]):0))throw new IOException("PPM correction exceeds receiver range.");return (uint)value;}
             uint index = uint.Parse(args[1]); uint frequency = uint.Parse(args[2]); int gain = int.Parse(args[3]);
             int rate = args.Length > 4 ? int.Parse(args[4]) : SampleRate;
             if (!ReceiverStream.Rates.Contains(rate)) throw new IOException("Unsupported sample rate selection.");
@@ -87,7 +89,7 @@ internal static class RtlNative
             Check(rtlsdr_set_sample_rate(device, (uint)rate), "Set sample rate");
             uint appliedRate = rtlsdr_get_sample_rate(device);
             if (appliedRate != rate) throw new IOException($"Requested {rate} S/s but receiver applied {appliedRate} S/s. This rate cannot be processed accurately.");
-            Check(rtlsdr_set_center_freq(device, frequency), "Tune receiver");
+            Check(rtlsdr_set_center_freq(device, Calibrate(frequency)), "Tune receiver");
             // Disabling direct sampling retunes the previous center internally; establish a valid tuner frequency first.
             if (samplingMode == 0) Check(rtlsdr_set_direct_sampling(device, 0), "Select tuner sampling");
             if (rtlsdr_get_direct_sampling(device) != samplingMode) throw new IOException("Receiver did not apply the selected sampling branch.");
@@ -107,7 +109,7 @@ internal static class RtlNative
                 if (nextGain != int.MinValue) { appliedGain = SetGain(device, nextGain); gain = nextGain; }
                 if (controlsChanged || next != 0 && next != frequency)
                 {
-                    if (next != 0) Check(rtlsdr_set_center_freq(device, next), "Live retune");
+                    if (next != 0) Check(rtlsdr_set_center_freq(device, Calibrate(next)), "Live retune");
                     Check(rtlsdr_reset_buffer(device), "Flush retune buffer");
                     int discarded = 0;
                     while (discarded < rate / 10)

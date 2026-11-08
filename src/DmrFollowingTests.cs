@@ -1,0 +1,35 @@
+using System.IO;
+namespace MRS;
+internal static class DmrFollowingTests
+{
+ internal static DmrObservation ConGrant=>TrunkSignaling.Enrich(new(6,3,1,null,null,false,false,"",""),Convert.FromHexString("830601B9DA0004C02802AAFF"));
+ internal static DmrObservation TierGrant
+ {
+  get{var bytes=new byte[12];bytes[0]=0xB1;bytes[2]=0x12;bytes[3]=0x38;bytes[5]=1;bytes[6]=2;bytes[8]=3;bytes[9]=4;int crc=TrunkSignaling.Crc16(bytes.AsSpan(0,10))^0xA5A5;bytes[10]=(byte)(crc>>8);bytes[11]=(byte)crc;return TrunkSignaling.Enrich(new(6,3,1,null,null,false,false,"",""),bytes);}
+ }
+ internal static TrunkProfile Profile(string protocol,bool confirmed=true)=>new("dmr-test","Synthetic DMR",protocol,461000000,protocol=="DMR Tier III"?[new(0x123,461200000,confirmed,ColorCode:6)]:[new(1,461000000,confirmed,ColorCode:6),new(2,461150000,confirmed,ColorCode:6)]);
+ internal static void Run(Action<bool,string> check)
+ {
+  var now=DateTimeOffset.UtcNow;
+  foreach(var (protocol,grant) in new[]{("Connect Plus",ConGrant),("DMR Tier III",TierGrant)}){
+   var model=new TrunkFollower();model.Start(Profile(protocol),now);model.ObserveDmr(grant,461000000,now);check(model.Active==null,protocol+" waits for repeated valid mapped grants");model.ObserveDmr(grant,461000000,now.AddMilliseconds(100));var call=model.Active!;
+   check(call!=null&&call.Slot==2&&call.ColorCode==6&&call.Hz==(protocol=="Connect Plus"?461150000:461200000),protocol+" retains its mapped carrier, slot and expected color code");
+   model.RetireAvailable(call!);check(model.AvailableCalls(now.AddMilliseconds(100)).Length==0,protocol+" ended assignment is not available from stale cached data");model.ObserveDmr(grant,461000000,now.AddMilliseconds(200));check(model.AvailableCalls(now.AddMilliseconds(200)).Length==1,protocol+" fresh control evidence can renew an ended assignment");
+   model=new();model.Start(Profile(protocol,false),now);model.ObserveDmr(grant,461000000,now);model.ObserveDmr(grant,461000000,now);check(model.Active==null,protocol+" unconfirmed maps stay blocked in normal mode");
+   model=new(){RequireConfirmations=false};model.Start(Profile(protocol,false),now);model.ObserveDmr(grant,461000000,now);check(model.Active?.Evidence.Contains("TENTATIVE")==true,protocol+" optional confirmation keeps tentative attribution");
+   model=new(){RequireConfirmations=false};model.Start(Profile(protocol) with{NetworkId=99,SiteId=7},now);model.ObserveDmr(grant,461000000,now);check(model.Active==null,protocol+" expected site requires decoded identity");model.ObserveDmr(grant with{Network=100,Site=7},461000000,now);check(!model.Running,protocol+" foreign network stops use of this map");
+  }
+  var cap=new TrunkFollower();cap.Start(Profile("Capacity Plus"),now);var groups=new CapStatus(1,[new(3,91),new(4,92)]);cap.ObserveCap(groups,461000000,now);cap.ObserveCap(groups,461000000,now.AddMilliseconds(100));var calls=cap.AvailableCalls(now.AddMilliseconds(100));check(calls.Length==2&&calls.All(c=>c.ColorCode==6)&&calls.Any(c=>c.Slot==1&&c.Talkgroup==91)&&calls.Any(c=>c.Slot==2&&c.Talkgroup==92),"Cap+ exposes both researched slots on one mapped carrier");cap.RetireAvailable(calls.First(c=>c.Slot==1));check(cap.AvailableCalls(now.AddMilliseconds(100)) is [{Slot:2}],"Retiring one Cap+ slot does not remove another slot's call");
+  var header=DmrBits.Parse(DmrTests.Bits(Convert.FromHexString(TrunkTests.CapCall)),null)! with{Slot=1,ColorCode=6};
+  var rest=new TrunkFollower();rest.Start(Profile("Capacity Plus"),now);for(int i=0;i<3;i++)rest.ObserveDmr(header,461000000,now.AddMilliseconds(i*100));check(rest.ControlHz==461150000,"Confirmed Cap+ rest signaling moves to its researched carrier frequency");
+  var foreignControl=new TrunkFollower{RequireConfirmations=false};foreignControl.Start(Profile("Capacity Plus"),now);foreignControl.ObserveDmr(header with{ColorCode=7},461000000,now);check(!foreignControl.Running,"Explicit control-carrier color code remains an identity check in tentative mode");
+  var assignment=new TrunkCall("Capacity Plus",91,null,461150000,1,null,now,now,"Synthetic mapped grant",6);var gate=new DmrFollowIdentity(assignment);
+  check(gate.Observe(header)==DmrFollowAction.HeaderAccepted&&gate.Confirmed,"Independent MMDVM full LC can confirm the expected DMR call identity");
+  var end=header with{DataType=2};check(gate.Observe(end with{ColorCode=7})==DmrFollowAction.Ignored,"A terminator from another color code cannot end the followed DMR call");check(gate.Observe(end with{Slot=2})==DmrFollowAction.Ignored,"A terminator on the other DMR slot cannot end the followed call");check(gate.Observe(end with{Destination=92})==DmrFollowAction.Ignored,"A terminator for another TG cannot end the followed call");check(gate.Observe(end with{LinkValid=false})==DmrFollowAction.Ignored,"Failed LC validation cannot end the followed call");check(gate.Observe(end)==DmrFollowAction.Terminator,"Matching validated slot/TG/color terminator ends the intended DMR call");
+  gate=new(assignment with{ColorCode=null});check(gate.Observe(end)==DmrFollowAction.Ignored,"Unknown-color late entry does not accept an unbound terminator");check(gate.Observe(header)==DmrFollowAction.HeaderAccepted&&gate.ColorCode==6,"Unknown map color can bind to a matching validated full LC");check(gate.Observe(header with{ColorCode=7})==DmrFollowAction.HeaderRejected&&!gate.Confirmed&&gate.ColorCode==6,"A followed call does not switch color code after binding");check(gate.Observe(header)==DmrFollowAction.HeaderAccepted&&gate.Confirmed,"Matching full LC can restore the call identity after interference");check(gate.Observe(header with{LinkValid=false})==DmrFollowAction.Ignored,"Invalid headers do not update confirmed voice metadata");
+  var voiceModel=new TrunkFollower();voiceModel.AssignExternal(assignment with{ColorCode=null},"Synthetic control");voiceModel.ConfirmDmrVoice(6,12345);check(voiceModel.Active is{ColorCode:6,Radio:12345},"Validated DMR voice identifiers are retained for audio/history attribution");voiceModel.ConfirmDmrVoice(7,999);check(voiceModel.Active is{ColorCode:6,Radio:12345},"A different color code cannot overwrite an established voice identity");voiceModel.End(now,"Synthetic terminator");check(voiceModel.Events.Any(e=>e.Kind=="Call end"&&e.Slot==1&&e.ColorCode==6&&e.Protocol=="Capacity Plus"&&e.Radio==12345),"DMR call-end history retains protocol, slot and confirmed color code");
+  var row=TrunkMapRow.FromCsv(new(){{"lcn","2"},{"frequency_mhz","461.150000"},{"color_code","6"},{"confirmed","true"},{"evidence","Synthetic reference"}});check(row.ColorCode==6&&!row.Confirmed,"DMR CSV import retains optional color code while keeping imported maps unconfirmed");
+  check(TrunkMapRow.FromCsv(new(){{"lcn","2"},{"frequency_mhz","461.150000"}}).ColorCode==null,"Legacy DMR map CSV without color code remains compatible");
+  bool invalid=false;try{TrunkFollower.Validate(Profile("Connect Plus") with{Carriers=[new(2,461150000,true,ColorCode:16)]});}catch(IOException){invalid=true;}check(invalid,"Out-of-range map color codes are rejected");
+ }
+}

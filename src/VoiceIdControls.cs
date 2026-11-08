@@ -24,5 +24,5 @@ public partial class MainWindow
         };
     }
     private PacketContext VoiceContext(long hz)=>new($"voice-id:{Interlocked.Read(ref session)}:{hz}",$"Receiver {workspaceSlot} · "+(receiver.IsReplay?"I/Q replay":receiver.ReceiverName),receiver.IsReplay,hz,receiver.IsReplay?receiver.ReplayPosition.TotalSeconds:null);
-    private void UpdateDataCapture()=>receiver.CaptureData=Dmr.Enabled||p25Decoder.Enabled||pagingDecoder.Enabled||subaudibleDecoder.Enabled||voiceIds.Voice||digitalVoice.Enabled;
+    private void UpdateDataCapture()=>receiver.CaptureData=Dmr.Enabled||p25Decoder.Enabled||pagingDecoder.Enabled||subaudibleDecoder.Enabled||voiceIds.Voice||digitalVoice.Enabled||signalingData.Enabled||aniData.Enabled;
 }

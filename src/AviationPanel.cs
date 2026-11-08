@@ -56,7 +56,10 @@ public sealed class AviationPanel : UserControl
         status.Text="Enter a valid frequency in MHz.";return null;
     }
     internal void Feed(IqFrame frame,PacketContext context)=>pipeline.Feed(frame,context);
+    internal void Follow(long hz){pipeline.Follow(hz);Dispatcher.BeginInvoke(()=>frequency.Text=(hz/1e6).ToString("0.000000",CultureInfo.InvariantCulture));}
+    internal void Boundary()=>pipeline.Boundary();
     internal void Stop(string reason)=>pipeline.Stop(reason);
+    internal void ConfigureOfflineDetail(string folder)=>_=map.ConfigureOfflineDetail(System.IO.Path.Combine(folder,"aviation-offline-detail.json"));
     internal void Release(){pipeline.Dispose();map.Dispose();}
     internal void Finish()=>_ = pipeline.FinishAsync();
     internal void Observe(AviationMessage message){table.Observe(message);Observation?.Invoke(message.Packet);}
@@ -83,6 +86,9 @@ public sealed class AviationPanel : UserControl
     internal int MapTrailSegments=>map.TrailSegments;
     internal bool MapOnline=>map.OnlineEnabled;
     internal int MapNetworkRequests=>map.NetworkRequests;
+    internal void StartForTest(string key,long hz)=>pipeline.Start(key,hz);
+    internal bool DecoderEnabledForTest=>pipeline.Enabled;
+    internal long DecoderTargetForTest=>pipeline.TargetHz;
     internal void SetAdsbForTest()=>mode.SelectedIndex=2;
     internal void ClearForTest(){table.Clear();Refresh();}
     internal void FitMapForTest()=>map.FitForTest();

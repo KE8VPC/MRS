@@ -6,7 +6,7 @@ namespace MRS;
 public partial class MainWindow
 {
     private string? savedReceiverIdentity;
-    private sealed record RecoveryPlan(string Identity, long Frequency, int Rate, int Gain, bool Wide, string Mode = "NFM", double Bandwidth = 0, bool Agc = true, int SamplingMode = 0, string Backend = "RTL", CaptureOffset? Offset = null);
+    private sealed record RecoveryPlan(string Identity, long Frequency, int Rate, int Gain, bool Wide, string Mode = "NFM", double Bandwidth = 0, bool Agc = true, int SamplingMode = 0, string Backend = "RTL", CaptureOffset? Offset = null, double Ppm = 0);
     private RecoveryPlan? recoveryPlan;
     private int recoveryAttempts;
     private CancellationTokenSource? recoveryCancellation;
@@ -48,7 +48,7 @@ public partial class MainWindow
             foreach (System.Windows.Controls.ComboBoxItem item in RtlGain.Items) if (int.Parse(item.Tag.ToString()!) == plan.Gain) RtlGain.SelectedItem = item;
             updatingControls = true; SamplingModeBox.SelectedIndex = plan.SamplingMode; updatingControls = false; RefreshSamplingControls();
             rfMode = true; engine.StartExternal(2); Spectrum.SetRf(plan.Frequency, plan.Rate); SpectrumTitle.Text = "RF SPECTRUM / WATERFALL";
-            receiver.Start(device.Index, plan.Frequency, plan.Gain, plan.Wide, sampleRate: plan.Rate, identity: plan.Identity, mode: plan.Mode, bandwidth: plan.Bandwidth, agc: plan.Agc, samplingMode: plan.SamplingMode, backend: plan.Backend, captureOffset: plan.Offset);
+            receiver.Start(device.Index, plan.Frequency, plan.Gain, plan.Wide, sampleRate: plan.Rate, identity: plan.Identity, mode: plan.Mode, bandwidth: plan.Bandwidth, agc: plan.Agc, samplingMode: plan.SamplingMode, backend: plan.Backend, captureOffset: plan.Offset, ppm: plan.Ppm);
             Started(); RtlStatus.Text = "Same receiver reopened; waiting for I/Q. Recordings remain stopped."; Log(RtlStatus.Text);
         }
         catch (OperationCanceledException) { }

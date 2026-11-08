@@ -26,3 +26,6 @@ __pycache__/
 *.pyc
 
 decoders/voice/Sources/objects/
+
+# Generated receive-decoder regression audio only
+!testdata/radiodata/synthetic-*.wav

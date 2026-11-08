@@ -1,0 +1,2 @@
+downlink_mhz,label,role,mode,protocol,region,reference_status,source
+136.975,VDL2 common signaling channel,monitoring reference · VDL2 / VDL2 · International,VDL2,VDL2,International,Published VDL2 reference; not conventional AM ACARS,https://aisweb.decea.mil.br/eaip/20-2026_2026_10_01/eAIC/A%2029-2024_2024_11_28/AIC-pt-BR.html; reviewed 2026-11-01

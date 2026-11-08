@@ -24,7 +24,7 @@ internal sealed partial class HackRfNative
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int EnableFlush(IntPtr device,FlushCallback callback,IntPtr context);
     private void TransmitTest(IntPtr device,TxTestPlan plan,byte[]? packet=null)
     {
-        plan.Validate();if(packet!=null&&(packet.Length==0||packet.Length%2!=0||packet.Length>TxTestPlan.Rate*plan.Seconds*2))throw new ArgumentException("Invalid packet waveform length");long total=packet?.Length??(long)TxTestPlan.Rate*plan.Seconds*2;var tone=TxTestPlan.Tone();int stopped=0;long sent=0;int position=0;string? error=null;
+        TransmitAuthorization.Read(Environment.GetEnvironmentVariable(TransmitAuthorization.Variable),plan);plan.Validate();if(packet!=null&&(packet.Length==0||packet.Length%2!=0||packet.Length>TxTestPlan.Rate*plan.Seconds*2))throw new ArgumentException("Invalid packet waveform length");long total=packet?.Length??(long)TxTestPlan.Rate*plan.Seconds*2;var tone=TxTestPlan.Tone();int stopped=0;long sent=0;int position=0;string? error=null;
         _=Task.Run(()=>{try{while(Console.ReadLine() is {} line){if(line=="STOP")break;}}finally{Interlocked.Exchange(ref stopped,1);}});
         var clock=Stopwatch.StartNew();
         Callback callback=pointer=>
@@ -52,7 +52,7 @@ internal sealed partial class HackRfNative
         bool started=false;
         try
         {
-            clock.Restart();Check(Get<StartRx>("start_tx")(device,callback,IntPtr.Zero),"Start test transmission");started=true;
+            TransmitAuthorization.Read(Environment.GetEnvironmentVariable(TransmitAuthorization.Variable),plan);clock.Restart();Check(Get<StartRx>("start_tx")(device,callback,IntPtr.Zero),"Start test transmission");started=true;
             Console.WriteLine("TX_STARTED");Console.Out.Flush();
             while(Volatile.Read(ref stopped)==0&&clock.Elapsed.TotalSeconds<plan.Seconds+1&&(packet!=null?Volatile.Read(ref flushed)==0:Get<DeviceAction>("is_streaming")(device)==1))Thread.Sleep(10);
         }

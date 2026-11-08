@@ -1,3 +1,7 @@
+# Current station checklist — 0.46.0-preview1
+
+See Docs/ACCEPTANCE-0.46.0-preview1.md for the combined P25/DMR receiver-pool, Fox Hunt and optional offline-detail checks. Acknowledged tuning is separate from decoded voice and live station acceptance. Earlier acceptance records below remain historical.
+
 # Acceptance, support status and troubleshooting
 Context: Acceptance
 Keywords: test known signal dropped no data pass experimental trunk following

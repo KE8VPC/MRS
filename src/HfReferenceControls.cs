@@ -1,0 +1,24 @@
+using System.Diagnostics;
+using System.IO;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
+namespace MRS;
+internal static class BeaconSchedule
+{
+ internal static readonly string[] Calls={"4U1UN","VE8AT","W6WX","KH6RS","ZL6B","VK6RBP","JA2IGY","RR9O","VR2B","4S7B","ZS6DN","5Z4B","4X6TU","OH2B","CS3B","LU4AA","OA4B","YV5B"};
+ internal static string Expected(DateTimeOffset utc,int band)=>Calls[((int)(utc.ToUnixTimeSeconds()%180)/10-band+18)%18];
+}
+public partial class MainWindow
+{
+ private TabItem? hfReferenceTab;
+ private void InitializeHfReferences()
+ {
+  var root=new DockPanel{Margin=new(8)};var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);var row=new WrapPanel();top.Children.Add(row);var choice=new ComboBox{ItemsSource=new[]{"Amateur CW beacons","HFGCS"},SelectedIndex=0,Width=190};row.Children.Add(choice);var tune=new Button{Content="Tune selected (receive)"};row.Children.Add(tune);var source=new Button{Content="Open reference source"};row.Children.Add(source);var schedule=new TextBlock{Foreground=Brushes.Aquamarine,TextWrapping=TextWrapping.Wrap};top.Children.Add(schedule);var notes=new TextBlock{Foreground=Brushes.LightSteelBlue,TextWrapping=TextWrapping.Wrap,Text="Public listening references only; outages, propagation and schedules vary. A scheduled beacon is an expectation, not a decoded callsign. Use CW ID reception to confirm what you hear. HFGCS is a separate voice service from numbers stations."};top.Children.Add(notes);
+  var links=new WrapPanel();top.Children.Add(links);foreach(var pair in new[]{("Numbers station directory","https://priyom.org/number-stations"),("Current monitoring schedules","https://priyom.org/")}){var b=new Button{Content=pair.Item1};links.Children.Add(b);b.Click+=(_,_)=>Process.Start(new ProcessStartInfo(pair.Item2){UseShellExecute=true});}top.Children.Add(new TextBlock{Foreground=Brushes.LightSteelBlue,TextWrapping=TextWrapping.Wrap,Text="Numbers stations: browse original monitoring sources, then add a local receive preset or frequency entry. Frequencies and schedules change; third-party schedules are not bundled or treated as confirmed activity. No message decryption or operational interpretation is provided."});var logRow=new WrapPanel();top.Children.Add(logRow);var note=new TextBox{Width=340,MaxLength=200,ToolTip="Your observation; do not infer station identity from a frequency alone"};logRow.Children.Add(note);var log=new Button{Content="Log current tuned frequency"};logRow.Children.Add(log);var status=new TextBlock{Foreground=Brushes.Gainsboro,TextWrapping=TextWrapping.Wrap};top.Children.Add(status);
+  var grid=new DataGrid{AutoGenerateColumns=true,IsReadOnly=true,CanUserAddRows=false,Foreground=Brushes.Black,Background=Brushes.White};root.Children.Add(grid);grid.AutoGeneratingColumn+=(_,e)=>{if(e.PropertyName=="Hz")e.Cancel=true;};void Load(){try{grid.ItemsSource=DiscoveryReferences.Read(Path.Combine(AppContext.BaseDirectory,"bandplans","reference",choice.SelectedIndex==0?"amateur-beacons":"hf-hfgcs","channels.csv"));grid.SelectedIndex=0;}catch(Exception ex){status.Text=ex.Message;}}choice.SelectionChanged+=(_,_)=>Load();Load();
+  tune.Click+=(_,_)=>{try{if(!rfMode||receiver.IsReplay)throw new IOException("Start a live receiver first.");if(grid.SelectedItem is ListeningPreset p)TuneSaved(new FrequencyItem{Name=p.Name,FrequencyHz=p.Hz,Mode=p.Mode,BandwidthHz=p.BandwidthHz});}catch(Exception ex){status.Text=ex.Message;}};source.Click+=(_,_)=>Process.Start(new ProcessStartInfo(choice.SelectedIndex==0?"https://www.ncdxf.org/beacon/":"https://static.e-publishing.af.mil/production/1/minotafb/publication/minotafbi13-250/minotafbi13-250.pdf"){UseShellExecute=true});log.Click+=(_,_)=>{try{if(receiver.AppliedChannel is not {} channel)throw new IOException("No tuned receiver");string file=Path.Combine(dataFolder,"hf-observations.csv");if(!File.Exists(file))File.WriteAllText(file,"utc,frequency_hz,mode,source,note\r\n");File.AppendAllText(file,string.Join(',',new[]{DateTimeOffset.UtcNow.ToString("O"),channel.Frequency.ToString(),channel.Mode,receiver.IsReplay?"I/Q replay":"Live receiver",note.Text}.Select(PlanCsv.Quote))+"\r\n");status.Text="Observation logged · "+file;}catch(Exception ex){status.Text=ex.Message;}};
+  var timer=new DispatcherTimer{Interval=TimeSpan.FromSeconds(1)};timer.Tick+=(_,_)=>{if(choice.SelectedIndex!=0){schedule.Text="HFGCS · historical 2022 channel reference · USB";return;}DateTimeOffset utc=DateTimeOffset.UtcNow;int[] hz={14100,18110,21150,24930,28200};schedule.Text="IBP scheduled (PC UTC; reception unconfirmed) · "+string.Join(" · ",hz.Select((f,i)=>$"{f/1000.0:0.000}: {BeaconSchedule.Expected(utc,i)}"));};timer.Start();Closed+=(_,_)=>timer.Stop();hfReferenceTab=new TabItem{Header="HF listening / beacons",Content=root};AnalysisTabs.Items.Add(hfReferenceTab);
+ }
+}

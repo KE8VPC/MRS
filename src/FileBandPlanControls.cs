@@ -19,7 +19,7 @@ public partial class MainWindow
         var up=new CheckBox{Content="Show uplinks",Foreground=Brushes.White,IsChecked=saved?.Uplinks==true};var grid=new CheckBox{Content="Show calculated grid (not observed)",Foreground=Brushes.White,IsChecked=saved?.Grid==true};collectP25.IsChecked=saved?.Collect==true;
         var actions=new WrapPanel();top.Children.Add(actions);AddBandManagerActions(actions);
         void Button(string title,Action action){var b=new Button{Content=title,Margin=new Thickness(0,0,8,6)};b.Click+=(_,_)=>{try{action();}catch(Exception ex){bandStatus.Text=ex.Message;}};actions.Children.Add(b);}
-        Button("Reload CSV",()=>ReloadFilePlans());Button("Create missing reference CSVs",()=>{if(filePlans!=null){CsvBandPlans.Seed(filePlans.Root);ReloadFilePlans();}});Button("Open folder",()=>{if(filePlans!=null)Process.Start(new ProcessStartInfo(filePlans.Root){UseShellExecute=true});});
+        Button("Add reference channels to frequencies",ImportReferenceChannels);Button("Reload CSV",()=>ReloadFilePlans());Button("Create missing reference CSVs",()=>{if(filePlans!=null){CsvBandPlans.Seed(filePlans.Root);DiscoveryReferences.Seed(filePlans.Root);ReloadFilePlans();}});Button("Open folder",()=>{if(filePlans!=null)Process.Start(new ProcessStartInfo(filePlans.Root){UseShellExecute=true});});
         Button("Choose folder…",()=>{var picker=new Microsoft.Win32.OpenFolderDialog{Title="Choose editable bandplans folder"};if(picker.ShowDialog(this)==true){siteCollector?.Flush(true);SetRoot(picker.FolderName,null);SaveBandSettings();}});
 
         foreach(var c in new[]{collectP25,up,grid}){c.Margin=new Thickness(0,3,0,3);top.Children.Add(c);}
@@ -28,7 +28,7 @@ public partial class MainWindow
         void Changed(){if(filePlans==null)return;filePlans.Uplinks=up.IsChecked==true;filePlans.Grid=grid.IsChecked==true;if(siteCollector!=null)siteCollector.Enabled=collectP25.IsChecked==true;SaveBandSettings();Spectrum.InvalidateVisual();}
         foreach(var c in new[]{collectP25,up,grid}){c.Checked+=(_,_)=>Changed();c.Unchecked+=(_,_)=>Changed();}
         void SetRoot(string path,BandPreferences? preferences){filePlans=new(path){Hidden=preferences?.Hidden.ToHashSet()??new(),Uplinks=up.IsChecked==true,Grid=grid.IsChecked==true};siteCollector=new(path){Enabled=collectP25.IsChecked==true};Spectrum.FilePlans=filePlans;ReloadFilePlans();}
-        try{RailroadPlan.SeedExpanded(root);BroadcastChannels.Seed(root);}catch(Exception ex){Log("Expanded railroad references: "+ex.Message);}if(diagnosticWorkspace){CsvBandPlans.Seed(root);}SetRoot(root,saved);SaveBandSettings();
+        try{DiscoveryReferences.Seed(root);RailroadPlan.SeedExpanded(root);BroadcastChannels.Seed(root);}catch(Exception ex){Log("Expanded railroad references: "+ex.Message);}if(diagnosticWorkspace){CsvBandPlans.Seed(root);}SetRoot(root,saved);SaveBandSettings();
         DisplayControls.Changed+=settings=>{updatingBandList=true;try{foreach(var c in bandList.Children.OfType<CheckBox>())if(c.Content is string p&&LegacyReference(p))c.IsChecked=ReferenceShown(p,settings);}finally{updatingBandList=false;}};
         receiver.ChannelChanged+=()=>Dispatcher.BeginInvoke(()=>siteCollector?.Reset());receiver.ReplayGap+=()=>Dispatcher.BeginInvoke(()=>siteCollector?.Reset());receiver.Ended+=_=>Dispatcher.BeginInvoke(()=>siteCollector?.Reset());
     }

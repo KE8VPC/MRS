@@ -14,6 +14,7 @@ public partial class PacketPanel
         EnableSubaudible.Visibility=SubaudibleStatus.Visibility=Visibility.Collapsed;
         VoiceIdStatus.Visibility=category=="Paging"?Visibility.Collapsed:Visibility.Visible;
         CwCheck.Visibility=Visibility.Collapsed;GroupDmr.Visibility=category=="Analysis"?Visibility.Visible:Visibility.Collapsed;
+        if(category=="RadioData"){VoiceIdStatus.Visibility=Visibility.Collapsed;DecoderHelp.Text="Select an observation for decoded fields, source, confidence and raw data. Export follows the current filter.";}
         if(category=="Amateur")DecoderHelp.Text="AX.25 / APRS reception from SDR, WAV or radio audio. CW IDs and general observations are under Analysis.";
         if(category!="P25")Grouped=false;
         if(category!="Paging")PagingGrouped=false;

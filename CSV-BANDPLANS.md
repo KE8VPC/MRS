@@ -1,3 +1,7 @@
+# 0.42 discovery references and saved-channel import
+
+New selectable aviation, HF/VOLMET/HFDL, Amateur operating, WWV and U.S. ISM layers are included. Missing supplied discovery files are added without overwriting edited CSVs. Use **Add reference channels to frequencies**, choose a channels.csv, and select rows in the preview. Candidate rows start unselected. Existing matching receive frequencies/modes and labels are preserved; imported entries retain protocol/source notes. Imports use the Frequency Manager undo/persistence path. No transmit permission is granted. See AVIATION-FREQUENCIES.md and Help/discovery.md.
+
 # 0.33 railroad addition
 
 reference/railroad adds an independently selectable AAR/HOT/EOT dataset. Existing working folders can add its missing files with Create missing reference CSVs. Existing CSV files remain untouched. See RAILROAD-BANDPLAN.md for coverage, source references and mode limits.

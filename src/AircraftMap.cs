@@ -1,4 +1,5 @@
 using System.IO;
+using Microsoft.Win32;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,7 @@ internal sealed class AircraftMap : UserControl, IDisposable
     private AircraftRow[] history=[];
     private readonly CheckBox follow=new(){Content="Follow selected",Foreground=Brushes.White};
     private readonly TextBlock info=new(){Foreground=Brushes.LightSteelBlue,TextWrapping=TextWrapping.Wrap};
+    private readonly OfflineDetailSelection mapDetail=new();
     private readonly HttpClient http=new(){Timeout=TimeSpan.FromSeconds(12)};
     private readonly CancellationTokenSource cancel=new();
     private readonly Dictionary<string,BitmapSource> tiles=new();
@@ -30,11 +32,12 @@ internal sealed class AircraftMap : UserControl, IDisposable
     internal static double Wrap(double x)=>x-Math.Floor(x);
     internal AircraftMap()
     {
+        mapDetail.Changed+=()=>{if(Dispatcher.CheckAccess())Draw();else Dispatcher.BeginInvoke(Draw);};
         http.DefaultRequestHeaders.UserAgent.ParseAdd("MRS-RadioWorkbench/0.35.0 (Windows; KE8VPC)");
         var root=new DockPanel();var header=new StackPanel();DockPanel.SetDock(header,Dock.Top);root.Children.Add(header);
         var controls=new WrapPanel();header.Children.Add(controls);
         void Button(string label,Action action){var b=new Button{Content=label,Padding=new Thickness(8,2,8,2)};b.Click+=(_,_)=>action();controls.Children.Add(b);}
-        Button("−",()=>Zoom(-1,new Point(canvas.ActualWidth/2,canvas.ActualHeight/2)));Button("+",()=>Zoom(1,new Point(canvas.ActualWidth/2,canvas.ActualHeight/2)));Button("Fit aircraft",Fit);Button("Map attribution",()=>MessageBox.Show("Offline: Made with Natural Earth (public domain). Regional reference detail.\nOnline streets: © OpenStreetMap contributors, https://www.openstreetmap.org/copyright", "Map sources"));
+        Button("−",()=>Zoom(-1,new Point(canvas.ActualWidth/2,canvas.ActualHeight/2)));Button("+",()=>Zoom(1,new Point(canvas.ActualWidth/2,canvas.ActualHeight/2)));Button("Fit aircraft",Fit);Button("Load offline detail…",()=>_=ChooseOfflineDetail());Button("Remove detail",()=>mapDetail.Remove());Button("Map attribution",()=>MessageBox.Show("Offline: Made with Natural Earth (public domain).\n"+mapDetail.Description+"\nOnline streets: © OpenStreetMap contributors, https://www.openstreetmap.org/copyright", "Map sources"));
         controls.Children.Add(online);controls.Children.Add(follow);controls.Children.Add(trails);controls.Children.Add(allTrails);header.Children.Add(info);root.Children.Add(canvas);Content=root;
         online.ToolTip="Downloads visible map tiles from OpenStreetMap. The provider receives your IP and viewed map area, not aircraft messages. No bulk download.";
         online.Checked+=(_,_)=>Draw();online.Unchecked+=(_,_)=>Draw();follow.Checked+=(_,_)=>Draw();
@@ -44,6 +47,11 @@ internal sealed class AircraftMap : UserControl, IDisposable
         canvas.MouseMove+=(_,e)=>{if(drag is {} p){var n=e.GetPosition(canvas);double size=256*Math.Pow(2,zoom);cx=Wrap(cx-(n.X-p.X)/size);cy=Math.Clamp(cy-(n.Y-p.Y)/size,0,1);drag=n;Draw();}};
         canvas.MouseLeftButtonUp+=(_,_)=>{drag=null;canvas.ReleaseMouseCapture();};canvas.LostMouseCapture+=(_,_)=>drag=null;
     }
+    private async Task ChooseOfflineDetail(){var picker=new OpenFileDialog{Filter="Offline GeoJSON|*.geojson;*.json",Title="Load local WGS84 road / place / boundary detail"};if(picker.ShowDialog(Window.GetWindow(this))!=true)return;online.IsChecked=false;try{await LoadOfflineDetail(picker.FileName);}catch(Exception ex){MessageBox.Show(ex.Message,"Offline detail import");}}
+    internal Task ConfigureOfflineDetail(string settingsPath)=>mapDetail.Configure(settingsPath);
+    internal async Task LoadOfflineDetail(string path){online.IsChecked=false;await mapDetail.Load(path);}
+    internal void RemoveOfflineDetail()=>mapDetail.Remove();
+    internal FoxOfflineDetail? LocalDetail=>mapDetail.Current;
     internal void Update(AircraftRow[] rows,AircraftRow? selection){history=rows;points=rows.Where(r=>r.PositionSeen is {} seen&&(DateTimeOffset.UtcNow-seen).TotalSeconds<=60&&AviationData.Position(r.Latitude,r.Longitude)).ToArray();selected=selection;if(!fitted&&points.Length>0){Fit();fitted=true;}else Draw();}
     private void Zoom(int delta,Point anchor){int next=Math.Clamp(zoom+delta,2,17);double old=256*Math.Pow(2,zoom),size=256*Math.Pow(2,next);cx=Wrap(cx+(anchor.X-canvas.ActualWidth/2)*(1/old-1/size));cy=Math.Clamp(cy+(anchor.Y-canvas.ActualHeight/2)*(1/old-1/size),0,1);zoom=next;follow.IsChecked=false;Draw();}
     private void Fit()
@@ -70,6 +78,7 @@ internal sealed class AircraftMap : UserControl, IDisposable
         }
         else for(int n=1;n<4;n++){canvas.Children.Add(new Line{X1=w*n/4,X2=w*n/4,Y2=h,Stroke=Brushes.DarkSlateGray});canvas.Children.Add(new Line{Y1=h*n/4,Y2=h*n/4,X2=w,Stroke=Brushes.DarkSlateGray});}
         if(online.IsChecked!=true){for(int n=0;n<4;n++){double x=w*n/4,y=h*n/4;var lon=new TextBlock{Text=$"{(Wrap((left+x)/size)*360-180):0.00}°",Foreground=Brushes.LightSteelBlue,FontSize=10};Canvas.SetLeft(lon,x+2);Canvas.SetTop(lon,h-16);canvas.Children.Add(lon);var lat=new TextBlock{Text=$"{Math.Atan(Math.Sinh(Math.PI*(1-2*(top+y)/size)))*180/Math.PI:0.00}°",Foreground=Brushes.LightSteelBlue,FontSize=10};Canvas.SetTop(lat,y+2);canvas.Children.Add(lat);}}
+        if(online.IsChecked!=true)mapDetail.Current?.Draw(canvas,cx,cy,zoom);
         DrawTrails(w,h,size);
         var aircraftLabels=new List<Rect>();
         foreach(var row in points.OrderBy(r=>ReferenceEquals(r,selected)?0:1)){var p=Project(row.Latitude!.Value,row.Longitude!.Value);double x=w/2+(Wrap(p.X-cx+.5)-.5)*size,y=h/2+(p.Y-cy)*size;if(x<0||x>w||y<0||y>h)continue;
@@ -78,7 +87,7 @@ internal sealed class AircraftMap : UserControl, IDisposable
             var position=new[]{-8.0,10,-26,28}.Select(offset=>new Rect(x+7,y+offset,caption.Length*6.5+4,16)).FirstOrDefault(box=>!aircraftLabels.Any(old=>old.IntersectsWith(box)));
             if(position.Width>0&&aircraftLabels.Count<100){aircraftLabels.Add(position);var label=new TextBlock{Text=caption,Foreground=Brushes.White,Background=Brushes.Black,FontSize=11};Canvas.SetLeft(label,position.X);Canvas.SetTop(label,position.Y);canvas.Children.Add(label);}
         }
-        info.Text=$"Zoom {zoom} · wheel: zoom · drag: pan · "+(online.IsChecked==true?(missing>0?"Map tiles loading/unavailable · ":"")+"© OpenStreetMap contributors · openstreetmap.org/copyright":"Offline Natural Earth · regional detail")+(points.Length==0?" · No fresh positions":"")+" · Trails: 10 min / 300 points; gaps >30 s"+(TrailsLimited?" · Trail display limit reached":"")+(OfflineBasemap.Shared.Value.Error.Length>0?" · "+OfflineBasemap.Shared.Value.Error:"");
+        info.Text=$"Zoom {zoom} · wheel: zoom · drag: pan · "+(online.IsChecked==true?(missing>0?"Map tiles loading/unavailable · ":"")+"© OpenStreetMap contributors · openstreetmap.org/copyright":mapDetail.Current is {} detail?$"Offline detail: {detail.Name} · {(detail.Covers(cx,cy)?"features near view center":"outside detailed coverage at view center")}":"Offline Natural Earth · regional detail")+(mapDetail.Status.Length>0?" · "+mapDetail.Status:"")+(points.Length==0?" · No fresh positions":"")+" · Trails: 10 min / 300 points; gaps >30 s"+(TrailsLimited?" · Trail display limit reached":"")+(OfflineBasemap.Shared.Value.Error.Length>0?" · "+OfflineBasemap.Shared.Value.Error:"");
     }
     internal event Action<AircraftRow>? Selected;
     internal int TrailSegments {get;private set;}
@@ -141,5 +150,5 @@ internal sealed class AircraftMap : UserControl, IDisposable
         catch(OperationCanceledException){}catch(Exception){if(retry.Count>=256)retry.Clear();retry[key]=DateTime.UtcNow.AddMinutes(5);}
         finally{pending.Remove(key);if(!disposed)Draw();}
     }
-    public void Dispose(){disposed=true;cancel.Cancel();http.Dispose();}
+    public void Dispose(){disposed=true;mapDetail.Dispose();cancel.Cancel();http.Dispose();}
 }

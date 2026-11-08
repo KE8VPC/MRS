@@ -88,7 +88,7 @@ public sealed class DisplayPanel : UserControl
         var plan = Group("Bandplans");
         Check(plan,"Show bandplans",s=>!s.HidePlans,(s,v)=>s with{HidePlans=!v});
         Check(plan,"Show channel markers",s=>s.ShowChannelMarkers,(s,v)=>s with{ShowChannelMarkers=v});
-        Button(plan,"Manage bandplans…",()=>ManagePlansRequested?.Invoke());
+        Button(plan,"Manage bandplans...",()=>ManagePlansRequested?.Invoke());
         var level = Group("Display gain / contrast");
         Slider(level, "Display gain", -40, 40, s => s.GainDb, (s, v) => s with { GainDb = v }, " dB");
         Check(level, "Auto spectrum scale", s => s.AutoSpectrum, (s, v) => s with { AutoSpectrum = v });

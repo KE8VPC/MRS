@@ -60,6 +60,11 @@ internal sealed partial class HackRfNative
         try
         {
             if (args[0] == "--hackrf-fixture") { HackRfProtocol.Fixture(long.Parse(args[2]), int.Parse(args[4]), int.Parse(args[3]), int.Parse(args[6])); return 0; }
+            if(args[0] is "--hackrf-tx-test" or "--hackrf-aprs-test"){
+                if(args.Length<6)throw new ArgumentException("Missing TX parameters");
+                TransmitAuthorization.Read(Environment.GetEnvironmentVariable(TransmitAuthorization.Variable),new(long.Parse(args[2]),int.Parse(args[3]),args[0]=="--hackrf-aprs-test"?3:int.Parse(args[4])),Encoding.UTF8.GetString(Convert.FromBase64String(args[5])));
+            }
+            if(args[0]=="--hackrf-weak-tx"){if(args.Length!=7)throw new IOException("Missing digital TX parameters");var plan=JsonSerializer.Deserialize<WeakTxPlan>(Encoding.UTF8.GetString(Convert.FromBase64String(args[6])))??throw new IOException("Invalid digital TX plan");WeakTxAuthorization.Read(Environment.GetEnvironmentVariable(WeakTxAuthorization.Variable),plan,Encoding.UTF8.GetString(Convert.FromBase64String(args[5])));}
             var native = new HackRfNative(); native.Check(native.Get<Init>("init")(), "Initialize HackRF");
             try
             {
@@ -68,13 +73,13 @@ internal sealed partial class HackRfNative
                 {
                     var devices = ReadList(list);
                     if (args[0] == "--hackrf-probe") { Console.Write(JsonSerializer.Serialize(devices)); return 0; }
-                    if (args[0] is not ("--hackrf-worker" or "--hackrf-tx-test" or "--hackrf-aprs-test") || args.Length < 6) throw new ArgumentException("Invalid HackRF worker arguments.");
+                    if (args[0] is not ("--hackrf-worker" or "--hackrf-tx-test" or "--hackrf-aprs-test" or "--hackrf-weak-tx") || args.Length < 6) throw new ArgumentException("Invalid HackRF worker arguments.");
                     uint index = uint.Parse(args[1]);
                     var selected = devices.SingleOrDefault(d => d.Index == index) ?? throw new IOException("Selected HackRF is no longer present.");
                     string? identity = args[5].Length == 0 ? null : Encoding.UTF8.GetString(Convert.FromBase64String(args[5]));
                     if (identity != null && ReceiverIdentity.UniqueKey(devices, selected) != identity) throw new IOException("HackRF identity changed; select the receiver again.");
                     native.Check(native.Get<OpenList>("device_list_open")(list, (int)index, out var device), "Open HackRF");
-                    try { if(args[0]=="--hackrf-aprs-test"){if(args.Length!=7)throw new ArgumentException("Missing APRS packet");var packet=JsonSerializer.Deserialize<AprsTransmit>(Encoding.UTF8.GetString(Convert.FromBase64String(args[6])))??throw new ArgumentException("Invalid APRS packet");packet.Validate();native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),3),packet.Waveform());}else if(args[0]=="--hackrf-tx-test")native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),int.Parse(args[4])));else native.Receive(device, long.Parse(args[2]), int.Parse(args[4]), int.Parse(args[3])); }
+                    try { if(args[0]=="--hackrf-weak-tx")native.TransmitWeak(device,JsonSerializer.Deserialize<WeakTxPlan>(Encoding.UTF8.GetString(Convert.FromBase64String(args[6])))!,identity!);else if(args[0]=="--hackrf-aprs-test"){if(args.Length!=7)throw new ArgumentException("Missing APRS packet");var packet=JsonSerializer.Deserialize<AprsTransmit>(Encoding.UTF8.GetString(Convert.FromBase64String(args[6])))??throw new ArgumentException("Invalid APRS packet");packet.Validate();native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),3),packet.Waveform());}else if(args[0]=="--hackrf-tx-test")native.TransmitTest(device,new(long.Parse(args[2]),int.Parse(args[3]),int.Parse(args[4])));else native.Receive(device, long.Parse(args[2]), int.Parse(args[4]), int.Parse(args[3]), args.Length>7?double.Parse(args[7],System.Globalization.CultureInfo.InvariantCulture):0); }
                     finally { native.Get<DeviceAction>("close")(device); }
                     return 0;
                 }
@@ -84,7 +89,7 @@ internal sealed partial class HackRfNative
         }
         catch (Exception ex) { Console.Error.WriteLine(ex.Message); return 1; }
     }
-    private void Receive(IntPtr device, long frequency, int rate, int gain)
+    private void Receive(IntPtr device, long frequency, int rate, int gain, double ppm=0)
     {
         using var output = Console.OpenStandardOutput(); var commands = new HackRfProtocol.Commands();
         using var queue = new BlockingCollection<byte[]>(32);
@@ -104,6 +109,7 @@ internal sealed partial class HackRfNative
         };
         var start = Get<StartRx>("start_rx"); var stop = Get<DeviceAction>("stop_rx");
         var streaming = Get<DeviceAction>("is_streaming");
+        long Calibrated(){long hz=FrequencyCalibration.HardwareHz(frequency,ppm);if(!ReceiverCapabilities.HackRf.CanTune(hz))throw new IOException("PPM correction exceeds HackRF range.");return hz;}
         void Configure()
         {
             if (!ReceiverCapabilities.HackRf.CanTune(frequency) || !ReceiverCapabilities.HackRf.SampleRates.Contains(rate)) throw new ArgumentException("Unsupported HackRF tuning or rate.");
@@ -114,7 +120,7 @@ internal sealed partial class HackRfNative
             if (filter != HackRfProtocol.UsableBandwidth(rate)) throw new IOException("HackRF library returned an unexpected analog filter width.");
             filter = (uint)HackRfProtocol.CaptureBandwidth(rate,gain);
             Check(Get<SetUInt>("set_baseband_filter_bandwidth")(device, filter), "Set baseband filter");
-            Check(Get<SetFrequency>("set_freq")(device, (ulong)frequency), "Tune HackRF");
+            Check(Get<SetFrequency>("set_freq")(device, (ulong)Calibrated()), "Tune HackRF");
             Check(Get<SetUInt>("set_lna_gain")(device, (uint)gains.Lna), "Set LNA gain");
             Check(Get<SetUInt>("set_vga_gain")(device, (uint)gains.Vga), "Set VGA gain");
             Check(Get<SetByte>("set_amp_enable")(device, (byte)(gains.Amplifier ? 1 : 0)), "Set RF amplifier");

@@ -20,6 +20,9 @@ internal sealed class AviationPipeline : IDisposable
     internal bool Enabled{get{lock(gate)return mode!=null;}}
     internal void Start(string selected,long frequency){lock(gate){ResetCore();mode=selected;target=frequency;status="Waiting for SDR or I/Q replay";}}
     private void ResetCore(){var old=active;active=null;old?.Queue.Writer.TryComplete();old?.Cancel.Cancel();}
+    internal void Follow(long frequency){lock(gate){target=frequency;ResetCore();status=mode==null?"Aviation off":"Retuned; reacquiring aviation";}}
+    internal void Boundary(){lock(gate){ResetCore();status=mode==null?"Aviation off":"Source boundary; reacquiring aviation";}}
+    internal long TargetHz{get{lock(gate)return target;}}
     internal void Stop(string reason="Aviation off"){lock(gate){mode=null;ResetCore();status=reason;}}
     internal static string? Check(string mode,long target,IqFrame frame)
     {

@@ -6,13 +6,15 @@ internal sealed record PacketObservation(DateTimeOffset ObservedUtc,string Sourc
     AprsData? Aprs,string RawHex,string Protocol="AX.25",bool? Validated=null,long ReceptionCount=1,DateTimeOffset? FirstSeenUtc=null,long ContentChanges=0,string? SourceKey=null,P25BandPlan? P25BandPlan=null,P25Channel? P25Channel=null,P25GrantAssignment[]? P25Assignments=null,P25SiteAnnouncement? P25SiteAnnouncement=null,P25Identity? P25Identity=null,string? DecoderJson=null,string? DisplaySummary=null,string? Label=null,string[]? PagingRecipients=null)
 {
     public bool IsValidated=>Validated ?? Validation.StartsWith("FCS valid",StringComparison.Ordinal);
+    public WeakDecode Weak=>WeakDecode.From(this);
     public string Time=>ObservedUtc.ToString("HH:mm:ss.fff");
     public string Input=>Source+(Replay?" · replay":"");
     public string From=>Callsign;
     public string To=>Destination;
     public string SourceLabel=>Label??"";
     public string Status=>IsValidated?Validation:"Unvalidated · "+Validation;
-    public string Description=>DisplaySummary ?? Aprs?.Summary ?? Information;
+    public string ReadableInformation=>PagingText.Readable(this,Information);
+    public string Description=>Protocol=="FLEX"?PagingText.Compact(PagingText.Readable(this,DisplaySummary??Information)):DisplaySummary ?? Aprs?.Summary ?? Information;
     public string Type=>Aprs?.Type ?? Kind;
 }
 
@@ -34,7 +36,7 @@ internal sealed class PacketPipeline
         if(current==null)return;
         var packet=Ax25Parser.Parse(raw);if(packet.FcsValid)good++;else bad++;
         double? position=current.PositionSeconds is double start?start+(end-blockStart)/48000.0:null;
-        var observation=new PacketObservation(DateTimeOffset.UtcNow,current.Source,current.Replay,current.FrequencyHz,position,packet.Validation,packet.Source,packet.Destination,packet.Path,packet.FrameType,packet.Information,packet.Aprs,Convert.ToHexString(packet.Raw));
+        var observation=new PacketObservation(DateTimeOffset.UtcNow,current.Source,current.Replay,current.FrequencyHz,position,packet.Validation,packet.Source,packet.Destination,packet.Path,packet.FrameType,packet.Information,packet.Aprs,Convert.ToHexString(packet.Raw),SourceKey:current.Key);
         if(queue.Count==256){queue.Dequeue();dropped++;}queue.Enqueue(observation);
     };
     private void ResetCore(){modem=new();Attach();key=null;current=null;}

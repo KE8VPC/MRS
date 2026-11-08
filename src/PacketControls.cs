@@ -33,13 +33,13 @@ public partial class MainWindow
 
         receiver.ChannelChanged+=Dmr.Reset;receiver.ReplayGap+=Dmr.Reset;receiver.Ended+=_=>Dmr.Reset();
 
-        Aviation.SetupRequested=OpenDecoderSetup;Aviation.Tune=hz=>_ = LiveTune(hz);Aviation.Observation+=AnalysisPackets.Add;
+        Aviation.SetupRequested=OpenDecoderSetup;Aviation.Tune=hz=>_ = LiveTune(hz);Aviation.Observation+=AviationPackets.Add;AviationPackets.ConfigureWorkspace("RadioData");
 
         receiver.RawIq+=frame=>Aviation.Feed(frame,new PacketContext($"aviation:{Interlocked.Read(ref session)}",$"Receiver {workspaceSlot} · "+(receiver.IsReplay?"I/Q recording":receiver.ReceiverName),receiver.IsReplay,frame.Channel?.Frequency??frame.Frequency,receiver.IsReplay?receiver.ReplayPosition.TotalSeconds:null));
 
-        receiver.ChannelChanged+=()=>Aviation.Stop("Receiver configuration changed; start aviation again");
+        receiver.ChannelChanged+=()=>{if(receiver.AppliedChannel is {} c)Aviation.Follow(c.Frequency);};
 
-        receiver.ReplayGap+=()=>Aviation.Stop("Replay gap; start aviation again");
+        receiver.ReplayGap+=Aviation.Boundary;
 
         receiver.Ended+=_=>Aviation.Finish();
 
@@ -213,7 +213,7 @@ public partial class MainWindow
 
         PagingPackets.SetPagingStatus(pagingDecoder.Enabled&&rfMode&&receiver.AppliedChannel?.Mode!="NFM"?"Paging: select NFM; start with 16–25 kHz receive filter":pagingDecoder.Status);
 
-        foreach(var row in packetDecoder.Drain())Packets.Add(row);
+        foreach(var row in packetDecoder.Drain()){Packets.Add(row);QueueAprsInternet(row); }
 
         foreach(var row in p25Decoder.Drain()){P25Packets.Add(row);P25Systems.Observe(row);siteCollector?.Observe(row);P25Activity.Observe(row);}
 

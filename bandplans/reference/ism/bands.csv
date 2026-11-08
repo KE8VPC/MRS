@@ -1,0 +1,8 @@
+start_mhz,end_mhz,label,source
+6.765,6.795,U.S. ISM 6.78 MHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+13.553,13.567,U.S. ISM 13.56 MHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+26.957,27.283,U.S. ISM 27.12 MHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+40.66,40.70,U.S. ISM 40.68 MHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+902,928,U.S. ISM 915 MHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+2400,2500,U.S. ISM 2.45 GHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"
+5725,5875,U.S. ISM 5.8 GHz · shared use; signal identity unknown,"47 CFR 18.301; https://www.ecfr.gov/current/title-47/chapter-I/subchapter-A/part-18/section-18.301; reviewed 2026-11-01; band reference, no TX authorization"

@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Channels;
 namespace MRS;
 
-internal sealed record IqMetadata(int Version, DateTimeOffset StartedUtc, bool WideFm, int RequestedGain, string? ReceiverIdentity, string? Mode = null, int SamplingMode = 0, string Backend = "RTL");
+internal sealed record IqMetadata(int Version, DateTimeOffset StartedUtc, bool WideFm, int RequestedGain, string? ReceiverIdentity, string? Mode = null, int SamplingMode = 0, string Backend = "RTL", double FrequencyCorrectionPpm = 0);
 internal sealed record IqFrame(long ElapsedTicks, long Frequency, int Rate, byte[] Data, double? UsableBandwidthHz = null, IqSampleFormat Format = IqSampleFormat.Unsigned8, ChannelSettings? Channel = null, int? Gain = null, int? RequestedGain = null)
 {
     internal CaptureDescriptor Capture => new(Frequency, Rate, UsableBandwidthHz ?? Rate, Format);

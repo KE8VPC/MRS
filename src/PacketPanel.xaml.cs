@@ -8,6 +8,7 @@ using Microsoft.Win32;
 namespace MRS;
 public partial class PacketPanel : UserControl
 {
+    internal void ShowUnverified(bool value)=>ShowInvalid.IsChecked=value;
     private readonly HashSet<string> hiddenP25Types=new(StringComparer.Ordinal);
     private static readonly string[] p25Types=["NID header","TSBK","Manufacturer TSBK","Protected TSBK","Site status","Network status","Group voice grant","Group voice grant update","Explicit group voice grant","Secondary control channels","Adjacent site status","Identifier update"];
     internal string[] HiddenP25Types
@@ -67,6 +68,7 @@ public partial class PacketPanel : UserControl
     private bool Matches(object item)
     {
         var packet=item is DataSummaryRow grouped?grouped.Latest:(PacketObservation)item;
+        if(!MatchesWeak(packet))return false;
         if(ShowIgnored.IsChecked!=true && pagingRules.Ignored(packet))return false;
         if(packet.Protocol=="P25 Phase I" && hiddenP25Types.Contains(packet.Kind))return false;
         if(ShowInvalid.IsChecked!=true && !packet.IsValidated && packet.Protocol!="CW / Morse")return false;
@@ -79,7 +81,7 @@ public partial class PacketPanel : UserControl
     internal void ClearRows(){rows.Clear();summaryRows.Clear();summaryIndex.Clear();Details.Text="Data history cleared.";}
     internal void Add(PacketObservation row)
     {
-        row=pagingRules.Apply(row);rows.Add(row);if(rows.Count>500)rows.RemoveAt(0);
+        ObserveWeak(row);row=pagingRules.Apply(row);rows.Add(row);if(rows.Count>500)rows.RemoveAt(0);
         AddSummary(row);
         if(PacketGrid.SelectedItem==null && PacketGrid.Items.Count>0)PacketGrid.SelectedIndex=0;
     }
@@ -115,7 +117,7 @@ public partial class PacketPanel : UserControl
         string raw=string.Join(" ",Enumerable.Range(0,p.RawHex.Length/2).Select(n=>p.RawHex.Substring(n*2,2)));
         string address=p.Callsign.Length>0||p.Destination.Length>0?$"\n{p.Callsign}>{p.Destination}"+(p.Path.Length>0?$" via {p.Path}":""):"";
         string summary=p.Description!=p.Information?$"\n{p.Description}":"";
-        Details.Text=$"Protocol: {p.Protocol}\nObserved UTC: {p.ObservedUtc:O}\nInput: {p.Input}"+(p.FrequencyHz is long hz?$" · {hz/1000000.0:F6} MHz":"")+(p.PositionSeconds is double seconds?$" · source position ≈{seconds:F3} s":"")+address+$"\n{p.Validation} · {p.Kind}\n{p.Information}"+summary+$"\nRAW: {(raw.Length>0?raw:"Not supplied for this metadata observation.")}";
+        Details.Text=$"Protocol: {p.Protocol}\nObserved UTC: {p.ObservedUtc:O}\nInput: {p.Input}"+(p.FrequencyHz is long hz?$" · {hz/1000000.0:F6} MHz":"")+(p.PositionSeconds is double seconds?$" · source position ≈{seconds:F3} s":"")+address+$"\n{p.Validation} · {p.Kind}\n{p.ReadableInformation}"+summary+$"\nRAW: {(raw.Length>0?raw:"Not supplied for this metadata observation.")}";
         if(grouped!=null && PagingRules.IsPaging(p))Details.Text="Capcodes seen: "+string.Join(", ",grouped.Recipients)+"\nLabel: "+grouped.SourceLabel+"\n"+Details.Text;
         if(p.DecoderJson!=null)Details.Text+="\nDecoder fields (worker timestamp is processing time):\n"+p.DecoderJson;
         if(grouped is {Repeats:>1})Details.Text=$"First seen: {grouped.FirstSeen:O}\nLast seen: {p.ObservedUtc:O} · Received {grouped.Repeats} · Content changes {grouped.Changes}\nSummary shows latest fields/raw bytes; uncheck grouping for individual history.\n"+Details.Text;
