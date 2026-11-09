@@ -42,7 +42,7 @@ public partial class MainWindow
     }
     private void StartActivity()
     {
-        StopTrunk(false);
+        StopAllTrunk();
         StopFolderScan("Folder scan stopped for activity discovery.");
         if(!ActivityLive||activityCapture==null||DisplaySettings.Clock-activity.LastFrame>1)
         {activityMessage="Start a live SDR receiver and wait for its RF spectrum.";return;}

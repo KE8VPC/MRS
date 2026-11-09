@@ -83,13 +83,21 @@ public sealed class SpectrumView : FrameworkElement
     public event Action<DisplaySettings>? SettingsChanged;
     public event Action<long>? SaveFrequencyRequested;
     public event Action<Guid>? MarkerSelected;
+    public event Action<Guid[]>? OverlapsRequested;
+    internal Func<FrequencyItem,string>? MarkerDetails;
+    private readonly List<(Rect Bounds,Guid[] Ids)> markerLabelHits=[];
+    internal Rect[] MarkerLabelBounds=>markerLabelHits.Select(h=>h.Bounds).ToArray();
+    internal FrequencyItem[] OverlapsAt(Point point){var hit=markerLabelHits.LastOrDefault(h=>h.Bounds.Contains(point));if(hit.Ids!=null){var ids=hit.Ids.ToHashSet();return markers.Where(m=>ids.Contains(m.Id)).ToArray();}return FrequencyAt(point) is {} hz?Overlaps(hz):[];}
+
+    internal FrequencyItem[] Overlaps(double hz)=>markers.Where(m=>Math.Abs(m.FrequencyHz-hz)/Span*Math.Max(1,ActualWidth-72)<=8).OrderBy(m=>m.FrequencyHz).ToArray();
+    internal void PanView(double pan){if(settings.ViewMode==1){ToolTip="Center locked — select Free view to pan";return;}Configure(settings with{ViewMode=2,Pan=pan});}
     public event Action<long>? TuneRequested;
     public event Action<double>? CaptureSpanChanged;
     private static SolidColorBrush ColorBrush(string color) { var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color)); brush.Freeze(); return brush; }
-    internal void SetMarkers(IEnumerable<FrequencyItem> values) { markers = values.ToArray(); InvalidateVisual(); }
+    internal void SetMarkers(IEnumerable<FrequencyItem> values) { markers = values.ToArray();markerLabelHits.Clear(); InvalidateVisual(); }
     public void Configure(DisplaySettings value)
     {
-        var next = value.Normalize();
+        markerLabelHits.Clear();var next = value.Normalize();
         if(InteractionLocked)next=next with{Zoom=settings.Zoom,Pan=settings.Pan};
         if (next.PeakHold != settings.PeakHold) peak = current == null ? null : (float[])current.Clone();
         if(rf&&channel!=null&&!InteractionLocked&&next.ViewMode!=2){var v=new FrequencyViewport(DisplayStart,FullSpan,next.Zoom,next.Pan);if(next.ViewMode==1||TunedCenter<v.Start+v.Span*.12||TunedCenter>v.Start+v.Span*.88)next=next with{Pan=v.CenterOn(TunedCenter).Pan};}
@@ -127,7 +135,7 @@ public sealed class SpectrumView : FrameworkElement
             var p = e.GetPosition(this); if (FrequencyAt(p) == null) return;
             if(Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)&&InPlan(p)&&ToolTip is ReferenceToolTip {IsOpen:true} detail)
             {detail.Scroll(e.Delta);e.Handled=true;return;}
-            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) Configure(settings with { ViewMode=2, Pan = settings.Pan + (e.Delta > 0 ? -.08 : .08) });
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)) PanView(settings.Pan + (e.Delta > 0 ? -.08 : .08));
             else { var zoom = View.ZoomAt(settings.Zoom * (e.Delta > 0 ? 1.5 : 1 / 1.5), settings.ViewMode==1?View.Fraction(TunedCenter):(p.X - 52) / (ActualWidth - 72)); Configure(settings with { Zoom = zoom.Zoom, Pan = zoom.Pan }); }
             e.Handled = true;
         };
@@ -138,8 +146,8 @@ public sealed class SpectrumView : FrameworkElement
             {
                 case Key.Add: case Key.OemPlus: CenterZoom(1.5); break;
                 case Key.Subtract: case Key.OemMinus: CenterZoom(1 / 1.5); break;
-                case Key.Left: Configure(settings with { ViewMode=2, Pan = settings.Pan - .05 }); break;
-                case Key.Right: Configure(settings with { ViewMode=2, Pan = settings.Pan + .05 }); break;
+                case Key.Left: PanView(settings.Pan-.05); break;
+                case Key.Right: PanView(settings.Pan+.05); break;
                 case Key.Home: ResetView(); break;
                 default: return;
             }
@@ -149,11 +157,12 @@ public sealed class SpectrumView : FrameworkElement
         {
             if (!rf || FrequencyAt(e.GetPosition(this)) is not { } hz) return;
             var menu = new ContextMenu();
+            var overlapping=OverlapsAt(e.GetPosition(this));if(overlapping.Length>0){var inspect=new MenuItem{Header=$"Saved entries here ({overlapping.Length})…"};inspect.Click+=(_,_)=>OverlapsRequested?.Invoke(overlapping.Select(m=>m.Id).ToArray());menu.Items.Add(inspect);}
             var hide=new MenuItem{Header="Show band-plan strips",IsCheckable=true,IsChecked=!settings.HidePlans};hide.Click+=(_,_)=>Configure(settings with{HidePlans=!hide.IsChecked});menu.Items.Add(hide);
             var expand=new MenuItem{Header="Expand band-plan details",IsCheckable=true,IsChecked=settings.ExpandPlans};expand.Click+=(_,_)=>Configure(settings with{ExpandPlans=expand.IsChecked});menu.Items.Add(expand);
             var stats=new MenuItem{Header=$"{BinCount:N0} bins · {(BinCount>0?captureSpan/BinCount:0):0.##} Hz/bin · {settings.HistorySeconds:0.#} s history",IsEnabled=false};menu.Items.Add(stats);
             var save = new MenuItem { Header = $"Save {hz / 1000000:F6} MHz…" };
-            save.Click += (_, _) => SaveFrequencyRequested?.Invoke((long)Math.Round(hz)); menu.Items.Add(save);
+            save.Click += (_, _) => SaveFrequencyRequested?.Invoke(SnapFrequency(hz)); menu.Items.Add(save);
             menu.PlacementTarget = this; menu.IsOpen = true; e.Handled = true;
         };
         MouseLeftButtonUp += (_, e) =>
@@ -173,7 +182,7 @@ public sealed class SpectrumView : FrameworkElement
         if (Math.Abs(point.X - origin.X) >= SystemParameters.MinimumHorizontalDragDistance || Math.Abs(point.Y - origin.Y) >= SystemParameters.MinimumVerticalDragDistance) dragged = true;
         if (!dragged || ActualWidth <= 72) return;
         var next = dragView.Drag((point.X - origin.X) / (ActualWidth - 72));
-        Configure(settings with { ViewMode=2, Pan = next.Pan });
+        PanView(next.Pan);
     }
     internal void EndDrag(Point point, bool selectMarker = false)
     {
@@ -185,6 +194,7 @@ public sealed class SpectrumView : FrameworkElement
     {
         if (!rf || FrequencyAt(point) is not { } hz) return;
         if (!selectMarker) { if (canTune) TuneRequested?.Invoke(SnapFrequency(hz)); return; }
+        var overlaps=OverlapsAt(point);if(overlaps.Length>1){if(IsMouseCaptured)ReleaseMouseCapture();OverlapsRequested?.Invoke(overlaps.Select(m=>m.Id).ToArray());return;}if(overlaps.Length==1){MarkerSelected?.Invoke(overlaps[0].Id);return;}
         var nearest = markers.Where(m => InView(m.FrequencyHz)).MinBy(m => Math.Abs(m.FrequencyHz - hz));
         if (nearest != null && Math.Abs(nearest.FrequencyHz - hz) / Span * (ActualWidth - 72) <= 6) MarkerSelected?.Invoke(nearest.Id);
     }
@@ -194,6 +204,7 @@ public sealed class SpectrumView : FrameworkElement
     {
         pointer = position;
         ToolTip = rf && canTune && position is {} tunePoint && FrequencyAt(tunePoint) is {} tuneHz && settings.SnapMode!=0 ? $"Click tunes {SnapFrequency(tuneHz)/1000000.0:F6} MHz (snapped)" : null;
+        if(rf&&position is {} markerPoint&&FrequencyAt(markerPoint) is {} markerHz){var entries=OverlapsAt(markerPoint);if(entries.Length>0)ToolTip=string.Join("\n\n",entries.Take(20).Select(m=>MarkerDetails?.Invoke(m)??m.ToString()))+(entries.Length>20?$"\n… {entries.Length-20} more; right-click to inspect":"")+"\nRight-click / Ctrl-click to inspect saved entries";}
         if (rf && PlanHeight > 0 && position is { } p && InPlan(p) && FrequencyAt(p) is { } hz)
         {
             if(FilePlans!=null){double tolerance=Span*8/Math.Max(1,ActualWidth-72);ToolTip=string.Join("\n\n",FilePlans.Visible(hz-tolerance,hz+tolerance,settings).Take(20).Select(m=>$"{m.Label} · {m.Plan}\n{m.Detail}"));InvalidateVisual();return;}
@@ -554,6 +565,7 @@ public sealed class SpectrumView : FrameworkElement
     }
     private void DrawMarkers(DrawingContext dc, double left, double width, double top, double plotHeight, double waterTop, double bottom)
     {
+        markerLabelHits.Clear();
         if (!rf) return;
         double center = TunedCenter;
         var (low, high) = (channel ?? new ChannelSettings((long)center, receiveMode)).Edges;
@@ -593,10 +605,10 @@ public sealed class SpectrumView : FrameworkElement
             var entry = group.First(); double x = left + View.Fraction(entry.FrequencyHz) * width;
             var brush = ColorBrush(settings.UseEntryColors ? entry.Color : settings.Marker);
             dc.DrawLine(new Pen(brush, 1), new Point(x, top), new Point(x, top + plotHeight)); dc.DrawLine(new Pen(brush, .7), new Point(x, waterTop), new Point(x, bottom));
-            string labelName=DiscoveryNames.Label(entry);string name = labelName.Length > 32 ? labelName[..31] + "…" : labelName; if (group.Count() > 1) name += $" (+{group.Count() - 1})";
+            string labelName=DiscoveryNames.Label(entry)+(!DiscoveryNames.Generated(entry.Name)&&entry.ChannelIds.Length>0?" · "+entry.ChannelIds:"");string name = labelName.Length > 32 ? labelName[..31] + "…" : labelName; if (group.Count() > 1) name += $" (+{group.Count() - 1})";
             var text = Text(name, 11, brush); double labelX = Math.Clamp(x + 3, left, Math.Max(left, left + width - text.Width - 8));
             int lane = Array.FindIndex(occupied, end => end <= labelX);
-            if (lane >= 0) { occupied[lane] = labelX + text.Width + 12; dc.DrawRectangle(ColorBrush(settings.Background), null, new Rect(labelX, top + 2 + lane * 19, text.Width + 6, 18)); dc.DrawText(text, new Point(labelX + 3, top + 3 + lane * 19)); }
+            if (lane >= 0) { markerLabelHits.Add((new Rect(labelX,top+2+lane*19,text.Width+6,18),group.Select(m=>m.Id).ToArray()));occupied[lane] = labelX + text.Width + 12; dc.DrawRectangle(ColorBrush(settings.Background), null, new Rect(labelX, top + 2 + lane * 19, text.Width + 6, 18)); dc.DrawText(text, new Point(labelX + 3, top + 3 + lane * 19)); }
         }
     }
     private void DrawPointer(DrawingContext dc, double left, double width, double top, double plotHeight, double waterTop, double bottom)

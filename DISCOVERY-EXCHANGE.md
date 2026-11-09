@@ -25,3 +25,7 @@ Imports are additive/conflict-preserving and require review. A known UUID identi
 ## Future sharing service
 
 This format provides a versioned exchange foundation; no website, upload, account, authentication or public publishing feature is included in 0.47. A future service should validate this contract, keep contributor/source attribution and verification separate from decoded identity, enforce its own access/content limits, and escape all user text for display. Never treat labels, notes or uploaded JSON as instructions or executable markup. Clients should preserve stable IDs and request review of conflicting evidence instead of silently overwriting it. Shared exports omit notes by default and activity receiver names, but explicit labels and opted-in notes may still identify the contributor.
+
+## Optional 0.48 saved-channel fields
+
+BindingKey carries a discovered folder's stable identity binding independently of its editable Name. LastObservedFrequencyHz retains the latest matched observation center without changing FrequencyHz. These optional channel/folder fields round-trip through JSON and CSV details_json. The private library additionally retains its update-only preference and bounded held-discovery queue; that transient working state is not part of shared exchange bundles. File-level snapshots can preserve it. Imported catalog records still do not activate an operating trunk profile.

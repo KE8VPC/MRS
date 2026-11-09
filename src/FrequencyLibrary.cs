@@ -17,6 +17,8 @@ public sealed record FrequencyItem
     public Guid Id { get; init; } = Guid.NewGuid();
 
     public Guid? ParentId { get; init; }
+    public string BindingKey {get;init;}="";
+    public long? LastObservedFrequencyHz {get;init;}
 
     public bool IsFolder { get; init; }
 
@@ -53,7 +55,7 @@ public sealed record FrequencyItem
 
     public SignalActivity? Activity {get;init;}
 
-    public override string ToString() => IsFolder ? Name : $"{Name} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
+    public override string ToString() => IsFolder ? Name : $"{Name}{(!DiscoveryNames.Generated(Name)&&ChannelIds.Length>0?" · "+ChannelIds:"")} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
 
 }
 
@@ -61,7 +63,7 @@ public sealed partial class FrequencyLibrary
 
 {
 
-    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false, List<DiscoveryRecord>? Records = null);
+    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false, List<DiscoveryRecord>? Records = null, bool UpdateExistingOnly=false, List<PendingDiscovery>? Pending=null);
 
     private bool receiverBImported;
 
@@ -73,6 +75,9 @@ public sealed partial class FrequencyLibrary
 
     private List<FrequencyItem> items;
     private List<DiscoveryRecord> records=[];
+    private bool updateExistingOnly;private List<PendingDiscovery> pendingDiscoveries=[];
+    internal bool UpdateExistingOnly=>updateExistingOnly;internal IReadOnlyList<PendingDiscovery> PendingDiscoveries=>pendingDiscoveries;
+    internal void SetDiscoveryPolicy(bool value){bool previous=updateExistingOnly;updateExistingOnly=value;try{Commit(items.ToList(),false);}catch{updateExistingOnly=previous;throw;}}
     internal IReadOnlyList<DiscoveryRecord> Records=>records.AsReadOnly();
 
     private readonly Stack<(List<FrequencyItem> Items,List<DiscoveryRecord> Records)> undo = new();
@@ -98,7 +103,7 @@ public sealed partial class FrequencyLibrary
             if (document.Version is not(1 or 2)) throw new IOException("Unsupported frequency-library version.");
 
             receiverBImported = document.ReceiverBImported;
-            records=document.Records??[]; DiscoveryExchange.ValidateRecords(records);
+            updateExistingOnly=document.UpdateExistingOnly;pendingDiscoveries=document.Pending??[];if(pendingDiscoveries.Count>500||pendingDiscoveries.Any(p=>p==null||p.Data==null||string.IsNullOrEmpty(p.Key)))throw new IOException("Too many pending discoveries");records=document.Records??[]; DiscoveryExchange.ValidateRecords(records);
 
             items = document.Items ?? throw new IOException("Missing frequency entries.");
 
@@ -128,7 +133,7 @@ public sealed partial class FrequencyLibrary
 
             if (!double.IsFinite(node.BandwidthHz) || node.BandwidthHz < 0 || node.BandwidthHz > 1000000000) throw new IOException("Invalid saved bandwidth.");
 
-            if (node.SiteScope == null || node.ChannelRoles == null || node.ChannelIds == null || node.EvidenceStatus == null || node.DmrIdentifiers == null || node.Mode == null || node.Modulation == null || node.Protocols == null || node.Signaling == null || node.Notes == null || node.Tags == null) throw new IOException("Missing entry fields.");
+            if (node.BindingKey == null || node.BindingKey.Length>2000 || node.SiteScope == null || node.ChannelRoles == null || node.ChannelIds == null || node.EvidenceStatus == null || node.DmrIdentifiers == null || node.Mode == null || node.Modulation == null || node.Protocols == null || node.Signaling == null || node.Notes == null || node.Tags == null) throw new IOException("Missing entry fields.");
 
             if(node.DmrIdentifiers is { } ids&&(ids.Length>20608))throw new IOException("Invalid DMR identifier list.");
 
@@ -175,7 +180,7 @@ public sealed partial class FrequencyLibrary
 
         if (disk != revision) throw new IOException("The library changed in another window. Click Reload before editing again.");
 
-        string json = JsonSerializer.Serialize(new Document((catalog??records).Count>0?2:1, next, receiverBImported,catalog??records), new JsonSerializerOptions { WriteIndented = true });
+        string json = JsonSerializer.Serialize(new Document((catalog??records).Count>0||pendingDiscoveries.Count>0||updateExistingOnly?2:1, next, receiverBImported,catalog??records,updateExistingOnly,pendingDiscoveries), new JsonSerializerOptions { WriteIndented = true });
 
         string temp = path + ".tmp";
 
@@ -254,6 +259,8 @@ public sealed partial class FrequencyLibrary
             string date=observation.LastSeen.ToLocalTime().ToString("yyyy-MM-dd",CultureInfo.InvariantCulture);
 
             var item=next.Where(i=>!i.IsFolder&&(i.DetectionDate==null||i.DetectionDate==date)&&Math.Abs(i.FrequencyHz-observation.Frequency)<=tolerance).MinBy(i=>Math.Abs(i.FrequencyHz-observation.Frequency));
+
+            if(item==null&&updateExistingOnly)continue;
 
             if(item==null)
 

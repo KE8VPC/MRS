@@ -60,6 +60,8 @@ public sealed partial class FrequencyPanel : UserControl
         Button("Reload", () => Initialize(path));
         Button("Import / export",()=>CreateSharingWindow().ShowDialog());
         Button("Clean up…",()=>CreateCleanupWindow().ShowDialog());
+        Button("Review discoveries",()=>CreatePendingDiscoveryWindow().ShowDialog());
+        toolbar.Children.Add(discoveryPolicy);discoveryPolicy.SelectionChanged+=(_,_)=>{if(!syncingPolicy&&library!=null)Attempt(()=>{library.SetDiscoveryPolicy(discoveryPolicy.SelectedIndex==1);Notify("Auto-save policy saved");});};
         var filter = new StackPanel(); DockPanel.SetDock(filter, Dock.Top); dock.Children.Add(filter);
         filter.Children.Add(new TextBlock { Text = "Search frequencies, names, notes or protocols", Foreground = Brushes.LightSteelBlue, FontSize = 12, TextWrapping = TextWrapping.Wrap }); filter.Children.Add(search);
         search.TextChanged += (_, _) => {selection.Clear();anchor=null;Rebuild();};
@@ -83,6 +85,7 @@ public sealed partial class FrequencyPanel : UserControl
             Action("Show markers",()=>SetSelectedVisibility(true),selection.Count>0);Action("Hide markers",()=>SetSelectedVisibility(false),selection.Count>0);
             Action("Edit",EditSelected,selection.Count==1);Action("Delete",DeleteSelection,selection.Count>0);
             Action("Tune",()=>TuneRequested?.Invoke(item),selection.Count==1&&!item.IsFolder);
+            Action("Research LCN map",()=>ResearchFolder(item.Id),selection.Count==1&&item.IsFolder);
             Action("Scan folder",()=>FolderScanRequested?.Invoke(item,FolderScanPlan.Create(RequireLibrary().Items,item.Id,ScanControls.Recursive.IsChecked==true,ScanControls.Hidden.IsChecked==true)),selection.Count==1&&item.IsFolder);
             menu.PlacementTarget=row;menu.IsOpen=true;e.Handled=true;
         };
@@ -177,6 +180,7 @@ public sealed partial class FrequencyPanel : UserControl
         FocusRow(next);ShowDetails();
     }
     internal int SelectedCount=>selection.Count;
+    internal int HeldDiscoveryCount=>library?.PendingDiscoveries.Count??0;
     internal void ActivateClick(FrequencyItem? pressed,FrequencyItem? released,int clickCount=1)
     {
         if(clickCount==2 && pressed is {IsFolder:false} && released?.Id==pressed.Id)Attempt(()=>TuneRequested?.Invoke(pressed));
@@ -200,7 +204,7 @@ public sealed partial class FrequencyPanel : UserControl
     public void Initialize(string file, string? legacy = null)
     {
         Release(); path = file; legacyPath = legacy ?? legacyPath;
-        try { library = new FrequencyLibrary(file); if (legacyPath != null) library.ImportReceiverB(legacyPath); FrequencyLibrary.Saved += LibrarySaved; Rebuild(); Notify("Single-click to select; double-click to tune. Edit or F2 opens the selected entry. Ctrl-click toggles; Shift-click/arrows select a range. Ctrl-arrows move focus; Ctrl-Space toggles. Delete removes selection; Undo restores. Drag single entries to organize."); }
+        try { library = new FrequencyLibrary(file); if (legacyPath != null) library.ImportReceiverB(legacyPath); FrequencyLibrary.Saved += LibrarySaved; syncingPolicy=true;discoveryPolicy.SelectedIndex=library.UpdateExistingOnly?1:0;syncingPolicy=false;Rebuild(); Notify("Single-click to select; double-click to tune. Edit or F2 opens the selected entry. Ctrl-click toggles; Shift-click/arrows select a range. Ctrl-arrows move focus; Ctrl-Space toggles. Delete removes selection; Undo restores. Drag single entries to organize."); }
         catch (Exception ex) { library = null; tree.Items.Clear(); status.Text = "Library not loaded: " + ex.Message + " Original file preserved."; Changed?.Invoke(); }
     }
     private Guid? Destination() => Selected is { } item ? item.IsFolder ? item.Id : item.ParentId : null;

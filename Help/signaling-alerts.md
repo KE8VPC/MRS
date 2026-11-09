@@ -2,7 +2,7 @@
 Context: Signaling alerts
 Keywords: SAME EAS NOAA weather warning alert FIPS county DTMF tones MDC1200 FleetSync ANI unit ID
 
-Open Public Safety / Business → Signaling / alerts. Enable the decoders you want; Stop all disables this group. NFM uses the discriminator before listening squelch. AM and WFM use receiver audio. Windows audio input and WAV playback also work. Starting another source, tuning, or seeking resets acquisition. These decoders can run alongside existing channel decoders.
+Open Commercial → Signaling / alerts. Enable the decoders you want; Stop all disables this group. NFM uses the discriminator before listening squelch. AM and WFM use receiver audio. Windows audio input and WAV playback also work. Starting another source, tuning, or seeking resets acquisition. These decoders can run alongside existing channel decoders.
 
 SAME / EAS reports the originator, event code, six-digit area codes, duration HHMM, UTC Julian day/time JJJHHMM, and sender. The bundled multimon-ng helper requires two of three matching headers. The original header remains in decoder JSON. End markers are shown separately. This is a monitor; it does not authenticate a broadcaster, relay alerts, sound an alarm, or guarantee emergency notification. Keep a dedicated weather/emergency alert receiver for that purpose.
 

@@ -8,7 +8,7 @@ Extract the complete Windows ZIP. Select Receiver, choose RTL-SDR or HackRF/Port
 Use a known local station to establish reception. For FM broadcast use WFM, about 180–200 kHz receive width and enough sample rate to fit the channel. For narrow FM start around 12.5–16 kHz and adjust for actual occupied bandwidth. These are starting points, not universal settings or allocation rules. Excess gain may overload an SDR; more gain is not always better.
 
 ## Pick the right workspace
-Spectrum shows RF and common navigation. Amateur contains APRS/AX.25. Public Safety / Business contains P25, DMR/LTR/NXDN, paging, trunk following and talkgroups. Analysis contains sensors/meters/bursts and other observations. Broadcast contains AM/FM/HD/TV. Aviation contains aircraft decoding and map. One receiver has one live/replay source; parallel workspaces do not create extra physical radios.
+Spectrum shows RF and common navigation. Amateur contains APRS/AX.25. Commercial contains P25, DMR/LTR/NXDN, paging, trunk following and talkgroups. Analysis contains sensors/meters/bursts and other observations. Broadcast contains AM/FM/HD/TV. Aviation contains aircraft decoding and map. One receiver has one live/replay source; parallel workspaces do not create extra physical radios.
 
 ## Tune and inspect
 Click-to-tune uses the configured snap/grid option. Follow tuned, Center lock and Free view control viewport behavior, not hardware calibration. Zoom changes visible span; receive filter changes decoder/audio bandwidth. Capture offset moves HackRF capture away from the desired channel to avoid the center spike. PPM corrects consistent RX oscillator error. Read Spectrum and PPM for details.

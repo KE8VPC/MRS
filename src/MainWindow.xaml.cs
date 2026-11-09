@@ -49,7 +49,7 @@ public partial class MainWindow : Window
         PopulateBandwidth();
         if (diagnostic) dataFolder = diagnosticRoot ?? Path.Combine(AppContext.BaseDirectory, "smoke-profile", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dataFolder);Aviation.ConfigureOfflineDetail(dataFolder);
-        InitializeFilePlans();InitializeTrunkFollowing();InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
+        InitializeFilePlans();InitializeTrunkFollowing();InitializeDmrTrunkFollowing();WorkspaceTabs.SelectionChanged+=(_,_)=>{if(WorkspaceTabs.SelectedItem==P25Workspace)visibleDmrFlow=false;else if(WorkspaceTabs.SelectedItem==ProfessionalTab)visibleDmrFlow=true;};InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeLcnResearch();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
         receiver.RawIq+=_=>{if(!receiver.IsReplay)Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());};
         PagingPackets.InitializePagingRules(Path.Combine(dataFolder,"paging-rules.json"));
         P25Systems.Initialize(Path.Combine(dataFolder,"p25-discoveries.json"));
@@ -74,6 +74,8 @@ public partial class MainWindow : Window
         FrequencyManager.Initialize(Path.Combine(diagnosticWorkspace ? dataFolder : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MRS"), "frequencies.json"), diagnosticWorkspace ? null : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MRS", "ReceiverB", "frequencies.json"));
         Spectrum.SaveFrequencyRequested += hz => { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.AddSignal(hz); };
         InitializeActivity();
+        Spectrum.OverlapsRequested += ids=>FrequencyManager.ShowOverlappingEntries(ids);
+        Spectrum.MarkerDetails = item=>FrequencyManager.EntryDescription(item.Id);
         Spectrum.MarkerSelected += id => { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.SelectEntry(id); };
         Spectrum.MarkerMoveRequested += (id,oldHz,newHz)=>{SidebarTabs.SelectedItem=FrequencyTab;FrequencyManager.CorrectMarker(id,oldHz,newHz);};
         RefreshInputs(this, new RoutedEventArgs());
@@ -108,7 +110,7 @@ public partial class MainWindow : Window
         catch (Exception ex) { Log("Settings could not be restored: " + ex.Message); }
         engine.Frame += (values, level) => { lock (frameSync) { audioLevel = level; latestBroadcastAudio = values; if (!rfMode) latest = (values, level, DisplaySettings.Clock, 0); } };
         receiver.Spectrum += values => { lock (frameSync) latest = (values, audioLevel, DisplaySettings.Clock, receiver.AppliedFrequency); };
-        receiver.StereoAudio += pcm => { lock(frameSync) latestStereoWaveform = pcm; if((fleetProfile?.Role!="Trunk voice"||fleetPaused)&&!trunkRadio.Running&&((!voiceIds.Voice&&!digitalVoice.Enabled)||receiver.AppliedChannel?.Mode!="NFM"))engine.FeedStereo(pcm, receiver.SquelchOpen); };
+        receiver.StereoAudio += pcm => { lock(frameSync) latestStereoWaveform = pcm; if((fleetProfile?.Role!="Trunk voice"||fleetPaused)&&!trunkRadio.Running&&!dmrTrunkRadio.Running&&((!voiceIds.Voice&&!digitalVoice.Enabled)||receiver.AppliedChannel?.Mode!="NFM"))engine.FeedStereo(pcm, receiver.SquelchOpen); };
         receiver.ReplayGap += () =>
         {
             engine.RetuneBoundary(); long gapSession = Interlocked.Read(ref session);
@@ -173,7 +175,7 @@ public partial class MainWindow : Window
             if (receiver.IsRecording) IqRecordLabel.Text = $"I/Q: {receiver.RecordedBytes / 1000000.0:0.0} MB · approx. {activeRate * 120.0 / 1000000:0} MB/min";
             RefreshPlayback();
             RefreshBroadcast();
-            RefreshPackets();TickTrunk();TickFleet();TickCalibration();TickSiteSaving();TickMonitoringViews();TickRadioData();TickFoxHunt();
+            RefreshPackets();TickTrunk();TickFleet();TickDmrTrunk();TickDmrFleet();TickLcnResearch();TickCalibration();TickSiteSaving();TickMonitoringViews();TickRadioData();TickFoxHunt();
             Spectrum.Tick();
         };
         timer.Start();
@@ -198,7 +200,7 @@ public partial class MainWindow : Window
         {
             StopFolderScan("Folder scan stopped on close.");
             StopActivity("Scanner stopped on close.");
-            closing = true;if(Application.Current.MainWindow==this)Application.Current.MainWindow=FleetWindows().FirstOrDefault(w=>w!=this)??this;try{FlushSiteSaving();}catch(Exception ex){Log("Final site save: "+ex.Message);}ReleaseFleetAssignments(); trunkRadio.Dispose();Sensors.Release(); automaticIq.Dispose(); automaticAudio.Dispose(); siteCollector?.Flush(true); P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); voiceIds.Dispose(); digitalVoice.Dispose(); pagingDecoder.Dispose(); Aviation.Release(); Dmr.Release(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
+            closing = true;if(Application.Current.MainWindow==this)Application.Current.MainWindow=FleetWindows().FirstOrDefault(w=>w!=this)??this;try{FlushSiteSaving();}catch(Exception ex){Log("Final site save: "+ex.Message);}ReleaseFleetAssignments();ReleaseDmrFleetAssignments();trunkRadio.Dispose();dmrTrunkRadio.Dispose();Sensors.Release(); automaticIq.Dispose(); automaticAudio.Dispose(); siteCollector?.Flush(true); P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); voiceIds.Dispose(); digitalVoice.Dispose(); pagingDecoder.Dispose(); Aviation.Release(); Dmr.Release(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
             try
             {
                 ActivityControls.Save();
@@ -213,7 +215,7 @@ public partial class MainWindow : Window
     private void SaveFrequency(object sender, RoutedEventArgs e) { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.AddSignal(null); }
     private async void TuneSaved(FrequencyItem item)
     {
-        if(trunkRadio.Running)StopTrunk(false);
+        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for saved-frequency tuning.");
         if (!ReceiveDemodulator.Modes.Contains(item.Mode)) { Log($"Cannot tune '{item.Name}': mode {item.Mode} is not implemented."); return; }
@@ -315,7 +317,7 @@ public partial class MainWindow : Window
     private int SelectedSampleRate => int.Parse(((ComboBoxItem)SampleRateBox.SelectedItem).Tag.ToString()!, CultureInfo.InvariantCulture);
     private async Task LiveTune(long frequency)
     {
-        if(trunkRadio.Running)StopTrunk(false);
+        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for manual tuning.");
         if (receiver.IsReplay) { Log("I/Q replay follows recorded frequencies; hardware tuning is disabled."); return; }
@@ -384,7 +386,7 @@ public partial class MainWindow : Window
     private void Stop(bool clearReplay = true)
     {
         if(!weakTxHandoff)weakTransmitWindow?.Halt("Source stopped");
-        StopTrunk(false);
+        StopAllTrunk();
         automaticIq.Disarm("Disarmed · receiver stopped");automaticAudio.Disarm("Disarmed - source stopped");
         Volatile.Write(ref triggerGate,null);
         voiceIds.Reset();

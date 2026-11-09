@@ -5,9 +5,9 @@ internal sealed record CapCarrier(int Lcn,long Hz,bool Confirmed=false,string Ev
 internal sealed record TrunkProfile(string Id,string Name,string Protocol,long ControlHz,CapCarrier[] Carriers,int? NetworkId=null,int? SiteId=null);
 internal sealed record TrunkCall(string Protocol,int Talkgroup,int? Radio,long Hz,int Slot,int? Nac,DateTimeOffset First,DateTimeOffset Seen,string Evidence,int? ColorCode=null);
 internal sealed record TrunkEvent(DateTimeOffset Time,string Kind,string Detail,long Hz=0,int? Talkgroup=null,string Receiver="",string Control="",string Label="",int? Radio=null,int? Nac=null,string Protocol="",int? Slot=null,int? ColorCode=null){public string SlotDisplay=>Slot is 1 or 2?Slot.Value.ToString():"";public string ColorCodeDisplay=>ColorCode is >=0 and <=15?ColorCode.Value.ToString():"";public string NacDisplay=>Nac is >=0 and <=0xFFF?$"0x{Nac.Value:X3}":"";public string TimeUtc=>Time.ToString("HH:mm:ss.fff");public string Frequency=>Hz>0?(Hz/1e6).ToString("F6",System.Globalization.CultureInfo.InvariantCulture):"";}
-internal sealed class TrunkFollower
+internal sealed class TrunkFollower(string initialProtocol="P25")
 {
-    internal TrunkProfile Profile{get;private set;}=new("","","P25",0,[]);internal bool Running{get;private set;}internal long ControlHz{get;private set;}internal TrunkCall? Active{get;private set;}internal string Status{get;private set;}="Stopped";
+    internal TrunkProfile Profile{get;private set;}=new("","",initialProtocol,0,[]);internal bool Running{get;private set;}internal long ControlHz{get;private set;}internal TrunkCall? Active{get;private set;}internal string Status{get;private set;}="Stopped";
     internal (int? Network,int? Site) DmrIdentity=>(dmrNetwork,dmrSite);
     internal long ScopeVersion{get;private set;}
     internal bool RequireConfirmations=true;internal double HangSeconds=3,MaximumSeconds=60;internal int? Hold;internal HashSet<int> Allowed=[],Ignored=[];internal Dictionary<int,string> Labels=[];internal readonly Queue<TrunkEvent> Events=[];private readonly Dictionary<string,TrunkCall> available=[];private P25Identity? p25Bound;private int? capCc,dmrNetwork,dmrSite;private int restCandidate,restCount;private DateTimeOffset restAt,nextPrune;private readonly Dictionary<string,(int Count,DateTimeOffset Seen)> candidates=[];

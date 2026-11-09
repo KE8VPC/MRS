@@ -149,7 +149,8 @@ public sealed class DisplayPanel : UserControl
         {
             if (File.Exists(path))
             {
-                var state = JsonSerializer.Deserialize<State>(File.ReadAllText(path)) ?? throw new IOException("Empty display settings file.");
+                string raw=File.ReadAllText(path);var state = JsonSerializer.Deserialize<State>(raw) ?? throw new IOException("Empty display settings file.");
+                if(!raw.Contains("\"SnapPolicyVersion\"",StringComparison.Ordinal)&&state.Current.SnapMode==0)state=state with{Current=state.Current with{SnapMode=3,SnapPolicyVersion=1}};
                 if (state.Version != 1 || state.Current == null) throw new IOException("Unsupported display settings file.");
                 settings = state.Current.Normalize(); presets = new Dictionary<string, DisplaySettings>(StringComparer.OrdinalIgnoreCase);
                 if (state.Presets != null) foreach (var item in state.Presets) if (item.Value != null) presets[item.Key] = item.Value.Normalize();

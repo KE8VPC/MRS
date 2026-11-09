@@ -29,7 +29,7 @@ internal static class TvBandPlanTests
         }
         finally{if(Directory.Exists(Path.GetDirectoryName(path)))Directory.Delete(Path.GetDirectoryName(path)!,true);}
         var view=new SpectrumView();view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));
-        view.SetRf(479000000,19200000);view.Configure(new DisplaySettings{ShowTvPlan=true,ShowTvPilots=true});
+        view.SetRf(479000000,19200000);view.Configure(new DisplaySettings{SnapMode=0,ShowTvPlan=true,ShowTvPilots=true});
         view.SetPointer(new Point(516,25));
         check(view.ToolTip?.ToString()?.Contains("TV RF 15")==true&&!view.ToolTip.ToString()!.Contains("476.309441")&&view.ToolTip.ToString()!.Contains("73.603"),"TV hover identifies RF 15 and provenance without retired pilot reference");
         long tuned=0;view.TuneRequested+=hz=>tuned=hz;
@@ -41,13 +41,13 @@ internal static class TvBandPlanTests
         foreach(int height in new[]{140,239,240,289,290,333,334,400,500})foreach(bool bottom in new[]{false,true})
         {
             var compact=new SpectrumView();compact.SetRf(479000000,19200000);
-            compact.Configure(new DisplaySettings{ShowTvPlan=true,ShowTvPilots=true,ShowBandPlan=true,ShowArrlPlan=true,ShowNifogPlan=true,BandPlanAtBottom=bottom});
+            compact.Configure(new DisplaySettings{SnapMode=0,ShowTvPlan=true,ShowTvPilots=true,ShowBandPlan=true,ShowArrlPlan=true,ShowNifogPlan=true,BandPlanAtBottom=bottom});
             compact.Measure(new Size(600,height));compact.Arrange(new Rect(0,0,600,height));compact.UpdateLayout();
             new RenderTargetBitmap(600,height,96,96,PixelFormats.Pbgra32).Render(compact);
         }
         check(true,"All four reference layers render safely at compact heights and either placement");
-        view.Configure(new DisplaySettings{ShowTvPilots=true});view.SetPointer(new Point(516,25));check(view.ToolTip==null,"Pilot option alone does not enable a hidden TV layer");
-        view.Configure(new DisplaySettings{ShowTvPlan=true,ShowTvPilots=true});view.SetBaseband(192000,"MPX");view.SetPointer(new Point(516,25));check(view.ToolTip==null,"TV RF channel references remain absent from MPX audio views");
+        view.Configure(new DisplaySettings{SnapMode=0,ShowTvPilots=true});view.SetPointer(new Point(516,25));check(view.ToolTip==null,"Pilot option alone does not enable a hidden TV layer");
+        view.Configure(new DisplaySettings{SnapMode=0,ShowTvPlan=true,ShowTvPilots=true});view.SetBaseband(192000,"MPX");view.SetPointer(new Point(516,25));check(view.ToolTip==null,"TV RF channel references remain absent from MPX audio views");
     }
     private static void Capture(SpectrumView view,string file)
     {

@@ -1,0 +1,11 @@
+# P25 and Commercial protocol flows
+
+P25 contains Systems/sites, Trunk following and Talkgroups. Commercial contains DMR/LTR/NXDN, POCSAG/FLEX, its own Trunk following, Talkgroups, Channel research and Signaling/alerts. P25 is a protocol workspace for utilities, public safety and amateur systems alike.
+
+P25 and DMR following have separate decoder models, profile selectors/files, maps, filters, labels, event histories, current-call headers and voice-assignment state. Talkgroup views are scoped by protocol/system; their underlying saved library and receiver definitions remain shared. P25/DMR site auto-save preferences are independent. P25 messages stay in its system/activity/inspector views; DMR traffic stays in Commercial.
+
+Existing mixed trunk-following.json is read as a migration source only when the relevant family file does not exist. Only P25 entries populate trunk-following-p25.json; DMR entries populate trunk-following-dmr.json. New saves do not overwrite the legacy file or the other family's profiles. Keep your existing data directory/backup if reverting to an older release.
+
+Use separate control SDRs when the control frequencies do not fit one capture. Concurrent flows on one physical control SDR require the Trunk control role and both control channels inside usable capture. Dedicated voice receivers are selected from the assigned pool. A physical receiver can hold only one P25 or DMR voice assignment at a time. Stop/clear/filter actions in one following pane affect that family; a physical receiver Stop or source change releases both. Automatic retuning that would interrupt the peer flow is rejected. A shared control spectrum follows the last selected P25/Commercial family, while both family summaries remain visible in the header.
+
+Commercial following supports the existing mapped Capacity Plus, Connect Plus and Tier III group modes. Moving LTR/NXDN reception into Commercial does not add their trunk following. This update does not add Phase II/CQPSK/encrypted P25 following or absolute-MBC DMR support. Voice identity/encryption gates and transmit authorization remain in force for both families. Auto-record metadata uses the active followed audio frequency for either family.

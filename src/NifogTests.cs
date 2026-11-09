@@ -27,7 +27,7 @@ internal static class NifogTests
         var aliases=NifogPlan.Markers.Single(c=>c.Frequency==151137500);
         check(aliases.Source.Contains("VTAC11")&&aliases.Source.Contains("VTAC33")&&aliases.Source.Contains("Mobile TX")&&aliases.Source.Contains("VTAC36"),"NIFOG shared-frequency hover preserves simplex, repeater input and output aliases");
         check(!NifogPlan.Visible(151137501,151137502).Any()&&NifogPlan.Visible(151137500,151137500).Single().Frequency==151137500,"NIFOG markers use channel centers rather than invented allocation ranges");
-        var restored=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings{ShowNifogPlan=true}));
+        var restored=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings{SnapMode=0,ShowNifogPlan=true}));
         check(restored is {ShowNifogPlan:true,ShowBandPlan:false,ShowArrlPlan:false}&&restored.ColorsFrom(DisplaySettings.Theme("Light")).ShowNifogPlan,"NIFOG visibility persists independently of other layers and theme");
         string settingsPath=Path.Combine(AppContext.BaseDirectory,"nifog-test-profile",Guid.NewGuid().ToString("N"),"display.json");
         var panel=new DisplayPanel();panel.Initialize(settingsPath);DisplaySettings? changed=null;panel.Changed+=s=>changed=s;
@@ -37,7 +37,7 @@ internal static class NifogTests
         var second=new DisplayPanel();DisplaySettings? loaded=null;second.Changed+=s=>loaded=s;second.Initialize(settingsPath);
         check(loaded?.ShowNifogPlan==true,"NIFOG manager selection survives actual display-profile save and reload");
         var view=new SpectrumView();view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));
-        view.SetRf(155752500,960000);view.Configure(new DisplaySettings{ShowNifogPlan=true});double center=view.VisibleCenter;
+        view.SetRf(155752500,960000);view.Configure(new DisplaySettings{SnapMode=0,ShowNifogPlan=true});double center=view.VisibleCenter;
         view.SetPointer(new Point(516,45));
         check(view.ToolTip?.ToString()?.Contains("VCALL10")==true&&view.ToolTip.ToString()!.Contains("p. 29")&&view.VisibleCenter==center,"NIFOG independent bar hover reports channel provenance without tuning");
         Capture(view,"ui-nifog-vhf.png");
@@ -56,13 +56,13 @@ internal static class NifogTests
         view.Configure(view.Settings.ColorsFrom(DisplaySettings.Theme("Light")));view.SetRf(851512500,2400000);Capture(view,"ui-nifog-800-light.png");
         foreach(int height in new[]{140,180,239,240,289,290,400,500})foreach(bool bottom in new[]{false,true})
         {
-            var compact=new SpectrumView();compact.SetRf(774000000,2400000);compact.Configure(new DisplaySettings{ShowNifogPlan=true,ShowArrlPlan=true,ShowBandPlan=true,BandPlanAtBottom=bottom});
+            var compact=new SpectrumView();compact.SetRf(774000000,2400000);compact.Configure(new DisplaySettings{SnapMode=0,ShowNifogPlan=true,ShowArrlPlan=true,ShowBandPlan=true,BandPlanAtBottom=bottom});
             compact.Measure(new Size(600,height));compact.Arrange(new Rect(0,0,600,height));compact.UpdateLayout();
             new RenderTargetBitmap(600,height,96,96,PixelFormats.Pbgra32).Render(compact);
         }
         check(true,"All three reference layers render safely at compact sizes and both placements");
-        view.Configure(new DisplaySettings());view.SetPointer(new Point(516,45));check(view.ToolTip==null,"Disabling NIFOG removes its reference tooltip");
-        view.Configure(new DisplaySettings{ShowNifogPlan=true});view.SetAudio();view.SetPointer(new Point(516,45));check(view.ToolTip==null,"NIFOG RF channels stay absent from audio and MPX views");
+        view.Configure(new DisplaySettings{SnapMode=0});view.SetPointer(new Point(516,45));check(view.ToolTip==null,"Disabling NIFOG removes its reference tooltip");
+        view.Configure(new DisplaySettings{SnapMode=0,ShowNifogPlan=true});view.SetAudio();view.SetPointer(new Point(516,45));check(view.ToolTip==null,"NIFOG RF channels stay absent from audio and MPX views");
     }
     private static void Capture(SpectrumView view,string file)
     {

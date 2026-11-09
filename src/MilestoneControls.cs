@@ -42,7 +42,7 @@ public partial class MainWindow
     {
         if (!ready || updatingControls || !rfMode || receiver.AppliedFrequency == 0) return;
         if (receiver.IsReplay) { ReflectChannel(); return; }
-        if(trunkRadio.Running)StopTrunk(false);
+        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
         StopFolderScan("Folder scan stopped for mode/filter change.");
         ResetActivity("Receive mode/filter changed; scanner stopped.");
         try { receiver.SetChannel(SelectedChannel(tunedHz)); }
@@ -75,7 +75,7 @@ public partial class MainWindow
     }
     private async void ShiftCapture(object sender, RoutedEventArgs e)
     {
-        if(trunkRadio.Running)StopTrunk(false);
+        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
         StopActivity("Scanner stopped for capture shift.");
         if (!rfMode || receiver.IsReplay) { Log("Start a live receiver to shift capture coverage."); return; }
         if (receiver.IsHackRf && receiver.Offset.Enabled) { Log("Capture offset is enabled. Tune the listening frequency or pan the spectrum; disable offset while stopped to shift capture independently."); return; }

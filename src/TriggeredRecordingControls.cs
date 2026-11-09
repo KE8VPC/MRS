@@ -113,7 +113,7 @@ public partial class MainWindow
 
         automaticIqStop.Click+=(_,_)=>{automaticMessage="";automaticIq.Disarm();automaticAudio.Disarm();};
 
-        engine.RecordingAudio+=(pcm,channels)=>automaticAudio.Feed(pcm,pcm.Length,channels,$"{(receiver.IsReplay?"replay":"source")}:{Interlocked.Read(ref session)}:{(trunkRadio.Running?trunkAudioFrequency:receiver.AppliedChannel?.Frequency)}:{receiver.AppliedChannel?.Mode}",rfMode?(trunkRadio.Running?trunkAudioFrequency:receiver.AppliedChannel?.Frequency??0):0);
+        engine.RecordingAudio+=(pcm,channels)=>automaticAudio.Feed(pcm,pcm.Length,channels,$"{(receiver.IsReplay?"replay":"source")}:{Interlocked.Read(ref session)}:{FollowingAudioHz}:{receiver.AppliedChannel?.Mode}",rfMode?FollowingAudioHz:0);
 
         engine.PcmBoundary+=automaticAudio.Boundary;
 

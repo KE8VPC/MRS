@@ -26,6 +26,6 @@ internal sealed class HelpWindow:Window
 }
 public partial class MainWindow
 {
-    private void OpenHelp(){string context=BroadcastTab.IsSelected?(FmTab.IsSelected?"FM":AmTab.IsSelected?"AM":"Broadcast"):ProfessionalTab.IsSelected?(DmrTab.IsSelected?"NXDN":P25SystemsTab.IsSelected?"P25":trunkFollowingTab?.IsSelected==true?"Trunk following":"Paging"):WorkspaceTabs.SelectedItem is TabItem t?t.Header?.ToString()??"Overview":"Overview";if(SidebarTabs.IsKeyboardFocusWithin&&SidebarTabs.SelectedItem is TabItem sidebar)context=sidebar.Header?.ToString()??context;new HelpWindow(Path.Combine(AppContext.BaseDirectory,"Help"),context){Owner=this}.Show();}
+    private void OpenHelp(){string context=BroadcastTab.IsSelected?(FmTab.IsSelected?"FM":AmTab.IsSelected?"AM":"Broadcast"):P25Workspace.IsSelected?(trunkFollowingTab?.IsSelected==true?"Trunk following":"P25"):ProfessionalTab.IsSelected?(dmrTrunkFollowingTab?.IsSelected==true?"Trunk following":lcnResearchTab?.IsSelected==true?"Channel research":DmrTab.IsSelected?"NXDN":P25SystemsTab.IsSelected?"P25":trunkFollowingTab?.IsSelected==true?"Trunk following":"Paging"):WorkspaceTabs.SelectedItem is TabItem t?t.Header?.ToString()??"Overview":"Overview";if(SidebarTabs.IsKeyboardFocusWithin&&SidebarTabs.SelectedItem is TabItem sidebar)context=sidebar.Header?.ToString()??context;new HelpWindow(Path.Combine(AppContext.BaseDirectory,"Help"),context){Owner=this}.Show();}
     private void InitializeHelp(){PreviewKeyDown+=(_,e)=>{if(e.Key==Key.F1){e.Handled=true;OpenHelp();}};}
 }

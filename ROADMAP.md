@@ -1,3 +1,7 @@
+# Current release: 0.48.0-preview1 — research and protocol-flow refinements
+
+Built the pending duplicate-prevention/rename/overlap/navigation and P25/Commercial split batch. Added session-based unconfirmed LCN correlation from decoded grants and full voice LC, scoped to a user-selected saved site, with CSV export and candidate map/label actions. P25/DMR models, profiles, filters, assignments, histories, talkgroup views and auto-save toggles are independent; physical receiver definitions and the saved library remain shared. No definitive LCN auto-mapping, absolute-MBC, Phase II or additional live acceptance is claimed. Full published suite: 2,002 assertions plus six UI/integration scenarios; see the update/validation/acceptance documents. No source commit/push in this build request.
+
 # Current release: 0.47.0-preview1 — saved discovery management
 
 Includes informative generic spectrum labels, scope-aware new discovery organization, reviewable cleanup and optional selected-grid snapping with raw-frequency retention. Added versioned bundle/JSON and channel/catalog CSV exchange, legacy-list import, selected-folder export, system/site/TG/radio/map catalog persistence, backups, Undo and conflict-preserving import. This is the data-exchange foundation for a future sharing website; there is no upload/site implementation. Operational saved lists are not rewritten automatically. Details: DISCOVERY-EXCHANGE.md and the 0.47 update/validation/acceptance documents.

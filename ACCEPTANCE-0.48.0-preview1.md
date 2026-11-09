@@ -1,0 +1,12 @@
+# Acceptance — 0.48.0-preview1
+
+- Extract to a fresh folder and export Library backup. Keep existing data/old release until tested.
+- Revisit known DMR/P25 channels with auto-save on. Verify compatible offset/identity updates retain the same saved entry, name, notes and frequency; watch Review discoveries for ambiguous/conflicting observations. Confirm large nearby offsets do not silently shift the saved center.
+- Rename a known system/site folder, receive another channel for that identity, and confirm it stays under your renamed folder. Repeat with an older renamed folder whose channels have site scope.
+- Select Research: update existing only. New channels must be held without markers; approve a compatible merge or Keep as separate channel deliberately. Restart to check the queue/policy. Existing contradictory identities must remain separate or held.
+- Hover/right-click/Ctrl-click a (+N) marker. Check every entry's exact frequency and folder, edit the chosen ID, show it in the list, hide/tune it and confirm other overlaps remain untouched. Check spectrum and waterfall, mouse capture and keyboard focus after closing the chooser.
+- Center lock: drag, Shift-wheel, arrows, zoom, full span, saved-channel tuning and capture changes must not silently choose Free view. Choose Free view explicitly to pan. Verify behavior near capture edges and with scan interaction lock.
+- Verify 500 Hz click snapping on spectrum/waterfall and persistence after restart. Fine/off and bandplan modes must still work; text entry and saved 6.25 kHz centers must retain exact precision.
+- P25 and Commercial: check profile/label migration, separate maps/filters/history/TG views and independent site auto-save toggles. With dedicated SDRs, confirm P25 and DMR can follow simultaneously without double-leasing a voice receiver. Stopping one family must not stop the other; receiver/source Stop must release both. Out-of-capture peer-interrupting retunes must be rejected clearly.
+- LCN research: choose one DMR site folder, check control MHz, start the existing control/voice receivers and observe candidates. Compare with independently known mappings; wrong TG/slot/identity must not create a trusted map. Contradictory associations must be shown. Candidate map rows/labels remain tentative, and no hardware tuning occurs just by starting research. Export before exiting to retain session evidence.
+- Continue prior P25/DMR clear voice, rest handoff, USB recovery, long-run and Fox Hunt field checks. No new live acceptance is implied by synthetic checks.

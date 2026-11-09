@@ -5,11 +5,11 @@ namespace MRS;
 internal sealed record TrunkAudio(byte[] Pcm,long Hz,string Key,string Protocol,int? Radio=null,int? ColorCode=null);
 internal sealed class TrunkRadio:IDisposable
 {
-    internal readonly object Sync=new();internal readonly TrunkFollower Model=new();
+    internal readonly object Sync=new();internal readonly TrunkFollower Model;
     private readonly Channel<(long Epoch,IqFrame Frame)> input=Channel.CreateBounded<(long,IqFrame)>(128);private readonly Task work;private long epoch,dropped,processed;private int inputFault;private volatile bool running,disposed;private readonly P25Pipeline controlP25=new();private DmrDecoder controlDmr=new();private CapStatusDecoder cap=new();private ReceiveDemodulator? controlDsp,voiceDsp;private P25VoiceDecoder? p25Voice;private readonly DigitalVoicePipeline dmrVoice=new();private DmrDecoder voiceIds=new();private readonly List<double> audioInput=[];
     private long controlCenter,controlFrequency,voiceCenter,voiceFrequency;private int controlRate,voiceRate;private string voiceKey="";private DmrFollowIdentity? dmrGate;private int voiceSlot=1;private long voiceSerial;private readonly ConcurrentQueue<(long Serial,byte[] Pcm)> audio=[];private readonly ConcurrentQueue<DmrReception> dmrObservations=[];private readonly ConcurrentQueue<PacketObservation> observations=[];private readonly ConcurrentQueue<TrunkEvent> discovered=[];
     internal long ProcessedBlocks=>Interlocked.Read(ref processed);internal long Dropped=>Interlocked.Read(ref dropped);internal string ReceiverStatus{get;private set;}="Stopped";internal string VoiceStatus{get;private set;}="No call";internal bool VoiceFits{get;private set;}internal bool ControlFits{get;private set;}internal long AudioFrames{get;private set;}
-    internal TrunkRadio(){dmrVoice.Audio+=pcm=>{if(audio.Count<32){var mono=new byte[pcm.Length];int slot=Volatile.Read(ref voiceSlot);for(int n=0;n+3<pcm.Length;n+=4){int p=n+(slot==2?2:0);mono[n]=mono[n+2]=pcm[p];mono[n+1]=mono[n+3]=pcm[p+1];}audio.Enqueue((Interlocked.Read(ref voiceSerial),mono));}};work=Task.Run(Work);}
+    internal TrunkRadio(string initialProtocol="P25"){Model=new(initialProtocol);dmrVoice.Audio+=pcm=>{if(audio.Count<32){var mono=new byte[pcm.Length];int slot=Volatile.Read(ref voiceSlot);for(int n=0;n+3<pcm.Length;n+=4){int p=n+(slot==2?2:0);mono[n]=mono[n+2]=pcm[p];mono[n+1]=mono[n+3]=pcm[p+1];}audio.Enqueue((Interlocked.Read(ref voiceSerial),mono));}};work=Task.Run(Work);}
     internal bool ExternalVoice{get;private set;}internal bool SuppressLocalVoice;
     internal bool Running=>running;
     internal void StartExternal(TrunkCall call,string source){Start(new(source,source,call.Protocol,call.Hz,[]));lock(Sync){ExternalVoice=true;Model.AssignExternal(call,source);}}

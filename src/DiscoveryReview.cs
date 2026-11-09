@@ -44,7 +44,7 @@ public sealed partial class FrequencyLibrary
   DiscoveryExchange.Validate(bundle);var next=items.ToList();var changes=new List<LibraryChange>();var mapping=new Dictionary<Guid,Guid>();
   var folders=bundle.Channels.Where(c=>c.IsFolder).ToList();for(int depth=0;folders.Count>0&&depth<64;depth++)foreach(var folder in folders.ToArray()){
    if(folder.ParentId is {} p&&!mapping.ContainsKey(p))continue;Guid? parent=folder.ParentId is {} oldParent?mapping[oldParent]:null;
-   var existing=next.FirstOrDefault(c=>c.IsFolder&&c.ParentId==parent&&c.Name.Equals(folder.Name,StringComparison.OrdinalIgnoreCase));
+   var existing=folder.BindingKey.Length>0?next.FirstOrDefault(c=>c.IsFolder&&c.ParentId==parent&&c.BindingKey==folder.BindingKey):null;existing??=next.FirstOrDefault(c=>c.IsFolder&&c.ParentId==parent&&c.Name.Equals(folder.Name,StringComparison.OrdinalIgnoreCase)&&(folder.BindingKey.Length==0||c.BindingKey.Length==0||c.BindingKey==folder.BindingKey));
    if(existing==null){existing=folder with{Id=next.Any(c=>c.Id==folder.Id)?Guid.NewGuid():folder.Id,ParentId=parent};next.Add(existing);changes.Add(new("Add",folder.Name,"Folder"));}mapping[folder.Id]=existing.Id;folders.Remove(folder);
   }
   foreach(var source in bundle.Channels.Where(c=>!c.IsFolder)){
@@ -83,7 +83,7 @@ public sealed partial class FrequencyLibrary
   foreach(var c in items.Where(c=>!c.IsFolder&&(chosen==null||chosen.Contains(c.Id)))){
    var updated=c;long hz=DiscoveryNames.Snap(c.FrequencyHz,spacing,tolerance);if(hz!=c.FrequencyHz){updated=updated with{FrequencyHz=hz,OriginalFrequencyHz=c.OriginalFrequencyHz??c.FrequencyHz};changes.Add(new("Update",c.Name,$"Frequency {DiscoveryNames.Frequency(c.FrequencyHz)} → {DiscoveryNames.Frequency(hz)} MHz; original retained."));}
    if(rename&&DiscoveryNames.Generated(c.Name)){string label=DiscoveryNames.Label(c);if(label!=c.Name){updated=updated with{Name=label};changes.Add(new("Update",c.Name,"Name → "+label));}}
-   if(organize&&c.SiteScope.Length>0){var parts=c.SiteScope.Split(':');string[] folders=parts[0]=="P25"&&parts.Length>=4?["P25",parts[1],"RFSS "+parts[2]+" - Site "+parts[3]]:parts[0]=="NXDN"&&parts.Length>=3?["NXDN",parts[1],parts[2]]:parts.Length>=4?[parts[0],parts[1],parts[2],parts[3]]:[];Guid? parent=null;foreach(string title in folders){var folder=next.FirstOrDefault(i=>i.IsFolder&&i.ParentId==parent&&i.Name==title);if(folder==null){folder=new(){Name=title,IsFolder=true,ParentId=parent};next.Add(folder);}parent=folder.Id;}if(folders.Length>0&&parent!=c.ParentId){updated=updated with{ParentId=parent};changes.Add(new("Update",c.Name,"Folder → "+string.Join(" / ",folders)));}}
+   if(organize&&c.SiteScope.Length>0){var parts=c.SiteScope.Split(':');string[] folders=parts[0]=="P25"&&parts.Length>=4?["P25",parts[1],"RFSS "+parts[2]+" - Site "+parts[3]]:parts[0]=="NXDN"&&parts.Length>=3?["NXDN",parts[1],parts[2]]:parts.Length>=4?[parts[0],parts[1],parts[2],parts[3]]:[];Guid? parent=folders.Length>0?DiscoveryFolder(next,new SiteChannelData(parts[0],folders,c.SiteScope,c.FrequencyHz,c.ChannelIds,c.ChannelRoles,c.Signaling)):null;if(folders.Length>0&&parent!=c.ParentId){updated=updated with{ParentId=parent};changes.Add(new("Update",c.Name,"Folder → "+string.Join(" / ",folders)));}}
    next[next.FindIndex(i=>i.Id==c.Id)]=updated;
   }
   if(merge)foreach(var group in next.Where(c=>!c.IsFolder&&(chosen==null||chosen.Contains(c.Id))).GroupBy(c=>new{c.FrequencyHz,c.SiteScope,Parent=c.SiteScope.Length>0?(Guid?)null:c.ParentId,c.Protocols}).Where(g=>g.Count()>1).ToArray()){

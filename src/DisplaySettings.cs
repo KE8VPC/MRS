@@ -5,7 +5,8 @@ using System.Windows.Media;
 namespace MRS;
 public sealed record DisplaySettings
 {
-    public int SnapMode {get;init;}
+    public int SnapPolicyVersion {get;init;}=1;
+    public int SnapMode {get;init;}=3;
     public long SnapStepHz {get;init;}=12500;
     public int ViewMode { get; init; } // 0 follow tuned, 1 center lock, 2 free view
     public double SpectrumFraction { get; init; } = .4;
@@ -59,7 +60,7 @@ public sealed record DisplaySettings
         string Color(string value, string fallback) => value != null && Regex.IsMatch(value, "^#[0-9A-Fa-f]{6}$") ? value : fallback;
         double low = Clamp(WaterLow, -140, 10, -100), high = Clamp(WaterHigh, -130, 20, -10);
         if (high < low + 5) high = low + 5;
-        return this with { ViewMode = Math.Clamp(ViewMode,0,2), ShowTvPilots = false, RfFftSize = RfSpectrumAnalyzer.Sizes.Contains(RfFftSize) ? RfFftSize : 32768, GainDb = Clamp(GainDb, -40, 40, 0), SpectrumTop = Clamp(SpectrumTop, -100, 40, 0), SpectrumRange = Clamp(SpectrumRange, 20, 140, 100), WaterLow = low, WaterHigh = high,
+        return this with { SnapMode=Math.Clamp(SnapMode,0,3),SnapStepHz=Math.Clamp(SnapStepHz,1,100000000), ViewMode = Math.Clamp(ViewMode,0,2), ShowTvPilots = false, RfFftSize = RfSpectrumAnalyzer.Sizes.Contains(RfFftSize) ? RfFftSize : 32768, GainDb = Clamp(GainDb, -40, 40, 0), SpectrumTop = Clamp(SpectrumTop, -100, 40, 0), SpectrumRange = Clamp(SpectrumRange, 20, 140, 100), WaterLow = low, WaterHigh = high,
             SpectrumFraction = Clamp(SpectrumFraction,.15,.8,.4), HistorySeconds = Clamp(HistorySeconds, 5, 120, 30), RefreshFps = Math.Clamp(RefreshFps, 2, 30), AveragingSeconds = Clamp(AveragingSeconds, 0, 5, .15), Zoom = Clamp(Zoom, 1, 4096, 1), Pan = Clamp(Pan, 0, 1, .5),
             Palette = Palettes.Contains(Palette) ? Palette : Palettes[0], Background = Color(Background, "#090F19"), Grid = Color(Grid, "#263649"), Text = Color(Text, "#B7C9DC"), Trace = Color(Trace, "#57DFC2"), Peak = Color(Peak, "#ED8DFF"), Cursor = Color(Cursor, "#FFD700"), Tuned = Color(Tuned, "#FF9E64"), Marker = Color(Marker, "#71CDF5") };
     }

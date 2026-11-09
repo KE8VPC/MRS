@@ -43,10 +43,10 @@ public partial class MainWindow
 {
  private IEnumerable<DiscoveryRecord> DiscoveryCatalog()
  {
-  talkgroupGrid.CommitEdit(DataGridEditingUnit.Cell,true);talkgroupGrid.CommitEdit(DataGridEditingUnit.Row,true);
+  talkgroupGrid.CommitEdit(DataGridEditingUnit.Cell,true);talkgroupGrid.CommitEdit(DataGridEditingUnit.Row,true);dmrTalkgroupGrid.CommitEdit(DataGridEditingUnit.Cell,true);dmrTalkgroupGrid.CommitEdit(DataGridEditingUnit.Row,true);
   string SharedScope(string source){var m=System.Text.RegularExpressions.Regex.Match(source,@"^(.*):NET (\d+)$");return m.Success?"DMR:"+m.Groups[1].Value+":Network "+m.Groups[2].Value:source;}
   foreach(var r in talkgroupRows)yield return DiscoveryRecord.Create("talkgroup",SharedScope(r.System),r.Talkgroup.ToString(System.Globalization.CultureInfo.InvariantCulture),r.Label,r.System.StartsWith("P25")?"P25":"DMR",new(){{"last_seen_utc",r.Seen.ToString("O")},{"observations",r.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)}});
-  foreach(var saved in trunkSaved.Values){var p=saved.Profile;string scope="Profile:"+p.Id;yield return DiscoveryRecord.Create("system",scope,p.Id,p.Name,p.Protocol,new(){{"control_frequency_hz",p.ControlHz.ToString()},{"network_id",p.NetworkId?.ToString()??""},{"site_id",p.SiteId?.ToString()??""}});
+  foreach(var saved in trunkSaved.Values.Concat(dmrTrunkSaved.Values)){var p=saved.Profile;string scope="Profile:"+p.Id;yield return DiscoveryRecord.Create("system",scope,p.Id,p.Name,p.Protocol,new(){{"control_frequency_hz",p.ControlHz.ToString()},{"network_id",p.NetworkId?.ToString()??""},{"site_id",p.SiteId?.ToString()??""}});
    foreach(var c in p.Carriers)yield return DiscoveryRecord.Create("channel_map",scope,c.Lcn.ToString(),"",p.Protocol,new(){{"frequency_hz",c.Hz.ToString()},{"confirmed",c.Confirmed.ToString()},{"color_code",c.ColorCode?.ToString()??""},{"evidence",c.Evidence}});
    foreach(var label in saved.Labels??[])yield return DiscoveryRecord.Create("talkgroup",scope,label.Key.ToString(),label.Value,p.Protocol);
   }

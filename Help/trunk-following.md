@@ -6,7 +6,7 @@ P25 Phase I C4FM, Capacity Plus, Connect Plus and standard Tier III mapped group
 
 Keywords: trunk follow control rest grant talkgroup hold skip ignore LCN LSN map carrier return
 
-Open Public Safety / Business > Trunk following. Start a live SDR in quadrature mode first. Create a named profile, choose P25 Phase I, Capacity Plus, Connect Plus or DMR Tier III, enter the control/rest frequency, and save. Existing site-bandplan/frequency entries are preserved. Following profiles are stored in the receiver working data folder as trunk-following.json.
+Open P25 > Trunk following for P25, or Commercial > Trunk following for DMR. Start a live SDR in quadrature mode first. Create a named profile, choose P25 Phase I, Capacity Plus, Connect Plus or DMR Tier III, enter the control/rest frequency, and save. Existing site-bandplan/frequency entries are preserved. Following profiles are stored in the receiver working data folder as trunk-following.json.
 
 P25 uses CRC-valid group grants and received identifier updates. No frequency is guessed before the identifier table arrives. This preview supports Phase I C4FM group voice only; TDMA/Phase II, CQPSK and encrypted voice are outside its scope. Voice must match the grant's NAC and talkgroup and pass existing clear-encryption checks.
 

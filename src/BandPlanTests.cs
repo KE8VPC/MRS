@@ -20,10 +20,10 @@ internal static class BandPlanTests
         check(UsBandPlan.VisibleBands(117999999,118000000).Single().Name.Contains("navigation") && UsBandPlan.VisibleBands(118000000,118000001).Single().Name.Contains("communications"),"Aviation navigation and communication references meet without overlap");
         check(UsBandPlan.Channels.Any(x=>x.Frequency==156525000 && x.Name.Contains("no voice")) && UsBandPlan.Channels.Any(x=>x.Frequency==162025000 && x.Name.Contains("AIS 2")),"Marine references distinguish DSC and AIS data");
         check(UsBandPlan.Channels.Any(x=>x.Frequency==157000000 && x.Name.Contains("ship TX")) && UsBandPlan.Channels.Any(x=>x.Frequency==161600000 && x.Name.Contains("shore TX")),"Marine duplex channels retain ship and shore direction");
-        var saved=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings {ShowBandPlan=true}));
+        var saved=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings {SnapMode=0,ShowBandPlan=true}));
         check(saved?.ShowBandPlan==true && saved.ColorsFrom(DisplaySettings.Theme("Light")).ShowBandPlan,"Band reference preference persists and survives theme changes");
         var view=new SpectrumView(); view.Measure(new Size(1000,500));view.Arrange(new Rect(0,0,1000,500));
-        view.Configure(new DisplaySettings {ShowBandPlan=true});view.SetRf(146000000,6000000);
+        view.Configure(new DisplaySettings {SnapMode=0,ShowBandPlan=true});view.SetRf(146000000,6000000);
         double before=view.VisibleCenter; view.SetPointer(new Point(500,25));
         check(view.ToolTip?.ToString()?.Contains("97.301")==true && view.VisibleCenter==before,"Band hover shows source without tuning");
         Capture(view,"ui-band-plan-amateur.png");
@@ -41,16 +41,16 @@ internal static class BandPlanTests
         check(!ArrlPlan.Visible(3450000000L,3500000000L).Any(),"9 cm omits discontinued upper coverage");
         check(ArrlPlan.Visible(443000000,443000001).Count(x=>!x.IsPoint)==2,"70 cm preserves overlapping ATV and repeater recommendations");
         check(ArrlPlan.Visible(241000000000L,250000000000L).Any(x=>x.Band=="1 mm"),"Microwave outlines retain 64-bit frequency precision");
-        var options=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings {ShowArrlPlan=true,ShowChannelMarkers=false}));
+        var options=JsonSerializer.Deserialize<DisplaySettings>(JsonSerializer.Serialize(new DisplaySettings {SnapMode=0,ShowArrlPlan=true,ShowChannelMarkers=false}));
         check(options?.ShowArrlPlan==true && !options.ShowChannelMarkers && !options.ShowBandPlan && options.ColorsFrom(DisplaySettings.Theme("Light")).ShowArrlPlan,"ARRL and channel settings persist independently through theme changes");
-        view.Configure(new DisplaySettings {ShowArrlPlan=true});view.SetRf(14175000,400000);
+        view.Configure(new DisplaySettings {SnapMode=0,ShowArrlPlan=true});view.SetRf(14175000,400000);
         Capture(view,"ui-arrl-hf.png");
         view.SetRf(443000000,8000000);view.SetPointer(new Point(516,25));
         check(view.ToolTip?.ToString()?.Contains("ATV")==true && view.ToolTip.ToString()!.Contains("Repeater") && !view.ToolTip.ToString()!.Contains("97.301"),"ARRL-only hover includes overlapping recommendations without FCC layer");
         Capture(view,"ui-arrl-overlap.png");
         view.Configure(view.Settings.ColorsFrom(DisplaySettings.Theme("Light")));view.SetRf(10368000000L,100000000);
         Capture(view,"ui-arrl-microwave-light.png");
-        view.Configure(new DisplaySettings {ShowArrlPlan=true,ShowBandPlan=true,BandPlanAtBottom=true});
+        view.Configure(new DisplaySettings {SnapMode=0,ShowArrlPlan=true,ShowBandPlan=true,BandPlanAtBottom=true});
         view.SetRf(146000000,6000000);view.SetPointer(new Point(516,225));
         check(view.ToolTip?.ToString()?.Contains("ARRL")==true,"Bottom overlay hover uses relocated bar bounds");
         long tuned=0;view.TuneRequested += hz=>tuned=hz;
@@ -66,7 +66,7 @@ internal static class BandPlanTests
         foreach(var bottom in new[]{false,true})
         {
             var compact=new SpectrumView();
-            compact.SetRf(frequency,2400000);compact.Configure(new DisplaySettings {ShowBandPlan=true,ShowArrlPlan=true,BandPlanAtBottom=bottom});
+            compact.SetRf(frequency,2400000);compact.Configure(new DisplaySettings {SnapMode=0,ShowBandPlan=true,ShowArrlPlan=true,BandPlanAtBottom=bottom});
             compact.Measure(new Size(600,height));compact.Arrange(new Rect(0,0,600,height));compact.UpdateLayout();
             compact.SetPointer(new Point(300,80));
             var render=new RenderTargetBitmap(600,height,96,96,PixelFormats.Pbgra32);render.Render(compact);

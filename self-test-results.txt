@@ -16,6 +16,43 @@ PASS: A removed startup restore cannot reactivate its old map
 PASS: Closing a map invalidates an in-progress import
 PASS: Preference write failure retains usable loaded map and reports the problem
 PASS: Fox Hunt and Aviation map choices remain independent
+PASS: Renamed system/site folders receive new channels without duplicate folders
+PASS: New discoveries follow the identity-bound renamed site
+PASS: Renamed folder binding survives restart
+PASS: Legacy renamed folders adopt identity bindings from descendant evidence
+PASS: Cleanup organization also respects renamed identity-bound folders
+PASS: Small tuning offsets enrich one saved channel without changing its exact center
+PASS: Discovery updates preserve custom labels and notes
+PASS: Generic DMR can gain Cap+ classification without another entry
+PASS: Later generic observations do not downgrade a known system subtype
+PASS: Larger nearby tuning offsets are held rather than saved as another carrier
+PASS: Explicit compatible offset review retains the saved channel center
+PASS: Partial observations retain previously learned site identity
+PASS: Offset-only changes to a provisional identity do not create new folder branches
+PASS: Conflicting identity is held for review without a duplicate marker
+PASS: Research mode holds genuinely new channels
+PASS: Research policy and held discoveries survive restart
+PASS: Explicit review can retain a channel as a separate entry
+PASS: Nearby compatible research observations coalesce in the review queue
+PASS: Review approval removes the coalesced held observation
+PASS: Unique unscoped manual channels are enriched without moving custom placement
+PASS: Several possible matches are held rather than generating a third saved entry
+PASS: Explicit pan cannot release center lock
+PASS: Dragging preserves center-lock mode
+PASS: Locked zoom and subsequent tune remain centered
+PASS: Full span does not disable center lock
+PASS: User can deliberately choose free view and pan
+PASS: New display settings default to 500 Hz click snapping
+PASS: 500 Hz click snapping gives a fourth decimal digit of zero or five
+PASS: Fine click tuning remains available when snapping is off
+PASS: Overlap inspection exposes distinct saved IDs at the same frequency
+PASS: Ctrl-click on the (+N) label text selects its overlapping saved IDs, not a frequency beneath the text
+PASS: Tier III grant and matching timed full LC yield an unconfirmed carrier candidate
+PASS: Repeated voice packets do not inflate rapid correlation counts
+PASS: Later qualifying observations add research evidence without claiming confirmation
+PASS: Wrong-slot, failed-validation and wrong-TG voice cannot map a carrier
+PASS: Competing frequency associations remain explicit research conflicts
+PASS: Stopped channel research retains evidence without collecting more
 PASS: Discovery marker uses known network/site/CC
 PASS: Custom spectrum labels remain authoritative
 PASS: Frequency formatting trims zeros without losing 6.25 kHz precision
@@ -1069,22 +1106,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (18 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (19 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (44 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (36 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (87 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (88 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (75 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (56 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring
