@@ -17,6 +17,7 @@ public sealed record FrequencyItem
     public Guid Id { get; init; } = Guid.NewGuid();
 
     public Guid? ParentId { get; init; }
+    public string MappingStatus {get;init;}="";
     public string BindingKey {get;init;}="";
     public long? LastObservedFrequencyHz {get;init;}
 
@@ -55,7 +56,7 @@ public sealed record FrequencyItem
 
     public SignalActivity? Activity {get;init;}
 
-    public override string ToString() => IsFolder ? Name : $"{Name}{(!DiscoveryNames.Generated(Name)&&ChannelIds.Length>0?" · "+ChannelIds:"")} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
+    public override string ToString() => IsFolder ? Name+(MappingStatus.Length>0?" · "+MappingStatus:"") : $"{Name}{(!DiscoveryNames.Generated(Name)&&ChannelIds.Length>0?" · "+ChannelIds:"")} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
 
 }
 
@@ -133,6 +134,7 @@ public sealed partial class FrequencyLibrary
 
             if (!double.IsFinite(node.BandwidthHz) || node.BandwidthHz < 0 || node.BandwidthHz > 1000000000) throw new IOException("Invalid saved bandwidth.");
 
+            if (node.MappingStatus == null || node.MappingStatus.Length>500) throw new IOException("Invalid mapping status.");
             if (node.BindingKey == null || node.BindingKey.Length>2000 || node.SiteScope == null || node.ChannelRoles == null || node.ChannelIds == null || node.EvidenceStatus == null || node.DmrIdentifiers == null || node.Mode == null || node.Modulation == null || node.Protocols == null || node.Signaling == null || node.Notes == null || node.Tags == null) throw new IOException("Missing entry fields.");
 
             if(node.DmrIdentifiers is { } ids&&(ids.Length>20608))throw new IOException("Invalid DMR identifier list.");
@@ -230,6 +232,7 @@ public sealed partial class FrequencyLibrary
 
     }
 
+    internal bool UpdateSurveyEntries(IEnumerable<FrequencyItem> updates){var replacements=updates.ToDictionary(i=>i.Id);if(replacements.Keys.Any(id=>!items.Any(i=>i.Id==id)))throw new IOException("A research entry was removed; reload the library.");var next=items.Select(i=>replacements.GetValueOrDefault(i.Id,i)).ToList();if(next.SequenceEqual(items))return false;Commit(next);return true;}
     public void Upsert(FrequencyItem value)
 
     {

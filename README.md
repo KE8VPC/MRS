@@ -1,3 +1,7 @@
+# Latest release: 0.49.0-preview1
+
+Single-receiver DMR LCN discovery with persistent evidence, three-separate-call verification, control/rest roles and organized saved site maps. See UPDATE-0.49.0-preview1.md and ACCEPTANCE-0.49.0-preview1.md. Earlier release sections below are historical.
+
 # Latest release: 0.48.0-preview1
 
 Separate P25/Commercial following, discovery-time duplicate prevention, identity-bound renamed folders, held-discovery research mode, overlap inspection, firmer center lock, 500 Hz click snapping and tentative LCN correlation. See UPDATE-0.48.0-preview1.md and ACCEPTANCE-0.48.0-preview1.md. Start with a library backup; earlier release sections below are historical.

@@ -24,6 +24,7 @@ public partial class MainWindow
 public sealed partial class FrequencyPanel
 {
  internal event Action<string,FrequencyItem[]>? ChannelResearchRequested;
+ internal void DiscoverFolder(Guid id){var entries=RequireLibrary().ExportDiscoveries([id]).Channels.Where(c=>!c.IsFolder&&c.Protocols.Contains("DMR",StringComparison.OrdinalIgnoreCase)).ToArray();var scopes=entries.Select(c=>c.SiteScope).Where(s=>s.Length>0).Distinct().ToArray();if(scopes.Length!=1||entries.Any(e=>e.SiteScope!=scopes[0]))throw new IOException("Choose a single DMR site folder with a known scope.");SingleReceiverResearchRequested?.Invoke(scopes[0],entries);}
  private void ResearchFolder(Guid id)
  {var entries=RequireLibrary().ExportDiscoveries([id]).Channels.Where(c=>!c.IsFolder&&c.Protocols.Contains("DMR",StringComparison.OrdinalIgnoreCase)).ToArray();var scopes=entries.Select(c=>c.SiteScope).Where(s=>s.Length>0).Distinct().ToArray();if(scopes.Length!=1)throw new IOException("Choose a single DMR site folder with a known scope.");ChannelResearchRequested?.Invoke(scopes[0],entries);}
  internal void LabelLcnCandidate(LcnCandidate candidate)

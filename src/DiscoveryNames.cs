@@ -14,6 +14,7 @@ internal static class DiscoveryNames
   if(protocol=="DMR"){if(item.SiteScope.Contains("Capacity Plus"))protocol="Cap+";else if(item.SiteScope.Contains("Connect Plus"))protocol="Con+";}
   var parts=new List<string>{protocol};if(net.Length>0)parts.Add((protocol=="NXDN"?"Sys ":"Net ")+net);if(site.Length>0)parts.Add("Site "+site);if(cc.Length>0)parts.Add("CC "+cc);if(ran.Length>0)parts.Add("RAN "+ran);
   if(item.ChannelIds.Length>0)parts.Add("Ch "+item.ChannelIds);
+  if(item.ChannelRoles.Contains("Control"))parts.Add("Control");else if(item.ChannelRoles.Contains("Rest"))parts.Add("Rest");
   if(parts.Count==1&&protocol!="Unknown signal")parts.Add("IDs unknown");
   return string.Join(" · ",parts)[..Math.Min(160,string.Join(" · ",parts).Length)];
  }

@@ -29,3 +29,5 @@ This format provides a versioned exchange foundation; no website, upload, accoun
 ## Optional 0.48 saved-channel fields
 
 BindingKey carries a discovered folder's stable identity binding independently of its editable Name. LastObservedFrequencyHz retains the latest matched observation center without changing FrequencyHz. These optional channel/folder fields round-trip through JSON and CSV details_json. The private library additionally retains its update-only preference and bounded held-discovery queue; that transient working state is not part of shared exchange bundles. File-level snapshots can preserve it. Imported catalog records still do not activate an operating trunk profile.
+
+0.49 adds optional MappingStatus on saved folders. Applied LCN/role/evidence metadata travels with saved channels; receiver-local lcn-discovery evidence and search state are exported separately as research JSON/CSV.

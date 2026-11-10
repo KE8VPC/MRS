@@ -86,6 +86,7 @@ public sealed partial class FrequencyPanel : UserControl
             Action("Edit",EditSelected,selection.Count==1);Action("Delete",DeleteSelection,selection.Count>0);
             Action("Tune",()=>TuneRequested?.Invoke(item),selection.Count==1&&!item.IsFolder);
             Action("Research LCN map",()=>ResearchFolder(item.Id),selection.Count==1&&item.IsFolder);
+            Action("Discover LCN map (single receiver)",()=>DiscoverFolder(item.Id),selection.Count==1&&item.IsFolder);
             Action("Scan folder",()=>FolderScanRequested?.Invoke(item,FolderScanPlan.Create(RequireLibrary().Items,item.Id,ScanControls.Recursive.IsChecked==true,ScanControls.Hidden.IsChecked==true)),selection.Count==1&&item.IsFolder);
             menu.PlacementTarget=row;menu.IsOpen=true;e.Handled=true;
         };

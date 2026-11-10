@@ -16,6 +16,54 @@ PASS: A removed startup restore cannot reactivate its old map
 PASS: Closing a map invalidates an in-progress import
 PASS: Preference write failure retains usable loaded map and reports the problem
 PASS: Fox Hunt and Aviation map choices remain independent
+PASS: Survey waits for validated control evidence rather than treating tune acknowledgement as control lock
+PASS: Invalid, replay and foreign-site assignments never start a probe
+PASS: One unresolved assignment schedules exactly one candidate and waits for acknowledgement
+PASS: Buffered observations cannot match a pending unacknowledged tune
+PASS: Wrong-slot and failed-validation voice never counts as evidence
+PASS: An active but unrelated candidate is not a successful mapping or a site-wide search block
+PASS: After an inconclusive attempt the next assignment tests the next saved candidate
+PASS: Repeated full LC packets from one conversation count as one call
+PASS: Discovery returns after a bounded identity window even when matching headers keep arriving
+PASS: Elapsed time and repeated assignment alone cannot inflate separate-call evidence
+PASS: Matching terminator ends the probe and provides an independent-call boundary
+PASS: Matching terminator ends the probe and provides an independent-call boundary
+PASS: Matching terminator ends the probe and provides an independent-call boundary
+PASS: Three separate calls pass a unique mapping without claiming the entire site inventory is known
+PASS: New unresolved channel numbers immediately make the site map incomplete
+PASS: Restart retains evidence and call identities, but never starts radio discovery automatically
+PASS: Resume returns to control and retains discovered mappings
+PASS: Malformed research is not overwritten or allowed to replace the working map
+PASS: A competing frequency association removes passed status rather than choosing the first to three
+PASS: Explicit review can reject a competing association without erasing its evidence
+PASS: Structurally invalid research fields cannot reach the running state machine or replace valid evidence
+PASS: Excluding a rejected frequency cannot revive its rejected mapping label
+PASS: Optional follow-and-learn follows a validated tentative identity only when explicitly enabled
+PASS: Follow and learn returns on its maximum dwell when a terminator is missed
+PASS: Loss of control starts bounded saved-frequency reacquisition
+PASS: Ordinary traffic does not falsely lock the control search
+PASS: Foreign network control signaling is rejected during reacquisition
+PASS: Decoded control and traffic channel roles remain distinct
+PASS: A voice LC announcing a rest number does not prove its own frequency is rest
+PASS: DMR discovery saves decoded channel roles instead of discarding them as observed carrier
+PASS: Generated saved and spectrum labels include the decoded control role
+PASS: Independent receiver surveys do not share active assignments or search state
+PASS: Failed tune acknowledgement stops discovery without a fabricated match
+PASS: A same-talkgroup voice on a different color code cannot pass a mapping
+PASS: Contradictory full LC revokes following immediately and holds the mapping for review
+PASS: Learning a previously missing radio ID does not manufacture another independent call
+PASS: CRC-valid Cap+ LSN 3 becomes carrier LCN 2 with slot 1
+PASS: CRC-valid Cap+ LSN 3 becomes carrier LCN 2 with slot 1
+PASS: CRC-valid Cap+ LSN 3 becomes carrier LCN 2 with slot 1
+PASS: Complete Cap+ idle snapshots establish three separate call boundaries without invented elapsed-time boundaries
+PASS: Connect Plus decoded control identity and validated grants drive the same single-receiver workflow
+PASS: Accuracy mode waits for a call-ending boundary instead of immediately abandoning a matched call
+PASS: Call-end waiting has a bounded maximum and never blocks discovery indefinitely
+PASS: Atomic research metadata updates preserve existing labels and notes
+PASS: One Undo restores the entire research metadata batch
+PASS: Generated DMR RF passes the production raw-I/Q survey downconverter and decoder
+PASS: A tune-generation boundary discards queued old-frequency decoder observations and audio
+PASS: Unsupported research I/Q is an explicit failure rather than usable evidence
 PASS: Renamed system/site folders receive new channels without duplicate folders
 PASS: New discoveries follow the identity-bound renamed site
 PASS: Renamed folder binding survives restart
@@ -1106,22 +1154,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (19 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (20 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (36 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (37 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (88 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (77 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (56 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (66 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring

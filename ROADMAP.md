@@ -1,3 +1,7 @@
+# Current release: 0.49.0-preview1 — single-receiver LCN discovery
+
+Local/synthetic validation and portable package are documented separately from pending live DMR site/voice/rest-recovery acceptance. Next priorities depend on that field testing; absolute-frequency/MBC and broader vendor coverage remain future work.
+
 # Current release: 0.48.0-preview1 — research and protocol-flow refinements
 
 Built the pending duplicate-prevention/rename/overlap/navigation and P25/Commercial split batch. Added session-based unconfirmed LCN correlation from decoded grants and full voice LC, scoped to a user-selected saved site, with CSV export and candidate map/label actions. P25/DMR models, profiles, filters, assignments, histories, talkgroup views and auto-save toggles are independent; physical receiver definitions and the saved library remain shared. No definitive LCN auto-mapping, absolute-MBC, Phase II or additional live acceptance is claimed. Full published suite: 2,002 assertions plus six UI/integration scenarios; see the update/validation/acceptance documents. No source commit/push in this build request.
