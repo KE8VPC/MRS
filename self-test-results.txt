@@ -16,6 +16,120 @@ PASS: A removed startup restore cannot reactivate its old map
 PASS: Closing a map invalidates an in-progress import
 PASS: Preference write failure retains usable loaded map and reports the problem
 PASS: Fox Hunt and Aviation map choices remain independent
+PASS: Selecting a mapping automatically includes and orders its missing system/site/frequency dependencies
+PASS: Upload snapshots do not change when prepared records are edited
+PASS: Empty upload selection produces actionable preparation/selection guidance
+PASS: Already linked dependencies do not require redundant uploads
+PASS: A changed server revision invalidates preview eligibility
+PASS: Preview approval is scoped to the authenticated account
+PASS: Large selections become automatic requests of at most 200 records without losing records
+PASS: Request byte limits can split a batch before its record-count limit
+PASS: Download review exposes frequency, protocol and decoded identifiers
+PASS: Review presents conflicting local and website values side by side
+PASS: Missing relationship identifiers display as unresolved rather than guessing from a label
+PASS: Remote deletions explicitly describe local-data retention
+PASS: Legacy provisional P25 identities render NAC and observed MHz without internal scope syntax
+PASS: Partial P25 identities retain a known system ID while marking WACN unknown
+PASS: A known WACN is retained when only the P25 system ID is missing
+PASS: A fallback frequency is never interpreted as a P25 site or system identifier for sync
+PASS: Same-session P25 identity promotion preserves counts and labels while leaving unsupported legacy history untouched
+PASS: Promoted talkgroup history retains first and last observation times
+PASS: Retune/reset epochs prevent an unrelated identity from claiming earlier provisional rows
+PASS: Conflicting talkgroup labels preserve separate evidence for review without double-counting
+PASS: Failed validation and replay do not modify live talkgroup identity history
+PASS: Website credentials require HTTPS and are never placed in a URL
+PASS: Incomplete device tokens are rejected before network access
+PASS: Device token round-trips through Windows user-bound protection without plaintext on disk
+PASS: Opening an API client makes no automatic network request
+PASS: Token owner and read/write scope are checked explicitly
+PASS: A first upload is blocked until existing website records have been pulled for duplicate review
+PASS: Paginated pulls include own-token side effects and persist every page with its cursor
+PASS: Downloaded review queue survives restart before any local-library application
+PASS: Same-revision mapping-conflict updates are retained rather than discarded
+PASS: Malformed pages cannot advance the saved cursor
+PASS: Stale writers cannot overwrite another window's queue or cursor
+PASS: Sync state and review queues are partitioned by endpoint and account
+PASS: Upload selection builds linked system/site/frequency/mapping dependencies
+PASS: P25 decimal display identifier/channel converts explicitly to canonical four-digit hexadecimal
+PASS: Default upload omits notes, receiver details, folder/scope internals and visibility overrides
+PASS: Renaming a channel does not change its sync identity or parent references
+PASS: LCN uploads retain actual separate-call rule/count and use carrier numbering without inventing a slot
+PASS: DMR system identity uses variant/network, independent of color code
+PASS: DMR network is sent in its native network identifier field
+PASS: Misspelled verification/enumeration values are blocked locally rather than silently cleared
+PASS: Token-shaped credentials in record content are blocked before journal or upload preparation
+PASS: Dry previews never persist created ids or create website records
+PASS: A dry-run reference to a selected new parent is identified as the documented limitation
+PASS: Dependency preview limitations never hide unrelated server validation errors
+PASS: Bindings changed after preview are rejected after reauthentication without sending a write batch
+PASS: A small real fixture batch links parents before children and saves each returned id/revision
+PASS: Successful upload bindings and results are durable before another operation
+PASS: Post-push pulls recover the server's full echoed records and relationship side effects
+PASS: Reviewed echoed records link to an existing local frequency without duplicate entries
+PASS: Concurrent local/website label edits are held without overwriting either version
+PASS: Explicit keep-local review links the server revision without changing the local label
+PASS: Explicit website-values review can resolve a conflicting local field
+PASS: Remote deletion retains a local frequency unresolved and blocks accidental recreation
+PASS: Read-only credentials can pull but cannot send dry or real push requests
+PASS: An echoed credential is scrubbed before responses can enter local state or diagnostics
+PASS: Rate-limit Retry-After is surfaced with no automatic request retry
+PASS: Redirect responses are rejected rather than forwarding a token to another origin
+PASS: Every fixture upload leaves force/revive unused and credentials outside URLs/bodies
+PASS: A failed queue write leaves both the durable queue and cursor unchanged
+PASS: P25 display values use decimal components rather than guessing hexadecimal from their printed digits
+PASS: Downloaded-only data is not falsely advertised as decoded over air
+PASS: A downloaded confidence classification is not silently promoted to observed on a later upload
+PASS: Catalog site labels and reviewed mapping verification are preserved rather than replaced by generated defaults
+PASS: Stale revisions retain the full server record for review and never overwrite it
+PASS: A revision conflict is not automatically retried
+PASS: A deleted ref is retained as gone rather than recreated
+PASS: Gone results prevent later accidental recreation without any revive option
+PASS: Each success is saved before a later malformed result can interrupt a batch
+PASS: A subsequent echoed pull recovers an uncertain creation by stable ref without retrying the write
+PASS: Partial updates preserve existing identifier keys and opaque server attributes
+PASS: A deleted system leaves descendants queued and unresolved instead of matching a similar name
+PASS: Existing libraries retain legacy saving until organization is explicitly applied
+PASS: Organization preview does not write or mutate the library
+PASS: Unidentified DMR is grouped by subtype and color code without placeholder folders
+PASS: Capacity Plus remains separate from generic DMR with the same frequency/color code
+PASS: Custom labels survive while generic LTR labels gain decoded Area/Home
+PASS: Applying creates an exact pre-change backup and rollback receipt
+PASS: Organization retains every original channel ID without merging duplicate frequencies
+PASS: Organization preserves all non-layout fields for DMR 8d01fe
+PASS: Organization preserves all non-layout fields for DMR 1b6442
+PASS: Organization preserves all non-layout fields for DMR c76727
+PASS: Organization preserves all non-layout fields for LTR 76e0d6
+PASS: Empty user-created folders are preserved
+PASS: Saving preferences survive restart in the same library
+PASS: A new automatic discovery uses the configured layout after restart
+PASS: Repeated auto-saves preserve organization without duplicate channels or placeholder folders
+PASS: Rollback is blocked after subsequent discoveries to preserve newer data
+PASS: Organization backups are discoverable for the correct library
+PASS: Rollback after restart restores the exact original library and preferences
+PASS: A fresh library has a restorable empty baseline when first saving organization rules
+PASS: Undo restores the previous organization preferences as well as entries
+PASS: Selected-entry organization leaves unselected entries unchanged
+PASS: An empty selected scope is rejected instead of becoming the whole library
+PASS: Invalid organization template is rejected: {bogus}
+PASS: Invalid organization template is rejected: ../{cc}
+PASS: Invalid organization template is rejected: {protocol}\{cc}
+PASS: Invalid organization template is rejected: {protocol
+PASS: Custom templates omit unavailable fields without inventing site identity
+PASS: Conflicting identifiers remain unmoved and explicitly held for review
+PASS: Stale organization previews cannot overwrite later local edits
+PASS: Disk revision checks preserve another window's newer edit
+PASS: Future-only configuration leaves existing entries untouched
+PASS: Later decoded system/site identity moves the same auto-saved record without altering frequency or ID
+PASS: Identity-bound custom system folder names are reused rather than replaced
+PASS: Known system/site from imported channel scope is retained even when its signaling text only has color code
+PASS: Reusing a user-created CC folder never takes ownership or deletes it during a later reorganization
+PASS: Apply rejects a plan that deletes a channel
+PASS: New RF activity discoveries also use the saved organization rules
+PASS: Auto-save does not move a manually placed channel out of its custom folder
+PASS: The older cleanup action respects configured organization instead of restoring placeholders
+PASS: Apply rejects a plan that changes channel frequency
+PASS: Saving preferences stay local and are excluded from shared discovery bundles
+PASS: Disabling future rules restores legacy automatic placement without reorganizing channels
 PASS: Survey waits for validated control evidence rather than treating tune acknowledgement as control lock
 PASS: Invalid, replay and foreign-site assignments never start a probe
 PASS: One unresolved assignment schedules exactly one candidate and waits for acknowledgement
@@ -292,6 +406,10 @@ PASS: WSPR scheduled parity is correct
 PASS: WSPR encoder produces complete standard channel symbols
 PASS: WSPR waveform has protocol lead and finite phase-shaped samples
 PASS: WSPR newly encoded waveform decodes end to end
+PASS: FT8 even repeats on the next matching slot with one intervening RX slot
+PASS: FT8 odd repeats on the next matching slot with one intervening RX slot
+PASS: FT8 reply decodes before full-slot capture after a brief RX restart delay
+PASS: TX station callsign, grid and configured license class survive reopening
 PASS: Actual quantized streaming I/Q generator decodes after independent real-channel extraction
 PASS: WSPR I/Q remains modulated after 80 seconds (phase-table index cannot overflow)
 PASS: Unsupported free-text TX cannot silently become a different format
@@ -822,10 +940,24 @@ PASS: Aircraft table separates live and replay identities
 PASS: Aircraft without decoded positions remain unmapped
 PASS: Aircraft rows expire independently of another source
 PASS: UAT preserves non-ICAO address class and RS validation terminology
+PASS: ACARS label 16 displays readable signed coordinates and preserves the payload
+PASS: ACARS label 30 maps the observed decimal layout without guessing trailing fields
+PASS: ACARS applies southern and eastern hemisphere signs
+PASS: ACARS avoids mapping uplinks, fragments, invalid packets, invalid coordinates and unrelated text
+PASS: ACARS displays worker-decoded positions, airports and gate times
+PASS: ACARS descriptions identify report parameters without inferring a fault
+PASS: ACARS positions reach the aircraft map model without combining with ADS-B
 PASS: Aviation accepts full ADS-B capture at 2.4 MS/s
 PASS: Aviation rejects a wideband target outside usable capture
 PASS: Aviation rejects insufficient UAT sample rate
 PASS: VDL2 accepts an offset channel fully inside capture
+PASS: Rail FFSK validates an EOT frame across uneven audio blocks
+PASS: Rail decoder rejects a changed check bit
+PASS: HOT display retains frame type without applying EOT field meanings
+PASS: Amateur CW produces a continuous transcript with word spaces
+PASS: WEFAX draws black, midpoint and white at the selected IOC and line timing
+PASS: Cellular survey clips measured coverage to capture and band and rejects capture-center DC
+PASS: Cellular survey reports no coverage outside the selected band
 PASS: Independent DMR vector CC 0 type 1: Golay BPTC RS and IDs
 PASS: Independent DMR vector CC 0 type 2: Golay BPTC RS and IDs
 PASS: Independent DMR vector CC 1 type 1: Golay BPTC RS and IDs
@@ -1154,22 +1286,22 @@ PASS: HackRF live commands preserve upper-range tuning and independent gains
 PASS: HackRF rejects out-of-range tuning, RTL rates and automatic gain
 PASS: RTL index zero and HackRF index zero are independent; duplicate HackRF ownership is blocked
 PASS: HackRF identity survives enumeration changes and is namespaced by backend
-PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (20 ms for 100 ms I/Q)
+PASS: HackRF 2400000 S/s demodulation produces exactly 48 kHz audio (18 ms for 100 ms I/Q)
 PASS: HackRF 2400000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 2400000 S/s recovers the NFM modulation tone
 PASS: HackRF 2400000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 2400000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (37 ms for 100 ms I/Q)
+PASS: HackRF 9600000 S/s demodulation produces exactly 48 kHz audio (38 ms for 100 ms I/Q)
 PASS: HackRF 9600000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 9600000 S/s recovers the NFM modulation tone
 PASS: HackRF 9600000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 9600000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (77 ms for 100 ms I/Q)
+PASS: HackRF 19200000 S/s demodulation produces exactly 48 kHz audio (58 ms for 100 ms I/Q)
 PASS: HackRF 19200000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 19200000 S/s recovers the NFM modulation tone
 PASS: HackRF 19200000 S/s WFM produces 48 kHz mono and stereo monitoring
 PASS: HackRF 19200000 S/s anti-alias filter rejects a carrier that would fold onto the tuned channel
-PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (66 ms for 100 ms I/Q)
+PASS: HackRF 20000000 S/s demodulation produces exactly 48 kHz audio (67 ms for 100 ms I/Q)
 PASS: HackRF 20000000 S/s DSP preserves state across uneven USB blocks
 PASS: HackRF 20000000 S/s recovers the NFM modulation tone
 PASS: HackRF 20000000 S/s WFM produces 48 kHz mono and stereo monitoring

@@ -59,6 +59,8 @@ public sealed partial class FrequencyPanel : UserControl
         Button("Hide markers", () => SetSelectedVisibility(false));
         Button("Reload", () => Initialize(path));
         Button("Import / export",()=>CreateSharingWindow().ShowDialog());
+        Button("Website sync",()=>WebsiteWindow(Path.Combine(Path.GetDirectoryName(path)!,"website-sync")).Show());
+        Button("Saving & organization…",()=>CreateOrganizationWindow().ShowDialog());
         Button("Clean up…",()=>CreateCleanupWindow().ShowDialog());
         Button("Review discoveries",()=>CreatePendingDiscoveryWindow().ShowDialog());
         toolbar.Children.Add(discoveryPolicy);discoveryPolicy.SelectionChanged+=(_,_)=>{if(!syncingPolicy&&library!=null)Attempt(()=>{library.SetDiscoveryPolicy(discoveryPolicy.SelectedIndex==1);Notify("Auto-save policy saved");});};

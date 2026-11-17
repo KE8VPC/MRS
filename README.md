@@ -1,3 +1,23 @@
+# Current release: 0.53.0-preview1
+
+Railroad HOT/EOT, conversational CW, manual WEFAX and a HackRF cellular activity survey. See UPDATE-0.53.0-preview1.md and ACCEPTANCE-0.53.0-preview1.md.
+
+# Current release: 0.52.0-preview1
+
+ACARS readable summaries and reported positions, with collapsible HDTV diagnostics. See UPDATE-0.52.0-preview1.md and ACCEPTANCE-0.52.0-preview1.md. The independent ui1 interface preview awaits station review.
+
+# Latest release: 0.51.0-preview2
+
+FT8 transmit slot timing, a clickable TX audio waterfall, saved station identity and a simplified transmit dialog. See UPDATE-0.51.0-preview2.md and ACCEPTANCE-0.51.0-preview2.md.
+
+# Latest release: 0.51.0-preview1
+
+Saving and organization wizard: preview/reorganize selected or existing channels, configure future discovery layouts, and retain stable identities with backup/rollback. Check the library path/count before applying. See UPDATE-0.51.0-preview1.md and ACCEPTANCE-0.51.0-preview1.md.
+
+# Latest release: 0.50.0-preview2
+
+Manual website sync improvements: saved-connection Pull/Prepare, searchable local/website comparisons, dependency-aware upload batches and cautious P25 identity reconciliation. See UPDATE-0.50.0-preview2.md and ACCEPTANCE-0.50.0-preview2.md. Hosted and live RF acceptance remain open. Older release sections below are historical.
+
 # Latest release: 0.49.0-preview1
 
 Single-receiver DMR LCN discovery with persistent evidence, three-separate-call verification, control/rest roles and organized saved site maps. See UPDATE-0.49.0-preview1.md and ACCEPTANCE-0.49.0-preview1.md. Earlier release sections below are historical.

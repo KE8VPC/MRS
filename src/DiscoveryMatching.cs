@@ -27,6 +27,7 @@ public sealed partial class FrequencyLibrary
  internal static bool CompatibleIdentity(FrequencyItem old,SiteChannelData incoming)
  {
   if(old.Protocols.Length>0&&old.Protocols!="Unknown"&&!old.Protocols.Contains(incoming.Protocol,StringComparison.OrdinalIgnoreCase))return false;
+  if(incoming.Protocol=="DMR"&&!DmrScopesAgree(old.SiteScope,incoming.Scope))return false;
   string[] patterns=[@"\b(?:NET(?:WORK)?)\s+(\d+)",@"\bSITE\s+(\d+)",@"\bCC\s+(\d+)",@"\bRAN\s+(\d+)",@"\bAREA\s+(\d+)",@"\bHOME\s+(\d+)",@"\bNAC\s+([A-F0-9]+)",@"\bWACN\s+([A-F0-9]+)",@"\bSYSTEM\s+([A-F0-9]+)"];
   foreach(string pattern in patterns){var a=Regex.Match(old.Signaling,pattern,RegexOptions.IgnoreCase);var b=Regex.Match(incoming.Identifiers,pattern,RegexOptions.IgnoreCase);if(a.Success&&b.Success&&!a.Groups[1].Value.Equals(b.Groups[1].Value,StringComparison.OrdinalIgnoreCase))return false;}
   if(old.SiteScope.Length>0&&old.SiteScope!=incoming.Scope&&!old.EvidenceStatus.StartsWith("Provisional")&&!incoming.Evidence.StartsWith("Provisional")){
@@ -37,28 +38,58 @@ public sealed partial class FrequencyLibrary
   }
   return true;
  }
+ internal static bool DmrProvisional(string evidence)=>evidence.StartsWith("Provisional",StringComparison.OrdinalIgnoreCase);
+ private static bool DmrPendingMatches(SiteChannelData first,SiteChannelData second) =>
+  first.Protocol=="DMR"&&second.Protocol=="DMR"&&Math.Abs(first.Hz-second.Hz)<=DiscoveryMatchHz&&
+  CompatibleIdentity(first.Draft(),second)&&CompatibleIdentity(second.Draft(),first);
+
  private static string MergeIdentityText(string before,string after){string text=string.Join("; ",(before+"; "+after).Split(';',StringSplitOptions.TrimEntries|StringSplitOptions.RemoveEmptyEntries).Where(s=>!Regex.IsMatch(s,@"^(Network|Site|NAC|System|WACN)\s*$",RegexOptions.IgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase));return text[..Math.Min(4000,text.Length)];}
  internal (int Added,int Updated) SaveSiteChannels(IEnumerable<SiteChannelData> data,bool forceNew=false,Guid? selectedMatch=null)
  {
   var next=items.ToList();var pending=pendingDiscoveries.ToList();int added=0,updated=0;
   foreach(var c in data){if(c.Hz<=0||c.Hz>6000000000)continue;
    var nearby=next.Where(i=>!i.IsFolder&&Math.Abs(i.FrequencyHz-c.Hz)<=5000&&(i.Protocols is "" or "Unknown"||i.Protocols.Contains(c.Protocol,StringComparison.OrdinalIgnoreCase))).ToArray();
-   var exact=nearby.Where(i=>i.SiteScope==c.Scope&&Math.Abs(i.FrequencyHz-c.Hz)<=1000&&CompatibleIdentity(i,c)).OrderBy(i=>Math.Abs(i.FrequencyHz-c.Hz)).ToArray();
-   var compatible=nearby.Where(i=>Math.Abs(i.FrequencyHz-c.Hz)<=1000&&CompatibleIdentity(i,c)).ToArray();
+   var compatible=nearby.Where(i=>Math.Abs(i.FrequencyHz-c.Hz)<=DiscoveryMatchHz&&CompatibleIdentity(i,c)).ToArray();
+   var exact=compatible.Where(i=>i.SiteScope==c.Scope).ToArray();
    FrequencyItem? old=forceNew?null:selectedMatch is {} chosen?next.Single(i=>i.Id==chosen&&!i.IsFolder):exact.Length==1?exact[0]:compatible.Length==1?compatible[0]:null;
    if(selectedMatch!=null&&old!=null&&Math.Abs(old.FrequencyHz-c.Hz)>5000)throw new IOException("The selected entry is more than 5 kHz away. Review its tuning before merging.");
    if(old!=null&&!CompatibleIdentity(old,c))throw new IOException("Selected entry has conflicting identity. Keep it separate or review its identifiers first.");
    string? reason=!forceNew&&old==null?(nearby.Length>0?"Possible duplicate or conflicting identity; choose an existing entry or keep separate.":updateExistingOnly?"Research mode: new channel held for review.":null):null;
-   if(reason!=null){var similar=pending.Where(p=>Math.Abs(p.Data.Hz-c.Hz)<=1000&&CompatibleIdentity(p.Data.Draft(),c)).ToArray();if(similar.Length==1)pending.Remove(similar[0]);pending.RemoveAll(p=>p.Key==c.Key);if(pending.Count>=500)pending.RemoveAt(0);pending.Add(new(c.Key,c,reason));continue;}
-   pending.RemoveAll(p=>p.Key==c.Key);
-   if(old==null){next.Add(c.Draft() with{ParentId=DiscoveryFolder(next,c),LastObservedFrequencyHz=c.Hz});added++;continue;}
-   int Richness(string value)=>value.Split(':').Count(v=>v.Length>0&&v!="DMR"&&!v.Contains("unknown",StringComparison.OrdinalIgnoreCase)&&!v.Contains("Unidentified")&&!v.Contains("Unassigned")&&!v.Contains("Unresolved")&&!v.Contains("Provisional"));bool richer=old.SiteScope.Length==0||((!c.Evidence.StartsWith("Provisional")||old.EvidenceStatus.StartsWith("Provisional"))&&(Richness(c.Scope)>Richness(old.SiteScope)||c.Scope==old.SiteScope||!c.Evidence.StartsWith("Provisional")&&!old.EvidenceStatus.StartsWith("Provisional")&&Richness(c.Scope)>=Richness(old.SiteScope)));string scope=richer?c.Scope:old.SiteScope;
+   if(reason!=null){
+    var similar=pending.Where(p=>c.Protocol=="DMR"?p.Data.Identifiers==c.Identifiers&&DmrPendingMatches(p.Data,c):
+     Math.Abs(p.Data.Hz-c.Hz)<=DiscoveryMatchHz&&CompatibleIdentity(p.Data.Draft(),c)).ToArray();
+    if(similar.Length==1){
+     if(c.Protocol=="DMR"&&!DmrProvisional(similar[0].Data.Evidence)&&DmrProvisional(c.Evidence))continue;
+     pending.Remove(similar[0]);
+    }
+    string pendingKey=c.Key;
+    if(c.Protocol=="DMR"){
+     pending.RemoveAll(p=>p.Data.Key==c.Key&&p.Data.Identifiers==c.Identifiers);
+     if(pending.Any(p=>p.Key==pendingKey))pendingKey+=":"+SyncJson.Hash(c.Identifiers)[..16];
+    }
+    else pending.RemoveAll(p=>p.Key==c.Key);
+    if(pending.Count>=500)pending.RemoveAt(0);
+    pending.Add(new(pendingKey,c,reason));continue;
+   }
+   if(c.Protocol=="DMR")
+    pending.RemoveAll(p=>p.Data==c||p.Data.Identifiers==c.Identifiers&&DmrPendingMatches(p.Data,c));
+   else pending.RemoveAll(p=>p.Key==c.Key);
+   if(old==null){var fresh=c.Draft() with{LastObservedFrequencyHz=c.Hz};next.Add(organization==null?fresh with{ParentId=DiscoveryFolder(next,c)}:OrganizeDiscovery(next,fresh));added++;continue;}
+   int Richness(string value)=>value.Split(':').Count(v=>v.Length>0&&v!="DMR"&&!v.Contains("unknown",StringComparison.OrdinalIgnoreCase)&&!v.Contains("Unidentified")&&!v.Contains("Unassigned")&&!v.Contains("Unresolved")&&!v.Contains("Provisional"));bool richer=old.SiteScope.Length==0||((!c.Evidence.StartsWith("Provisional")||old.EvidenceStatus.StartsWith("Provisional"))&&(Richness(c.Scope)>Richness(old.SiteScope)||c.Scope==old.SiteScope||!c.Evidence.StartsWith("Provisional")&&!old.EvidenceStatus.StartsWith("Provisional")&&Richness(c.Scope)>=Richness(old.SiteScope)));
+   if(c.Protocol=="DMR"&&DmrProvisional(old.EvidenceStatus)&&!DmrProvisional(c.Evidence)&&
+      DmrScope(c.Scope) is { Network.Length:>0, Site.Length:>0 })richer=true;
+   string scope=richer?c.Scope:old.SiteScope;
    string text=MergeIdentityText(old.Signaling,c.Identifiers);var newer=old with{SiteScope=scope,Signaling=text,LastObservedFrequencyHz=c.Hz,ChannelLastSeen=c.Seen>old.ChannelLastSeen||old.ChannelLastSeen==null?c.Seen:old.ChannelLastSeen,ChannelRoles=string.Join("; ",old.ChannelRoles.Split("; ",StringSplitOptions.RemoveEmptyEntries).Append(c.Role).Distinct().Take(32)),ChannelIds=string.Join(", ",old.ChannelIds.Split(", ",StringSplitOptions.RemoveEmptyEntries).Append(c.Channel).Where(v=>v.Length>0).Distinct().Take(64)),UplinkHz=old.UplinkHz??c.Uplink,EvidenceStatus=richer?c.Evidence:old.EvidenceStatus,Protocols=old.Protocols is "" or "Unknown"?c.Protocol:old.Protocols};
-   if(DiscoveryNames.Generated(old.Name))newer=newer with{Name=DiscoveryNames.Label(newer)};
+   if(c.Protocol=="DMR"&&old.ChannelLastSeen>c.Seen)newer=newer with{LastObservedFrequencyHz=old.LastObservedFrequencyHz};
+   bool rename=c.Protocol=="DMR"?DmrGeneratedName(old):DiscoveryNames.Generated(old.Name);
+   if(organization==null&&rename)newer=newer with{Name=DiscoveryNames.Label(newer)};
    // Preserve a user's unscoped/manual placement; known site entries follow their
    // identity-bound folder even if that folder has been renamed.
-   next[next.FindIndex(i=>i.Id==old.Id)]=newer;
-   if(scope==c.Scope&&old.SiteScope.Length>0&&old.Tags.Contains("Site channel discovery"))newer=newer with{ParentId=DiscoveryFolder(next,c)};
+   // Keep the original DMR scope visible while finding folder aliases. Otherwise
+   // the entry being moved makes its old placeholder look like a renamed site.
+   if(c.Protocol!="DMR")next[next.FindIndex(i=>i.Id==old.Id)]=newer;
+   if(organization!=null){bool managed=next.Any(f=>f.Id==old.ParentId&&(f.BindingKey.StartsWith("organization:")||f.BindingKey.StartsWith("site:")));if(managed)newer=OrganizeDiscovery(next,newer,c.Protocol!="DMR"||rename);}
+   else if(scope==c.Scope&&old.SiteScope.Length>0&&old.Tags.Contains("Site channel discovery"))newer=newer with{ParentId=DiscoveryFolder(next,c)};
    if(newer!=old){next[next.FindIndex(i=>i.Id==old.Id)]=newer;updated++;}
   }
   bool pendingChanged=System.Text.Json.JsonSerializer.Serialize(pending)!=System.Text.Json.JsonSerializer.Serialize(pendingDiscoveries);if(added+updated>0||pendingChanged){var previous=pendingDiscoveries;pendingDiscoveries=pending;try{Commit(next,false);}catch{pendingDiscoveries=previous;throw;}}return(added,updated);

@@ -20,6 +20,44 @@ internal static class AviationTests
         table.Observe(m with{Packet=m.Packet with{ObservedUtc=DateTimeOffset.UtcNow.AddMinutes(-16)}});table.Expire();check(table.Rows.Length==1,"Aircraft rows expire independently of another source");
         var uat=AviationData.Parse("""{"decode":{"crc_ok":true,"fec_corrected":2},"body":{"type":"uat","kind":"adsb","details":{"address":"ABCDEF","address_qualifier":"adsb_other","position":{"lat":40,"lon":-84}}}}""","uat",Context)!;
         check(uat.Identity=="adsb_other:ABCDEF"&&uat.Packet.Validation.StartsWith("RS-FEC"),"UAT preserves non-ICAO address class and RS validation terminology");
+        const string report16="232749,22002,0002, 56,N 40.622 W 85.034";
+        const string report30="182,HG,2327,5,KDAY,N 40.622,W 85.034,,220";
+        AviationMessage Acars(string label,string payload,string block="5",bool more=false,bool valid=true,object? app=null)
+        {
+            var json=JsonSerializer.Serialize(new { decode=new { crc_ok=valid }, body=new
+            {
+                type="acars",tail="N578GJ",label,text=payload,block_id=block,more_to_come=more,app
+            }});
+            return AviationData.Parse(json,"acars",Context with{FrequencyHz=131550000})!;
+        }
+        var pos16=Acars("16",report16);
+        var pos30=Acars("30",report30);
+        check(pos16.Latitude==40.622&&pos16.Longitude==-85.034&&pos16.Packet.SourceLabel=="16"
+            &&pos16.Packet.Information==report16&&pos16.Packet.Description.Contains("40.622, -85.034"),
+            "ACARS label 16 displays readable signed coordinates and preserves the payload");
+        check(pos30.Latitude==40.622&&pos30.Longitude==-85.034&&pos30.Altitude==null
+            &&pos30.Packet.Information==report30,
+            "ACARS label 30 maps the observed decimal layout without guessing trailing fields");
+        var south=Acars("16",report16.Replace("N 40.622 W","S 40.622 E"));
+        check(south.Latitude==-40.622&&south.Longitude==85.034,"ACARS applies southern and eastern hemisphere signs");
+        check(Acars("16",report16,block:"A").Latitude==null
+            &&Acars("30",report30,more:true).Latitude==null
+            &&Acars("30",report30,valid:false).Latitude==null
+            &&Acars("30",report30.Replace("40.622","91.622")).Latitude==null
+            &&Acars("30","Free text "+report30).Latitude==null,
+            "ACARS avoids mapping uplinks, fragments, invalid packets, invalid coordinates and unrelated text");
+        var structured=Acars("20","POS...",app:new { position=new { latitude=1.25,longitude=-2.5 },gtout="0835",depa="KDAY" });
+        check(structured.Latitude==1.25&&structured.Longitude==-2.5
+            &&structured.Packet.Description.Contains("Gate out 08:35 UTC")&&structured.Packet.Description.Contains("From KDAY"),
+            "ACARS displays worker-decoded positions, airports and gate times");
+        var df=Acars("H1","#DFBX/LDGWDLCK,FLAP,SLAT/");
+        check(df.Latitude==null&&df.Packet.Description.Contains("Parameters mentioned: landing gear downlock, flaps, slats"),
+            "ACARS descriptions identify report parameters without inferring a fault");
+        var tracks=new AircraftTable();
+        tracks.Observe(pos16);tracks.Observe(pos30);
+        tracks.Observe(AviationData.Parse(PositionJson.Replace("ABCDEF","N578GJ"),"adsb",Context)!);
+        check(tracks.Rows.Length==2&&tracks.Rows.Single(r=>r.Protocol=="ACARS").Trail.Count==1,
+            "ACARS positions reach the aircraft map model without combining with ADS-B");
         var frame=new IqFrame(0,1090000000,2400000,new byte[8],2400000);
         check(AviationPipeline.Check("adsb",1090000000,frame)==null,"Aviation accepts full ADS-B capture at 2.4 MS/s");
         check(AviationPipeline.Check("adsb",1090000000,frame with{Frequency=1091000000})!=null,"Aviation rejects a wideband target outside usable capture");

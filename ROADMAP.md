@@ -1,3 +1,27 @@
+# Current release: 0.53.0-preview1
+
+Railroad HOT/EOT, conversational CW, manual WEFAX and a HackRF cellular activity survey. See UPDATE-0.53.0-preview1.md and ACCEPTANCE-0.53.0-preview1.md.
+
+# Current release: 0.52.0-preview1
+
+ACARS readable summaries and reported positions, with collapsible HDTV diagnostics. See UPDATE-0.52.0-preview1.md and ACCEPTANCE-0.52.0-preview1.md. The independent ui1 interface preview awaits station review.
+
+# Current release: 0.51.0-preview1 — saving and organization wizard
+
+Selectable layouts, custom templates, existing-list previews, future discovery rules and guarded backup/rollback. No channel merges or identity changes. Live acceptance remains open; the active-library mismatch is not auto-repaired.
+
+# Current release: 0.50.0-preview2 — sync workflow and P25 identity fixes
+
+Includes saved-connection actions, richer download review, automatic dependency-aware upload batches and cautious same-context P25 talkgroup identity promotion. API v1 is unchanged. Hosted and live RF acceptance remain open; see the current release checklist.
+
+# Current release: 0.50.0-preview1 — manual website sync
+
+Next acceptance: read-only token/hosted pulls first, reviewed local import, then an explicitly confirmed small private upload and website inspection. Background sync, website-only general-record editing and automatic trunk-profile activation from downloads remain future work. Existing RF acceptance remains separate.
+
+## Pending client fixes — November 10, 2026
+
+User authorized the recorded M.R.S. client fixes while Claude handles website issues. Pull/Prepare now validate saved credentials without a separate Test step; the download review has searchable frequency/identity/context and field comparisons; exact-selection previews cover automatic dependency-ordered batches; provisional P25 talkgroups have readable identities and source/session-bound promotion. Legacy ambiguous history and conflicting labels remain separate. No API contract change, hosted write, release ZIP, commit or push in this fix pass. See VALIDATION-PENDING-WEBSITE-SYNC-FIXES.md for local checks and remaining live acceptance.
+
 # Current release: 0.49.0-preview1 — single-receiver LCN discovery
 
 Local/synthetic validation and portable package are documented separately from pending live DMR site/voice/rest-recovery acceptance. Next priorities depend on that field testing; absolute-frequency/MBC and broader vendor coverage remain future work.

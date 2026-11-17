@@ -3,18 +3,19 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 namespace MRS;
 internal sealed record LibraryChange(string Action,string Entry,string Detail);
-internal sealed record LibraryReview(string Stamp,List<FrequencyItem> Channels,List<DiscoveryRecord> Records,List<LibraryChange> Changes)
+internal sealed record LibraryReview(string Stamp,List<FrequencyItem> Channels,List<DiscoveryRecord> Records,List<LibraryChange> Changes,bool PersistentRollback=false)
 {
  internal int Conflicts=>Changes.Count(c=>c.Action=="Conflict");
  internal string Summary=>$"{Changes.Count(c=>c.Action=="Add")} new · {Changes.Count(c=>c.Action=="Update")} updates · {Changes.Count(c=>c.Action=="Merge")} duplicates merged · {Conflicts} conflicts preserved";
 }
 public sealed partial class FrequencyLibrary
 {
- internal string ReviewStamp=>JsonSerializer.Serialize(new{Items=items,Records=records});
+ internal string ReviewStamp=>JsonSerializer.Serialize(new{Items=items,Records=records,Organization=organization,Pending=pendingDiscoveries,UpdateExistingOnly=updateExistingOnly});
  internal string ApplyReview(LibraryReview plan)
  {
   if(plan.Stamp!=ReviewStamp)throw new IOException("The list changed after this preview. Generate a new preview.");
   Validate(plan.Channels);DiscoveryExchange.ValidateRecords(plan.Records);
+  if(plan.PersistentRollback)return CommitWithRollback(plan.Channels);
   bool existed=revision!=null;string backup=path+".before-review-"+DateTimeOffset.UtcNow.ToString("yyyyMMdd-HHmmss")+"-"+Guid.NewGuid().ToString("N")[..8]+".json";
   // Commit still checks the disk revision under its write lock. Backup preserves
   // the exact pre-review snapshot; it never reads/replaces a different window's edit.
@@ -82,8 +83,9 @@ public sealed partial class FrequencyLibrary
   var next=items.ToList();var changes=new List<LibraryChange>();var chosen=selected?.ToHashSet();if(chosen is {Count:>0}){bool added;do{added=false;foreach(var node in items)if(node.ParentId is {} parent&&chosen.Contains(parent))added|=chosen.Add(node.Id);}while(added);}
   foreach(var c in items.Where(c=>!c.IsFolder&&(chosen==null||chosen.Contains(c.Id)))){
    var updated=c;long hz=DiscoveryNames.Snap(c.FrequencyHz,spacing,tolerance);if(hz!=c.FrequencyHz){updated=updated with{FrequencyHz=hz,OriginalFrequencyHz=c.OriginalFrequencyHz??c.FrequencyHz};changes.Add(new("Update",c.Name,$"Frequency {DiscoveryNames.Frequency(c.FrequencyHz)} → {DiscoveryNames.Frequency(hz)} MHz; original retained."));}
-   if(rename&&DiscoveryNames.Generated(c.Name)){string label=DiscoveryNames.Label(c);if(label!=c.Name){updated=updated with{Name=label};changes.Add(new("Update",c.Name,"Name → "+label));}}
-   if(organize&&c.SiteScope.Length>0){var parts=c.SiteScope.Split(':');string[] folders=parts[0]=="P25"&&parts.Length>=4?["P25",parts[1],"RFSS "+parts[2]+" - Site "+parts[3]]:parts[0]=="NXDN"&&parts.Length>=3?["NXDN",parts[1],parts[2]]:parts.Length>=4?[parts[0],parts[1],parts[2],parts[3]]:[];Guid? parent=folders.Length>0?DiscoveryFolder(next,new SiteChannelData(parts[0],folders,c.SiteScope,c.FrequencyHz,c.ChannelIds,c.ChannelRoles,c.Signaling)):null;if(folders.Length>0&&parent!=c.ParentId){updated=updated with{ParentId=parent};changes.Add(new("Update",c.Name,"Folder → "+string.Join(" / ",folders)));}}
+   if(rename&&DiscoveryNames.Generated(c.Name)){string label=organization==null?DiscoveryNames.Label(c):organization.RenameGenerated?OrganizationFields.From(c).Render(organization.NameTemplate):c.Name;if(label!=c.Name){updated=updated with{Name=label};changes.Add(new("Update",c.Name,"Name → "+label));}}
+   if(organize&&organization!=null){var fields=OrganizationFields.From(c);if(fields.Warning.Length==0){var labels=fields.Folders(organization);Guid parent=OrganizationFolder(next,labels,fields.KnownPath.SequenceEqual(labels)?c.SiteScope:null);if(parent!=c.ParentId){updated=updated with{ParentId=parent};changes.Add(new("Update",c.Name,"Folder → "+string.Join(" / ",labels)));}}}
+   else if(organize&&c.SiteScope.Length>0){var parts=c.SiteScope.Split(':');string[] folders=parts[0]=="P25"&&parts.Length>=4?["P25",parts[1],"RFSS "+parts[2]+" - Site "+parts[3]]:parts[0]=="NXDN"&&parts.Length>=3?["NXDN",parts[1],parts[2]]:parts.Length>=4?[parts[0],parts[1],parts[2],parts[3]]:[];Guid? parent=folders.Length>0?DiscoveryFolder(next,new SiteChannelData(parts[0],folders,c.SiteScope,c.FrequencyHz,c.ChannelIds,c.ChannelRoles,c.Signaling)):null;if(folders.Length>0&&parent!=c.ParentId){updated=updated with{ParentId=parent};changes.Add(new("Update",c.Name,"Folder → "+string.Join(" / ",folders)));}}
    next[next.FindIndex(i=>i.Id==c.Id)]=updated;
   }
   if(merge)foreach(var group in next.Where(c=>!c.IsFolder&&(chosen==null||chosen.Contains(c.Id))).GroupBy(c=>new{c.FrequencyHz,c.SiteScope,Parent=c.SiteScope.Length>0?(Guid?)null:c.ParentId,c.Protocols}).Where(g=>g.Count()>1).ToArray()){

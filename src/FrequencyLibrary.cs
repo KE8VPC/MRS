@@ -64,7 +64,7 @@ public sealed partial class FrequencyLibrary
 
 {
 
-    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false, List<DiscoveryRecord>? Records = null, bool UpdateExistingOnly=false, List<PendingDiscovery>? Pending=null);
+    private sealed record Document(int Version, List<FrequencyItem> Items, bool ReceiverBImported = false, List<DiscoveryRecord>? Records = null, bool UpdateExistingOnly=false, List<PendingDiscovery>? Pending=null, OrganizationRules? Organization=null);
 
     private bool receiverBImported;
 
@@ -76,12 +76,12 @@ public sealed partial class FrequencyLibrary
 
     private List<FrequencyItem> items;
     private List<DiscoveryRecord> records=[];
-    private bool updateExistingOnly;private List<PendingDiscovery> pendingDiscoveries=[];
+    private OrganizationRules? organization;private bool updateExistingOnly;private List<PendingDiscovery> pendingDiscoveries=[];
     internal bool UpdateExistingOnly=>updateExistingOnly;internal IReadOnlyList<PendingDiscovery> PendingDiscoveries=>pendingDiscoveries;
     internal void SetDiscoveryPolicy(bool value){bool previous=updateExistingOnly;updateExistingOnly=value;try{Commit(items.ToList(),false);}catch{updateExistingOnly=previous;throw;}}
     internal IReadOnlyList<DiscoveryRecord> Records=>records.AsReadOnly();
 
-    private readonly Stack<(List<FrequencyItem> Items,List<DiscoveryRecord> Records)> undo = new();
+    private readonly Stack<(List<FrequencyItem> Items,List<DiscoveryRecord> Records,OrganizationRules? Organization)> undo = new();
 
     public IReadOnlyList<FrequencyItem> Items => items.AsReadOnly();
 
@@ -103,7 +103,7 @@ public sealed partial class FrequencyLibrary
 
             if (document.Version is not(1 or 2)) throw new IOException("Unsupported frequency-library version.");
 
-            receiverBImported = document.ReceiverBImported;
+            receiverBImported = document.ReceiverBImported;organization=document.Organization;organization?.Validate();
             updateExistingOnly=document.UpdateExistingOnly;pendingDiscoveries=document.Pending??[];if(pendingDiscoveries.Count>500||pendingDiscoveries.Any(p=>p==null||p.Data==null||string.IsNullOrEmpty(p.Key)))throw new IOException("Too many pending discoveries");records=document.Records??[]; DiscoveryExchange.ValidateRecords(records);
 
             items = document.Items ?? throw new IOException("Missing frequency entries.");
@@ -167,7 +167,7 @@ public sealed partial class FrequencyLibrary
 
     }
 
-    private void Commit(List<FrequencyItem> next, bool keepUndo = true, List<DiscoveryRecord>? catalog=null)
+    private void Commit(List<FrequencyItem> next, bool keepUndo = true, List<DiscoveryRecord>? catalog=null,OrganizationRules? policy=null,bool replacePolicy=false,string? organizationBackup=null)
 
     {
 
@@ -182,17 +182,19 @@ public sealed partial class FrequencyLibrary
 
         if (disk != revision) throw new IOException("The library changed in another window. Click Reload before editing again.");
 
-        string json = JsonSerializer.Serialize(new Document((catalog??records).Count>0||pendingDiscoveries.Count>0||updateExistingOnly?2:1, next, receiverBImported,catalog??records,updateExistingOnly,pendingDiscoveries), new JsonSerializerOptions { WriteIndented = true });
+        var nextPolicy=replacePolicy?policy:organization;nextPolicy?.Validate();
+        string json = JsonSerializer.Serialize(new Document((catalog??records).Count>0||pendingDiscoveries.Count>0||updateExistingOnly||nextPolicy!=null?2:1, next, receiverBImported,catalog??records,updateExistingOnly,pendingDiscoveries,nextPolicy), new JsonSerializerOptions { WriteIndented = true });
 
+        if(organizationBackup!=null)File.WriteAllText(organizationBackup,revision??JsonSerializer.Serialize(new Document(1,items,receiverBImported,records,updateExistingOnly,pendingDiscoveries,organization),new JsonSerializerOptions{WriteIndented=true}));
         string temp = path + ".tmp";
 
         File.WriteAllText(temp, json);
 
         if (File.Exists(path)) File.Replace(temp, path, path + ".bak", true); else File.Move(temp, path);
 
-        if (keepUndo) undo.Push((items,records));
+        if (keepUndo) undo.Push((items,records,organization));
 
-        items = next; records=catalog??records; revision = json;
+        items = next; records=catalog??records;organization=nextPolicy; revision = json;
 
         fileLock.Dispose();
 
@@ -271,6 +273,9 @@ public sealed partial class FrequencyLibrary
 
                 if(next.Count(i=>i.Activity!=null)>=1000)throw new IOException("Discovery limit of 1,000 entries reached. Remove unwanted discoveries before saving more.");
 
+                item=new(){Name=$"Signal {observation.Frequency/1e6:0.######} MHz",FrequencyHz=observation.Frequency,DetectionDate=date,Mode=observation.Mode,BandwidthHz=observation.FilterHz,Modulation="Unknown",Protocols="Unknown",Tags="RF activity discovery"};
+                if(organization!=null)item=OrganizeDiscovery(next,item);
+                else {
                 var folder=next.FirstOrDefault(i=>i.IsFolder&&i.ScannerFolder);
 
                 if(folder==null){folder=new(){Name="Discovered signals",IsFolder=true,ScannerFolder=true};next.Add(folder);}
@@ -279,9 +284,8 @@ public sealed partial class FrequencyLibrary
 
                 if(day==null){day=new(){Name=date,IsFolder=true,ParentId=folder.Id,DetectionDate=date};next.Add(day);}
 
-                item=new(){Name=$"Signal {observation.Frequency/1e6:0.######} MHz",FrequencyHz=observation.Frequency,ParentId=day.Id,DetectionDate=date,
-
-                    Mode=observation.Mode,BandwidthHz=observation.FilterHz,Modulation="Unknown",Protocols="Unknown",Tags="RF activity discovery"};
+                item=item with{ParentId=day.Id};
+                }
 
                 next.Add(item);
 
@@ -382,7 +386,7 @@ public sealed partial class FrequencyLibrary
 
     }
 
-    public void Undo() { if (undo.TryPeek(out var previous)) { Commit(previous.Items, false,previous.Records); undo.Pop(); } }
+    public void Undo() { if (undo.TryPeek(out var previous)) { Commit(previous.Items, false,previous.Records,previous.Organization,true); undo.Pop(); } }
 
     public IEnumerable<FrequencyItem> VisibleEntries()
 

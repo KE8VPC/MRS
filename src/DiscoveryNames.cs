@@ -4,7 +4,7 @@ namespace MRS;
 internal static class DiscoveryNames
 {
  internal static string Frequency(long hz)=>(hz/1000000m).ToString("0.#######",CultureInfo.InvariantCulture);
- internal static bool Generated(string name)=>string.IsNullOrWhiteSpace(name)||Regex.IsMatch(name,@"^(Observed carrier|Mapped voice carrier|Unknown signal|Signal [\d.,]+ MHz|Channel \d+-\d+|DMR ·.*|P25 ·.*|NXDN ·.*|Cap\+ ·.*|Con\+ ·.*)$",RegexOptions.IgnoreCase);
+ internal static bool Generated(string name)=>string.IsNullOrWhiteSpace(name)||Regex.IsMatch(name,@"^(Observed carrier|Mapped voice carrier|Unknown signal|Signal [\d.,]+ MHz|Channel \d+-\d+|DMR ·.*|LTR ·.*|P25 ·.*|NXDN ·.*|Cap\+ ·.*|Con\+ ·.*)$",RegexOptions.IgnoreCase);
  internal static string Label(FrequencyItem item)
  {
   if(!Generated(item.Name))return item.Name;
@@ -12,6 +12,7 @@ internal static class DiscoveryNames
   string site=Value(@"\bSITE\s+(\d+)"),net=Value(@"\b(?:NET(?:WORK)?|SYS(?:TEM)?)\s+([A-F\d]+)"),cc=Value(@"\bCC\s+(\d+)"),ran=Value(@"\bRAN\s+(\d+)");
   string protocol=item.Protocols is "" or "Unknown"?"Unknown signal":item.Protocols;
   if(protocol=="DMR"){if(item.SiteScope.Contains("Capacity Plus"))protocol="Cap+";else if(item.SiteScope.Contains("Connect Plus"))protocol="Con+";}
+  if(protocol=="LTR"){string area=Value(@"\bAREA\s+([01])"),home=Value(@"\bHOME\s+(\d+)");if(area.Length>0||home.Length>0)return "LTR"+(area.Length>0?" · Area "+area:"")+(home.Length>0?" · Home "+int.Parse(home).ToString("00"):"");}
   var parts=new List<string>{protocol};if(net.Length>0)parts.Add((protocol=="NXDN"?"Sys ":"Net ")+net);if(site.Length>0)parts.Add("Site "+site);if(cc.Length>0)parts.Add("CC "+cc);if(ran.Length>0)parts.Add("RAN "+ran);
   if(item.ChannelIds.Length>0)parts.Add("Ch "+item.ChannelIds);
   if(item.ChannelRoles.Contains("Control"))parts.Add("Control");else if(item.ChannelRoles.Contains("Rest"))parts.Add("Rest");

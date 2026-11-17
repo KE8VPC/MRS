@@ -12,13 +12,18 @@ internal sealed record WeakTxPlan(string Mode,long DialHz,int AudioHz,string Mes
  internal double Lead=>Mode=="WSPR"?1:Mode=="FT4"?.5:.5;
  internal double Duration=>Lead+Symbol*Symbols;
  internal void Validate(){if(Mode is not ("FT8" or "FT4" or "WSPR")||Gain<0||Gain>20||AudioHz<300||AudioHz>2500||Message.Length>35||Message.Any(c=>c<32||c>126)||!double.IsFinite(ClockOffset)||Math.Abs(ClockOffset)>5)throw new IOException("Unsupported digital TX parameters.");if(Math.Abs(SlotUtc.ToUnixTimeMilliseconds()/1000.0/Period-Math.Round(SlotUtc.ToUnixTimeMilliseconds()/1000.0/Period))>.0001)throw new IOException("TX must start on a complete protocol slot.");if(Mode!="WSPR"){var words=Message.Split(' ');if(words.Length!=3||!(words[0]=="CQ"||WeakDecode.IsCall(words[0]))||!WeakDecode.IsCall(words[1])||!(Regex.IsMatch(words[2],@"^[A-R]{2}[0-9]{2}$")||words[2] is "RRR" or "RR73" or "73"||Regex.IsMatch(words[2],@"^R?[+-][0-9]{2}$"))||words[0]=="CQ"&&!Regex.IsMatch(words[2],@"^[A-R]{2}[0-9]{2}$"))throw new IOException("Use a resolved standard callsign exchange or CQ with a four-character grid. Free text / hashed calls are not enabled for TX.");}if(Mode=="WSPR"){var w=Message.Split(' ');if(w.Length!=3||!Regex.IsMatch(w[0],@"^[A-Z0-9]{1,2}[0-9][A-Z]{1,3}$")||!Regex.IsMatch(w[1],@"^[A-R]{2}[0-9]{2}$")||!int.TryParse(w[2],out int power)||power<0||power>37||!new[]{0,3,7}.Contains(power%10))throw new IOException("WSPR: standard callsign, four-character grid and measured output power 0–37 dBm (0/3/7 steps). Gain is not output power.");}}
+ internal const double Ft8HandoffLeadSeconds=1.3;
+ internal const double Ft8ReplyCaptureSeconds=13.3;
+ internal static DateTimeOffset FollowingFt8Slot(DateTimeOffset previous)=>previous.AddSeconds(30);
+ internal static long Ft8ReplySlot(DateTimeOffset transmitSlot)=>transmitSlot.ToUnixTimeMilliseconds()/15000-1;
  internal static DateTimeOffset NextSlot(DateTimeOffset now,string mode,bool odd,double lead=4){double period=mode=="FT4"?7.5:mode=="WSPR"?120:15;long index=(long)Math.Ceiling((now.ToUnixTimeMilliseconds()/1000.0+lead)/period);if(mode!="WSPR"&&(index&1)!=(odd?1:0))index++;return DateTimeOffset.UnixEpoch.AddSeconds(index*period);}
 }
 internal sealed record WeakTxPermit(TxDeclaration Declaration,WeakTxPlan Plan,string Identity,DateTimeOffset Expires);
 internal static class WeakTxAuthorization
 {
  internal const string Variable="MRS_WEAK_TX_PERMIT";
- internal static void Validate(TxDeclaration d,WeakTxPlan p,string identity){p.Validate();if(d.Country!="United States"||!new[]{"Technician","General","Advanced","Amateur Extra"}.Contains(d.LicenseClass)||!Regex.IsMatch(d.Callsign,@"^[AKNW][A-Z]?[0-9][A-Z]{1,3}$")||!d.CurrentLicense||!d.LocalRulesChecked||!d.EquipmentChecked||string.IsNullOrWhiteSpace(identity))throw new IOException("TX locked: declare a current U.S. license, local authorization and equipment compliance.");
+ internal static bool IsStationCall(string callsign)=>Regex.IsMatch(callsign,@"^[AKNW][A-Z]?[0-9][A-Z]{1,3}$");
+ internal static void Validate(TxDeclaration d,WeakTxPlan p,string identity){p.Validate();if(d.Country!="United States"||!WeakTxStation.LicenseClasses.Contains(d.LicenseClass)||!IsStationCall(d.Callsign)||!d.CurrentLicense||!d.LocalRulesChecked||!d.EquipmentChecked||string.IsNullOrWhiteSpace(identity))throw new IOException("TX locked: declare a current U.S. license, local authorization and equipment compliance.");
   // Conservative contiguous data segments in US Region 2. Special allocations
   // (60 m, LF/MF, 219 MHz, microwave) deliberately need separate profiles.
   var ranges=new List<(long Low,long High)>{(50100000,54000000),(144100000,148000000),(430000000,450000000)};

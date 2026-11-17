@@ -1,0 +1,74 @@
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+namespace MRS;
+internal sealed record SyncImportPlan(LibraryReview Library,List<long> Applied,List<long> Held,Dictionary<string,SyncBinding> Bindings,string QueueStamp);
+internal static class WebsiteImport
+{
+ internal static string QueueStamp(SyncDocument state)=>SyncJson.Hash(string.Join("|",state.Pending.OrderBy(p=>p.Key).Select(p=>p.Key+":"+p.Value.Stamp)));
+ internal static string SystemScope(JsonObject system,string origin)
+ {
+  string protocol=SyncJson.Text(system["protocol"]);var ids=system["ids"] as JsonObject;
+  if(protocol=="P25"&&ids?["wacn"]!=null&&ids["sysid"]!=null)return "P25:"+SyncMapping.Hex(SyncJson.Text(ids["wacn"]))+"-"+SyncMapping.Hex(SyncJson.Text(ids["sysid"]));
+  if(protocol is "DMR Tier III" or "Connect Plus" or "Capacity Plus" or "DMR"&&ids?["network"]!=null)return "DMR:"+protocol+":Network "+SyncMapping.Decimal(SyncJson.Text(ids["network"]));
+  return "WebsiteSystem:"+origin+":"+SyncJson.Number(system["id"]);
+ }
+ internal static (string Scope,string[] Folders,bool Unresolved) Context(JsonObject record,SyncDocument state,string origin)
+ {
+  if(SyncJson.Text(record["type"])=="radio")return("WebsiteRadio:"+origin+":"+SyncJson.Number(record["id"]),["Website discoveries","Radio IDs"],false);
+  string type=SyncJson.Text(record["type"]);long parent=SyncJson.Number(record["parent"]);JsonObject? system=null,site=null;
+  if(type=="system")system=record;else if(type=="site"){site=record;state.Remote.TryGetValue(parent,out system);}else if(state.Remote.TryGetValue(parent,out var ancestor)){if(SyncJson.Text(ancestor["type"])=="system")system=ancestor;else if(SyncJson.Text(ancestor["type"])=="site"){site=ancestor;state.Remote.TryGetValue(SyncJson.Number(site["parent"]),out system);}}
+  if(system==null||SyncJson.Text(system["type"])!="system")return("Website:Unresolved:"+origin+":"+SyncJson.Number(record["id"]),["Website discoveries","Unresolved"],true);
+  string scope=SystemScope(system,origin),protocol=SyncJson.Text(system["protocol"]);string systemName=SyncJson.Text(system["label"]);if(systemName.Length==0)systemName=scope;
+  if(site!=null){string number=SyncJson.Text(site["ids"]?["site"]),rfss=SyncJson.Text(site["ids"]?["rfss"]);scope+=protocol=="P25"?":"+(rfss.Length>0?rfss:"?")+":"+(number.Length>0?number:"?"):number.Length>0?":Site "+number:":Unresolved site "+SyncJson.Number(site["id"]);string siteName=SyncJson.Text(site["label"]);return(scope,[protocol,systemName,siteName.Length>0?siteName:"Site "+number],false);}
+  return(scope,[protocol,systemName],false);
+ }
+ internal static SyncImportPlan Preview(FrequencyLibrary library,SyncDocument state,IEnumerable<long> selected,bool useWebsiteValues=false,bool notes=false,bool keepLocal=false)
+ {
+  var next=library.Items.ToList();var catalog=library.Records.ToList();var changes=new List<LibraryChange>();var applied=new List<long>();var held=new List<long>();var bindings=state.Bindings.ToDictionary(p=>p.Key,p=>JsonSerializer.Deserialize<SyncBinding>(JsonSerializer.Serialize(p.Value))!);string origin=SyncJson.Hash(state.Account)[..16];
+  foreach(long id in selected.Distinct()){
+   if(!state.Pending.TryGetValue(id,out var pending))continue;var record=pending.Record;var bound=bindings.FirstOrDefault(p=>p.Value.Id==id);var binding=bound.Value;var local=binding!=null&&Guid.TryParse(binding.LocalId,out var localId)?next.FirstOrDefault(c=>c.Id==localId&&!c.IsFolder):null;
+   if(pending.Op=="delete"){
+    if(local!=null){var updated=local with{SiteScope="Website:Unresolved:"+origin+":"+id,EvidenceStatus="Deleted on website — local copy retained for review"};updated=updated with{ParentId=FrequencyLibrary.DiscoveryFolder(next,new("Website",["Website discoveries","Unresolved"],updated.SiteScope,updated.FrequencyHz,"","Unresolved",""))};next[next.FindIndex(c=>c.Id==local.Id)]=updated;}
+    foreach(var b in bindings.Values.Where(b=>b.Id==id))b.Gone=true;
+    foreach(var entry in catalog.Where(c=>c.Fields.GetValueOrDefault("website_origin")==origin&&c.Fields.GetValueOrDefault("website_id")==id.ToString()).ToArray()){var fields=new Dictionary<string,string>(entry.Fields);fields["website_state"]="deleted / unresolved";fields.Remove("parent_id");fields.Remove("target_id");catalog[catalog.IndexOf(entry)]=entry with{Fields=fields};}
+    changes.Add(new("Update","Website id "+id,"Deleted remotely; local data retained unresolved. No local record is deleted."));applied.Add(id);continue;
+   }
+   string type=SyncJson.Text(record["type"]),protocol=SyncJson.Text(record["protocol"]);if(type is not("frequency" or "system" or "site" or "talkgroup" or "radio" or "lcn" or "other")){held.Add(id);changes.Add(new("Conflict","Website id "+id,"Unsupported record type; retained in queue"));continue;}
+   var context=Context(record,state,origin);string reference=bound.Key??"";string label=SyncJson.Text(record["label"]);long rev=SyncJson.Number(record["rev"]);
+   if(type=="frequency"){
+    long hz=SyncMapping.ParseHz(record["mhz"]);if(hz==0){held.Add(id);changes.Add(new("Conflict",label,"Invalid frequency; retained in queue"));continue;}
+    if(local==null){var candidates=next.Where(c=>!c.IsFolder&&c.FrequencyHz==hz&&c.SiteScope==context.Scope).ToArray();if(candidates.Length>1){held.Add(id);changes.Add(new("Conflict",label,"Several local matches; resolve duplicates before applying"));continue;}local=candidates.SingleOrDefault();}
+    bool exists=local!=null;var old=local;local??=new(){Id=SyncJson.GuidFor(state.Account+"|frequency|"+id),FrequencyHz=hz,SiteScope=context.Scope,Name=label.Length>0?label:"Signal "+DiscoveryNames.Frequency(hz)};
+    string Choose(string field,string current,string remote,string? baselineValue=null){if(!exists)return remote;string baseline=baselineValue??SyncJson.Text(binding?.Baseline[field]);bool localChanged=binding==null?current.Length>0:current!=baseline;bool remoteChanged=binding==null||remote!=baseline;if(localChanged&&remoteChanged&&current!=remote&&!useWebsiteValues)throw new IOException(field+" differs locally and on website");return localChanged&&!remoteChanged?current:remote;}
+    try{
+     if(keepLocal){if(!exists)throw new IOException("No unique local frequency to link");bindings["mrs:f:"+local.Id.ToString("N")]=new(){Id=id,Rev=rev,LocalId=local.Id.ToString(),LocalScope=local.SiteScope,Baseline=SyncJson.Copy(record)};changes.Add(new("Update",local.Name,"Link to website record; all local fields retained"));applied.Add(id);continue;}
+     string name=Choose("label",local.Name,label);string localHz=PlanCsv.MHz(local.FrequencyHz),remoteHz=PlanCsv.MHz(hz);string baselineHz=binding==null?"":PlanCsv.MHz(SyncMapping.ParseHz(binding.Baseline["mhz"]));if(exists&&local.FrequencyHz!=hz&&localHz!=baselineHz&&remoteHz!=baselineHz&&!useWebsiteValues)throw new IOException("frequency differs locally and on website");if(exists&&remoteHz==baselineHz)hz=local.FrequencyHz;
+     string note=notes?Choose("notes",local.Notes,SyncJson.Text(record["notes"])):local.Notes;string mode=SyncJson.Text(record["attrs"]?["mode"]);if(!ReceiveDemodulator.Modes.Contains(mode))mode=local.Mode;else mode=Choose("mode",local.Mode,mode,SyncJson.Text(binding?.Baseline["attrs"]?["mode"]));double width=double.TryParse(SyncJson.Text(record["attrs"]?["bandwidth_hz"]),out var bw)&&double.IsFinite(bw)&&bw is >=0 and <=100000000?bw:local.BandwidthHz;
+     string signaling=local.Signaling;foreach(var pair in record["ids"] as JsonObject??new()){string tag=pair.Key switch{"color_code"=>"CC","sysid"=>"SYSTEM",_=>pair.Key.ToUpperInvariant()};string current=SyncMapping.Value(signaling,tag);string value=Choose("ids."+pair.Key,current,SyncJson.Text(pair.Value),SyncJson.Text(binding?.Baseline["ids"]?[pair.Key]));if(value==current)continue;string pattern=@"\b"+tag+@"\s+[A-Za-z0-9]+";if(System.Text.RegularExpressions.Regex.IsMatch(signaling,pattern))signaling=System.Text.RegularExpressions.Regex.Replace(signaling,pattern,tag+" "+value);else signaling+=(signaling.Length>0?"; ":"")+tag+" "+value;}
+     string resultingScope=context.Scope;if(exists&&binding!=null&&binding.LocalScope.Length>0&&local.SiteScope!=binding.LocalScope){if(context.Scope==binding.LocalScope)resultingScope=local.SiteScope;else if(context.Scope!=local.SiteScope&&!useWebsiteValues)throw new IOException("site relationship differs locally and on website");}
+     if(exists&&width!=local.BandwidthHz)width=double.Parse(Choose("bandwidth_hz",binding==null&&local.BandwidthHz==0?"":local.BandwidthHz.ToString(System.Globalization.CultureInfo.InvariantCulture),width.ToString(System.Globalization.CultureInfo.InvariantCulture),SyncJson.Text(binding?.Baseline["attrs"]?["bandwidth_hz"])),System.Globalization.CultureInfo.InvariantCulture);
+     var updated=local with{Name=name,FrequencyHz=hz,SiteScope=resultingScope,Protocols=Choose("protocol",local.Protocols,protocol),Mode=mode,BandwidthHz=width,Notes=note,Signaling=signaling,EvidenceStatus=context.Unresolved?"Unresolved website relationship":"Website record — reviewed",Tags=local.Tags.Contains("Website sync")?local.Tags:local.Tags+"; Website sync"};
+     if(!exists||context.Unresolved)updated=updated with{ParentId=FrequencyLibrary.DiscoveryFolder(next,new(context.Unresolved?"Website":protocol,context.Folders,context.Scope,hz,"","Website",""))};if(exists)next[next.FindIndex(c=>c.Id==local.Id)]=updated;else next.Add(updated);
+     string localRef="mrs:f:"+updated.Id.ToString("N");bindings[localRef]=new(){Id=id,Rev=rev,LocalId=updated.Id.ToString(),LocalScope=updated.SiteScope,Baseline=SyncJson.Copy(record)};reference=localRef;changes.Add(new(exists?"Update":"Add",name,$"{PlanCsv.MHz(hz)} MHz; {context.Scope}; website id {id}. "+(context.Unresolved?"Unresolved relationship.":"Custom folder placement retained for existing channels.")));
+    }catch(IOException ex){held.Add(id);changes.Add(new("Conflict",label,ex.Message+"; use the explicit website-values option to resolve"));continue;}
+   }else{
+    if(type=="other"){held.Add(id);changes.Add(new("Conflict",label,"General other records are retained in the website review queue; no local radio type was guessed."));continue;}string kind=type=="lcn"?"channel_map":type;string identifier=type switch{"talkgroup"=>SyncJson.Text(record["ids"]?["tgid"]),"radio"=>SyncJson.Text(record["ids"]?["dmr_id"]),"lcn"=>SyncJson.Text(record["chan_no"])+":"+SyncJson.Text(record["slot"]),_=>context.Scope};if(identifier.Length==0)identifier="website:"+id;
+    var fields=new Dictionary<string,string>{{"website_origin",origin},{"website_id",id.ToString()},{"parent_id",SyncJson.Text(record["parent"])},{"target_id",SyncJson.Text(record["target"])},{"verification",SyncJson.Text(record["verify_status"])},{"verify_rule",SyncJson.Text(record["verify_rule"])},{"verify_count",SyncJson.Text(record["verify_count"])},{"convention",SyncJson.Text(record["chan_conv"])},{"chan_no",SyncJson.Text(record["chan_no"])},{"slot",SyncJson.Text(record["slot"])},{"mapping_conflict",SyncJson.Text(record["mapping_conflict"])}};
+    foreach(var pair in record["ids"] as JsonObject??new())fields[pair.Key]=SyncJson.Text(pair.Value);
+    if(type=="lcn"){long target=SyncJson.Number(record["target"]);fields["frequency_hz"]=target>0&&state.Remote.TryGetValue(target,out var targetRecord)?SyncMapping.ParseHz(targetRecord["mhz"]).ToString():"";fields["confirmed"]=(SyncJson.Text(record["verify_status"])=="passed"&&record["mapping_conflict"]?.ToString()!="true").ToString();}
+    string catalogScope=type=="site"&&SyncJson.Number(record["parent"])>0&&state.Remote.TryGetValue(SyncJson.Number(record["parent"]),out var parent)?SystemScope(parent,origin):context.Scope;
+    var incoming=DiscoveryRecord.Create(kind,catalogScope,identifier,label,protocol,fields);var existing=catalog.FirstOrDefault(c=>c.Fields.GetValueOrDefault("website_origin")==origin&&c.Fields.GetValueOrDefault("website_id")==id.ToString())??catalog.FirstOrDefault(c=>c.Key==incoming.Key);
+    if(existing!=null&&existing.Label.Length>0&&existing.Label!=label&&existing.Label!=SyncJson.Text(binding?.Baseline["label"])&&label!=SyncJson.Text(binding?.Baseline["label"])&&!useWebsiteValues){held.Add(id);changes.Add(new("Conflict",label,"Existing catalog label differs; explicit website-values review required"));continue;}
+    if(keepLocal){if(existing!=null)incoming=incoming with{Id=existing.Id};else if(type is not("system" or "site")||!next.Any(c=>!c.IsFolder&&(c.SiteScope==context.Scope||c.SiteScope.StartsWith(context.Scope+":")))){held.Add(id);changes.Add(new("Conflict",label,"No matching local catalog record to link; apply the website record instead."));continue;}}else if(existing!=null){incoming=incoming with{Id=existing.Id,Label=binding!=null&&label==SyncJson.Text(binding.Baseline["label"])?existing.Label:label};catalog[catalog.IndexOf(existing)]=incoming;}else catalog.Add(incoming);
+    if(type=="system"){var c=new FrequencyItem{SiteScope=context.Scope,Protocols=protocol,Signaling=string.Join("; ",fields.Select(p=>p.Key.ToUpperInvariant()+" "+p.Value))};reference=SyncMapping.Ref("s",SyncMapping.Identity(c).SystemKey);}
+    else if(type=="site"){var c=new FrequencyItem{SiteScope=context.Scope,Protocols=protocol};reference=SyncMapping.Ref("t",SyncMapping.Identity(c).SiteKey);}
+    else if(type is "talkgroup" or "radio")reference=SyncMapping.Ref(type=="talkgroup"?"g":"r",incoming.Key);else if(type=="lcn"){var siteIdentity=SyncMapping.Identity(new(){SiteScope=context.Scope,Protocols=protocol});string siteRef=SyncMapping.Ref("t",siteIdentity.SiteKey);var targetBinding=bindings.Values.FirstOrDefault(b=>b.Id==SyncJson.Number(record["target"]));string frequencyRef=targetBinding!=null&&Guid.TryParse(targetBinding.LocalId,out var frequencyId)?"mrs:f:"+frequencyId.ToString("N"):SyncMapping.Ref("f",siteRef+"|"+fields.GetValueOrDefault("frequency_hz"));reference=SyncMapping.Ref("m",siteRef+"|"+SyncJson.Text(record["chan_conv"])+"|"+SyncJson.Text(record["chan_no"])+"|"+frequencyRef);}else reference=SyncJson.Text(record["ref"]);if(reference.Length==0)reference=SyncMapping.Ref("remote",state.Account+"|"+id);
+    bindings[reference]=new(){Id=id,Rev=rev,LocalId=incoming.Id.ToString(),Baseline=SyncJson.Copy(record)};changes.Add(new(existing==null?"Add":"Update",type+" "+label,context.Unresolved?"Unresolved parent; stored in catalog without guessing a link":"Catalog relationship and verification reviewed"));
+   }
+   foreach(var obsolete in bindings.Where(p=>p.Value.Id==id&&p.Key!=reference).Select(p=>p.Key).ToArray())bindings.Remove(obsolete);
+   if(reference.Length>0&&bindings.TryGetValue(reference,out var accepted))accepted.Gone=false;applied.Add(id);
+  }
+  FrequencyLibrary.Validate(next);DiscoveryExchange.ValidateRecords(catalog);return new(new(library.ReviewStamp,next,catalog,changes),applied,held,bindings,QueueStamp(state));
+ }
+}
