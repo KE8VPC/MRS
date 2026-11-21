@@ -1,3 +1,7 @@
+# Active base consolidated — November 21, 2026
+
+User approved one active source base. outputs/MRS now holds the roadmap1 evaluation source: the combined UI candidate plus SSTV/RTTY, readable VDL2 and the saving/sync fixes. src/ and Help/ match work/mrs-roadmap-integration byte for byte. Rollback: b9fefb8 (pre-consolidation main) and 336dc8d. The work/ copies are frozen references. Claude and Codex both work on this base and cross-check each other through git; see ACTIVE-BASE.md for the coordination rules. No build, package or push was performed.
+
 # Next-build milestone — evaluation follow-up, November 21, 2026
 
 Planning milestone requested by the user; implementation and packaging have not started. Preserve original note numbers: 14 active items; item 3 was rescinded after testing the newer build. Detailed requirements, acceptance checks and Claude review guidance: CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md.

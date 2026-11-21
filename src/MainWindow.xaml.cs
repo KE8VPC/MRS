@@ -192,6 +192,8 @@ public partial class MainWindow : Window
         InitializeReceiverRefinements();
         InitializeTriggeredRecording();
         InitializeDecoderSetup();
+        InitializeSpectrumPlacement(); // spectrum-layout preview (Claude): see SpectrumPlacement.cs
+        InitializeClaudeUi(); // UI refresh ui1 (Claude): radio bar, status bar, shortcuts, theme hooks. See ClaudeUi.cs.
         ready = true;
         RfSquelchChanged(this, new RoutedEventArgs());
         ListeningChanged(this, new RoutedEventArgs());
