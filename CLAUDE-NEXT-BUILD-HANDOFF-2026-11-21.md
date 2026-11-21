@@ -1,5 +1,14 @@
 # Claude review handoff — next-build evaluation milestone
 
+## High-priority release requirement — note 16: code signing
+
+User elevated code signing on November 21 after SmartScreen reported Unknown publisher for the GitHub download. Public trust is a priority. Review trusted publisher signing before the next public release; any unsigned exception requires an explicit user decision. The existing roadmap1 release remains unsigned and unchanged.
+
+Plan trusted Windows executable signing with an appropriate publisher identity, trusted timestamping, signature verification before packaging and after extraction, and SHA-256 release checksums. Keep signing keys/certificates and service credentials protected and out of source control. Define signing coverage for bundled executable components while preserving valid upstream signatures. Signing establishes publisher identity and integrity; it does not guarantee software safety or immediate SmartScreen reputation. Do not advise disabling SmartScreen globally.
+
+Claude: include this in release planning ahead of lower-priority enhancements. Provider/cost/identity choices and credential provisioning need user input before procurement or setup. This note authorizes planning/documentation, not purchases, key creation, rebuilds or replacement release assets. Notes 11/13 remain later research; note 3 remains rescinded. Active list is now 15 items.
+
+
 > **Superseded in part (November 21, 2026):** source consolidation is complete and there is no fixed assistant ownership split. `ACTIVE-BASE.md` is authoritative for the active source tree, rollback points and coordination rules. The requirements and acceptance checks below remain current.
 
 November 21, 2026. User requested documenting the active evaluation notes as the next-build milestone and preparing this handoff for Claude to review. This document records scope, not completed fixes or an instruction to start implementation. No message has been sent to Claude.

@@ -47,3 +47,7 @@ Scope: `CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md` and the top of `ROADMAP.md`. Th
 - **Note 9.** `AircraftMap.cs` already caches viewed OpenStreetMap tiles (up to 2,048, with expiry files). What remains is offline and stale display. Bulk regional download needs a different provider. The map server user-agent still reports 0.35.0.
 - **Note 12.** Grant radio IDs already reach the P25 activity panel. The work is persistence and a catalog view, unless verification shows otherwise.
 - **Note 4.** About 30 places format times. Build one shared display-time helper before notes 5, 10 and 12 add new timestamps.
+
+## Release priority update — November 21, 2026
+
+Claude and Codex: user added note 16, trusted code signing, as a high-priority public-release requirement. Read the new section at the top of ROADMAP.md and CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md before release work. Current roadmap1 assets remain unsigned and unchanged. Documentation update only; no signing setup, build or publication performed.
