@@ -15,3 +15,7 @@ Each receiver remembers its selected Aviation detail file privately, independent
 Map attribution shows the loaded file's source, licence, version and size as supplied by its author; missing provenance is shown as not supplied. Detailed coverage is limited to the selected file, and the view reports when its center is outside those features. Local import is bounded to 64 MB, 50,000 features and 500,000 coordinates. Automatic restore rejects UNC network paths and malformed/oversized preferences. It does not enable online maps, start a decoder or change receiver tuning.
 
 Regional road files remain optional, separate downloads/imports. This is a reference overlay; it does not provide navigation, guarantee map accuracy or verify aircraft position. See Fox Hunt Help for GeoJSON metadata/format details.
+
+## Readable messages
+
+VDL2 rows show link-message types, From/To addresses, reported airports and advertised channel frequencies when decoded. Supported CPDLC elements show their text, with partial elements marked explicitly. The raw frame and decoder JSON remain in the inspector. Search Help for VDL2 to read the field and validation details.

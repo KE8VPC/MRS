@@ -1,3 +1,11 @@
+# Pending receive and sync additions — November 19, 2026
+
+- Compare a validated VDL2 XID row with its raw JSON. Verify both link addresses, any reported airport and advertised channels. Check that a partial CPDLC element stays marked partial.
+- Receive a known Martin M1 and M2 SSTV image through a suitable audio path. Check automatic VIS, manual sync, slant, tone offset, horizontal alignment, partial retention and the PNG/JSON export.
+- Receive known RTTY text at the selected baud/tones. Check reverse, letters/figures, transcript saving and retune/seek stop behavior. Framing success alone supplies no checksum validation.
+- Try the organization preview on the FM, Air and mesh folders. Reviewed entries with missing protocol data should keep their names and placement.
+- In Website sync choose the intended update type. A transmission observation must show the correct MHz and actual direct reception time. System/site parents should link to that carrier, while talkgroup/radio naming updates can be sent without one.
+
 # Pending combined update - field acceptance
 
 These checks apply after the next explicitly requested release package. This document does not authorize packaging, installation, RF transmission or external reporting. Existing 0.45.0-preview1 ZIPs remain unchanged.

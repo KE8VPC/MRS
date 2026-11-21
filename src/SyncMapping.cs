@@ -38,9 +38,30 @@ internal static class SyncMapping
   }
   foreach(var channel in bundle.Channels.Where(c=>!c.IsFolder)){
    string reference="mrs:f:"+channel.Id.ToString("N");string protocol=Protocol(channel);var r=Base("frequency",protocol,channel.Name);r["mhz"]=PlanCsv.MHz(channel.FrequencyHz);r["prov"]=new JsonArray(Origin(channel));
-   if(notes)r["notes"]=channel.Notes;r["attrs"]=new JsonObject{["mode"]=channel.Mode,["bandwidth_hz"]=channel.BandwidthHz};if(channel.ChannelLastSeen is {} seen)r["last_seen"]=seen.ToUnixTimeSeconds();
+   if(notes)r["notes"]=channel.Notes;r["attrs"]=new JsonObject{["mode"]=channel.Mode,["bandwidth_hz"]=channel.BandwidthHz};
    var ids=new JsonObject();string cc=Value(channel.Signaling+"; "+channel.DmrIdentifiers,"CC"),nac=Hex(Value(channel.Signaling,"NAC")),ran=Value(channel.Signaling,"RAN");if(Regex.IsMatch(cc,@"^\d+$"))ids["color_code"]=Decimal(cc);if(nac.Length>0)ids["nac"]=nac;if(Regex.IsMatch(ran,@"^\d+$"))ids["ran"]=Decimal(ran);r["ids"]=ids;
-   if(channel.EvidenceStatus.StartsWith("Website")&&state.Bindings.TryGetValue(reference,out var importedBinding)){string confidence=SyncJson.Text(importedBinding.Baseline["evidence"]);if(new[]{"","observed","advertised","provisional","reference"}.Contains(confidence))r["evidence"]=confidence;}else if(channel.EvidenceStatus.Length>0)r["evidence"]=channel.EvidenceStatus.StartsWith("Provisional")?"provisional":"observed";
+   bool provisional=channel.EvidenceStatus.StartsWith("Provisional",StringComparison.OrdinalIgnoreCase);
+   bool legacyReceive=protocol is "DMR" or "DMR Tier III" or "Capacity Plus" or "Connect Plus" or "LTR" or "NXDN"&&
+    channel.Tags.Contains("Site channel discovery",StringComparison.Ordinal)&&
+    channel.EvidenceStatus is "Observed" or "Provisional identity";
+   var received=channel.LastReceivedOnFrequencyUtc??(legacyReceive?channel.ChannelLastSeen:null);
+   if(channel.EvidenceStatus.StartsWith("Website")&&state.Bindings.TryGetValue(reference,out var importedBinding)){string confidence=SyncJson.Text(importedBinding.Baseline["evidence"]);if(new[]{"","observed","advertised","provisional","reference"}.Contains(confidence))r["evidence"]=confidence;}
+   else if(channel.Activity is {} activity)
+   {
+    r["evidence"]="observed";
+    r["first_seen"]=activity.FirstSeen.ToUnixTimeSeconds();
+    r["last_seen"]=(received>activity.LastSeen?received.Value:activity.LastSeen).ToUnixTimeSeconds();
+    r["heard"]=activity.Hits;
+   }
+   else if(received is {} seen)
+   {
+    r["evidence"]=provisional?"provisional":"observed";
+    r["last_seen"]=seen.ToUnixTimeSeconds();
+   }
+   else if(channel.EvidenceStatus.StartsWith("Advertised",StringComparison.OrdinalIgnoreCase)||
+           channel.Signaling.Contains("advertised target",StringComparison.OrdinalIgnoreCase))
+    r["evidence"]="advertised";
+   else if(channel.EvidenceStatus.Length>0)r["evidence"]=provisional?"provisional":"observed";
    if(channel.SiteScope.Length>0){var context=Scope(channel);r["parent_ref"]=context.Site;
     foreach(var mapping in Channels(channel.ChannelIds,protocol)){
      string key=Ref("m",context.Site+"|"+mapping.Convention+"|"+mapping.Channel+"|"+reference);var m=Base("lcn",protocol,"Channel "+mapping.Channel);m["prov"]=new JsonArray(Origin(channel));m["parent_ref"]=context.Site;m["target_ref"]=reference;m["chan_no"]=mapping.Channel;m["chan_conv"]=mapping.Convention;m["slot"]="";

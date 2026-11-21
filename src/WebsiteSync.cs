@@ -19,7 +19,24 @@ internal static class SyncJson
  internal static string Safe(string text)=>System.Text.RegularExpressions.Regex.Replace(text,@"k8v_[a-fA-F0-9]{8,}","[token hidden]");
 }
 internal sealed record SyncDraft(string Ref,JsonObject Record,string LocalId="",string Warning="",string LocalScope="",bool LocalVerification=false)
-{public string Type=>SyncJson.Text(Record["type"]);public string Label=>SyncJson.Text(Record["label"]);}
+{
+ public string Type=>SyncJson.Text(Record["type"]);
+ public string Label=>SyncJson.Text(Record["label"]);
+ internal bool IsObservation=>Type=="frequency"&&SyncJson.Number(Record["last_seen"])>0&&
+  SyncJson.Text(Record["evidence"]) is "observed" or "provisional";
+ internal string UpdateType=>Type switch
+ {
+  "frequency" when IsObservation=>"Transmission observation",
+  "frequency" when SyncJson.Text(Record["evidence"])=="advertised"=>"Advertised frequency",
+  "frequency"=>"Saved frequency",
+  "system"=>"System details",
+  "site"=>"Site details",
+  "talkgroup"=>"Talkgroup name / ID",
+  "radio"=>"Radio name / ID",
+  "lcn"=>"Channel mapping",
+  _=>Type
+ };
+}
 internal sealed class SyncBinding
 {public long Id{get;set;}public long Rev{get;set;}public bool Gone{get;set;}public JsonObject Baseline{get;set;}=new();public string LocalId{get;set;}="";public string LocalScope{get;set;}="";}
 internal sealed class SyncPending

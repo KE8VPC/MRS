@@ -61,3 +61,6 @@ Packet robustness and independent A/B workspaces first; then Unitrunker import w
 ## rtl_433 and Mayhem receiver inventory — October 24, 2026
 
 See [RTL433-MAYHEM-RESEARCH.md](RTL433-MAYHEM-RESEARCH.md) and research/receiver-decoders/SOURCES.json for pinned upstream revisions, inspected source paths, meter/drone distinctions, licensing and Windows integration limits. rtl_433 is the first requested sensor backend; Mayhem ERT, SubGhzD and FPV detection are adaptation references. No runtime integration or build is claimed by this research update.
+# Signal Identification Wiki
+
+Use https://www.sigidwiki.com/ as a general research source across M.R.S. protocols. It supplies community signal descriptions, waterfall/audio examples, recordings and links to decoders. Check individual submissions against primary protocol documents and decoder source before using them for bit layouts, message interpretation or support claims. Preserve the attribution and license of any reused recording. Existing VDL2 test-data provenance credits its recording separately.

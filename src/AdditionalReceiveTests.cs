@@ -4,6 +4,8 @@ internal static class AdditionalReceiveTests
 {
     internal static void Run(Action<bool,string> check)
     {
+        SstvTests.Run(check);
+        RttyTests.Run(check);
         var justBeforeMidnight = new DateTimeOffset(2026,11,16,23,59,10,TimeSpan.Zero);
         check(WeatherFaxStation.NextTune(justBeforeMidnight,TimeSpan.Zero)==justBeforeMidnight.AddSeconds(20)
             && WeatherFaxStation.NextTune(justBeforeMidnight.AddSeconds(30),TimeSpan.Zero)==justBeforeMidnight.AddDays(1).AddSeconds(20),

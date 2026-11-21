@@ -10,6 +10,7 @@ internal static class AviationTests
         var m=AviationData.Parse(PositionJson,"adsb",Context)!;
         check(m.Identity=="ICAO:ABCDEF"&&m.Latitude==40.5&&m.Packet.Replay&&m.Packet.PositionSeconds==2.5,"Aviation retains decoded identity position and replay provenance");
         check(AviationData.Parse("broken","adsb",Context)==null,"Aviation rejects malformed worker JSON");
+        Vdl2DisplayTests.Run(check);
         var bad=AviationData.Parse(PositionJson.Replace("40.5","140.5"),"adsb",Context)!;
         check(bad.Latitude==null&&bad.Longitude==null,"Aviation rejects out-of-range positions");
         var table=new AircraftTable();table.Observe(m);table.Observe(AviationData.Parse(PositionJson.Replace("true","false"),"adsb",Context)!);

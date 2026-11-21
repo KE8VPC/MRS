@@ -3,9 +3,20 @@ using System.Text;
 using System.Text.Json.Nodes;
 namespace MRS;
 
+internal enum SyncUpdateType { Frequencies, Observations, Identifiers, SystemSites, All }
+
 // A preview covers an immutable, dependency-ordered selection, including all batches.
 internal static class SyncUploadPlan
 {
+ internal static bool Includes(SyncUpdateType update,SyncDraft draft)=>update switch
+ {
+  SyncUpdateType.Frequencies=>draft.Type is "frequency" or "lcn",
+  SyncUpdateType.Observations=>draft.IsObservation,
+  SyncUpdateType.Identifiers=>draft.Type is "talkgroup" or "radio",
+  SyncUpdateType.SystemSites=>draft.Type is "system" or "site",
+  _=>true
+ };
+
  internal static List<SyncDraft> Select(IEnumerable<SyncDraft> chosen,IReadOnlyList<SyncDraft> prepared,SyncDocument state)
  {
   var selected=chosen.ToDictionary(d=>d.Ref);if(selected.Count==0)throw new IOException("No upload records selected. Prepare the selection, then select at least one row.");

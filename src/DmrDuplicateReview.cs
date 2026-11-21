@@ -128,9 +128,10 @@ public sealed partial class FrequencyLibrary
             (item.EvidenceStatus.Length > 0 && !DmrProvisional(item.EvidenceStatus) ? 1 : 0);
     }
 
-    private static bool DmrGeneratedName(FrequencyItem item) => DiscoveryNames.Generated(item.Name) &&
+    private static bool DmrGeneratedName(FrequencyItem item) => DiscoveryNames.DmrRolePlaceholder(item) ||
+        DiscoveryNames.Generated(item.Name) &&
         (item.Name == DiscoveryNames.Label(item) || Regex.IsMatch(item.Name,
-            @"^(Observed carrier|Mapped voice carrier|Unknown signal|Signal [\d.,]+ MHz|Channel \d+-\d+|(?:DMR|Cap\+|Con\+)(?: · (?:IDs unknown|Net [\dA-F]+|Site \d+|CC \d+|Control|Rest|Ch [\dA-F, -]+))+)$",
+            @"^(Observed carrier|Mapped voice carrier|Unknown signal|Signal [\d.,]+ MHz|Channel \d+-\d+|(?:DMR|Cap\+|Con\+)(?: · (?:IDs unknown|Net [\dA-F]+|Site \d+|CC \d+|Control|Rest|Voice|Ch [\dA-F, -]+))+)$",
             RegexOptions.IgnoreCase));
 
     private static FrequencyItem MergeDmrDuplicate(FrequencyItem retained, FrequencyItem other, out List<string> conflicts)
@@ -142,7 +143,7 @@ public sealed partial class FrequencyLibrary
         var merged = MergeItem(retained, other with
         {
             Name = "", Notes = "", Signaling = "", ChannelIds = "", ChannelRoles = "", DmrIdentifiers = "",
-            ChannelLastSeen = null, LastObservedFrequencyHz = null, OriginalFrequencyHz = null,
+            ChannelLastSeen = null, LastReceivedOnFrequencyUtc = null, LastObservedFrequencyHz = null, OriginalFrequencyHz = null,
             EvidenceStatus = "", DetectionDate = retained.DetectionDate ?? other.DetectionDate
         }, out conflicts);
         bool retainedGenerated = DmrGeneratedName(retained), otherGenerated = DmrGeneratedName(other);
@@ -161,6 +162,8 @@ public sealed partial class FrequencyLibrary
             ChannelRoles = Union(retained.ChannelRoles, other.ChannelRoles, "; "),
             DmrIdentifiers = dmr,
             ChannelLastSeen = newer ? other.ChannelLastSeen : retained.ChannelLastSeen,
+            LastReceivedOnFrequencyUtc = other.LastReceivedOnFrequencyUtc > retained.LastReceivedOnFrequencyUtc
+                ? other.LastReceivedOnFrequencyUtc : retained.LastReceivedOnFrequencyUtc ?? other.LastReceivedOnFrequencyUtc,
             LastObservedFrequencyHz = newer
                 ? other.LastObservedFrequencyHz ?? other.FrequencyHz
                 : retained.LastObservedFrequencyHz ?? retained.FrequencyHz

@@ -7,6 +7,52 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        if(e.Args.Any(argument=>argument.EndsWith("-smoke",StringComparison.Ordinal)))
+            ShutdownMode=ShutdownMode.OnExplicitShutdown;
+        if(e.Args.Length==2&&e.Args[0]=="--sstv-wav-check")
+        {
+            try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-wav-check.txt"),SstvTests.CheckWav(e.Args[1]));Shutdown(0);}
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-wav-check.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--sstv-test"))
+        {
+            try
+            {
+                var lines=new List<string>();
+                SstvTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);});
+                File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"sstv-test.txt"),lines);Shutdown(0);
+            }
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-test.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--additional-receive-test"))
+        {
+            try
+            {
+                var lines=new List<string>();
+                AdditionalReceiveTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);});
+                File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"additional-receive-test.txt"),lines);Shutdown(0);
+            }
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"additional-receive-test.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--receive-modes-smoke"))
+        {
+            var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};
+            w.Loaded+=async(_,_)=>
+            {
+                try
+                {
+                    await w.RenderReceiveModesSmoke();
+                    File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"receive-modes-ui.txt"),
+                        "PASS: SSTV and RTTY normal UI entry points, PCM context, source-boundary retention, Weather placement and NOAA default render. Synthetic pixels and text only.");
+                    w.Close();Shutdown(0);
+                }
+                catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"receive-modes-ui.txt"),ex.ToString());w.Close();Shutdown(1);}
+            };
+            w.Show();return;
+        }
         if(e.Args.Length==3&&e.Args[0]=="--fox-gps-test"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"fox-gps-test.txt"),Task.Run(()=>FoxGpsProbe.Run(e.Args[1],int.Parse(e.Args[2]))).GetAwaiter().GetResult());Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"fox-gps-test.txt"),ex.Message);Shutdown(1);}return;}
         if(e.Args.Length==2&&e.Args[0]=="--weak-tx-export"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"tx-export-result.txt"),Update044Tests.Export(e.Args[1]));Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"tx-export-result.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Length==2&&e.Args[0]=="--sensor-fixture-test"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),Task.Run(()=>SensorTests.Fixtures(e.Args[1])).GetAwaiter().GetResult());Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),ex.ToString());Shutdown(1);}return;}

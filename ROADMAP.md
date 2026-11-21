@@ -1,3 +1,52 @@
+# Next-build milestone — evaluation follow-up, November 21, 2026
+
+Planning milestone requested by the user; implementation and packaging have not started. Preserve original note numbers: 14 active items; item 3 was rescinded after testing the newer build. Detailed requirements, acceptance checks and Claude review guidance: CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md.
+
+Evaluation baseline: portable 0.54.0-preview1-roadmap1, packaged November 21 from the combined-UI development integration. The older 0.54.0-preview1 candidate does not include the later SSTV/RTTY, readable VDL2 and saving/sync changes. Reconcile source trees before editing; do not rebase from the older candidate alone.
+
+| Note | Next-build scope |
+| --- | --- |
+| 1 | Fix ineffective Tune actions after switching workspaces/protocols. |
+| 2 | Restore usable Aviation aircraft-map and table space. |
+| 4 | Add top-bar Settings and application-wide UTC/local/selected-zone time display. |
+| 5 | WEFAX Next Due broadcast, countdown and tuning. |
+| 6 | Cellular survey Tune; assess selected-band/range sweeping. |
+| 7 | Refresh Bandplans with collapsible categories/system/site groups; review main-tab placement. |
+| 8 | Stop unrelated receiver frequencies overwriting protocol Tune targets. |
+| 9 | Persistent Aviation map cache for offline use, subject to provider rules. |
+| 10 | Saved-folder ACARS selection/stepping/scanning; research multi-channel decoding and reusable folder scan. |
+| 11 | Research only: additional website sharing, including aircraft observations; coordinate any API contract proposal. |
+| 12 | Investigate missing P25 radio IDs; expose system-scoped radio/unit observations. |
+| 13 | Research only: audio/data streaming sources, formats, destinations and access controls. |
+| 14 | Categorized offline Help with improved navigation/search and current-version guidance. |
+| 15 | Compact responsive controls across Receiver and other tabs to reduce vertical scrolling. |
+
+Item 3 (ACARS/VDL2 readability complaint) is rescinded, not an outstanding defect. Existing SSTV expansion remains separately planned below; this milestone does not silently add it to the evaluation-fix batch. No source changes, build, commit, push, website upload or API modification are authorized by this documentation update alone.
+
+# Planned SSTV mode expansion — November 20, 2026
+
+User-approved planning scope; not implemented or packaged. Add 17 receive modes alongside existing Martin M1/M2, for 19 total:
+
+- Scottie S1, S2 and DX (3).
+- Robot 36 colour, Robot 8 BW and Robot 24 BW (3).
+- PD90, PD120, PD160, PD180, PD240 and PD290 (6).
+- Pasokon P3, P5 and P7 (3).
+- Wraase SC2-120 and SC2-180 (2).
+
+Use VIS-header automatic mode selection and retain manual mode selection. Line-timing mode detection is explicitly excluded. A missed header may require manual selection; unsupported modes must remain clearly identified as unsupported.
+
+Suggested implementation order: Scottie, Robot 36, PD, then remaining Robot grayscale/Pasokon/Wraase modes. Validate each mode with independently generated recordings and correct image dimensions, colour/grayscale reconstruction and synchronization before claiming support. Preserve partial-image export and raw/source evidence. This planning update does not authorize a new build.
+
+# Pending source work — November 19, 2026
+
+Implemented readable VDL2 link and CPDLC summaries with From/To fields and retained raw frames. Added Amateur SSTV reception for Martin M1/M2 with VIS detection, manual sync, progressive images, alignment and PNG/metadata export. Added Amateur RTTY for five-bit US ITA2 at 45.45/50/75 baud with selectable tones and polarity. Source changes and acceptance details are in CODEX-ROADMAP-HANDOFF.md and VALIDATION-PENDING-ROADMAP.md.
+
+The pending folder-preservation, legacy Cap+ labels and observation-aware website-sync fixes remain part of this source tree. Download review now shows the same update-type descriptions as upload. Diagnostic windows use explicit application shutdown so failed checks return a failing exit code.
+
+The Claude 0.54.0-preview1 combined UI candidate remains the station-test baseline. A separate integration copy under work/mrs-roadmap-integration combines its UI with these later source changes for regression checks. The source currently under outputs/MRS keeps the existing interface until the user approves promotion. New release ZIP packaging and live RF/API acceptance remain separate steps.
+
+Remaining SSTV modes include Robot, Scottie and PD. Remaining Amateur decoder targets include PSK31, D-STAR and C4FM. Broader DRM, Zigbee, Wi-Fi capture and Remote ID work still need their individual backend and hardware acceptance steps. Existing historical queued entries below retain the decisions and evidence for each item.
+
 # Current release: 0.53.0-preview1
 
 Railroad HOT/EOT, conversational CW, manual WEFAX and a HackRF cellular activity survey. See UPDATE-0.53.0-preview1.md and ACCEPTANCE-0.53.0-preview1.md.

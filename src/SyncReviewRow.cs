@@ -5,6 +5,7 @@ internal sealed class SyncReviewRow
 {
  internal long Id{get;}internal SyncPending Item{get;}
  public string Action=>Item.Op;public string Type=>SyncJson.Text(Item.Record["type"]);public string MHz{get;}public string Protocol=>SyncJson.Text(Item.Record["protocol"]);public string Label=>SyncJson.Text(Item.Record["label"]);
+ public string UpdateType=>new SyncDraft("",Item.Record).UpdateType;
  public string SystemSite{get;}public string Identifiers{get;}
  public string Channel=>string.Join(" · ",new[]{SyncJson.Text(Item.Record["chan_conv"]),SyncJson.Text(Item.Record["chan_no"]),SyncJson.Text(Item.Record["slot"]) is {Length:>0} slot?"slot "+slot:""}.Where(s=>s.Length>0));
  public string Comparison{get;}public long Revision=>SyncJson.Number(Item.Record["rev"]);public string Reason=>Item.Reason;
@@ -22,5 +23,5 @@ internal sealed class SyncReviewRow
   if(context.Unresolved&&item.Op!="delete")Comparison+=" · unresolved relationship";
  }
  private static string Value(JsonNode? node,string field){if(field=="mhz"&&SyncMapping.ParseHz(node) is >0 and var hz)return PlanCsv.MHz(hz);if(node is JsonObject obj)return "{"+string.Join(", ",obj.OrderBy(p=>p.Key,StringComparer.Ordinal).Select(p=>p.Key+": "+Value(p.Value,p.Key)))+"}";return node is JsonArray?node.ToJsonString():SyncJson.Text(node);}
- internal string Search=>string.Join(" ",Type,MHz,Protocol,Label,SystemSite,Identifiers,Channel,Comparison,Id.ToString());
+ internal string Search=>string.Join(" ",Type,UpdateType,MHz,Protocol,Label,SystemSite,Identifiers,Channel,Comparison,Id.ToString());
 }

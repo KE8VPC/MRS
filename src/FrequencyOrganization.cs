@@ -8,11 +8,12 @@ internal sealed record OrganizationRules(string Layout="SubtypeColor",bool Prefe
 }
 internal sealed record OrganizationFields(Dictionary<string,string> Values,string[] KnownPath,string Warning)
 {
+ internal bool IsUnidentified=>Values["protocol"]=="Unknown signal";
  internal static readonly HashSet<string> Tokens=["protocol","subtype","cc","network","site","area","home","channel","identity","frequency"];
  internal string Render(string template)=>Regex.Replace(Regex.Replace(template,@"\{([^{}]+)\}",m=>Values.GetValueOrDefault(m.Groups[1].Value,"")),@"(?:\s*·\s*){2,}"," · ").Trim(' ','·','-');
  internal static OrganizationFields From(FrequencyItem c)
  {
-  string protocol=(c.Protocols.Contains("DMR",StringComparison.OrdinalIgnoreCase)||c.Protocols is "Capacity Plus" or "Connect Plus"||c.SiteScope.StartsWith("DMR:"))?"DMR":c.Protocols.Contains("P25",StringComparison.OrdinalIgnoreCase)||c.SiteScope.StartsWith("P25:")?"P25":c.Protocols.StartsWith("NXDN",StringComparison.OrdinalIgnoreCase)?"NXDN":c.Protocols=="LTR"?"LTR":c.Protocols is "" or "Unknown"?"Unknown signal":c.Protocols;
+  string protocol=(c.Protocols.Contains("DMR",StringComparison.OrdinalIgnoreCase)||c.Protocols is "Capacity Plus" or "Connect Plus"||c.SiteScope.StartsWith("DMR:"))?"DMR":c.Protocols.Contains("P25",StringComparison.OrdinalIgnoreCase)||c.SiteScope.StartsWith("P25:")?"P25":c.Protocols.StartsWith("NXDN",StringComparison.OrdinalIgnoreCase)?"NXDN":c.Protocols=="LTR"?"LTR":string.IsNullOrWhiteSpace(c.Protocols)||c.Protocols.Trim().Equals("Unknown",StringComparison.OrdinalIgnoreCase)?"Unknown signal":c.Protocols;
   string source=c.SiteScope+"; "+c.Signaling;var warnings=new List<string>();
   string Field(string key,string pattern,string prefix=""){var values=Regex.Matches(c.Signaling+(key is "network" or "site"?"; "+c.SiteScope:""),pattern,RegexOptions.IgnoreCase).Select(m=>int.TryParse(m.Groups[1].Value,out int value)?value.ToString(System.Globalization.CultureInfo.InvariantCulture):m.Groups[1].Value).Distinct(StringComparer.OrdinalIgnoreCase).ToArray();if(values.Length>1){warnings.Add("Conflicting "+key+" evidence");return "";}return values.Length==1?prefix+values[0]:"";}
   string cc=Field("color code",@"\bCC\s+(\d{1,2})\b","CC "),network=Field("network",@"\b(?:NET|NETWORK)\s+(\d+)\b","Network "),site=Field("site",@"\bSITE\s+(\d+)\b","Site "),area=Field("area",@"\bAREA\s+([01])\b","Area "),home=Field("home",@"\bHOME\s+(\d{1,2})\b","Home ");
@@ -45,15 +46,40 @@ public sealed partial class FrequencyLibrary
   Guid? parent=null;var prefix=new List<string>();foreach(string label in labels){if(string.IsNullOrWhiteSpace(label)||label.Length>160)throw new IOException("A generated folder label is empty or exceeds 160 characters.");prefix.Add(label);string key="organization:v1:"+SyncJson.Hash(string.Join('\u001f',prefix));string? legacy=null;if(knownScope!=null){var parts=knownScope.Split(':');int level=prefix.Count-1;legacy=level==0?"root:"+parts[0]:level==labels.Length-1?"site:"+knownScope:"folder:"+string.Join(':',parts.Take(level+1));}var folder=values.FirstOrDefault(f=>f.IsFolder&&f.ParentId==parent&&f.BindingKey==key)??(legacy==null?null:values.FirstOrDefault(f=>f.IsFolder&&f.ParentId==parent&&f.BindingKey==legacy))??values.FirstOrDefault(f=>f.IsFolder&&f.ParentId==parent&&f.Name.Equals(label,StringComparison.OrdinalIgnoreCase));if(folder==null){folder=new(){IsFolder=true,Name=label,ParentId=parent,BindingKey=key};values.Add(folder);}parent=folder.Id;}return parent!.Value;
  }
  private FrequencyItem OrganizeDiscovery(List<FrequencyItem> values,FrequencyItem item,bool rename=true)
- {if(organization==null)return item;var fields=OrganizationFields.From(item);if(fields.Warning.Length>0)return item;string name=item.Name;if(rename&&organization.RenameGenerated&&DiscoveryNames.Generated(name))name=fields.Render(organization.NameTemplate);if(name.Length==0||name.Length>160)throw new IOException("Generated name must contain 1–160 characters.");return item with{ParentId=OrganizationFolder(values,fields.Folders(organization),fields.KnownPath.SequenceEqual(fields.Folders(organization))?item.SiteScope:null),Name=name};}
+ {if(organization==null)return item;var fields=OrganizationFields.From(item);if(fields.Warning.Length>0)return item;string name=item.Name;if(rename&&organization.RenameGenerated&&DiscoveryNames.Generated(item))name=fields.Render(organization.NameTemplate);if(name.Length==0||name.Length>160)throw new IOException("Generated name must contain 1–160 characters.");return item with{ParentId=OrganizationFolder(values,fields.Folders(organization),fields.KnownPath.SequenceEqual(fields.Folders(organization))?item.SiteScope:null),Name=name};}
  internal OrganizationPlan PreviewOrganization(OrganizationRules rules,IEnumerable<Guid>? selected,bool existing,bool future,bool prune)
  {
   rules.Validate();var next=items.ToList();var changes=new List<OrganizationChange>();HashSet<Guid>? chosen=selected?.ToHashSet();if(existing&&chosen is{Count:0})throw new IOException("Select entries or a folder first, or choose Entire library.");if(chosen!=null){bool added;do{added=false;foreach(var item in items)if(item.ParentId is {} parent&&chosen.Contains(parent))added|=chosen.Add(item.Id);}while(added);}
   string Location(FrequencyItem item,List<FrequencyItem> list){var names=new List<string>();var parent=item.ParentId;for(int depth=0;parent!=null&&depth<64;depth++){var folder=list.Single(f=>f.Id==parent);names.Insert(0,folder.Name);parent=folder.ParentId;}return string.Join(" / ",names);}
   var ancestors=new HashSet<Guid>();
-  if(existing)foreach(var item in items.Where(i=>!i.IsFolder&&(chosen==null||chosen.Contains(i.Id)))){var fields=OrganizationFields.From(item);if(fields.Warning.Length>0){changes.Add(new("Held",item.Name,Location(item,items),Location(item,items),fields.Warning,DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));continue;}var parent=item.ParentId;while(parent!=null){ancestors.Add(parent.Value);parent=items.Single(f=>f.Id==parent).ParentId;}string label=item.Name;if(rules.RenameGenerated&&DiscoveryNames.Generated(label))label=fields.Render(rules.NameTemplate);if(label.Length==0||label.Length>160){changes.Add(new("Held",item.Name,Location(item,items),Location(item,items),"Generated name must contain 1–160 characters",DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));continue;}var updated=item with{ParentId=OrganizationFolder(next,fields.Folders(rules),fields.KnownPath.SequenceEqual(fields.Folders(rules))?item.SiteScope:null),Name=label};next[next.FindIndex(i=>i.Id==item.Id)]=updated;if(updated!=item)changes.Add(new("Move / label",item.Name,Location(item,items)+" / "+item.Name,Location(updated,next)+" / "+updated.Name,"Stable ID, frequency, scope, evidence and notes retained",DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));}
+  if(existing)foreach(var item in items.Where(i=>!i.IsFolder&&(chosen==null||chosen.Contains(i.Id)))){
+   var fields=OrganizationFields.From(item);
+   if(PreserveUnidentifiedPlacement(item,fields)){
+    string location=string.Join(" / ",new[]{Location(item,items),item.Name}.Where(part=>part.Length>0));
+    changes.Add(new("Held",item.Name,location,location,"Kept the existing name and folder because no protocol is recorded.",DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));
+    continue;
+   }
+   if(fields.Warning.Length>0){changes.Add(new("Held",item.Name,Location(item,items),Location(item,items),fields.Warning,DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));continue;}
+   var parent=item.ParentId;while(parent!=null){ancestors.Add(parent.Value);parent=items.Single(f=>f.Id==parent).ParentId;}
+   string label=item.Name;if(rules.RenameGenerated&&DiscoveryNames.Generated(item))label=fields.Render(rules.NameTemplate);
+   if(label.Length==0||label.Length>160){changes.Add(new("Held",item.Name,Location(item,items),Location(item,items),"Generated name must contain 1–160 characters",DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));continue;}
+   var folders=fields.Folders(rules);
+   var updated=item with{ParentId=OrganizationFolder(next,folders,fields.KnownPath.SequenceEqual(folders)?item.SiteScope:null),Name=label};
+   next[next.FindIndex(i=>i.Id==item.Id)]=updated;
+   if(updated!=item)changes.Add(new("Move / label",item.Name,Location(item,items)+" / "+item.Name,Location(updated,next)+" / "+updated.Name,"Stable ID, frequency, scope, evidence and notes retained",DiscoveryNames.Frequency(item.FrequencyHz),item.Id.ToString()));
+  }
   if(prune&&existing){bool removed;do{removed=false;foreach(var f in next.Where(f=>f.IsFolder&&f.ParentId!=null&&ancestors.Contains(f.Id)&&f.Notes.Length==0&&!f.ScannerFolder&&!next.Any(i=>i.ParentId==f.Id)&&RemovableFolder(f,next)).ToArray()){next.Remove(f);changes.Add(new("Empty folder",f.Name,Location(f,items),"Removed","Empty generated folder only"));removed=true;}}while(removed);}
   if((future?rules:null)!=organization)changes.Add(new("Saving rules","Future decoder / RF discoveries",organization?.Layout??"Legacy",future?rules.Layout:"Legacy","Stored locally in this library; not exported to website"));Validate(next);return new(OrganizationStamp,next,rules,future,changes);
+ }
+ private bool PreserveUnidentifiedPlacement(FrequencyItem item,OrganizationFields fields)
+ {
+  if(!fields.IsUnidentified)return false;
+  if(item.Tags!="RF activity discovery"||!DiscoveryNames.Generated(item.Name))return true;
+  if(item.ParentId is not Guid parent)return false;
+  var folder=items.Single(f=>f.Id==parent);
+  bool scannerFolder=folder.ScannerFolder||
+   folder.DetectionDate!=null&&items.Any(f=>f.Id==folder.ParentId&&f.ScannerFolder);
+  return !scannerFolder&&!RemovableFolder(folder,items);
  }
  private static bool RemovableFolder(FrequencyItem f,List<FrequencyItem> all){if(f.BindingKey.StartsWith("organization:")){var labels=new List<string>{f.Name};var parent=f.ParentId;while(parent!=null){var p=all.Single(i=>i.Id==parent);labels.Insert(0,p.Name);parent=p.ParentId;}return f.BindingKey=="organization:v1:"+SyncJson.Hash(string.Join('\u001f',labels));}return (f.BindingKey.StartsWith("folder:")||f.BindingKey.StartsWith("site:"))&&Regex.IsMatch(f.Name,@"^(Unassigned at [\d.]+|Unresolved site|Unidentified system|DMR|LTR Standard|Capacity Plus|Connect Plus|DMR Tier III|Motorola rest signaling|Network \d+|Site \d+|RFSS \d+ - Site \d+|[A-F0-9]{1,5}-[A-F0-9]{1,3}|Provisional system .*)$",RegexOptions.IgnoreCase);}
  internal string ApplyOrganization(OrganizationPlan plan)

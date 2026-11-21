@@ -36,6 +36,19 @@ internal static class LcnSurveyTests
   var rest=Grant() with{SystemType="Capacity Plus",Detail="Capacity Plus channel status · fragment 3",RestChannel=4};check(LcnSurvey.Role(rest).StartsWith("Rest")&&LcnSurvey.Role(rest with{DataType=1,Detail="Capacity Plus full link control"})=="","A voice LC announcing a rest number does not prove its own frequency is rest");
   var roles=SiteChannelData.FromDmr(R(Grant(),control,now));check(roles?.Role=="Control — decoded","DMR discovery saves decoded channel roles instead of discarding them as observed carrier");
   var db=new FrequencyLibrary(Path.Combine(root,"frequencies.json"));db.SaveSiteChannels([roles!]);var channel=db.Items.Single(i=>!i.IsFolder);check(channel.Name.Contains("Control"),"Generated saved and spectrum labels include the decoded control role");
+  var restChannel=SiteChannelData.FromDmr(R(rest with { ColorCode=1, Network=null, Site=null },463562500,now))!;
+  db.SaveSiteChannels([restChannel]);
+  var restSaved=db.Items.Single(i=>i.FrequencyHz==restChannel.Hz);
+  check(restSaved.Name=="Cap+ · CC 1 · Rest"&&restSaved.Signaling.Contains("CC 1"),
+   "New Capacity Plus rest entries show the decoded color code in the saved label");
+  var legacyRest=restSaved with { Name="Rest — last observed" };
+  check(legacyRest.ToString().StartsWith("Cap+ · CC 1 · Rest"),
+   "An existing role-only Cap+ entry renders its saved color code before any new save");
+  db.Upsert(legacyRest);
+  db.SaveSiteChannels([restChannel with { Seen=now.AddSeconds(1) }]);
+  check(db.Items.Single(i=>i.FrequencyHz==restChannel.Hz) is { Name:"Cap+ · CC 1 · Rest" } refreshed&&
+        refreshed.Id==restSaved.Id,
+   "A fresh Capacity Plus decode fixes the legacy label in place");
   var a=New();var b=New();a.Observe(R(Grant(),control,now));check(a.Phase=="Tuning probe"&&b.Phase=="Reacquiring"&&b.Data.Evidence.Count==0,"Independent receiver surveys do not share active assignments or search state");
   var timeout=New();timeout.Observe(R(Grant(),control,now));timeout.Tick(now.AddSeconds(7));check(!timeout.Running&&timeout.Message.Contains("acknowledgement"),"Failed tune acknowledgement stops discovery without a fabricated match");
   var cc=New();cc.Observe(R(Grant(),control,now));cc.Applied(cc.DesiredHz,now.AddSeconds(.3));cc.Observe(R(Voice() with{ColorCode=7},cc.AppliedHz,now.AddSeconds(.5)));check(cc.Rows().All(r=>r.Calls==0),"A same-talkgroup voice on a different color code cannot pass a mapping");

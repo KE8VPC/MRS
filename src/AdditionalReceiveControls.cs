@@ -24,7 +24,8 @@ public partial class MainWindow
     private readonly TextBox cwTranscript = new() { IsReadOnly=true, TextWrapping=TextWrapping.Wrap,
         VerticalScrollBarVisibility=ScrollBarVisibility.Auto };
     private readonly TextBlock cwStatus = ModeStatus(), faxStatus = ModeStatus(), cellularSurveyStatus = ModeStatus();
-    private readonly Image faxImage = new() { Stretch=Stretch.None, HorizontalAlignment=HorizontalAlignment.Left };
+    private readonly Image faxImage = new() { Stretch=Stretch.None, HorizontalAlignment=HorizontalAlignment.Left,
+        VerticalAlignment=VerticalAlignment.Top };
     private readonly PacketPanel railMessages = new();
     private readonly ComboBox surveyBand = new() { Width=260, ItemsSource=CellularActivity.Bands, SelectedIndex=0 };
     private readonly TextBox surveyMargin = new() { Text="8", Width=56 };
@@ -78,6 +79,8 @@ public partial class MainWindow
     private void InitializeAdditionalReceive()
     {
         var amateur=(TabControl)AmateurTab.Content;
+        InitializeSstv(amateur);
+        InitializeRtty(amateur);
         var pitch=new TextBox{Text="700",Width=65};
         var wpm=new TextBox{Text="18",Width=55};
         var spacing=new TextBox{Text="18",Width=55};
@@ -176,11 +179,13 @@ public partial class MainWindow
             }
         };
         receiver.Audio+=pcm=>{
-            if(receiver.AppliedChannel is {Mode:"CW" or "USB" or "LSB"} ch)
-                FeedAdditionalAudio(pcm,1,RadioContext("audio-modes",ch.Frequency).Key,ch.Mode=="USB");
+            if(receiver.AppliedChannel is {Mode:"CW" or "USB" or "LSB" or "AM" or "NFM"} ch)
+                FeedAdditionalAudio(pcm,1,RadioContext("audio-modes",ch.Frequency,
+                    receiver.IsReplay?receiver.ReplayPosition.TotalSeconds:null),ch.Mode=="USB");
         };
-        engine.PcmReady+=(bytes,count,channels,_)=>{
-            if(!rfMode)FeedAdditionalAudio(bytes.AsSpan(0,count),channels,RadioContext("audio-modes",null).Key,true);
+        engine.PcmReady+=(bytes,count,channels,seconds)=>{
+            if(!rfMode)FeedAdditionalAudio(bytes.AsSpan(0,count),channels,
+                RadioContext("audio-modes",null,packetAudioReplay?seconds:null),true);
         };
         receiver.ChannelChanged+=()=>ResetAdditionalReceive(true);
         receiver.ReplayGap+=()=>ResetAdditionalReceive(true);
@@ -229,22 +234,23 @@ public partial class MainWindow
             railContext=null;
             if(!audio)return;
             conversationCw?.FlushCharacter();
-            conversationCw=null;weatherFax=null;audioModeSource=null;
+            conversationCw=null;weatherFax=null;sstvDecoder=null;rttyReceiver=null;audioModeSource=null;sstvAudioContext=null;
         }
     }
 
-    private void FeedAdditionalAudio(ReadOnlySpan<byte> pcm,int channels,string source,bool faxCompatible)
+    private void FeedAdditionalAudio(ReadOnlySpan<byte> pcm,int channels,PacketContext context,bool faxCompatible)
     {
         lock(receiveModeSync)
         {
-            if(conversationCw==null&&weatherFax==null)return;
-            if(audioModeSource!=null&&audioModeSource!=source)
+            if(conversationCw==null&&weatherFax==null&&sstvDecoder==null&&rttyReceiver==null)return;
+            if(audioModeSource!=null&&audioModeSource!=context.Key)
             {
                 conversationCw?.FlushCharacter();
-                conversationCw=null;weatherFax=null;audioModeSource=null;
+                conversationCw=null;weatherFax=null;sstvDecoder=null;rttyReceiver=null;audioModeSource=null;sstvAudioContext=null;
                 return;
             }
-            audioModeSource=source;
+            audioModeSource=context.Key;
+            sstvAudioContext=context;
             int stride=2*channels;
             for(int i=0;i+stride<=pcm.Length;i+=stride)
             {
@@ -253,6 +259,8 @@ public partial class MainWindow
                     value+=System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(pcm[(i+2*ch)..]);
                 value/=32768*channels;
                 conversationCw?.Feed(value);
+                sstvDecoder?.Feed(value);
+                rttyReceiver?.Feed(value);
                 if(faxCompatible&&faxLines.Count<2400)weatherFax?.Feed(value);
             }
         }
@@ -282,6 +290,8 @@ public partial class MainWindow
     private void TickAdditionalReceive()
     {
         TickWeather();
+        TickSstv();
+        TickRtty();
         PacketObservation[] packets;
         string text;
         bool cwRunning, faxRunning;

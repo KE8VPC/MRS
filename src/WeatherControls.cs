@@ -105,8 +105,8 @@ public partial class MainWindow
         weatherAlerts.ConfigureWorkspace("RadioData");
         weatherAlerts.ShowUnverified(true);
         AddModePage(tabs,"NOAA Weather Radio",weatherAlerts,out var row,out var header);
-        var choices = new ComboBox { Width=145, SelectedIndex=0,
-            ItemsSource=NoaaChannels.Select(hz=>PlanCsv.MHz(hz)+" MHz").ToArray() };
+        var choices = new ComboBox { Width=145,
+            ItemsSource=NoaaChannels.Select(hz=>PlanCsv.MHz(hz)+" MHz").ToArray(), SelectedIndex=0 };
         ModeFields(row,("NOAA channel",choices));
         ModeButton(row,"Tune NOAA",()=>{
             int index=choices.SelectedIndex;

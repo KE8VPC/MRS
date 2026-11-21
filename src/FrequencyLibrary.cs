@@ -20,6 +20,7 @@ public sealed record FrequencyItem
     public string MappingStatus {get;init;}="";
     public string BindingKey {get;init;}="";
     public long? LastObservedFrequencyHz {get;init;}
+    public DateTimeOffset? LastReceivedOnFrequencyUtc {get;init;}
 
     public bool IsFolder { get; init; }
 
@@ -56,7 +57,7 @@ public sealed record FrequencyItem
 
     public SignalActivity? Activity {get;init;}
 
-    public override string ToString() => IsFolder ? Name+(MappingStatus.Length>0?" · "+MappingStatus:"") : $"{Name}{(!DiscoveryNames.Generated(Name)&&ChannelIds.Length>0?" · "+ChannelIds:"")} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
+    public override string ToString() => IsFolder ? Name+(MappingStatus.Length>0?" · "+MappingStatus:"") : $"{(DiscoveryNames.DmrRolePlaceholder(this)?DiscoveryNames.Label(this):Name)}{(!DiscoveryNames.Generated(this)&&ChannelIds.Length>0?" · "+ChannelIds:"")} · {DiscoveryNames.Frequency(FrequencyHz)} MHz · {Mode} {Protocols}";
 
 }
 
@@ -317,7 +318,7 @@ public sealed partial class FrequencyLibrary
         var id=observation.Identity;string scope=$"NXDN:System {id.System}:Site {id.Site}:RAN {id.Ran}";string identity=$"NXDN SYS {id.System} SITE {id.Site} RAN {id.Ran}";
         var unscoped=items.Where(i=>!i.IsFolder&&i.FrequencyHz==hz&&i.SiteScope.Length==0).ToArray();var old=items.FirstOrDefault(i=>!i.IsFolder&&i.FrequencyHz==hz&&i.SiteScope==scope)??(unscoped.Length==1?unscoped[0]:null);
         if(old!=null){string protocols=old.Protocols is "" or "Unknown"?"NXDN":old.Protocols.Contains("NXDN",StringComparison.OrdinalIgnoreCase)?old.Protocols:old.Protocols+"; NXDN";string signaling=old.Signaling.Contains(identity,StringComparison.Ordinal)?old.Signaling:(old.Signaling+"; "+identity).Trim(';',' ');if(signaling.Length>4000)throw new IOException("Signaling metadata limit reached.");var updated=old with{SiteScope=scope,Protocols=protocols,Signaling=signaling,ChannelLastSeen=observation.Seen};if(DiscoveryNames.Generated(old.Name))updated=updated with{Name=DiscoveryNames.Label(updated)};var next=items.ToList();next[next.IndexOf(old)]=updated;Commit(next,false);return;}
-        SaveSiteChannels([new("NXDN",["NXDN","System "+id.System,"Site "+id.Site],scope,hz,"","Observed carrier",identity+$"; Location {id.Location}",Evidence:"Observed",Seen:observation.Seen)]);
+        SaveSiteChannels([new("NXDN",["NXDN","System "+id.System,"Site "+id.Site],scope,hz,"","Observed carrier",identity+$"; Location {id.Location}",Evidence:"Observed",Seen:observation.Seen,ReceivedOnFrequencyUtc:observation.Seen)]);
     }
 
     internal void SaveDmr(DmrReception reception,string receiver)

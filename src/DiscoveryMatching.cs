@@ -81,6 +81,8 @@ public sealed partial class FrequencyLibrary
    string scope=richer?c.Scope:old.SiteScope;
    string text=MergeIdentityText(old.Signaling,c.Identifiers);var newer=old with{SiteScope=scope,Signaling=text,LastObservedFrequencyHz=c.Hz,ChannelLastSeen=c.Seen>old.ChannelLastSeen||old.ChannelLastSeen==null?c.Seen:old.ChannelLastSeen,ChannelRoles=string.Join("; ",old.ChannelRoles.Split("; ",StringSplitOptions.RemoveEmptyEntries).Append(c.Role).Distinct().Take(32)),ChannelIds=string.Join(", ",old.ChannelIds.Split(", ",StringSplitOptions.RemoveEmptyEntries).Append(c.Channel).Where(v=>v.Length>0).Distinct().Take(64)),UplinkHz=old.UplinkHz??c.Uplink,EvidenceStatus=richer?c.Evidence:old.EvidenceStatus,Protocols=old.Protocols is "" or "Unknown"?c.Protocol:old.Protocols};
    if(c.Protocol=="DMR"&&old.ChannelLastSeen>c.Seen)newer=newer with{LastObservedFrequencyHz=old.LastObservedFrequencyHz};
+   if(c.ReceivedOnFrequencyUtc is {} received&&(old.LastReceivedOnFrequencyUtc is not {} previousReceive||received>previousReceive))
+    newer=newer with{LastReceivedOnFrequencyUtc=received};
    bool rename=c.Protocol=="DMR"?DmrGeneratedName(old):DiscoveryNames.Generated(old.Name);
    if(organization==null&&rename)newer=newer with{Name=DiscoveryNames.Label(newer)};
    // Preserve a user's unscoped/manual placement; known site entries follow their

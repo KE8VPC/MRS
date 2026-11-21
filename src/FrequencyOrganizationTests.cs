@@ -35,6 +35,32 @@ internal static class FrequencyOrganizationTests
   var now=DateTimeOffset.UtcNow;futureOnly.SaveDiscoveries([new(Guid.NewGuid(),315000000,"NFM",12500,10000,now,now,1,12)],"Synthetic receiver");check(futureOnly.Items.Single(c=>c.FrequencyHz==315000000).ParentId is {} rfParent&&futureOnly.Items.Single(c=>c.Id==rfParent).Name=="Unknown signal","New RF activity discoveries also use the saved organization rules");
   var manualFolder=new FrequencyItem{IsFolder=true,Name="My manual placement"};futureOnly.Upsert(manualFolder);var manual=Channel("Capacity Plus",454000000,"Custom named carrier") with{ParentId=manualFolder.Id};futureOnly.Upsert(manual);futureOnly.SaveSiteChannels([incoming with{Hz=454000000,Scope=manual.SiteScope}]);check(futureOnly.Items.Single(c=>c.Id==manual.Id).ParentId==manualFolder.Id,"Auto-save does not move a manually placed channel out of its custom folder");
   var cleanup=futureOnly.PreviewCleanup(true,true,false,0,0);check(!cleanup.Channels.Any(c=>c.IsFolder&&c.Name.StartsWith("Unassigned at")),"The older cleanup action respects configured organization instead of restoring placeholders");
+  var savedFolders=new FrequencyLibrary(Path.Combine(root,"manual-non-dmr.json"));
+  var fm=new FrequencyItem{IsFolder=true,Name="FM Radio"};
+  var air=new FrequencyItem{IsFolder=true,Name="Air"};
+  var airData=new FrequencyItem{IsFolder=true,Name="data",ParentId=air.Id};
+  var airVoice=new FrequencyItem{IsFolder=true,Name="Voice",ParentId=air.Id};
+  var mesh=new FrequencyItem{IsFolder=true,Name="mesh"};
+  foreach(var f in new[]{fm,air,airData,airVoice,mesh})savedFolders.Upsert(f);
+  var manualChannels=new[]{
+   new FrequencyItem{Name="FM station",ParentId=fm.Id,FrequencyHz=102100000,Mode="WFM"},
+   new FrequencyItem{Name="Mesh slot",ParentId=mesh.Id,FrequencyHz=906875000,Protocols=" unknown "},
+   new FrequencyItem{Name="acars",ParentId=airData.Id,FrequencyHz=131550000,Mode="AM"},
+   new FrequencyItem{Name="Signal 128.623 MHz",ParentId=airVoice.Id,FrequencyHz=128623000,Mode="AM",Tags="RF activity discovery"},
+   new FrequencyItem{Name="Air monitor",FrequencyHz=128650000,Mode="AM",Protocols="Unknown"}
+  };
+  foreach(var c in manualChannels)savedFolders.Upsert(c);
+  savedFolders.SaveDiscoveries([new(Guid.NewGuid(),315000000,"NFM",12500,10000,now,now,1,12)],"Synthetic receiver");
+  var protectedPlan=savedFolders.PreviewOrganization(rules,null,true,true,true);
+  check(manualChannels.All(c=>protectedPlan.Items.Single(i=>i.Id==c.Id)==c)&&
+        protectedPlan.Changes.Count(c=>c.Action=="Held"&&c.Before==c.After)==manualChannels.Length,
+   "Unidentified FM, mesh and aviation saves keep their names and folders, including an RF discovery filed manually");
+  check(PathFor(protectedPlan.Items,protectedPlan.Items.Single(i=>i.FrequencyHz==315000000))=="Unknown signal",
+   "Unfiled scanner discoveries can still use the Unknown signal folder during reorganization");
+  savedFolders.ApplyOrganization(protectedPlan);
+  var protectedCleanup=savedFolders.PreviewCleanup(true,true,false,0,0);
+  check(manualChannels.All(c=>protectedCleanup.Channels.Single(i=>i.Id==c.Id)==c),
+   "Saved-frequency cleanup also preserves unidentified entries with existing names and placement");
   var corrupt=selectedDb.PreviewOrganization(rules,null,true,true,false);var ix=corrupt.Items.FindIndex(c=>c.Id==generic.Id);corrupt.Items[ix]=corrupt.Items[ix] with{FrequencyHz=999999999};rejected=false;try{selectedDb.ApplyOrganization(corrupt);}catch(IOException){rejected=true;}check(rejected,"Apply rejects a plan that changes channel frequency");
   string bundle=JsonSerializer.Serialize(futureOnly.ExportDiscoveries());check(!bundle.Contains("FolderTemplate")&&!bundle.Contains("PreferKnownSites"),"Saving preferences stay local and are excluded from shared discovery bundles");
   futureOnly.ApplyOrganization(futureOnly.PreviewOrganization(rules,null,false,false,false));check(new FrequencyLibrary(futureOnly.LibraryPath).Organization==null,"Disabling future rules restores legacy automatic placement without reorganizing channels");
