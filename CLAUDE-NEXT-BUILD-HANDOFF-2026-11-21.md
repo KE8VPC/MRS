@@ -1,5 +1,7 @@
 # Claude review handoff — next-build evaluation milestone
 
+> **Superseded in part (November 21, 2026):** source consolidation is complete and there is no fixed assistant ownership split. `ACTIVE-BASE.md` is authoritative for the active source tree, rollback points and coordination rules. The requirements and acceptance checks below remain current.
+
 November 21, 2026. User requested documenting the active evaluation notes as the next-build milestone and preparing this handoff for Claude to review. This document records scope, not completed fixes or an instruction to start implementation. No message has been sent to Claude.
 
 ## Baseline and coordination
@@ -8,8 +10,8 @@ November 21, 2026. User requested documenting the active evaluation notes as the
 - Combined source used for that package: `work/mrs-roadmap-integration`; portable staging: `work/MRS-0.54.0-preview1-roadmap1-portable`. The original combined UI candidate is `work/mrs-0540p1-combined` and the main source remains `outputs/MRS`. Read CODEX-ROADMAP-HANDOFF.md and VALIDATION-PENDING-ROADMAP.md before reconciling them.
 - Roadmap1 includes Martin M1/M2 SSTV, ITA2 RTTY, readable VDL2 and later folder/label/sync changes. Do not overwrite those with the older combined candidate. Main source has uncommitted work; preserve unrelated changes.
 - Packaged executable passed 2,252 local self-checks and receive-modes UI smoke; archive executable hash matched the tested publish. These are local checks, not RF, hosted API, DPI or physical-monitor acceptance.
-- No next release number assigned. Review proposed ownership and shared-file overlap before parallel implementation, especially MainWindow, navigation, tuning, time formatting and Help.
-- Claude owns website/API changes; M.R.S. client work stays separate. Contract changes require agreement before implementation. Notes 11 and 13 are future research, not promised working integrations for this release.
+- No next release number assigned. There is no fixed assistant split: Claude and Codex both contribute to M.R.S. and cross-check each other. Shared files (MainWindow, navigation, tuning, time formatting, Help) use one in-progress claim at a time, as set out in ACTIVE-BASE.md.
+- Website/API work stays a separate project from the M.R.S. client, and contract changes still require agreement on both sides before implementation. M.R.S. client work is open to both assistants. Notes 11 and 13 are future research, not promised working integrations for this release.
 
 ## Active requirements and acceptance
 
@@ -60,7 +62,7 @@ Size short-value fields/selectors to contents and place related controls side by
 
 ## Suggested review and implementation sequence
 
-1. Reconcile baseline/source ownership and preserve a rollback point.
+1. Done November 21: source consolidated into outputs/MRS (commit 112d3d1); rollback b9fefb8. See ACTIVE-BASE.md.
 2. Investigate items 1/8 together; establish reliable receiver/tune ownership before adding scanning.
 3. Plan shared UI sizing/navigation and time formatting (2/4/7/14/15).
 4. Implement scoped WEFAX, map cache, ACARS/folder scan, cellular tuning and P25 ID work with focused validation.

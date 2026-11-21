@@ -1,5 +1,7 @@
 # M.R.S. pending source handoff
 
+> **Superseded in part (November 21, 2026):** the integration described here has been promoted into outputs/MRS (commit 112d3d1). Do not re-run work/prepare-roadmap-integration.ps1. See `ACTIVE-BASE.md`.
+
 November 19, 2026. The rollback checkpoint remains 336dc8d. Claude's 0.54.0-preview1 combined candidate lives in work/mrs-0540p1-combined and awaits station acceptance. The work described here follows that snapshot and needs to be brought forward when the approved UI candidate is promoted.
 
 ## Completed source areas

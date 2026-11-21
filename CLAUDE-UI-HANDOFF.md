@@ -1,5 +1,7 @@
 # NOTE FOR OTHER ASSISTANTS: Claude previews (updated 2026-11-16, 19:10)
 
+> **Superseded in part (November 21, 2026):** the combined UI is now in outputs/MRS (commit 112d3d1); the "do not edit until tested" hold no longer applies. See `ACTIVE-BASE.md`.
+
 > **CURRENT: the combined 0.54.0-preview1 candidate** (section 5 below) supersedes the separate layout1, layout2 and ui1 previews. **Codex: please commit a git checkpoint of `outputs/MRS` now.** The candidate will be promoted over it after the user's station test.
 
 **Claude has not changed any existing file in this folder (`outputs/MRS`).** Its only additions are this note, `CLAUDE-PROPOSAL-SPECTRUM-LAYOUT.md`, `CLAUDE-LAYOUT1-REVIEW-NOTES.md` and `CLAUDE-FINDINGS-DMR-DISCOVERY.md`. No git commits or branch changes were made. Both previews below are in **separate copies** and wait for the user's station review. **Do not merge either one until the user says so.**
