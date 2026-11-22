@@ -67,3 +67,7 @@ Claude and Codex: note 19 now explicitly plans offline saved-run calculations an
 ## Field-review handoff — November 22, 2026
 
 Claude: REVIEW-FIELD-2026-11-22.md contains current sensor replay results and requested independent checks, shared backlog/reconnect evidence, note 22 FT8 missed slots and expanded note 19 indicators. Local-only reference index: work/field-review-2026-11-22.md. Current active count: 21. Documentation only; no fixes claimed.
+
+## Note 17 shared DSP fix — November 22, 2026
+
+Codex optimized IqDecimator mixing and FmDemodulator FIRs; 2262 self-checks and receive-modes smoke passed. Read VALIDATION-NOTE17-THROUGHPUT.md and review the code commit. AC-power dropout evidence included. Raw queues retain explicit overflow protection. Reconnect budget and reduced-rate advice are not fixed; field acceptance required. No published package changed.

@@ -1,4 +1,6 @@
 using NAudio.Dsp;
+using System.Numerics;
+using Complex = NAudio.Dsp.Complex;
 
 namespace MRS;
 internal sealed class FmDemodulator
@@ -89,10 +91,13 @@ internal sealed class FmDemodulator
     internal sealed class Fir
     {
         private readonly double[] coefficients, history;
+        private readonly int length;
         private int position;
         internal Fir(int taps, double cutoff)
         {
-            history = new double[taps]; coefficients = new double[taps];
+            length = taps;
+            int padded = ((taps + Vector<double>.Count - 1) / Vector<double>.Count) * Vector<double>.Count;
+            history = new double[padded * 2]; coefficients = new double[padded];
             double f = cutoff / RtlNative.SampleRate, sum = 0;
             for (int n = 0; n < taps; n++)
             {
@@ -104,11 +109,12 @@ internal sealed class FmDemodulator
         }
         internal double Push(double value)
         {
-            history[position] = value;
-            double sum = 0; int index = position;
-            for (int n = 0; n < coefficients.Length; n++) { sum += coefficients[n] * history[index]; if (--index < 0) index = history.Length - 1; }
-            if (++position == history.Length) position = 0;
-            return sum;
+            if (--position < 0) position = length - 1;
+            history[position] = history[position + length] = value;
+            var sum = Vector<double>.Zero;
+            for (int n = 0; n < coefficients.Length; n += Vector<double>.Count)
+                sum += new Vector<double>(coefficients, n) * new Vector<double>(history, position + n);
+            return Vector.Sum(sum);
         }
     }
 }
