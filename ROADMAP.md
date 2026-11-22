@@ -1,3 +1,7 @@
+# Current evaluation roadmap — November 22, 2026
+
+See ROADMAP-EVALUATION-2026-11-22.md for notes 17–21, full Fox Hunt/coverage-survey suggestions and the consolidated numbered inventory. There are 20 active items (notes 1–21 excluding rescinded note 3). Note 16 remains a high-priority public-release requirement; note 17 is a reliability investigation. Notes 11/13 and the Coverage Survey side project remain later research. Existing SSTV and long-term plans below remain separate. No fixes or builds are claimed by this documentation update.
+
 # High-priority release requirement — note 16: code signing
 
 User elevated code signing on November 21 after SmartScreen reported Unknown publisher for the GitHub download. Public trust is a priority. Review trusted publisher signing before the next public release; any unsigned exception requires an explicit user decision. The existing roadmap1 release remains unsigned and unchanged.

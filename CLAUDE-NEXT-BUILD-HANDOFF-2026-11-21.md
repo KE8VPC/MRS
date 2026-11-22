@@ -1,5 +1,7 @@
 # Claude review handoff — next-build evaluation milestone
 
+> November 22 update: read ROADMAP-EVALUATION-2026-11-22.md for notes 17–21 and expanded Fox Hunt estimation/heat-map requirements. Current numbered inventory has 20 active items; note 3 remains rescinded. Shared documentation only; no implementation claimed.
+
 ## High-priority release requirement — note 16: code signing
 
 User elevated code signing on November 21 after SmartScreen reported Unknown publisher for the GitHub download. Public trust is a priority. Review trusted publisher signing before the next public release; any unsigned exception requires an explicit user decision. The existing roadmap1 release remains unsigned and unchanged.

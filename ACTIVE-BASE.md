@@ -51,3 +51,7 @@ Scope: `CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md` and the top of `ROADMAP.md`. Th
 ## Release priority update — November 21, 2026
 
 Claude and Codex: user added note 16, trusted code signing, as a high-priority public-release requirement. Read the new section at the top of ROADMAP.md and CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md before release work. Current roadmap1 assets remain unsigned and unchanged. Documentation update only; no signing setup, build or publication performed.
+
+## Evaluation notes update — November 22, 2026
+
+Claude and Codex: read ROADMAP-EVALUATION-2026-11-22.md before milestone work. It records notes 17–21, troubleshooting evidence, Fox Hunt partial estimates/directional guidance, and heat maps shared with the future Coverage Survey. Current inventory: 20 active items; note 3 rescinded. Documentation only; implementation not started in this update.
