@@ -14,7 +14,16 @@ Persist APRS-IS reporting passcode for the configured callsign across restarts; 
 
 ## 19. Fox Hunt continuity and estimation improvements
 
-Reported loss: approximately 30 minutes of drive data after restarting and failing to notice GPS disconnection.
+Reported loss: approximately 30 minutes of drive data after sleep/wake and returning to Fox Hunt without noticing GPS acquisition/logging was not started. This supersedes the initial description of a GPS disconnection: a hardware disconnect is not confirmed.
+
+### Later field clarifications and export review
+
+- User sequence: laptop slept; GPS dongle light stayed on; user woke laptop, tried Aviation, returned to Fox Hunt and drove the next route without noticing GPS was not started. Device light does not establish an application connection, fresh fix or active recording.
+- Explicitly test suspend/resume and Aviation-to-Fox-Hunt transitions. Reconnect configured GPS as appropriate, verify fresh fixes and display a persistent Not recording GPS points warning until recording is actually active. Preserve a visible acquisition gap; never fill it with stale positions. Receiver/decoder operation and GPS/logging states must be distinguishable.
+- Mobile RF context supplied for reference: external roof-mounted VHF/UHF dual-band vehicle antenna. Antenna response and vehicle effects affect RF comparison; this does not establish a cause for GPS/logging state failure. Do not assume calibrated gain or suitable response at every monitored frequency.
+- Read-only review of the supplied November 22 GPX: 1,326 points, one continuous segment, 09:18:28–09:41:25 EST (14:18:28–14:41:25 UTC), about 22m57s. Frequency 774.306250 MHz; relative level range -39.40 to -5.07 dB, strongest sample around 09:36:09 EST. Largest point interval about 1.24 s. Frequency/gain/filter/sample-rate context unchanged within the file. GPS fixes were recent through its final point; this file does not diagnose what happened after recording stopped. GPS quality varied (4–8 satellites, maximum recorded HDOP 7.58). Do not treat relative dB as calibrated dBm. Original file unchanged; no route, coordinates, serials or raw recordings copied into source/release inputs.
+- Google Earth GPX import shows a uniform route style, not radio-strength colours. Exporter already includes relativeDb and RF metadata under custom GPX extensions; this is not proof those fields are rendered by external viewers.
+- Plan a Google-Earth-friendly KML/KMZ export with strength-coloured points/segments, explicit legend and units, timestamps/frequency/settings in point details, preserved gaps and no false transmitter pin. Retain GPX/CSV originals. This is an export enhancement under notes 19/21, not implemented support. Ensure any conversion preserves metadata and makes the styling scale/comparability explicit.
 
 - Automatically connect the configured GPS when Fox Hunt starts; reconnect after loss, with explicit status and optional audible warning.
 - Clearly distinguish receiving signal samples, valid GPS fixes and actually recorded geolocated points. Do not silently attach stale positions to new samples.

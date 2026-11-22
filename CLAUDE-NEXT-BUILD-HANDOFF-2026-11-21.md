@@ -1,5 +1,7 @@
 # Claude review handoff — next-build evaluation milestone
 
+> Latest November 22 clarification: note 19's missed route followed laptop sleep/wake, Aviation use and return to Fox Hunt with GPS not started; hardware disconnect is unconfirmed. ROADMAP-EVALUATION-2026-11-22.md now includes recovery acceptance, external roof-mounted VHF/UHF antenna context, read-only GPX findings and planned signal-coloured KML/KMZ export for Google Earth. No implementation changes.
+
 > November 22 update: read ROADMAP-EVALUATION-2026-11-22.md for notes 17–21 and expanded Fox Hunt estimation/heat-map requirements. Current numbered inventory has 20 active items; note 3 remains rescinded. Shared documentation only; no implementation claimed.
 
 ## High-priority release requirement — note 16: code signing
