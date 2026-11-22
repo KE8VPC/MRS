@@ -64,3 +64,8 @@ See [RTL433-MAYHEM-RESEARCH.md](RTL433-MAYHEM-RESEARCH.md) and research/receiver
 # Signal Identification Wiki
 
 Use https://www.sigidwiki.com/ as a general research source across M.R.S. protocols. It supplies community signal descriptions, waterfall/audio examples, recordings and links to decoders. Check individual submissions against primary protocol documents and decoder source before using them for bit layouts, message interpretation or support claims. Preserve the attribution and license of any reused recording. Existing VDL2 test-data provenance credits its recording separately.
+
+## User meter references — November 22, 2026
+
+- https://www.reddit.com/r/RTLSDR/comments/1wejcov/rtl_433_fun_silverspring_mesh/ : community report of SilverSpring mesh, attributed by its author to an electric meter. Useful comparison, not independent proof of the user's endpoint or encrypted payload contents. No post images or packet data copied.
+- https://github.com/bemasher/rtlamr : primary ERT/meter reference, already discussed in ROADMAP.md's November 2 ERT entry. README lists SCM, SCM+, IDM, NetIDM, R900 and R900BCD; normal input uses rtl_tcp. Useful independent comparison for compatible meter protocols, not evidence that SilverSpring mesh is an ERT packet. Check HackRF/replay adapter requirements and AGPL-3.0 obligations before any integration/distribution. No new decoder installed or bundled.
