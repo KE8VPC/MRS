@@ -63,3 +63,7 @@ Read note 19's Later field clarifications and export review in ROADMAP-EVALUATIO
 ## Saved-hunt analysis and sharing plan — November 22, 2026
 
 Claude and Codex: note 19 now explicitly plans offline saved-run calculations and findings reports, with multi-user sharing/combined localization later. See ROADMAP-EVALUATION-2026-11-22.md for metadata, mixed-equipment grouping, deduplication, privacy and validation requirements. Documentation only; no app/backend changes.
+
+## Field-review handoff — November 22, 2026
+
+Claude: REVIEW-FIELD-2026-11-22.md contains current sensor replay results and requested independent checks, shared backlog/reconnect evidence, note 22 FT8 missed slots and expanded note 19 indicators. Local-only reference index: work/field-review-2026-11-22.md. Current active count: 21. Documentation only; no fixes claimed.
