@@ -59,3 +59,7 @@ Claude and Codex: read ROADMAP-EVALUATION-2026-11-22.md before milestone work. I
 ## Latest Claude review context — November 22, 2026
 
 Read note 19's Later field clarifications and export review in ROADMAP-EVALUATION-2026-11-22.md. Sleep/wake and missing restart state supersede the unconfirmed GPS-disconnect description. Antenna context, GPX evidence limits and planned KML/KMZ signal styling are documented. Existing notes 1–21 and separate SSTV plans remain intact; no new numbered item or implementation is claimed.
+
+## Saved-hunt analysis and sharing plan — November 22, 2026
+
+Claude and Codex: note 19 now explicitly plans offline saved-run calculations and findings reports, with multi-user sharing/combined localization later. See ROADMAP-EVALUATION-2026-11-22.md for metadata, mixed-equipment grouping, deduplication, privacy and validation requirements. Documentation only; no app/backend changes.

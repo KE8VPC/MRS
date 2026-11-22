@@ -41,6 +41,30 @@ Later research: multi-user hunt upload/download, source attribution, comparison 
 
 Acceptance: disconnect/startup warnings, no-fix recording state, restart/import/resume/deduplication, mixed-setting segmentation, incomplete north/east route and untested south/west visualization, ambiguous arrows and known-source replay tests. Validate qualitative evidence labels before use; numerical confidence requires calibration. Never infer missing measurements.
 
+### Approved plan: saved-hunt analysis and after-collection reports
+
+User requested adding offline/after-collection calculation and reports, with sharing implemented later. First build an Analyze saved hunts workspace inside Fox Hunt, sharing components with Coverage Survey. No GPS, live SDR or network connection should be needed for saved-data analysis. Keep analysis code separable so a standalone viewer can be considered later; a separate application is not the initial commitment.
+
+- Import one or more GPX/CSV runs with schema/units validation, immutable source references, import summary and duplicate-sample detection. Preserve originals; never infer missing RF/GPS measurements.
+- Review frequency/source identity, timestamps, route coverage, GPS quality, gaps, receiver/antenna context and gain/settings changes. Support selection/exclusion of runs or segments with auditable reasons.
+- Keep incompatible receiver/settings groups separate. The two supplied November 22 drives have different recorded gain settings; matching frequency alone does not make levels directly comparable.
+- Provide per-run and compatible combined calculations, heat maps, candidate areas, exploratory estimates, missing sectors and next-collection guidance, retaining note 19's uncertainty rules.
+- Produce an exportable findings report distinguishing measured facts, quality/exclusions, model-derived candidates, unresolved alternatives and suggested follow-up. Record model/version, parameters and input identifiers for reproducibility. Retain GPX/CSV and support the planned signal-coloured KML/KMZ export.
+- Acceptance: offline import of both supplied runs without copying private tracks into source, duplicate re-import, malformed/missing metadata, mixed-gain grouping, reproducible analysis and reports that accurately describe rejection/ambiguity rather than promising a location.
+
+### Later implementation: collaborative hunt sharing and combined localization
+
+Design local interchange for future sharing now; implement remote upload/download later after website/API agreement. Preserve stable contributor/run/sample IDs, source timestamps, frequency/system identity, receiver/antenna/settings, measurement definition/units and quality. Treat unknown metadata explicitly. Verify users monitored the same transmitter; multiple transmitters sharing a channel must not silently become one model.
+
+- Selectively share runs/segments with preview, visibility controls and route/time privacy review. Permit route trimming before upload. No automatic publication or credentials in exported datasets.
+- Import shared runs as traceable datasets; prevent duplicate/re-shared samples from increasing apparent evidence. Keep contributor and original recording lineage through imports/exports.
+- Show individual-group and combined candidate areas, supporting/contradictory tracks, missing coverage and sensitivity to excluding each dataset. More users or samples do not imply calibrated confidence.
+- Allow heterogeneous equipment as separate groups. Research per-group signal-offset estimation only with sufficient supporting overlap/calibration and validation; otherwise retain separate estimates and label incompatibility. Do not normalize raw strengths silently.
+- Combined signal-strength localization is distinct from bearing triangulation. Future directional-bearing inputs need their own units, orientation reference, accuracy and provenance.
+- Acceptance planning: agreeing/conflicting groups, different equipment/gain, duplicate uploads, mismatched source identity, stale/changed transmitters, access control and privacy-preserving previews. Real website/API acceptance remains separate from local fixtures.
+
+These additions extend notes 19/21; the active numbered count remains 20. They are plans, not functionality in roadmap1.
+
 ## 20. Listening squelch/mute independent of decoding
 
 Provide an accessible listening mute/squelch option while reception, P25 control decoding and Fox Hunt signal/GPS logging continue. Keep it independent of RF measurement thresholds, scan triggers and hold rules. Investigate the existing audio-monitor controls before duplicating functionality. Acceptance: silent control-channel monitoring retains decoding/measurement throughput and visible recording status; unmute restores audio without retuning or resetting acquisition.

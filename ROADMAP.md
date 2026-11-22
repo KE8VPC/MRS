@@ -1,5 +1,7 @@
 # Current evaluation roadmap — November 22, 2026
 
+> Saved-hunt analysis plan approved November 22: note 19 now includes offline GPX/CSV analysis and findings reports inside M.R.S.; later multi-user sharing and combined localization are a separate phase. Read the two new subsections in ROADMAP-EVALUATION-2026-11-22.md. No implementation or API changes yet.
+
 > Latest November 22 clarification: note 19's missed route followed laptop sleep/wake, Aviation use and return to Fox Hunt with GPS not started; hardware disconnect is unconfirmed. ROADMAP-EVALUATION-2026-11-22.md now includes recovery acceptance, external roof-mounted VHF/UHF antenna context, read-only GPX findings and planned signal-coloured KML/KMZ export for Google Earth. No implementation changes.
 
 See ROADMAP-EVALUATION-2026-11-22.md for notes 17–21, full Fox Hunt/coverage-survey suggestions and the consolidated numbered inventory. There are 20 active items (notes 1–21 excluding rescinded note 3). Note 16 remains a high-priority public-release requirement; note 17 is a reliability investigation. Notes 11/13 and the Coverage Survey side project remain later research. Existing SSTV and long-term plans below remain separate. No fixes or builds are claimed by this documentation update.
