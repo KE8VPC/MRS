@@ -36,7 +36,7 @@ The user works with both assistants on all items. There is no fixed split. Each 
 
 ## In progress
 
-(none)
+Codex: note 19 overload evidence and authorized private test packaging.
 
 ## Next-build milestone
 
@@ -91,3 +91,7 @@ Three separate signal/GPS/logging cards with saved size choice, typed GPS state 
 ## Note 19 gain, overload and elevated-site plan - November 22, 2026
 
 Claude and Codex: before further Fox Hunt estimator, guidance or gain work, read VALIDATION-FOX-KNOWN-SOURCE-2026-11-22.md (blind tower test: about 1.6 km combined error, ring effect near an elevated antenna, overload near the site) and PLAN-NOTE19-FOX-GAIN-AND-ELEVATED-SITES.md (overload indicator, stepped AGC with measured gain steps used in calculations, elevated-site awareness, evidence weighting, guidance that never points at the peak reading). Planning only; no code changed.
+
+## Note 22 prepared TX symbols — November 22, 2026
+
+Message cache and prepared-tone worker transfer avoid re-encoding during RF handoff; first burst uses four seconds while FT8 repeat capture keeps its 1.3-second handoff. Timing diagnostics added. See VALIDATION-NOTE22-PREPARED-TX.md. Combined test-package suite: 2,310 checks and three UI smokes passed; no RF transmitted in tests.
