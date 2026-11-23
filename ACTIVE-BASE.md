@@ -83,3 +83,7 @@ TuneSaved/LiveTune failures and Broadcast staging now report in shared status, a
 ## Note 17 recovery follow-up — November 22, 2026
 
 After 30 seconds of continuous live I/Q, the next loss receives a fresh reconnect budget; rapid failures still stop after three attempts. Retry exhaustion is visible in shared status. Reduced-rate ADS-B advice now explains the 1.75 MHz rate limit even with HF filter disabled. See VALIDATION-NOTE17-RECOVERY.md; 2274 checks and UI smoke passed. No new public ZIP; hardware acceptance remains open.
+
+## Note 19 glance indicators — November 22, 2026
+
+Three separate signal/GPS/logging cards with saved size choice, typed GPS state and explicit no-fix/stale/not-recording states are in source. Read VALIDATION-NOTE19-INDICATORS.md and Help/fox-hunt.md. 2291 checks and Fox UI smoke passed; synthetic render inspected. Other note 19 features, field acceptance and release packaging remain open.

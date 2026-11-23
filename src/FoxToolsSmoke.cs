@@ -15,6 +15,10 @@ public partial class MainWindow
   if(!foxEstimateStatus.Text.StartsWith("Rough estimate:"))throw new IOException("Synthetic rough area not shown: "+foxEstimateStatus.Text);
   foxStatus.Text="Synthetic route and road detail · no live GPS / RF devices opened";
   foxTrend.Foreground=Brushes.LightGreen;foxTrend.Text="Signal trend: ↑ Stronger · +3.2 dB across recent windows · strength change, not direction or distance";
+  SetFoxIndicator(foxTrendIndicator,FoxIndicators.Trend(new("↑ Stronger","Synthetic +3.2 dB; not a transmitter bearing",3.2),true));
+  SetFoxIndicator(foxGpsIndicator,FoxIndicators.Gps(false,FoxGpsConnection.Connected,new(40,-84,now,"Synthetic GPS"),now));
+  SetFoxIndicator(foxRecordingIndicator,FoxIndicators.Recording(false,true,new(40,-84,now,"Synthetic GPS"),now,1,now));
+  if(!foxTrendIndicator.Text.Contains("STRONGER")||!foxGpsIndicator.Text.Contains("GPS FIX")||!foxRecordingIndicator.Text.Contains("NOT RECORDING"))throw new IOException("Fox glance indicators lost separate signal/GPS/logging states");
   UpdateLayout();await Task.Delay(100);Save("ui-fox-tools.png");
   if(foxEstimateStatus.TransformToAncestor(this).Transform(new Point(0,0)).Y>=foxMap.TransformToAncestor(this).Transform(new Point(0,0)).Y)throw new IOException("Estimate status is hidden below the map");
   if(foxMap.ActualHeight<130)throw new IOException("Fox map is hidden by setup controls");

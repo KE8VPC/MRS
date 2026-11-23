@@ -1,5 +1,7 @@
 # Current evaluation roadmap — November 22, 2026
 
+> Note 19 partial source delivery: large signal-trend, GPS and recording indicators with saved Compact/Large/Extra large size. 2291 local checks and Fox UI smoke passed. See VALIDATION-NOTE19-INDICATORS.md; reconnect/resume/heat maps and field acceptance remain pending. No public ZIP replacement.
+
 > Note 17 follow-up source complete: sustained-I/Q reconnect budget reset, visible retry exhaustion, and corrected reduced-rate/HF-filter advice. See VALIDATION-NOTE17-RECOVERY.md. 2274 local self-checks and UI smoke passed; field acceptance pending, original release unchanged.
 
 > Notes 8/1 source updates: Aviation targets preserved across unrelated receiver changes; Tune refusals and Broadcast staged/not-tuned state now visible in shared status. See VALIDATION-NOTE8-TARGET.md and VALIDATION-NOTE1-TUNING.md. 2,265 local self-checks and UI smoke passed; live acceptance still open. No new release ZIP.

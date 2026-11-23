@@ -57,3 +57,11 @@ Optional public U.S. Census TIGER/Line roads can be prepared as regional WGS84 G
 ## GPX context
 
 GPX exports now retain the relative mean/peak/noise power, sample count, squelch state, receiver/device/gain token/filter/sample-rate/capture/PPM metadata, GPS receive time and available GPS time/quality/speed/course in M.R.S. extensions. The gain token includes backend-specific settings such as the HackRF amplifier state. Generic GPX viewers may ignore these extensions; the companion CSV remains useful. Exports contain private device and location information and are never included in public default datasets.
+
+## At-a-glance status indicators
+
+The three cards above the map separate signal trend, position and logging. Use Status size in the setup area to choose Compact, Large or Extra large; the preference is saved locally. Colour is accompanied by symbols and words. Expand GPS diagnostics or Signal trend details for the underlying information.
+
+Signal trend shows stronger, steady, weaker, collecting, uncertain or paused. It describes strength change, not a measured bearing to the transmitter. Stopping the log shows paused even if recent readings remain. GPS off/connecting/waiting for fix/stale/error are distinct from a fresh GPS fix; receiving NMEA is not enough. Manual position is explicitly labelled. The logging card shows recording only when the log is active, inputs are usable and a recent point was saved. Waiting for RF/squelch, no GPS and no live RF do not show recording green. A fresh fix alone does not start a log.
+
+These indicators do not implement automatic GPS reconnect, sleep/wake resume, audible alerts or saved-run import; those remain separate planned features. Detailed receiver/file errors remain in the session status. Keep interaction to a passenger or while parked.
