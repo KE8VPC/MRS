@@ -87,3 +87,7 @@ After 30 seconds of continuous live I/Q, the next loss receives a fresh reconnec
 ## Note 19 glance indicators — November 22, 2026
 
 Three separate signal/GPS/logging cards with saved size choice, typed GPS state and explicit no-fix/stale/not-recording states are in source. Read VALIDATION-NOTE19-INDICATORS.md and Help/fox-hunt.md. 2291 checks and Fox UI smoke passed; synthetic render inspected. Other note 19 features, field acceptance and release packaging remain open.
+
+## Note 19 gain, overload and elevated-site plan - November 22, 2026
+
+Claude and Codex: before further Fox Hunt estimator, guidance or gain work, read VALIDATION-FOX-KNOWN-SOURCE-2026-11-22.md (blind tower test: about 1.6 km combined error, ring effect near an elevated antenna, overload near the site) and PLAN-NOTE19-FOX-GAIN-AND-ELEVATED-SITES.md (overload indicator, stepped AGC with measured gain steps used in calculations, elevated-site awareness, evidence weighting, guidance that never points at the peak reading). Planning only; no code changed.
