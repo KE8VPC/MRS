@@ -36,7 +36,7 @@ The user works with both assistants on all items. There is no fixed split. Each 
 
 ## In progress
 
-Codex: note 19 overload evidence and authorized private test packaging.
+Codex: authorized preview2-test1 portable test packaging and version metadata.
 
 ## Next-build milestone
 
@@ -95,3 +95,7 @@ Claude and Codex: before further Fox Hunt estimator, guidance or gain work, read
 ## Note 22 prepared TX symbols — November 22, 2026
 
 Message cache and prepared-tone worker transfer avoid re-encoding during RF handoff; first burst uses four seconds while FT8 repeat capture keeps its 1.3-second handoff. Timing diagnostics added. See VALIDATION-NOTE22-PREPARED-TX.md. Combined test-package suite: 2,310 checks and three UI smokes passed; no RF transmitted in tests.
+
+## Note 19 overload awareness — November 22, 2026
+
+ADC input card, near-full-scale/rail evidence, CSV/GPX quality fields, flat/high-input hint and explained estimator exclusion are in source. Legacy evidence remains unknown. See VALIDATION-NOTE19-OVERLOAD.md. Combined test package passed 2,310 self-checks and UI smoke; gain automation, elevated-site modeling and hardware acceptance remain open.

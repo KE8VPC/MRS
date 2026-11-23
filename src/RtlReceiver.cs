@@ -13,6 +13,7 @@ internal sealed class RtlReceiver : IDisposable
     private long lastSpectrum;
     private readonly RfSpectrumAnalyzer spectrumAnalyzer = new();
     internal ReceiverInputLevel? InputLevel;
+    internal volatile bool CaptureInputQuality;
     private long lastInputMeasurement;
     internal volatile int SpectrumSize = 32768;
     private volatile bool stopping;
@@ -261,7 +262,7 @@ internal sealed class RtlReceiver : IDisposable
     private void ProcessBlock(byte[] block, int rate, ReceiveDemodulator dsp, RfSquelch squelch)
     {
         long inputNow=Environment.TickCount64;
-        if(inputNow-lastInputMeasurement>=100){Volatile.Write(ref InputLevel,ReceiverInputLevel.Measure(block,inputNow));lastInputMeasurement=inputNow;}
+        if(CaptureInputQuality||inputNow-lastInputMeasurement>=100){Volatile.Write(ref InputLevel,ReceiverInputLevel.Measure(block,inputNow));lastInputMeasurement=inputNow;}
         // Render at most 30 RF spectra per second; all samples still reach recording and DSP.
         spectrumAnalyzer.Append(block, SpectrumSize);
         if (Environment.TickCount64 - lastSpectrum >= 33) { lastSpectrum = Environment.TickCount64; if (spectrumAnalyzer.Snapshot() is {} spectrum) Spectrum?.Invoke(spectrum); }
