@@ -36,7 +36,7 @@ The user works with both assistants on all items. There is no fixed split. Each 
 
 ## In progress
 
-(none)
+Codex: note 1 tuning feedback — MainWindow.xaml.cs, BroadcastWorkspace.cs, ReceiveModesSmoke.cs and validation notes.
 
 ## Next-build milestone
 
@@ -71,3 +71,7 @@ Claude: REVIEW-FIELD-2026-11-22.md contains current sensor replay results and re
 ## Note 17 shared DSP fix — November 22, 2026
 
 Codex optimized IqDecimator mixing and FmDemodulator FIRs; 2262 self-checks and receive-modes smoke passed. Read VALIDATION-NOTE17-THROUGHPUT.md and review the code commit. AC-power dropout evidence included. Raw queues retain explicit overflow protection. Reconnect budget and reduced-rate advice are not fixed; field acceptance required. No published package changed.
+
+## Note 8 Aviation target isolation — November 22, 2026
+
+Receiver channel changes now reset Aviation acquisition without overwriting its editable/decoder target. Explicit Aviation Tune updates its active target. See VALIDATION-NOTE8-TARGET.md; 2265 self-checks and tuning/receive UI smoke passed. No public package; field acceptance remains open.

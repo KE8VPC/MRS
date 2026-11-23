@@ -37,7 +37,7 @@ public partial class MainWindow
 
         receiver.RawIq+=frame=>Aviation.Feed(frame,new PacketContext($"aviation:{Interlocked.Read(ref session)}",$"Receiver {workspaceSlot} · "+(receiver.IsReplay?"I/Q recording":receiver.ReceiverName),receiver.IsReplay,frame.Channel?.Frequency??frame.Frequency,receiver.IsReplay?receiver.ReplayPosition.TotalSeconds:null));
 
-        receiver.ChannelChanged+=()=>{if(receiver.AppliedChannel is {} c)Aviation.Follow(c.Frequency);};
+        receiver.ChannelChanged+=Aviation.Boundary;
 
         receiver.ReplayGap+=Aviation.Boundary;
 
