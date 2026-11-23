@@ -1,5 +1,7 @@
 # Current evaluation roadmap — November 22, 2026
 
+> Local test-build milestone: 0.54.0-preview2-test1 includes prepared TX symbols/first-slot handoff (note 22), Fox ADC overload evidence/exclusions (note 19), and the earlier buffer/recovery/tuning/indicator fixes. See UPDATE-0.54.0-preview2-test1.md. 2,310 local source checks and three UI smokes passed; field acceptance remains open. Private unsigned testing only, no GitHub publication.
+
 > Note 19 partial source delivery: large signal-trend, GPS and recording indicators with saved Compact/Large/Extra large size. 2291 local checks and Fox UI smoke passed. See VALIDATION-NOTE19-INDICATORS.md; reconnect/resume/heat maps and field acceptance remain pending. No public ZIP replacement.
 
 > Note 17 follow-up source complete: sustained-I/Q reconnect budget reset, visible retry exhaustion, and corrected reduced-rate/HF-filter advice. See VALIDATION-NOTE17-RECOVERY.md. 2274 local self-checks and UI smoke passed; field acceptance pending, original release unchanged.

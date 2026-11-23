@@ -36,7 +36,7 @@ The user works with both assistants on all items. There is no fixed split. Each 
 
 ## In progress
 
-Codex: authorized preview2-test1 portable test packaging and version metadata.
+(none)
 
 ## Next-build milestone
 
@@ -99,3 +99,7 @@ Message cache and prepared-tone worker transfer avoid re-encoding during RF hand
 ## Note 19 overload awareness — November 22, 2026
 
 ADC input card, near-full-scale/rail evidence, CSV/GPX quality fields, flat/high-input hint and explained estimator exclusion are in source. Legacy evidence remains unknown. See VALIDATION-NOTE19-OVERLOAD.md. Combined test package passed 2,310 self-checks and UI smoke; gain automation, elevated-site modeling and hardware acceptance remain open.
+
+## Current development version — 0.54.0-preview2-test1
+
+User authorized a local portable test package after notes 22/19. Includes all earlier receive/tuning/indicator fixes. UPDATE-0.54.0-preview2-test1.md lists scope and acceptance. This is an unsigned private evaluation build; no GitHub upload or signed-public-release exception inferred. Build inputs are committed; packaging/verification follow. User originals and test profiles excluded.
