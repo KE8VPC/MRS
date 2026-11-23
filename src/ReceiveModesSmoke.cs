@@ -11,6 +11,12 @@ public partial class MainWindow
     internal async Task RenderReceiveModesSmoke()
     {
         rfMode=false;
+        await LiveTune(1090000000);
+        if(!RtlStatus.Text.Contains("Tune not applied")||!RtlStatus.Text.Contains("Start an SDR"))
+            throw new InvalidOperationException("Stopped receiver tuning did not explain the required action in shared status.");
+        TuneSaved(new FrequencyItem{Name="Synthetic unsupported mode",Mode="Unsupported",FrequencyHz=1090000000});
+        if(!RtlStatus.Text.Contains("Tune not applied")||!RtlStatus.Text.Contains("not implemented"))
+            throw new InvalidOperationException("Saved-channel validation failure was hidden from shared status.");
         var amateur=(TabControl)AmateurTab.Content;
         var sstv=amateur.Items.OfType<TabItem>().Single(t=>Equals(t.Header,"SSTV"));
         var rtty=amateur.Items.OfType<TabItem>().Single(t=>Equals(t.Header,"RTTY"));

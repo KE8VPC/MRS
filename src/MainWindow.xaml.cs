@@ -217,26 +217,33 @@ public partial class MainWindow : Window
     private void SaveFrequency(object sender, RoutedEventArgs e) { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.AddSignal(null); }
     private async void TuneSaved(FrequencyItem item)
     {
+        void Unavailable(string reason) { RtlStatus.Text = "Tune not applied: " + reason; Log(RtlStatus.Text); }
+        if (!ReceiveDemodulator.Modes.Contains(item.Mode)) { Unavailable($"Mode {item.Mode} is not implemented for '{item.Name}'."); return; }
+        if (receiver.IsReplay) { Unavailable("Replay follows recorded channel settings. Stop replay and start a live receiver."); return; }
+        if (!SelectedCanTune(item.FrequencyHz)) { Unavailable("Saved frequency is outside current receiver coverage."); return; }
+        double width = item.BandwidthHz == 0 ? ChannelSettings.DefaultWidth(item.Mode) : item.BandwidthHz;
+        if (!ChannelSettings.Widths(item.Mode).Contains(width)) { Unavailable("Saved filter width is unsupported for this mode; entry retained."); return; }
         if(trunkRadio.Running||dmrTrunkRadio.Running||lcnSurvey.Running||surveyTuneBusy)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for saved-frequency tuning.");
-        if (!ReceiveDemodulator.Modes.Contains(item.Mode)) { Log($"Cannot tune '{item.Name}': mode {item.Mode} is not implemented."); return; }
-        if (receiver.IsReplay) { Log("Replay follows recorded channel settings; saved entry remains available."); return; }
-        if (!SelectedCanTune(item.FrequencyHz)) { Log("Saved frequency is outside current receiver coverage."); return; }
-        double width = item.BandwidthHz == 0 ? ChannelSettings.DefaultWidth(item.Mode) : item.BandwidthHz;
-        if (!ChannelSettings.Widths(item.Mode).Contains(width)) { Log("Saved filter width is unsupported for this mode; entry retained."); return; }
         updatingControls = true;
         try { FmMode.SelectedIndex = Array.IndexOf(ReceiveDemodulator.Modes, item.Mode); PopulateBandwidth(width); FrequencyBox.Text = (item.FrequencyHz / 1000000m).ToString("F6", CultureInfo.InvariantCulture); }
         finally { updatingControls = false; }
         if (rfMode && receiver.AppliedChannel != null)
         {
             var channel = SelectedChannel(item.FrequencyHz);
-            if (receiver.IsHackRf && receiver.Offset.Enabled)
-            { try { await receiver.Retune(item.FrequencyHz, channel); } catch (Exception ex) { Log(ex.Message); } return; }
-            if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) { receiver.SetChannel(channel); return; }
-            try { await receiver.Retune(item.FrequencyHz, channel); } catch(Exception ex){ Log(ex.Message); } return;
+            long tuningSession = session;
+            try
+            {
+                RtlStatus.Text = $"Tuning to {item.FrequencyHz / 1000000.0:F6} MHz…";
+                if (receiver.IsHackRf && receiver.Offset.Enabled) await receiver.Retune(item.FrequencyHz, channel);
+                else if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) receiver.SetChannel(channel);
+                else await receiver.Retune(item.FrequencyHz, channel);
+            }
+            catch (Exception ex) { if (tuningSession == session) { ReflectChannel(); Unavailable(ex.Message); } }
+            return;
         }
-        if (RtlDevices.SelectedItem is not RtlNative.Device) { Log("Select an SDR receiver before tuning."); return; }
+        if (RtlDevices.SelectedItem is not RtlNative.Device) { Unavailable("Select an SDR receiver before tuning."); return; }
         StartRtl(FrequencyManager, new RoutedEventArgs());
         await Task.CompletedTask;
     }    private void PostReceiverMessage(string message, bool ended)
@@ -319,12 +326,15 @@ public partial class MainWindow : Window
     private int SelectedSampleRate => int.Parse(((ComboBoxItem)SampleRateBox.SelectedItem).Tag.ToString()!, CultureInfo.InvariantCulture);
     private async Task LiveTune(long frequency)
     {
+        void Unavailable(string reason) { RtlStatus.Text = "Tune not applied: " + reason; Log(RtlStatus.Text); }
+        // Validate before interrupting a scanner or trunk assignment.
+        if (receiver.IsReplay) { Unavailable("I/Q replay follows recorded frequencies. Stop replay and start an SDR receiver."); return; }
+        if (!rfMode) { Unavailable("Start an SDR receiver, then press Tune again."); return; }
+        if (receiver.AppliedFrequency == 0) { Unavailable("Receiver is awaiting its first samples. Wait for reception, then press Tune again."); return; }
+        if (!receiver.CanTune(frequency)) { Unavailable("Requested frequency is outside the active receiver/sampling-mode range."); return; }
         if(trunkRadio.Running||dmrTrunkRadio.Running||lcnSurvey.Running||surveyTuneBusy)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for manual tuning.");
-        if (receiver.IsReplay) { Log("I/Q replay follows recorded frequencies; hardware tuning is disabled."); return; }
-        if (!rfMode) { Log("Start an SDR receiver before click-to-tune."); return; }
-        if (!receiver.CanTune(frequency)) { Log("Requested frequency is outside the active sampling mode range."); return; }
         long tuningSession = session;
         try
         {

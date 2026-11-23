@@ -36,7 +36,7 @@ The user works with both assistants on all items. There is no fixed split. Each 
 
 ## In progress
 
-Codex: note 1 tuning feedback — MainWindow.xaml.cs, BroadcastWorkspace.cs, ReceiveModesSmoke.cs and validation notes.
+(none)
 
 ## Next-build milestone
 
@@ -75,3 +75,7 @@ Codex optimized IqDecimator mixing and FmDemodulator FIRs; 2262 self-checks and 
 ## Note 8 Aviation target isolation — November 22, 2026
 
 Receiver channel changes now reset Aviation acquisition without overwriting its editable/decoder target. Explicit Aviation Tune updates its active target. See VALIDATION-NOTE8-TARGET.md; 2265 self-checks and tuning/receive UI smoke passed. No public package; field acceptance remains open.
+
+## Note 1 tuning feedback — November 22, 2026
+
+TuneSaved/LiveTune failures and Broadcast staging now report in shared status, and validation precedes scanner interruption. See VALIDATION-NOTE1-TUNING.md; 2,265 self-checks and receive/tuning UI smoke passed. This is an error-path/usability fix, not full field acceptance of every reported Tune failure. No new public package.

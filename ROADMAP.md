@@ -1,5 +1,7 @@
 # Current evaluation roadmap — November 22, 2026
 
+> Notes 8/1 source updates: Aviation targets preserved across unrelated receiver changes; Tune refusals and Broadcast staged/not-tuned state now visible in shared status. See VALIDATION-NOTE8-TARGET.md and VALIDATION-NOTE1-TUNING.md. 2,265 local self-checks and UI smoke passed; live acceptance still open. No new release ZIP.
+
 > Note 17 source update: shared receive DSP optimized to reduce HackRF backlog pressure; see VALIDATION-NOTE17-THROUGHPUT.md for measurements and acceptance limits. User also reproduced dropouts on AC. Hardware acceptance, reconnect-budget policy and reduced-rate setup advice remain open; no release ZIP replacement.
 
 > Field-review update: read REVIEW-FIELD-2026-11-22.md for sensor I/Q reference tests, explicit multi-protocol HackRF backlog failures, CW success at 2.4 MS/s, note 22 FT8 missed slots/preparation, and note 19 at-a-glance indicators. Current inventory is 21 active notes (1–22 excluding 3). Local recording/script index: work/field-review-2026-11-22.md; keep raw data out of source/releases.
