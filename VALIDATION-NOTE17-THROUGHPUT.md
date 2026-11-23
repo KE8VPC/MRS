@@ -33,3 +33,5 @@ Reconnect retry-budget reset after healthy reception and the misleading 2.4 MS/s
 Framework-dependent validation initially launched via dotnet reached the HF worker-fixture check and failed to acknowledge its child worker. That invocation does not preserve the standalone worker executable entry point. Final validation uses the self-contained apphost, matching portable operation; do not misreport the initial failure as a passed full suite.
 
 Final self-contained validation: 2262 self-checks passed (including 10 new DSP reference/continuity checks); receive-modes UI smoke passed. Release build completed with zero warnings/errors. Evidence: work/buffer-fix-portable-check/self-test.txt and receive-modes-ui.txt. No hardware operated.
+
+Follow-up: reconnect healthy-run budget and reduced-rate diagnostic source changes are now covered by VALIDATION-NOTE17-RECOVERY.md. This supersedes the earlier pending-source statement above; field acceptance remains open.

@@ -14,6 +14,7 @@ public static class SelfTests
         var lines = new List<string>();
         void Check(bool condition, string name) { if (!condition) throw new InvalidOperationException("FAIL: " + name); lines.Add("PASS: " + name); }
         Task.Run(()=>OfflineDetailSelectionTests.Run(Check)).GetAwaiter().GetResult();WebsiteSyncTests.Run(Check);FrequencyOrganizationTests.Run(Check);LcnSurveyTests.Run(Check);Update048Tests.Run(Check);DiscoverySharingTests.Run(Check);DmrFollowingTests.Run(Check);FoxAnalysisTests.Run(Check);Task.Run(()=>TrunkAudioTests.Run(Check)).GetAwaiter().GetResult();TrunkHistoryTests.Run(Check);FoxHuntTests.Run(Check);Update044Tests.Run(Check);Update043Tests.Run(Check);Update042Tests.Run(Check);WeakTimingTests.Run(Check);Update041Tests.Run(Check);Update040Tests.Run(Check);Update039Tests.Run(Check);Update038Tests.Run(Check);Update037Tests.Run(Check);Update036Tests.Run(Check);SensorTests.Run(Check);
+        RecoveryHealthTests.Run(Check);
         AviationTuneTargetTests.Run(Check);
         ReceiveThroughputTests.Run(Check);
         ReceiverRefinementTests.Run(Check);

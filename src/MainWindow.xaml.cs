@@ -50,7 +50,7 @@ public partial class MainWindow : Window
         if (diagnostic) dataFolder = diagnosticRoot ?? Path.Combine(AppContext.BaseDirectory, "smoke-profile", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dataFolder);Aviation.ConfigureOfflineDetail(dataFolder);
         InitializeFilePlans();InitializeTrunkFollowing();InitializeDmrTrunkFollowing();WorkspaceTabs.SelectionChanged+=(_,_)=>{if(WorkspaceTabs.SelectedItem==P25Workspace)visibleDmrFlow=false;else if(WorkspaceTabs.SelectedItem==ProfessionalTab)visibleDmrFlow=true;};InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeLcnResearch();InitializeLcnSurvey();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();InitializeAdditionalReceive();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
-        receiver.RawIq+=_=>{if(!receiver.IsReplay)Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());};
+        receiver.RawIq+=_=>{if(!receiver.IsReplay){Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());recoveryHealth.Observe(Environment.TickCount64);}};
         PagingPackets.InitializePagingRules(Path.Combine(dataFolder,"paging-rules.json"));
         P25Systems.Initialize(Path.Combine(dataFolder,"p25-discoveries.json"));
         P25Activity.Initialize(Path.Combine(dataFolder,"p25-activity-labels.json"));

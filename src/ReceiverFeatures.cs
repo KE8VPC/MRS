@@ -9,11 +9,13 @@ public partial class MainWindow
     private sealed record RecoveryPlan(string Identity, long Frequency, int Rate, int Gain, bool Wide, string Mode = "NFM", double Bandwidth = 0, bool Agc = true, int SamplingMode = 0, string Backend = "RTL", CaptureOffset? Offset = null, double Ppm = 0);
     private RecoveryPlan? recoveryPlan;
     private int recoveryAttempts;
+    private readonly ReceiverRecovery.Health recoveryHealth = new();
     private CancellationTokenSource? recoveryCancellation;
     private void CancelRecovery()
     {
         recoveryCancellation?.Cancel(); recoveryCancellation?.Dispose(); recoveryCancellation = null;
         recoveryPlan = null;
+        recoveryHealth.Reset();
     }
     private void ReconnectChanged(object sender, RoutedEventArgs e)
     {
@@ -25,11 +27,12 @@ public partial class MainWindow
     }
     private async void HandleReceiverEnd(string message)
     {
-        var plan = recoveryPlan; int usedAttempts = recoveryAttempts;
+        var plan = recoveryPlan; int usedAttempts = recoveryHealth.Sustained ? 0 : recoveryAttempts;
+        if (usedAttempts == 0 && recoveryAttempts > 0) Log("Reconnect budget reset after at least 30 seconds of continuous I/Q reception.");
         bool retry = !receiver.IsReplay && AutoReconnectCheck.IsChecked == true && plan != null;
         Stop(); RtlStatus.Text = message; Log(message);
         if (!retry || plan == null || closing) return;
-        if (usedAttempts >= 3) { Log("Reconnect limit reached. Use Find and Start to begin a new session."); return; }
+        if (usedAttempts >= 3) { RtlStatus.Text = "Reconnect limit reached. Use Find and Start to begin a new session."; Log(RtlStatus.Text); return; }
         recoveryCancellation = new CancellationTokenSource(); var token = recoveryCancellation.Token;
         try
         {

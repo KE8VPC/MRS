@@ -79,3 +79,7 @@ Receiver channel changes now reset Aviation acquisition without overwriting its 
 ## Note 1 tuning feedback — November 22, 2026
 
 TuneSaved/LiveTune failures and Broadcast staging now report in shared status, and validation precedes scanner interruption. See VALIDATION-NOTE1-TUNING.md; 2,265 self-checks and receive/tuning UI smoke passed. This is an error-path/usability fix, not full field acceptance of every reported Tune failure. No new public package.
+
+## Note 17 recovery follow-up — November 22, 2026
+
+After 30 seconds of continuous live I/Q, the next loss receives a fresh reconnect budget; rapid failures still stop after three attempts. Retry exhaustion is visible in shared status. Reduced-rate ADS-B advice now explains the 1.75 MHz rate limit even with HF filter disabled. See VALIDATION-NOTE17-RECOVERY.md; 2274 checks and UI smoke passed. No new public ZIP; hardware acceptance remains open.
