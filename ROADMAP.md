@@ -1,5 +1,7 @@
 # Current evaluation roadmap — November 26, 2026
 
+> Portable test2 is built and verified: 0.54.0-preview2-test2 adds notes 23/24 to test1; HOT/EOT carries forward. See CLAUDE-BUILD-HANDOFF-0.54.0-preview2-test2.md for artifact, checks and remaining work. Private unsigned evaluation; no public release. Sensor inspector/burst export and shared saved maps remain planned.
+
 > Note 23: custom receive frequencies. ADS-B/UAT allocation locks removed in source; normal frequencies remain presets, and receiver setup preserves an explicit custom target. Capture compatibility checks remain. See VALIDATION-NOTE23-CUSTOM-RECEIVE.md for validation and Claude handoff. No new release ZIP.
 
 > Local test-build milestone: 0.54.0-preview2-test1 includes prepared TX symbols/first-slot handoff (note 22), Fox ADC overload evidence/exclusions (note 19), and the earlier buffer/recovery/tuning/indicator fixes. See UPDATE-0.54.0-preview2-test1.md. 2,310 local source checks and three UI smokes passed; field acceptance remains open. Private unsigned testing only, no GitHub publication.

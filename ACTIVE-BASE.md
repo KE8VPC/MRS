@@ -123,3 +123,7 @@ Codex added Tune receiver in Analysis > Meshtastic / MeshCore using the shared L
 ## Portable test2 preparation — November 26, 2026
 
 User authorized next portable test update. Version/header now 0.54.0-preview2-test2, notes 23/24 plus carried-forward HOT/EOT. Read UPDATE-0.54.0-preview2-test2.md. Packaging verification follows from committed inputs; no public publication.
+
+## Test2 portable verification complete — November 26, 2026
+
+Read CLAUDE-BUILD-HANDOFF-0.54.0-preview2-test2.md. ZIP built from 4c16019; 2,317 checks, 17 aviation cases, four sensor controls, full/radio-data UI smokes and 54 extracted receive checks passed. CRC/executable/support-file hashes verified. Private unsigned testing only; no public upload. Notes 23/24 included, sensor inspector/export and offline-map manager still planned.
