@@ -115,3 +115,7 @@ Codex removed ADS-B/UAT exact-frequency locks and preserved custom targets in re
 ## Note 9 shared offline-map roadmap — November 26, 2026
 
 Claude: read the Note 9 expansion in ROADMAP.md and CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md. User requested Aviation Save area for offline use as the starting point, shared saved regions across Aviation/Fox Hunt/future Coverage Survey, region management and provider-permitted downloads. Planning only; no application changes or map downloads.
+
+## Note 24 mesh tuning — November 26, 2026
+
+Codex added Tune receiver in Analysis > Meshtastic / MeshCore using the shared LiveTune action and entered MHz. Read note 24 at the end of ROADMAP.md and the Claude next-build handoff. Release compile passed with zero warnings/errors; whitespace check passed. Live receiver acceptance remains open. No portable ZIP or publication.

@@ -101,3 +101,11 @@ The current viewed-tile cache is a starting point, not an existing save/export f
 Acceptance: save a named permitted-source area; restart with the network disabled; render its saved detail in both Aviation and Fox Hunt; verify coverage/detail boundaries, interrupted-download recovery, shared storage, update/removal and import/export where supported. Test overlays remain usable and no aircraft, GPS tracks or observations are uploaded by saving map detail.
 
 Planning only. This expands existing note 9 rather than creating a duplicate item. No implementation, map downloads, build or release is authorized by this roadmap edit.
+
+## Note 24 — Meshtastic / MeshCore Tune receiver (November 26, 2026)
+
+User requested direct tuning from the mesh workspace. Source now adds Tune receiver beside the mesh controls in Analysis > Meshtastic / MeshCore; it parses the existing MHz field and invokes shared LiveTune. Applies to Meshtastic, MeshCore and Generic LoRa. Existing stopped/replay/range feedback remains in shared receiver status. Does not start decoding or alter SF/BW/CR/sync. Invalid MHz uses the existing control error handler. MeshCore still requires the user's local network frequency.
+
+Claude review: inspect src/RadioDataControls.cs and Help/mesh-sdr.md. Field acceptance: start a receiver, enter a supported frequency for each profile, click Tune receiver and confirm actual tuning; verify parameters stay intact, invalid input is explained, and stopped/replay states do not silently retune. No live RF test or new portable release is claimed.
+
+Validation: Release compile succeeded with zero warnings/errors; git whitespace check passed. No live receiver test performed.
