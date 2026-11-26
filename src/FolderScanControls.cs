@@ -22,6 +22,7 @@ public partial class MainWindow
     }
     private void StartFolderScan(FrequencyItem folder,FrequencyItem[] entries)
     {
+        StopLcnSurvey("Folder scan started; discovery progress retained");
         StopTrunk(false);
         if(folderBusy){Log("Wait for the current tuning command to finish.");return;}
         try

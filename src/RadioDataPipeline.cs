@@ -9,6 +9,38 @@ internal sealed class RadioDataPipeline:IDisposable
  private sealed record WeakJob(PacketContext Context,long Slot,double Correction,long Epoch);
  private sealed class Session(PacketContext context){internal readonly PacketContext Context=context;internal readonly CancellationTokenSource Cancel=new();internal readonly Channel<byte[]> Input=Channel.CreateBounded<byte[]>(64);internal Task Work=Task.CompletedTask;internal PacketContext Latest=context;internal readonly Dictionary<int,WeakJob> Jobs=[];internal int Job;internal bool Failed;}
  private readonly object gate=new();private Session? active;private string mode="",state="Off";private bool disposed;private long drops,decoded;private readonly Queue<PacketObservation> results=[];private double timeOffset,requestedOffset;private long timingEpoch;private string timingEvent="";internal event Action? ClockJump;private readonly float[] ring=new float[257];private readonly double[] taps=Filter();private int cursor,phase;private long slot=-1;private readonly List<float> window=[];private PacketContext? windowContext;private int windowJob;private double sampleTime;private bool hasTime;
+ private long? ft8ReplySlot;
+ private long submittedEarlySlot=-1;
+ private double ft8ReplyOffset;
+ private readonly float[] plotSamples=new float[SignalMath.FftSize];
+ private int plotCount,plotBlocks;
+ private bool plotEnabled;
+ private float[]? plotSpectrum;
+
+ internal void SetFt8ReplySlot(long? value,double offset=0)
+ {
+  lock(gate){ft8ReplySlot=value;ft8ReplyOffset=offset;}
+ }
+
+ internal void EnableAudioPlot(bool enabled)
+ {
+  lock(gate){plotEnabled=enabled;plotCount=plotBlocks=0;plotSpectrum=null;}
+ }
+
+ internal float[]? TakeAudioSpectrum()
+ {
+  lock(gate){var spectrum=plotSpectrum;plotSpectrum=null;return spectrum;}
+ }
+
+ private void CapturePlotSample(float sample)
+ {
+  plotSamples[plotCount++]=sample;
+  if(plotCount!=plotSamples.Length)return;
+  plotCount=0;
+  if(++plotBlocks<3)return;
+  plotBlocks=0;
+  plotSpectrum=SignalMath.Spectrum(plotSamples);
+ }
  internal readonly record struct Cycle(string Source,string Mode,long Slot,long Epoch);
  private readonly Queue<Cycle> completedCycles=[];
  internal Cycle[] DrainCycles(){lock(gate){var result=completedCycles.ToArray();completedCycles.Clear();return result;}}
@@ -16,12 +48,12 @@ internal sealed class RadioDataPipeline:IDisposable
  internal bool Enabled{get{lock(gate)return mode.Length>0;}}internal string Status{get{lock(gate)return state+(timingEvent.Length>0?" · "+timingEvent:"")+$" · decoded {decoded} · dropped {drops}";}}
  internal void Configure(string value,double offset=0){lock(gate){ResetCore();mode=value;timeOffset=requestedOffset=offset;state=value.Length==0?"Off":"Waiting for a source";}}
  internal void Reset(){lock(gate){ResetCore();state=mode.Length>0?"Source changed — waiting for fresh samples":"Off";}}
- private void ResetCore(){timingEpoch++;timingEvent="";active?.Input.Writer.TryComplete();active?.Cancel.Cancel();active=null;window.Clear();slot=-1;cursor=phase=0;Array.Clear(ring);windowContext=null;windowJob=0;hasTime=false;}
+ private void ResetCore(){timingEpoch++;timingEvent="";active?.Input.Writer.TryComplete();active?.Cancel.Cancel();active=null;window.Clear();slot=-1;cursor=phase=0;Array.Clear(ring);windowContext=null;windowJob=0;hasTime=false;submittedEarlySlot=-1;plotCount=plotBlocks=0;plotSpectrum=null;}
  internal void SetTimeOffset(double value){if(!double.IsFinite(value)||Math.Abs(value)>86410)throw new ArgumentOutOfRangeException(nameof(value));lock(gate){if(Math.Abs(requestedOffset-value)>.005)timingEpoch++;requestedOffset=value;}}
  internal long TimingEpoch{get{lock(gate)return timingEpoch;}}
  internal double AppliedOffset{get{lock(gate)return timeOffset;}}
- internal void Complete(){lock(gate){if(active is { } s){if(mode is "FT8" or "FT4" or "WSPR"){int size=mode=="FT4"?90000:mode=="WSPR"?1440000:180000,pad=mode=="WSPR"?0:12000;if(slot>=0&&windowContext!=null&&window.Count>=size+pad-100){while(window.Count<size+2*pad)window.Add(0);SubmitWindow(s,size+2*pad);window.Clear();state="Source ended — final window queued";}}s.Input.Writer.TryComplete();}}}
- private void SubmitWindow(Session s,int count){byte[] frame=new byte[4+count*4];BitConverter.GetBytes(count).CopyTo(frame,0);Buffer.BlockCopy(window.ToArray(),0,frame,4,count*4);if(Queue(s,frame))s.Jobs[windowJob++]=new(windowContext!,slot,timeOffset,timingEpoch);}
+ internal void Complete(){lock(gate){if(active is { } s){if(mode is "FT8" or "FT4" or "WSPR"){int size=mode=="FT4"?90000:mode=="WSPR"?1440000:180000,pad=mode=="WSPR"?0:12000;if(slot>=0&&slot!=submittedEarlySlot&&windowContext!=null&&window.Count>=size+pad-100){while(window.Count<size+2*pad)window.Add(0);SubmitWindow(s,size+2*pad);window.Clear();state="Source ended — final window queued";}}s.Input.Writer.TryComplete();}}}
+ private void SubmitWindow(Session s,int count){byte[] frame=new byte[4+count*4];BitConverter.GetBytes(count).CopyTo(frame,0);Buffer.BlockCopy(window.ToArray(),0,frame,4,Math.Min(window.Count,count)*4);if(Queue(s,frame))s.Jobs[windowJob++]=new(windowContext!,slot,timeOffset,timingEpoch);}
  private static double[] Filter(){var h=new double[257];double sum=0;for(int i=0;i<h.Length;i++){double x=i-128;h[i]=(x==0?2*4500.0/48000:Math.Sin(2*Math.PI*4500*x/48000)/(Math.PI*x))*(.54-.46*Math.Cos(2*Math.PI*i/256));sum+=h[i];}for(int i=0;i<h.Length;i++)h[i]/=sum;return h;}
  internal void FeedPcm(ReadOnlySpan<byte> pcm,int channels,PacketContext context,double utcSeconds,bool trackClock=false){if(channels is not (1 or 2))return;var values=new double[pcm.Length/(2*channels)];for(int i=0;i<values.Length;i++){int at=i*channels*2;double v=System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(pcm.Slice(at,2));if(channels==2)v=(v+System.Buffers.Binary.BinaryPrimitives.ReadInt16LittleEndian(pcm.Slice(at+2,2)))/2;values[i]=v;}Feed(values,context,utcSeconds,trackClock);}
  internal void Feed(double[] samples,PacketContext context,double startSeconds,bool trackClock=false)
@@ -29,15 +61,32 @@ internal sealed class RadioDataPipeline:IDisposable
   lock(gate){if(disposed||mode.Length==0)return;if(active==null||active.Context.Key!=context.Key){ResetCore();var s=new Session(context);active=s;string selected=mode;s.Work=Task.Run(()=>Run(s,selected));}var session=active;if(session.Failed)return;session.Latest=context;
    if(mode is "Signaling" or "SAME" or "DTMF" or "ANI"){byte[] data=new byte[samples.Length*2];for(int i=0;i<samples.Length;i++)System.Buffers.Binary.BinaryPrimitives.WriteInt16LittleEndian(data.AsSpan(i*2,2),(short)Math.Clamp(double.IsFinite(samples[i])?samples[i]:0,short.MinValue,short.MaxValue));Queue(session,data);return;}
    int size=mode=="FT4"?90000:mode=="WSPR"?1440000:180000,pad=mode=="WSPR"?0:12000;double period=size/12000.0;
-   if(Math.Abs(requestedOffset-timeOffset)>.005){timeOffset=requestedOffset;timingEpoch++;timingEvent="Timing correction applied; partial window discarded";window.Clear();slot=-1;windowContext=null;state="Timing correction changed — reacquiring a complete window";}
+   long? earlySlot=mode=="FT8"&&!context.Replay?ft8ReplySlot:null;
+   bool capturePlot=plotEnabled&&!context.Replay&&(mode is "FT8" or "FT4");
+   double activeOffset=earlySlot!=null?ft8ReplyOffset:requestedOffset;
+   if(Math.Abs(activeOffset-timeOffset)>.005){timeOffset=activeOffset;timingEpoch++;timingEvent="Timing correction applied; partial window discarded";window.Clear();slot=-1;windowContext=null;state="Timing correction changed — reacquiring a complete window";}
    if(!hasTime){sampleTime=startSeconds;hasTime=true;}
    else if(trackClock){double error=startSeconds-sampleTime;if(Math.Abs(error)>.5){sampleTime=startSeconds;timingEpoch++;timingEvent="Clock/source discontinuity; reacquisition";ClockJump?.Invoke();window.Clear();slot=-1;windowContext=null;drops++;state="Clock/source discontinuity — reacquiring";}else sampleTime+=Math.Clamp(error*.01,-.001,.001);}
    for(int i=0;i<samples.Length;i++){ring[cursor]=(float)((double.IsFinite(samples[i])?samples[i]:0)/32768.0);if(++phase==4){phase=0;double t=sampleTime+i/48000.0+timeOffset;
-    if(slot<0){long now=(long)Math.Floor(t/period);slot=t-now*period<.05?now:now+1;windowContext=context;}
+    if(slot<0){long now=(long)Math.Floor(t/period);double lateStart=earlySlot==now?.35:.05;slot=t-now*period<lateStart?now:now+1;windowContext=context;}
     double begin=slot*period-pad/12000.0;
-    if(t>=begin){if(window.Count==0){int missing=(int)Math.Round((t-begin)*12000);for(int k=0;k<Math.Min(pad,missing);k++)window.Add(0);}
-     double value=0;int at=cursor;for(int n=0;n<taps.Length;n++){value+=ring[at]*taps[n];if(--at<0)at=256;}window.Add((float)value);
-     if(window.Count>=size+2*pad){SubmitWindow(session,size+2*pad);window.RemoveRange(0,size);slot++;windowContext=context;if(Math.Abs(t-(slot*period+pad/12000.0))>.05){timingEvent="Stream clock drift; reacquisition";window.Clear();slot=-1;windowContext=null;state="Stream clock drift — reacquiring a complete window";}else state=$"{mode} decoding completed window";}
+    bool collect=t>=begin;
+    double value=0;
+    if(collect||capturePlot){
+     int at=cursor;
+     for(int n=0;n<taps.Length;n++){value+=ring[at]*taps[n];if(--at<0)at=256;}
+    }
+    if(capturePlot)CapturePlotSample((float)value);
+    if(collect){
+     if(window.Count==0){int missing=(int)Math.Round((t-begin)*12000);for(int k=0;k<Math.Min(earlySlot==slot?pad+4200:pad,missing);k++)window.Add(0);}
+     window.Add((float)value);
+     // During a scheduled FT8 exchange, decode the captured reply before the
+     // USB handoff. Keep its normal overlap samples for the next RX window.
+     if(earlySlot==slot&&submittedEarlySlot!=slot&&window.Count>=pad+(int)(WeakTxPlan.Ft8ReplyCaptureSeconds*12000)){
+      SubmitWindow(session,size+2*pad);
+      submittedEarlySlot=slot;
+     }
+     if(window.Count>=size+2*pad){if(submittedEarlySlot!=slot)SubmitWindow(session,size+2*pad);window.RemoveRange(0,size);slot++;windowContext=context;if(Math.Abs(t-(slot*period+pad/12000.0))>.05){timingEvent="Stream clock drift; reacquisition";window.Clear();slot=-1;windowContext=null;state="Stream clock drift — reacquiring a complete window";}else state=$"{mode} decoding completed window";}
      else state=$"{mode} collecting {Math.Max(0,(window.Count-pad)/12000.0):0.0}/{period:0.0} s + margin";
     }
    }if(++cursor==257)cursor=0;}sampleTime+=samples.Length/48000.0;

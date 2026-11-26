@@ -1,9 +1,52 @@
 using System.IO;
 namespace MRS;
-internal sealed record SiteChannelData(string Protocol,string[] Folders,string Scope,long Hz,string Channel,string Role,string Identifiers,long? Uplink=null,string Evidence="Observed",DateTimeOffset? Seen=null)
+internal sealed record SiteChannelData(string Protocol,string[] Folders,string Scope,long Hz,string Channel,string Role,string Identifiers,long? Uplink=null,string Evidence="Observed",DateTimeOffset? Seen=null,DateTimeOffset? ReceivedOnFrequencyUtc=null)
 {
  internal string Key=>Scope+":"+Hz;
- internal static SiteChannelData? FromP25(P25Discovery d){var p=d.Observation;if(p.Replay||!p.IsValidated||d.Category=="Band plan"||d.FrequencyHz is not long hz||p.P25Identity is not {} id)return null;var target=p.P25SiteAnnouncement;int? sys=target?.SystemId??id.SystemId;int? rfss=target?.RfssId??id.RfssId,site=target?.SiteId??id.SiteId;int? wacn=target?.SystemId is int other&&other!=id.SystemId?null:id.Wacn;bool full=wacn.HasValue&&sys.HasValue&&rfss.HasValue&&site.HasValue;string system=full?$"{wacn:X5}-{sys:X3}":$"Provisional system {sys:X3} via NAC {id.Nac:X3} at {p.FrequencyHz/1e6:F6}";string siteName=site.HasValue?$"RFSS {rfss} - Site {site}":"Unresolved site";string scope=$"P25:{system}:{rfss}:{site}";var channel=target?.Channels.FirstOrDefault(c=>c.Channel.DownlinkHz==hz)?.Channel??p.P25Assignments?.FirstOrDefault(a=>a.Channel.DownlinkHz==hz)?.Channel??p.P25Channel;string ch=channel==null?"":$"{channel.Identifier:00}-{channel.ChannelNumber:0000}";string identity=$"WACN {wacn:X5}; System {sys:X3}; RFSS {rfss}; Site {site}"+(target==null?$"; NAC {id.Nac:X3}":"; target NAC not supplied; advertised target");return new("P25",["P25",system,siteName],scope,hz,ch,d.Category,identity,channel?.UplinkHz,full?(target==null?"Observed":"Advertised; not directly monitored"):"Provisional identity",d.LastSeen);}
- internal static SiteChannelData? FromDmr(DmrReception r){if(r.Context.Replay||r.Context.FrequencyHz is not long hz||DiscoveryVisibility.Unverified(r.Fields))return null;var f=r.Fields;bool full=f.Network.HasValue&&f.Site.HasValue;string variant=f.SystemType=="DMR (type unknown)"||f.SystemType==f.Protocol?"Unidentified system":f.SystemType;string network=f.Network is int n?$"Network {n}":$"Unassigned at {hz/1e6:F6}";string site=f.Site is int s?$"Site {s}":"Unresolved site";return new(f.Protocol,[f.Protocol,variant,network,site],$"{f.Protocol}:{variant}:{network}:{site}",hz,"","Observed carrier",$"{variant}; Network {f.Network}; Site {f.Site}"+(f.Protocol=="DMR"?$"; CC {f.ColorCode}":$"; Area {f.Area}; Home {f.Home}"),null,full?"Observed":"Provisional identity",r.Seen);}
- internal FrequencyItem Draft(string? name=null,string notes=""){var draft=new FrequencyItem{Name=string.IsNullOrWhiteSpace(name)?(Channel.Length>0?"Channel "+Channel:Role):name,FrequencyHz=Hz,Mode="NFM",BandwidthHz=12500,Protocols=Protocol,SiteScope=Scope,ChannelLastSeen=Seen,ChannelRoles=Role,ChannelIds=Channel,UplinkHz=Uplink,Signaling=Identifiers,EvidenceStatus=Evidence,Tags="Site channel discovery",Notes=notes+"\n"+Role+"; "+Evidence+"; last observed "+Seen?.ToString("O")};return draft with{Name=DiscoveryNames.Label(draft)};}
+ internal void QueueForSave(Dictionary<string,SiteChannelData> queue)
+ {
+  // A weak DMR result at the same scope and carrier must not replace a
+  // stronger result, or a competing identity, while an editor defers writes.
+  string key=Protocol=="DMR"?Key+":"+SyncJson.Hash(Identifiers)[..16]:Key;
+  if(queue.TryGetValue(key,out var previous))
+  {
+   if(Protocol=="DMR"&&
+      (!FrequencyLibrary.DmrProvisional(previous.Evidence)&&FrequencyLibrary.DmrProvisional(Evidence)||
+       previous.Evidence==Evidence&&previous.Seen>Seen))return;
+   if(previous.ReceivedOnFrequencyUtc is {} received&&
+      (ReceivedOnFrequencyUtc is not {} current||received>current)&&
+      FrequencyLibrary.CompatibleIdentity(previous.Draft(),this))
+   {
+    queue[key]=this with{ReceivedOnFrequencyUtc=received};
+    return;
+   }
+  }
+  else if(queue.Count>=2000)return;
+  queue[key]=this;
+ }
+ internal static SiteChannelData? FromP25(P25Discovery d)
+ {
+  var p=d.Observation;
+  if(p.Replay||!p.IsValidated||d.Category=="Band plan"||d.FrequencyHz is not long hz||p.P25Identity is not {} id)return null;
+  var target=p.P25SiteAnnouncement;
+  int? sys=target?.SystemId??id.SystemId;
+  int? rfss=target?.RfssId??id.RfssId,site=target?.SiteId??id.SiteId;
+  int? wacn=target?.SystemId is int other&&other!=id.SystemId?null:id.Wacn;
+  bool full=wacn.HasValue&&sys.HasValue&&rfss.HasValue&&site.HasValue;
+  string system=full?$"{wacn:X5}-{sys:X3}":$"Provisional system {sys:X3} via NAC {id.Nac:X3} at {p.FrequencyHz/1e6:F6}";
+  string siteName=site.HasValue?$"RFSS {rfss} - Site {site}":"Unresolved site";
+  string scope=$"P25:{system}:{rfss}:{site}";
+  var channel=target?.Channels.FirstOrDefault(c=>c.Channel.DownlinkHz==hz)?.Channel??
+   p.P25Assignments?.FirstOrDefault(a=>a.Channel.DownlinkHz==hz)?.Channel??p.P25Channel;
+  string ch=channel==null?"":$"{channel.Identifier:00}-{channel.ChannelNumber:0000}";
+  bool receivedOnCarrier=target==null&&p.FrequencyHz==hz;
+  string identity=$"WACN {wacn:X5}; System {sys:X3}; RFSS {rfss}; Site {site}"+
+   (target==null?$"; NAC {id.Nac:X3}":"; target NAC not supplied")+
+   (receivedOnCarrier?"":"; advertised target");
+  string evidence=full?(receivedOnCarrier?"Observed":"Advertised; not directly monitored"):"Provisional identity";
+  return new("P25",["P25",system,siteName],scope,hz,ch,d.Category,identity,channel?.UplinkHz,evidence,d.LastSeen,
+   receivedOnCarrier?p.ObservedUtc:null);
+ }
+ internal static SiteChannelData? FromDmr(DmrReception r){if(r.Context.Replay||r.Context.FrequencyHz is not long hz||DiscoveryVisibility.Unverified(r.Fields))return null;var f=r.Fields;bool full=f.Network.HasValue&&f.Site.HasValue;string variant=f.SystemType=="DMR (type unknown)"||f.SystemType==f.Protocol?"Unidentified system":f.SystemType;string network=f.Network is int n?$"Network {n}":$"Unassigned at {hz/1e6:F6}";string site=f.Site is int s?$"Site {s}":"Unresolved site";return new(f.Protocol,[f.Protocol,variant,network,site],$"{f.Protocol}:{variant}:{network}:{site}",hz,"",LcnSurvey.Role(f) is {Length:>0} role?role:"Observed carrier",$"{variant}; Network {f.Network}; Site {f.Site}"+(f.Protocol=="DMR"?$"; CC {f.ColorCode}":$"; Area {f.Area}; Home {f.Home}; Group {f.LtrGroup}; Routing channel {f.Channel}; Free channel {f.FreeChannel}"),null,full?"Observed":"Provisional identity",r.Seen,r.Seen);}
+ internal FrequencyItem Draft(string? name=null,string notes=""){var draft=new FrequencyItem{Name=string.IsNullOrWhiteSpace(name)?(Channel.Length>0?"Channel "+Channel:Role):name,FrequencyHz=Hz,Mode="NFM",BandwidthHz=12500,Protocols=Protocol,SiteScope=Scope,ChannelLastSeen=Seen,LastReceivedOnFrequencyUtc=ReceivedOnFrequencyUtc,ChannelRoles=Role,ChannelIds=Channel,UplinkHz=Uplink,Signaling=Identifiers,EvidenceStatus=Evidence,Tags="Site channel discovery",Notes=notes+"\n"+Role+"; "+Evidence+"; last observed "+Seen?.ToString("O")};return draft with{Name=DiscoveryNames.Label(draft)};}
 }

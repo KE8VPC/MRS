@@ -7,6 +7,52 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        if(e.Args.Any(argument=>argument.EndsWith("-smoke",StringComparison.Ordinal)))
+            ShutdownMode=ShutdownMode.OnExplicitShutdown;
+        if(e.Args.Length==2&&e.Args[0]=="--sstv-wav-check")
+        {
+            try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-wav-check.txt"),SstvTests.CheckWav(e.Args[1]));Shutdown(0);}
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-wav-check.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--sstv-test"))
+        {
+            try
+            {
+                var lines=new List<string>();
+                SstvTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);});
+                File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"sstv-test.txt"),lines);Shutdown(0);
+            }
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sstv-test.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--additional-receive-test"))
+        {
+            try
+            {
+                var lines=new List<string>();
+                AdditionalReceiveTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);});
+                File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"additional-receive-test.txt"),lines);Shutdown(0);
+            }
+            catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"additional-receive-test.txt"),ex.ToString());Shutdown(1);}
+            return;
+        }
+        if(e.Args.Contains("--receive-modes-smoke"))
+        {
+            var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};
+            w.Loaded+=async(_,_)=>
+            {
+                try
+                {
+                    await w.RenderReceiveModesSmoke();
+                    File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"receive-modes-ui.txt"),
+                        "PASS: SSTV and RTTY normal UI entry points, PCM context, source-boundary retention, Weather placement and NOAA default render. Synthetic pixels and text only.");
+                    w.Close();Shutdown(0);
+                }
+                catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"receive-modes-ui.txt"),ex.ToString());w.Close();Shutdown(1);}
+            };
+            w.Show();return;
+        }
         if(e.Args.Length==3&&e.Args[0]=="--fox-gps-test"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"fox-gps-test.txt"),Task.Run(()=>FoxGpsProbe.Run(e.Args[1],int.Parse(e.Args[2]))).GetAwaiter().GetResult());Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"fox-gps-test.txt"),ex.Message);Shutdown(1);}return;}
         if(e.Args.Length==2&&e.Args[0]=="--weak-tx-export"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"tx-export-result.txt"),Update044Tests.Export(e.Args[1]));Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"tx-export-result.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Length==2&&e.Args[0]=="--sensor-fixture-test"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),Task.Run(()=>SensorTests.Fixtures(e.Args[1])).GetAwaiter().GetResult());Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"sensor-fixture-test.txt"),ex.ToString());Shutdown(1);}return;}
@@ -78,6 +124,14 @@ public partial class App : Application
         if(e.Args.Contains("--trunk-audio-test")){try{var lines=new List<string>();Task.Run(()=>TrunkAudioTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);})).GetAwaiter().GetResult();File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"trunk-audio-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"trunk-audio-test.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Contains("--offline-detail-test")){try{var lines=new List<string>();Task.Run(()=>OfflineDetailSelectionTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);})).GetAwaiter().GetResult();File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"offline-detail-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"offline-detail-test.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Contains("--fox-analysis-test")){try{var lines=new List<string>();FoxAnalysisTests.Run((ok,name)=>{if(!ok)throw new InvalidOperationException(name);lines.Add("PASS: "+name);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"fox-analysis-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"fox-analysis-test.txt"),ex.ToString());Shutdown(1);}return;}
+        if(e.Args.Contains("--lcn-survey-smoke")){var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};w.Loaded+=async (_,_)=>{try{await w.RenderLcnSurveySmoke();File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"lcn-survey-ui.txt"),"PASS: synthetic receiver tune/acknowledgement, return, per-receiver isolation, atomic saved metadata/Undo, progress reload and rendered discovery UI. No live RF.");w.Close();Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"lcn-survey-ui.txt"),ex.ToString());w.Close();Shutdown(1);}};w.Show();return;}
+        if(e.Args.Contains("--spectrum-layout-smoke")){var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};w.Loaded+=async (_,_)=>{try{await w.RenderSpectrumLayoutSmoke(Path.Combine(AppContext.BaseDirectory,"layout-check"));w.Close();Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"spectrum-layout-error.txt"),ex.ToString());Shutdown(1);w.Close();}};w.Show();return;} // spectrum-layout preview (Claude)
+        if(e.Args.Contains("--website-sync-smoke")){var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};w.Loaded+=async (_,_)=>{try{await w.RenderWebsiteSyncSmoke();w.Close();Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"website-sync-ui.txt"),ex.ToString());w.Close();Shutdown(1);}};w.Show();return;}
+        if(e.Args.Contains("--organization-smoke")){var w=new MainWindow(true){ShowInTaskbar=false,Left=-16000};w.Loaded+=(_,_)=>{try{w.RenderOrganizationSmoke();w.Close();Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"organization-ui.txt"),ex.ToString());w.Close();Shutdown(1);}};w.Show();return;}
+        if(e.Args.Length==2&&e.Args[0]=="--organization-copy-check"){try{File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"organization-copy-check.txt"),FrequencyOrganizationTests.CheckCopy(e.Args[1]));Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"organization-copy-check.txt"),ex.ToString());Shutdown(1);}return;}
+        if(e.Args.Contains("--organization-test")){try{var lines=new List<string>();FrequencyOrganizationTests.Run((ok,msg)=>{if(!ok)throw new InvalidOperationException(msg);lines.Add("PASS: "+msg);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"organization-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"organization-test.txt"),ex.ToString());Shutdown(1);}return;}
+        if(e.Args.Contains("--website-sync-test")){try{var lines=new List<string>();WebsiteSyncTests.Run((ok,msg)=>{if(!ok)throw new InvalidOperationException(msg);lines.Add("PASS: "+msg);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"website-sync-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"website-sync-test.txt"),ex.ToString());Shutdown(1);}return;}
+        if(e.Args.Contains("--lcn-survey-test")){try{var lines=new List<string>();LcnSurveyTests.Run((ok,msg)=>{if(!ok)throw new InvalidOperationException(msg);lines.Add("PASS: "+msg);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"lcn-survey-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"lcn-survey-test.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Contains("--update48-test")){try{var lines=new List<string>();Update048Tests.Run((ok,msg)=>{if(!ok)throw new InvalidOperationException(msg);lines.Add("PASS: "+msg);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"update48-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"update48-test.txt"),ex.ToString());Shutdown(1);}return;}
         if(e.Args.Contains("--discovery-sharing-test")){try{var lines=new List<string>();DiscoverySharingTests.Run((ok,msg)=>{if(!ok)throw new InvalidOperationException(msg);lines.Add("PASS: "+msg);});File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"discovery-sharing-test.txt"),lines);Shutdown(0);}catch(Exception ex){File.WriteAllText(Path.Combine(AppContext.BaseDirectory,"discovery-sharing-test.txt"),ex.ToString());Shutdown(1);}return;}
         if (e.Args.Contains("--self-test"))

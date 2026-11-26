@@ -1,3 +1,117 @@
+# Current evaluation roadmap — November 26, 2026
+
+> Portable test2 is built and verified: 0.54.0-preview2-test2 adds notes 23/24 to test1; HOT/EOT carries forward. See CLAUDE-BUILD-HANDOFF-0.54.0-preview2-test2.md for artifact, checks and remaining work. Private unsigned evaluation; no public release. Sensor inspector/burst export and shared saved maps remain planned.
+
+> Note 23: custom receive frequencies. ADS-B/UAT allocation locks removed in source; normal frequencies remain presets, and receiver setup preserves an explicit custom target. Capture compatibility checks remain. See VALIDATION-NOTE23-CUSTOM-RECEIVE.md for validation and Claude handoff. No new release ZIP.
+
+> Local test-build milestone: 0.54.0-preview2-test1 includes prepared TX symbols/first-slot handoff (note 22), Fox ADC overload evidence/exclusions (note 19), and the earlier buffer/recovery/tuning/indicator fixes. See UPDATE-0.54.0-preview2-test1.md. 2,310 local source checks and three UI smokes passed; field acceptance remains open. Private unsigned testing only, no GitHub publication.
+
+> Note 19 partial source delivery: large signal-trend, GPS and recording indicators with saved Compact/Large/Extra large size. 2291 local checks and Fox UI smoke passed. See VALIDATION-NOTE19-INDICATORS.md; reconnect/resume/heat maps and field acceptance remain pending. No public ZIP replacement.
+
+> Note 17 follow-up source complete: sustained-I/Q reconnect budget reset, visible retry exhaustion, and corrected reduced-rate/HF-filter advice. See VALIDATION-NOTE17-RECOVERY.md. 2274 local self-checks and UI smoke passed; field acceptance pending, original release unchanged.
+
+> Notes 8/1 source updates: Aviation targets preserved across unrelated receiver changes; Tune refusals and Broadcast staged/not-tuned state now visible in shared status. See VALIDATION-NOTE8-TARGET.md and VALIDATION-NOTE1-TUNING.md. 2,265 local self-checks and UI smoke passed; live acceptance still open. No new release ZIP.
+
+> Note 17 source update: shared receive DSP optimized to reduce HackRF backlog pressure; see VALIDATION-NOTE17-THROUGHPUT.md for measurements and acceptance limits. User also reproduced dropouts on AC. Hardware acceptance, reconnect-budget policy and reduced-rate setup advice remain open; no release ZIP replacement.
+
+> Field-review update: read REVIEW-FIELD-2026-11-22.md for sensor I/Q reference tests, explicit multi-protocol HackRF backlog failures, CW success at 2.4 MS/s, note 22 FT8 missed slots/preparation, and note 19 at-a-glance indicators. Current inventory is 21 active notes (1–22 excluding 3). Local recording/script index: work/field-review-2026-11-22.md; keep raw data out of source/releases.
+
+> Saved-hunt analysis plan approved November 22: note 19 now includes offline GPX/CSV analysis and findings reports inside M.R.S.; later multi-user sharing and combined localization are a separate phase. Read the two new subsections in ROADMAP-EVALUATION-2026-11-22.md. No implementation or API changes yet.
+
+> Latest November 22 clarification: note 19's missed route followed laptop sleep/wake, Aviation use and return to Fox Hunt with GPS not started; hardware disconnect is unconfirmed. ROADMAP-EVALUATION-2026-11-22.md now includes recovery acceptance, external roof-mounted VHF/UHF antenna context, read-only GPX findings and planned signal-coloured KML/KMZ export for Google Earth. No implementation changes.
+
+See ROADMAP-EVALUATION-2026-11-22.md for notes 17–21, full Fox Hunt/coverage-survey suggestions and the consolidated numbered inventory. There are 20 active items (notes 1–21 excluding rescinded note 3). Note 16 remains a high-priority public-release requirement; note 17 is a reliability investigation. Notes 11/13 and the Coverage Survey side project remain later research. Existing SSTV and long-term plans below remain separate. No fixes or builds are claimed by this documentation update.
+
+# High-priority release requirement — note 16: code signing
+
+User elevated code signing on November 21 after SmartScreen reported Unknown publisher for the GitHub download. Public trust is a priority. Review trusted publisher signing before the next public release; any unsigned exception requires an explicit user decision. The existing roadmap1 release remains unsigned and unchanged.
+
+Plan trusted Windows executable signing with an appropriate publisher identity, trusted timestamping, signature verification before packaging and after extraction, and SHA-256 release checksums. Keep signing keys/certificates and service credentials protected and out of source control. Define signing coverage for bundled executable components while preserving valid upstream signatures. Signing establishes publisher identity and integrity; it does not guarantee software safety or immediate SmartScreen reputation. Do not advise disabling SmartScreen globally.
+
+Claude: include this in release planning ahead of lower-priority enhancements. Provider/cost/identity choices and credential provisioning need user input before procurement or setup. This note authorizes planning/documentation, not purchases, key creation, rebuilds or replacement release assets. Notes 11/13 remain later research; note 3 remains rescinded. Active list is now 15 items.
+
+
+# Active base consolidated — November 21, 2026
+
+User approved one active source base. outputs/MRS now holds the roadmap1 evaluation source: the combined UI candidate plus SSTV/RTTY, readable VDL2 and the saving/sync fixes. src/ and Help/ match work/mrs-roadmap-integration byte for byte. Rollback: b9fefb8 (pre-consolidation main) and 336dc8d. The work/ copies are frozen references. Claude and Codex both work on this base and cross-check each other through git; see ACTIVE-BASE.md for the coordination rules. No build, package or push was performed.
+
+# Next-build milestone — evaluation follow-up, November 21, 2026
+
+Planning milestone requested by the user; implementation and packaging have not started. Preserve original note numbers: 14 active items; item 3 was rescinded after testing the newer build. Detailed requirements, acceptance checks and Claude review guidance: CLAUDE-NEXT-BUILD-HANDOFF-2026-11-21.md.
+
+Evaluation baseline: portable 0.54.0-preview1-roadmap1, packaged November 21 from the combined-UI development integration. The older 0.54.0-preview1 candidate does not include the later SSTV/RTTY, readable VDL2 and saving/sync changes. Reconcile source trees before editing; do not rebase from the older candidate alone.
+
+| Note | Next-build scope |
+| --- | --- |
+| 1 | Fix ineffective Tune actions after switching workspaces/protocols. |
+| 2 | Restore usable Aviation aircraft-map and table space. |
+| 4 | Add top-bar Settings and application-wide UTC/local/selected-zone time display. |
+| 5 | WEFAX Next Due broadcast, countdown and tuning. |
+| 6 | Cellular survey Tune; assess selected-band/range sweeping. |
+| 7 | Refresh Bandplans with collapsible categories/system/site groups; review main-tab placement. |
+| 8 | Stop unrelated receiver frequencies overwriting protocol Tune targets. |
+| 9 | Persistent Aviation map cache for offline use, subject to provider rules. |
+| 10 | Saved-folder ACARS selection/stepping/scanning; research multi-channel decoding and reusable folder scan. |
+| 11 | Research only: additional website sharing, including aircraft observations; coordinate any API contract proposal. |
+| 12 | Investigate missing P25 radio IDs; expose system-scoped radio/unit observations. |
+| 13 | Research only: audio/data streaming sources, formats, destinations and access controls. |
+| 14 | Categorized offline Help with improved navigation/search and current-version guidance. |
+| 15 | Compact responsive controls across Receiver and other tabs to reduce vertical scrolling. |
+
+Item 3 (ACARS/VDL2 readability complaint) is rescinded, not an outstanding defect. Existing SSTV expansion remains separately planned below; this milestone does not silently add it to the evaluation-fix batch. No source changes, build, commit, push, website upload or API modification are authorized by this documentation update alone.
+
+# Planned SSTV mode expansion — November 20, 2026
+
+User-approved planning scope; not implemented or packaged. Add 17 receive modes alongside existing Martin M1/M2, for 19 total:
+
+- Scottie S1, S2 and DX (3).
+- Robot 36 colour, Robot 8 BW and Robot 24 BW (3).
+- PD90, PD120, PD160, PD180, PD240 and PD290 (6).
+- Pasokon P3, P5 and P7 (3).
+- Wraase SC2-120 and SC2-180 (2).
+
+Use VIS-header automatic mode selection and retain manual mode selection. Line-timing mode detection is explicitly excluded. A missed header may require manual selection; unsupported modes must remain clearly identified as unsupported.
+
+Suggested implementation order: Scottie, Robot 36, PD, then remaining Robot grayscale/Pasokon/Wraase modes. Validate each mode with independently generated recordings and correct image dimensions, colour/grayscale reconstruction and synchronization before claiming support. Preserve partial-image export and raw/source evidence. This planning update does not authorize a new build.
+
+# Pending source work — November 19, 2026
+
+Implemented readable VDL2 link and CPDLC summaries with From/To fields and retained raw frames. Added Amateur SSTV reception for Martin M1/M2 with VIS detection, manual sync, progressive images, alignment and PNG/metadata export. Added Amateur RTTY for five-bit US ITA2 at 45.45/50/75 baud with selectable tones and polarity. Source changes and acceptance details are in CODEX-ROADMAP-HANDOFF.md and VALIDATION-PENDING-ROADMAP.md.
+
+The pending folder-preservation, legacy Cap+ labels and observation-aware website-sync fixes remain part of this source tree. Download review now shows the same update-type descriptions as upload. Diagnostic windows use explicit application shutdown so failed checks return a failing exit code.
+
+The Claude 0.54.0-preview1 combined UI candidate remains the station-test baseline. A separate integration copy under work/mrs-roadmap-integration combines its UI with these later source changes for regression checks. The source currently under outputs/MRS keeps the existing interface until the user approves promotion. New release ZIP packaging and live RF/API acceptance remain separate steps.
+
+Remaining SSTV modes include Robot, Scottie and PD. Remaining Amateur decoder targets include PSK31, D-STAR and C4FM. Broader DRM, Zigbee, Wi-Fi capture and Remote ID work still need their individual backend and hardware acceptance steps. Existing historical queued entries below retain the decisions and evidence for each item.
+
+# Current release: 0.53.0-preview1
+
+Railroad HOT/EOT, conversational CW, manual WEFAX and a HackRF cellular activity survey. See UPDATE-0.53.0-preview1.md and ACCEPTANCE-0.53.0-preview1.md.
+
+# Current release: 0.52.0-preview1
+
+ACARS readable summaries and reported positions, with collapsible HDTV diagnostics. See UPDATE-0.52.0-preview1.md and ACCEPTANCE-0.52.0-preview1.md. The independent ui1 interface preview awaits station review.
+
+# Current release: 0.51.0-preview1 — saving and organization wizard
+
+Selectable layouts, custom templates, existing-list previews, future discovery rules and guarded backup/rollback. No channel merges or identity changes. Live acceptance remains open; the active-library mismatch is not auto-repaired.
+
+# Current release: 0.50.0-preview2 — sync workflow and P25 identity fixes
+
+Includes saved-connection actions, richer download review, automatic dependency-aware upload batches and cautious same-context P25 talkgroup identity promotion. API v1 is unchanged. Hosted and live RF acceptance remain open; see the current release checklist.
+
+# Current release: 0.50.0-preview1 — manual website sync
+
+Next acceptance: read-only token/hosted pulls first, reviewed local import, then an explicitly confirmed small private upload and website inspection. Background sync, website-only general-record editing and automatic trunk-profile activation from downloads remain future work. Existing RF acceptance remains separate.
+
+## Pending client fixes — November 10, 2026
+
+User authorized the recorded M.R.S. client fixes while Claude handles website issues. Pull/Prepare now validate saved credentials without a separate Test step; the download review has searchable frequency/identity/context and field comparisons; exact-selection previews cover automatic dependency-ordered batches; provisional P25 talkgroups have readable identities and source/session-bound promotion. Legacy ambiguous history and conflicting labels remain separate. No API contract change, hosted write, release ZIP, commit or push in this fix pass. See VALIDATION-PENDING-WEBSITE-SYNC-FIXES.md for local checks and remaining live acceptance.
+
+# Current release: 0.49.0-preview1 — single-receiver LCN discovery
+
+Local/synthetic validation and portable package are documented separately from pending live DMR site/voice/rest-recovery acceptance. Next priorities depend on that field testing; absolute-frequency/MBC and broader vendor coverage remain future work.
+
 # Current release: 0.48.0-preview1 — research and protocol-flow refinements
 
 Built the pending duplicate-prevention/rename/overlap/navigation and P25/Commercial split batch. Added session-based unconfirmed LCN correlation from decoded grants and full voice LC, scoped to a user-selected saved site, with CSV export and candidate map/label actions. P25/DMR models, profiles, filters, assignments, histories, talkgroup views and auto-save toggles are independent; physical receiver definitions and the saved library remain shared. No definitive LCN auto-mapping, absolute-MBC, Phase II or additional live acceptance is claimed. Full published suite: 2,002 assertions plus six UI/integration scenarios; see the update/validation/acceptance documents. No source commit/push in this build request.
@@ -1096,3 +1210,23 @@ User requests M.R.S. identification in PSK Reporter monitor metadata (Using / Ri
 ## Queued: optional PSK Reporter reception reports
 
 Official DLL PDF and current UDP/IPFIX developer protocol were reviewed. User requested this on the next feature list alongside Fox Hunt. An opt-in feature will report resolved transmitting callsigns, receiver callsign/grid, mode, RF frequency and UTC time. SNR may be omitted until a real estimate exists; sync score is not SNR. Exclude replay/synthetic/unresolved records, batch and deduplicate per service guidance, and show transmission status without claiming UDP delivery is confirmed. No reports have been submitted and implementation is not included in preview2.
+
+### Note 9 expansion — shared saved offline maps (November 26, 2026)
+
+User approved adding this workflow to the roadmap. Start with Aviation's online map: navigate to an area, select **Save area for offline use**, choose geographic coverage and detail/zoom levels, review estimated download/storage size, then name and save the region. Provide one shared Offline maps manager accessible from Settings and map windows. Saved regions should be reusable by Aviation, Fox Hunt and the future Coverage Survey, without downloading separate copies for each workspace.
+
+Manage saved coverage, available detail levels, source/licence, download date, storage use, updates and removal. Support manual region selection and automatic use of available saved coverage when offline. Keep aircraft, hunt measurements and survey overlays separate from the underlying map. Show incomplete downloads, unavailable detail levels and uncovered areas explicitly; preserve the existing GeoJSON import path.
+
+The current viewed-tile cache is a starting point, not an existing save/export feature or a guaranteed complete regional map. Research and select a provider or offline dataset whose terms explicitly permit the requested downloads; do not turn the current online tile service into a bulk downloader without that permission. Define a managed region package and portable import/export workflow after choosing the source and format; current Load offline detail accepts GeoJSON, not arbitrary tile packages.
+
+Acceptance: save a named permitted-source area; restart with the network disabled; render its saved detail in both Aviation and Fox Hunt; verify coverage/detail boundaries, interrupted-download recovery, shared storage, update/removal and import/export where supported. Test overlays remain usable and no aircraft, GPS tracks or observations are uploaded by saving map detail.
+
+Planning only. This expands existing note 9 rather than creating a duplicate item. No implementation, map downloads, build or release is authorized by this roadmap edit.
+
+## Note 24 — Meshtastic / MeshCore Tune receiver (November 26, 2026)
+
+User requested direct tuning from the mesh workspace. Source now adds Tune receiver beside the mesh controls in Analysis > Meshtastic / MeshCore; it parses the existing MHz field and invokes shared LiveTune. Applies to Meshtastic, MeshCore and Generic LoRa. Existing stopped/replay/range feedback remains in shared receiver status. Does not start decoding or alter SF/BW/CR/sync. Invalid MHz uses the existing control error handler. MeshCore still requires the user's local network frequency.
+
+Claude review: inspect src/RadioDataControls.cs and Help/mesh-sdr.md. Field acceptance: start a receiver, enter a supported frequency for each profile, click Tune receiver and confirm actual tuning; verify parameters stay intact, invalid input is explained, and stopped/replay states do not silently retune. No live RF test or new portable release is claimed.
+
+Validation: Release compile succeeded with zero warnings/errors; git whitespace check passed. No live receiver test performed.

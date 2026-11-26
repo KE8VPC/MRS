@@ -1,0 +1,60 @@
+using System.IO;
+using System.Text.Json.Nodes;
+namespace MRS;
+internal static class SyncFixTests
+{
+ internal static void Run(Action<bool,string> check)
+ {
+  var system=new SyncDraft("mrs:sys",new(){["type"]="system",["protocol"]="P25"});var site=new SyncDraft("mrs:site",new(){["type"]="site",["parent_ref"]=system.Ref});var frequency=new SyncDraft("mrs:freq",new(){["type"]="frequency",["parent_ref"]=site.Ref,["mhz"]="851.0125"});var map=new SyncDraft("mrs:map",new(){["type"]="lcn",["parent_ref"]=site.Ref,["target_ref"]=frequency.Ref,["chan_no"]="1001",["chan_conv"]="p25-chan"});List<SyncDraft> prepared=[map,frequency,site,system];var state=new SyncDocument{Account="fixture"};
+  var selected=SyncUploadPlan.Select([map],prepared,state);check(selected.Select(d=>d.Type).SequenceEqual(new[]{"system","site","frequency","lcn"}),"Selecting a mapping automatically includes and orders its missing system/site/frequency dependencies");system.Record["label"]="Edited after snapshot";check(selected[0].Record["label"]==null,"Upload snapshots do not change when prepared records are edited");
+  bool failed=false;try{SyncUploadPlan.Select([],prepared,state);}catch(IOException ex){failed=ex.Message.Contains("No upload records selected");}check(failed,"Empty upload selection produces actionable preparation/selection guidance");
+  state.Bindings[site.Ref]=new(){Id=8,Rev=1};state.Bindings[frequency.Ref]=new(){Id=9,Rev=1};check(SyncUploadPlan.Select([map],prepared,state).Count==1,"Already linked dependencies do not require redundant uploads");state.Bindings.Clear();
+  var heardAt=DateTimeOffset.UtcNow.AddMinutes(-1);
+  var cap=new FrequencyItem{Name="Cap+ rest",Protocols="DMR",FrequencyHz=463562500,
+   SiteScope="DMR:Capacity Plus:Unassigned at 463.562500:Unresolved site",
+   Signaling="Capacity Plus; CC 1",Tags="Site channel discovery",EvidenceStatus="Provisional identity",ChannelLastSeen=heardAt};
+  var talkgroup=DiscoveryRecord.Create("talkgroup",cap.SiteScope,"91","Dispatch","DMR");
+  var radio=DiscoveryRecord.Create("radio",cap.SiteScope,"6123","Unit 6123","DMR");
+  var mixed=SyncMapping.Build(new(DiscoveryExchange.Format,1,[cap],[talkgroup,radio]),state,radios:true);
+  var observed=mixed.Single(d=>SyncUploadPlan.Includes(SyncUpdateType.Observations,d));
+  var sent=SyncUploadPlan.Select([observed],mixed,state);
+  check(sent.Select(d=>d.Type).SequenceEqual(new[]{"system","site","frequency"})&&
+        SyncMapping.ParseHz(observed.Record["mhz"])==cap.FrequencyHz&&
+        observed.Record["last_seen"]!.GetValue<long>()==heardAt.ToUnixTimeSeconds()&&
+        SyncJson.Text(observed.Record["parent_ref"])==sent[1].Ref,
+   "Uploading a Cap+ observation sends its actual carrier and includes its site and system context");
+  var labels=SyncUploadPlan.Select(mixed.Where(d=>SyncUploadPlan.Includes(SyncUpdateType.Identifiers,d)),mixed,state);
+  check(labels.Select(d=>d.Type).ToHashSet().SetEquals(new[]{"radio","talkgroup","system"})&&
+        labels.All(d=>d.Record["mhz"]==null&&d.Record["last_seen"]==null),
+   "Talkgroup and radio-ID updates send only metadata and the required catalog parent");
+  var scan=cap with{Tags="RF activity discovery",SiteScope="",EvidenceStatus="",ChannelLastSeen=null,
+   Activity=new(heardAt,heardAt,2,12500,18,"receiver name not shared")};
+  var rf=SyncMapping.Build(new(DiscoveryExchange.Format,1,[scan],[]),state).Single();
+  check(rf.IsObservation&&SyncJson.Number(rf.Record["heard"])==2&&
+        !rf.Record.ToJsonString().Contains("receiver name not shared"),
+   "RF activity sync keeps the carrier and reception counts without receiver details");
+  string stamp=SyncUploadPlan.Stamp(selected,state);state.Bindings[system.Ref]=new(){Id=1,Rev=2};check(stamp!=SyncUploadPlan.Stamp(selected,state),"A changed server revision invalidates preview eligibility");state.Bindings.Clear();state.Account="another-account";check(stamp!=SyncUploadPlan.Stamp(selected,state),"Preview approval is scoped to the authenticated account");
+  using var api=new WebsiteApi("https://mrs-fixture.invalid/account/api.php",WebsiteFixture.Secret,new WebsiteFixture());var client=new WebsiteSync(api,new SyncStore(Path.Combine(Path.GetTempPath(),"mrs-batch-"+Guid.NewGuid().ToString("N"))));var many=Enumerable.Range(0,405).Select(i=>new SyncDraft("mrs:s"+i,new JsonObject{["type"]="system",["protocol"]="P25"})).ToList();var batches=SyncUploadPlan.Batches(many,client);check(batches.Select(b=>b.Count).SequenceEqual(new[]{200,200,5}),"Large selections become automatic requests of at most 200 records without losing records");
+  var large=Enumerable.Range(0,200).Select(i=>new SyncDraft("mrs:large"+i,new JsonObject{["type"]="system",["description"]=new string('x',12000)})).ToList();check(SyncUploadPlan.Batches(large,client).Count>1,"Request byte limits can split a batch before its record-count limit");
+  var remote=WebsiteFixture.Record(50,"frequency","remote:50");remote["mhz"]="452.3000";remote["protocol"]="Capacity Plus";remote["ids"]=new JsonObject{["color_code"]="6"};remote["label"]="Website label";state=new(){Account="fixture"};state.Bindings[frequency.Ref]=new(){Id=50,Rev=1,LocalId="local",Baseline=new(){["type"]="frequency",["label"]="Original",["mhz"]="452.3000"}};var current=new SyncDraft(frequency.Ref,new(){["type"]="frequency",["label"]="Local label",["mhz"]="452.3000"},"local");var row=new SyncReviewRow(50,new(){Record=remote},state,[current]);check(row.MHz=="452.3000"&&row.Identifiers.Contains("color_code 6")&&row.Protocol=="Capacity Plus","Download review exposes frequency, protocol and decoded identifiers");check(row.Comparison.Contains("Conflicting")&&row.Differences.Any(d=>d.Field=="label"&&d.Local=="Local label"&&d.Website=="Website label"&&d.Change=="Conflicting edits"),"Review presents conflicting local and website values side by side");check(row.SystemSite=="Unresolved parent","Missing relationship identifiers display as unresolved rather than guessing from a label");check(new SyncReviewRow(50,new(){Op="delete",Record=remote},state,[current]).Comparison.Contains("local retained"),"Remote deletions explicitly describe local-data retention");
+  var historical=new TalkgroupRecord{Key="legacy",System="P25:-:NAC 345:774306250",Talkgroup=91,Count=2,Label="Historical label"};check(historical.DisplaySystem.Contains("NAC 345")&&historical.DisplaySystem.Contains("774.30625 MHz")&&!historical.DisplaySystem.Contains(":-:"),"Legacy provisional P25 identities render NAC and observed MHz without internal scope syntax");
+  var partial=new TalkgroupRecord{System="P25:-348:NAC 345:774307661"};check(partial.DisplaySystem.Contains("System 348")&&partial.DisplaySystem.Contains("WACN unknown"),"Partial P25 identities retain a known system ID while marking WACN unknown");check(new TalkgroupRecord{System="P25:BEE00-:NAC 345:774306250"}.DisplaySystem.Contains("WACN BEE00 · System unknown"),"A known WACN is retained when only the P25 system ID is missing");var identity=SyncMapping.Identity(new(){Protocols="P25",SiteScope=historical.System});check(identity.SiteIds.Count==0&&identity.SystemIds.Count==0,"A fallback frequency is never interpreted as a P25 site or system identifier for sync");
+  var now=DateTimeOffset.UtcNow;var channel=new P25Channel(0x1002,1,2,851025000,806025000,null,1,"received IDEN");PacketObservation Packet(P25Identity id,string source="run:1")=>new(now,"Synthetic",false,774306250,null,"CRC valid","","","","Grant","",null,"","P25 Phase I",true,SourceKey:source,P25Identity:id,P25Assignments:[new(91,1,0,channel)]);
+  var grant=Packet(new(0x345,0xBEE00,0x348,1,22));
+  var discovery=new P25Discovery("test","Voice channel","Assigned channel",channel.DownlinkHz,now,now,1,grant);
+  var advertised=SiteChannelData.FromP25(discovery)!;
+  var advertisedDraft=SyncMapping.Build(new(DiscoveryExchange.Format,1,[advertised.Draft()],[]),state).Single(d=>d.Type=="frequency");
+  var direct=SiteChannelData.FromP25(discovery with{Observation=grant with{FrequencyHz=channel.DownlinkHz}})!;
+  var queue=new Dictionary<string,SiteChannelData>();
+  direct.QueueForSave(queue);
+  (advertised with{Seen=now.AddSeconds(10)}).QueueForSave(queue);
+  var directDraft=SyncMapping.Build(new(DiscoveryExchange.Format,1,[queue.Values.Single().Draft()],[]),state).Single(d=>d.Type=="frequency");
+  check(!advertisedDraft.IsObservation&&SyncJson.Text(advertisedDraft.Record["evidence"])=="advertised"&&
+        directDraft.IsObservation&&SyncJson.Number(directDraft.Record["last_seen"])==now.ToUnixTimeSeconds(),
+   "An off-frequency grant is an advertised carrier and cannot replace the timestamp of a directly received signal");
+  var history=new P25TalkgroupHistory();var rows=new List<TalkgroupRecord>{historical};var unknown=Packet(new(0x345,null,null,null,null));history.Observe(rows,unknown);var candidate=rows.Single(r=>r!=historical);candidate.Label="Current label";history.Observe(rows,unknown with{ObservedUtc=now.AddSeconds(1)});history.Observe(rows,Packet(new(0x345,0xBEE00,0x348,1,22)) with{ObservedUtc=now.AddSeconds(2)});var known=rows.Single(r=>r.System=="P25:BEE00-348");check(rows.Count==2&&historical.Count==2&&known.Count==3&&known.Label=="Current label","Same-session P25 identity promotion preserves counts and labels while leaving unsupported legacy history untouched");check(known.FirstSeen==now&&known.Seen==now.AddSeconds(2),"Promoted talkgroup history retains first and last observation times");
+  history.Observe(rows,Packet(new(0x345,null,null,null,null),"run:2"));history.Reset();history.Observe(rows,Packet(new(0x345,0xBEE00,0x348,1,22),"run:2"));check(rows.Count==3&&rows.Any(r=>r.System.StartsWith("P25:provisional:")),"Retune/reset epochs prevent an unrelated identity from claiming earlier provisional rows");
+  history=new();rows=[new(){Key="P25:BEE00-348:91",System="P25:BEE00-348",Talkgroup=91,Count=7,Label="One"}];history.Observe(rows,unknown);rows.Single(r=>r.System.StartsWith("P25:provisional:")).Label="Another";history.Observe(rows,Packet(new(0x345,0xBEE00,0x348,1,22)));check(rows.Count==2&&rows.Any(r=>r.IdentityReview.Length>0&&r.Label=="Another")&&rows.Single(r=>r.Label=="One").Count==8,"Conflicting talkgroup labels preserve separate evidence for review without double-counting");
+  history=new();rows=[];history.Observe(rows,unknown with{Validated=false});history.Observe(rows,unknown with{Replay=true});check(rows.Count==0,"Failed validation and replay do not modify live talkgroup identity history");
+ }
+}

@@ -27,7 +27,7 @@ public partial class MainWindow
         InitializeVoiceIds();
         Dmr.Observation+=AnalysisPackets.Add;
 
-        Dmr.SaveChannel=r=>FrequencyManager.SaveDmr(r,workspaceSlot);
+        Dmr.SaveChannel=r=>!lcnSurvey.Running&&FrequencyManager.SaveDmr(r,workspaceSlot);
 
         Dmr.EnabledChanged+=value=>UpdateDataCapture();
 
@@ -37,7 +37,7 @@ public partial class MainWindow
 
         receiver.RawIq+=frame=>Aviation.Feed(frame,new PacketContext($"aviation:{Interlocked.Read(ref session)}",$"Receiver {workspaceSlot} · "+(receiver.IsReplay?"I/Q recording":receiver.ReceiverName),receiver.IsReplay,frame.Channel?.Frequency??frame.Frequency,receiver.IsReplay?receiver.ReplayPosition.TotalSeconds:null));
 
-        receiver.ChannelChanged+=()=>{if(receiver.AppliedChannel is {} c)Aviation.Follow(c.Frequency);};
+        receiver.ChannelChanged+=Aviation.Boundary;
 
         receiver.ReplayGap+=Aviation.Boundary;
 
@@ -117,7 +117,7 @@ public partial class MainWindow
 
         {
 
-            if(receiver.AppliedChannel is not {Mode:"NFM"} channel)return;
+            if(lcnSurvey.Running||receiver.AppliedChannel is not {Mode:"NFM"} channel)return;
 
             voiceIds.Feed(samples,VoiceContext(channel.Frequency),true);
             digitalVoice.Feed(samples,VoiceContext(channel.Frequency));

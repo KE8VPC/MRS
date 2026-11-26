@@ -17,7 +17,18 @@ internal static class AviationData
             string protocol=mode switch{"acars"=>"ACARS","vdl2"=>"VDL2","adsb"=>"ADS-B / Mode S","uat"=>"UAT",_=>"Unknown aviation"};
             string type=Str(body,"type"),id="",call="",addressType="",summary="";
             double? lat=null,lon=null,alt=null,speed=null;
-            if(type=="acars") {id=Str(body,"tail");addressType="Reported registration";call=Str(body,"flight");summary=$"{Str(body,"label")} · {Str(body,"text")}";}
+            string? label=null, readable=null;
+            string from="", destination="", packetType=type;
+            if(type=="acars")
+            {
+                id=Str(body,"tail");
+                addressType="Reported registration";
+                call=Str(body,"flight");
+                label=Str(body,"label");
+                summary=Str(body,"text");
+                if(valid) (lat,lon)=AcarsDisplay.Position(body,label,summary);
+                readable=valid?AcarsDisplay.Summary(body,label,summary,lat,lon):null;
+            }
             else if(type=="mode_s")
             {
                 id=Str(body,"icao");call=Str(body,"callsign");int df=(int)(Num(body,"df")??-1);
@@ -39,14 +50,16 @@ internal static class AviationData
             }
             else if(type=="vdl2")
             {
-                var d=Obj(body,"details");var src=Obj(d,"src");
-                if(Str(src,"kind")=="aircraft"){id=Str(src,"addr");addressType="ICAO (VDL2 source)";}
-                summary=Str(body,"kind")+" · "+d.GetRawText();
+                var view=Vdl2Display.Read(body);
+                from=view.From;destination=view.To;
+                if(valid){id=view.Aircraft;addressType=view.AddressType;readable=view.Summary;}
+                packetType=valid?view.Type:"VDL2 frame";
+                summary=Obj(body,"details") is {ValueKind:JsonValueKind.Object} details?details.GetRawText():"";
             }
             if(!Position(lat,lon))lat=lon=null;
             string check=!valid?"Decoder validation failed":mode=="uat"?"RS-FEC accepted (not CRC)":"Decoder CRC/FCS accepted";
             if(Num(quality,"fec_corrected") is double corrections)check+=$" · corrections {corrections}";
-            var packet=new PacketObservation(DateTimeOffset.UtcNow,context.Source,context.Replay,context.FrequencyHz,context.PositionSeconds,check,id,"","",type,summary,null,Str(root,"raw"),protocol,valid,SourceKey:context.Key,DecoderJson:json);
+            var packet=new PacketObservation(DateTimeOffset.UtcNow,context.Source,context.Replay,context.FrequencyHz,context.PositionSeconds,check,from.Length>0?from:id,destination,"",packetType,summary,null,Str(root,"raw"),protocol,valid,SourceKey:context.Key,DecoderJson:json,DisplaySummary:readable,Label:label);
             return new(packet,string.IsNullOrWhiteSpace(id)?null:addressType+":"+id,call,lat,lon,alt,speed,addressType);
         }
         catch(Exception ex) when(ex is JsonException or InvalidOperationException or FormatException){return null;}

@@ -84,6 +84,9 @@ internal sealed class AircraftMap : UserControl, IDisposable
         foreach(var row in points.OrderBy(r=>ReferenceEquals(r,selected)?0:1)){var p=Project(row.Latitude!.Value,row.Longitude!.Value);double x=w/2+(Wrap(p.X-cx+.5)-.5)*size,y=h/2+(p.Y-cy)*size;if(x<0||x>w||y<0||y>h)continue;
             var dot=new Ellipse{Width=9,Height=9,Fill=ReferenceEquals(row,selected)?Brushes.Lime:row.Replay?Brushes.Orange:Brushes.Cyan,Stroke=Brushes.Black,StrokeThickness=1,ToolTip=$"{row.Identity}\n{row.Position}\n{row.Source}"};Canvas.SetLeft(dot,x-4);Canvas.SetTop(dot,y-4);canvas.Children.Add(dot);dot.MouseLeftButtonDown+=(_,e)=>{Selected?.Invoke(row);e.Handled=true;};
             string caption=string.IsNullOrEmpty(row.Callsign)?row.Identity:row.Callsign;
+            if(row.Protocol=="ACARS")
+                caption=(row.Identity.StartsWith("Reported registration:",StringComparison.Ordinal)
+                    ?row.Identity["Reported registration:".Length..]:caption)+" · ACARS";
             var position=new[]{-8.0,10,-26,28}.Select(offset=>new Rect(x+7,y+offset,caption.Length*6.5+4,16)).FirstOrDefault(box=>!aircraftLabels.Any(old=>old.IntersectsWith(box)));
             if(position.Width>0&&aircraftLabels.Count<100){aircraftLabels.Add(position);var label=new TextBlock{Text=caption,Foreground=Brushes.White,Background=Brushes.Black,FontSize=11};Canvas.SetLeft(label,position.X);Canvas.SetTop(label,position.Y);canvas.Children.Add(label);}
         }

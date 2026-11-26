@@ -49,8 +49,8 @@ public partial class MainWindow : Window
         PopulateBandwidth();
         if (diagnostic) dataFolder = diagnosticRoot ?? Path.Combine(AppContext.BaseDirectory, "smoke-profile", Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(dataFolder);Aviation.ConfigureOfflineDetail(dataFolder);
-        InitializeFilePlans();InitializeTrunkFollowing();InitializeDmrTrunkFollowing();WorkspaceTabs.SelectionChanged+=(_,_)=>{if(WorkspaceTabs.SelectedItem==P25Workspace)visibleDmrFlow=false;else if(WorkspaceTabs.SelectedItem==ProfessionalTab)visibleDmrFlow=true;};InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeLcnResearch();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
-        receiver.RawIq+=_=>{if(!receiver.IsReplay)Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());};
+        InitializeFilePlans();InitializeTrunkFollowing();InitializeDmrTrunkFollowing();WorkspaceTabs.SelectionChanged+=(_,_)=>{if(WorkspaceTabs.SelectedItem==P25Workspace)visibleDmrFlow=false;else if(WorkspaceTabs.SelectedItem==ProfessionalTab)visibleDmrFlow=true;};InitializeFleet();InitializeCalibration();InitializeAbout();InitializeSiteSaving();InitializeLcnResearch();InitializeLcnSurvey();InitializeMonitoringViews();InitializeRadioData();InitializeAprsInternet();InitializeJs8();InitializeHfReferences();InitializeFoxHunt();InitializeDiscoveryPresets();InitializeAdditionalReceive();Dmr.InitializeDiscovery(Path.Combine(dataFolder,"dmr-discovery-mode.json"));
+        receiver.RawIq+=_=>{if(!receiver.IsReplay){Interlocked.Exchange(ref lastLiveFrame,DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());recoveryHealth.Observe(Environment.TickCount64);}};
         PagingPackets.InitializePagingRules(Path.Combine(dataFolder,"paging-rules.json"));
         P25Systems.Initialize(Path.Combine(dataFolder,"p25-discoveries.json"));
         P25Activity.Initialize(Path.Combine(dataFolder,"p25-activity-labels.json"));
@@ -110,7 +110,7 @@ public partial class MainWindow : Window
         catch (Exception ex) { Log("Settings could not be restored: " + ex.Message); }
         engine.Frame += (values, level) => { lock (frameSync) { audioLevel = level; latestBroadcastAudio = values; if (!rfMode) latest = (values, level, DisplaySettings.Clock, 0); } };
         receiver.Spectrum += values => { lock (frameSync) latest = (values, audioLevel, DisplaySettings.Clock, receiver.AppliedFrequency); };
-        receiver.StereoAudio += pcm => { lock(frameSync) latestStereoWaveform = pcm; if((fleetProfile?.Role!="Trunk voice"||fleetPaused)&&!trunkRadio.Running&&!dmrTrunkRadio.Running&&((!voiceIds.Voice&&!digitalVoice.Enabled)||receiver.AppliedChannel?.Mode!="NFM"))engine.FeedStereo(pcm, receiver.SquelchOpen); };
+        receiver.StereoAudio += pcm => { lock(frameSync) latestStereoWaveform = pcm; if((fleetProfile?.Role!="Trunk voice"||fleetPaused)&&!trunkRadio.Running&&!dmrTrunkRadio.Running&&!lcnSurvey.Running&&((!voiceIds.Voice&&!digitalVoice.Enabled)||receiver.AppliedChannel?.Mode!="NFM"))engine.FeedStereo(pcm, receiver.SquelchOpen); };
         receiver.ReplayGap += () =>
         {
             engine.RetuneBoundary(); long gapSession = Interlocked.Read(ref session);
@@ -175,7 +175,7 @@ public partial class MainWindow : Window
             if (receiver.IsRecording) IqRecordLabel.Text = $"I/Q: {receiver.RecordedBytes / 1000000.0:0.0} MB · approx. {activeRate * 120.0 / 1000000:0} MB/min";
             RefreshPlayback();
             RefreshBroadcast();
-            RefreshPackets();TickTrunk();TickFleet();TickDmrTrunk();TickDmrFleet();TickLcnResearch();TickCalibration();TickSiteSaving();TickMonitoringViews();TickRadioData();TickFoxHunt();
+            RefreshPackets();TickTrunk();TickFleet();TickDmrTrunk();TickDmrFleet();TickLcnResearch();TickLcnSurvey();TickCalibration();TickSiteSaving();TickMonitoringViews();TickRadioData();TickAdditionalReceive();TickFoxHunt();
             Spectrum.Tick();
         };
         timer.Start();
@@ -192,6 +192,8 @@ public partial class MainWindow : Window
         InitializeReceiverRefinements();
         InitializeTriggeredRecording();
         InitializeDecoderSetup();
+        InitializeSpectrumPlacement(); // spectrum-layout preview (Claude): see SpectrumPlacement.cs
+        InitializeClaudeUi(); // UI refresh ui1 (Claude): radio bar, status bar, shortcuts, theme hooks. See ClaudeUi.cs.
         ready = true;
         RfSquelchChanged(this, new RoutedEventArgs());
         ListeningChanged(this, new RoutedEventArgs());
@@ -200,7 +202,7 @@ public partial class MainWindow : Window
         {
             StopFolderScan("Folder scan stopped on close.");
             StopActivity("Scanner stopped on close.");
-            closing = true;if(Application.Current.MainWindow==this)Application.Current.MainWindow=FleetWindows().FirstOrDefault(w=>w!=this)??this;try{FlushSiteSaving();}catch(Exception ex){Log("Final site save: "+ex.Message);}ReleaseFleetAssignments();ReleaseDmrFleetAssignments();trunkRadio.Dispose();dmrTrunkRadio.Dispose();Sensors.Release(); automaticIq.Dispose(); automaticAudio.Dispose(); siteCollector?.Flush(true); P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); voiceIds.Dispose(); digitalVoice.Dispose(); pagingDecoder.Dispose(); Aviation.Release(); Dmr.Release(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
+            closing = true;if(Application.Current.MainWindow==this)Application.Current.MainWindow=FleetWindows().FirstOrDefault(w=>w!=this)??this;try{FlushSiteSaving();}catch(Exception ex){Log("Final site save: "+ex.Message);}ReleaseFleetAssignments();ReleaseDmrFleetAssignments();StopLcnSurvey("Window closed; progress retained");lcnSurveyRadio.Dispose();trunkRadio.Dispose();dmrTrunkRadio.Dispose();Sensors.Release(); automaticIq.Dispose(); automaticAudio.Dispose(); siteCollector?.Flush(true); P25Systems.Save(); HdRecordings.Release(); Television.Release(); FrequencyManager.Release(); CancelRecovery(); session++; timer.Stop(); DisplayControls.Save(); voiceIds.Dispose(); digitalVoice.Dispose(); pagingDecoder.Dispose(); Aviation.Release(); Dmr.Release(); receiver.Dispose(); engine.Dispose(); ReceiverOwnership.Release(this);
             try
             {
                 ActivityControls.Save();
@@ -215,26 +217,33 @@ public partial class MainWindow : Window
     private void SaveFrequency(object sender, RoutedEventArgs e) { SidebarTabs.SelectedItem = FrequencyTab; FrequencyManager.AddSignal(null); }
     private async void TuneSaved(FrequencyItem item)
     {
-        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
+        void Unavailable(string reason) { RtlStatus.Text = "Tune not applied: " + reason; Log(RtlStatus.Text); }
+        if (!ReceiveDemodulator.Modes.Contains(item.Mode)) { Unavailable($"Mode {item.Mode} is not implemented for '{item.Name}'."); return; }
+        if (receiver.IsReplay) { Unavailable("Replay follows recorded channel settings. Stop replay and start a live receiver."); return; }
+        if (!SelectedCanTune(item.FrequencyHz)) { Unavailable("Saved frequency is outside current receiver coverage."); return; }
+        double width = item.BandwidthHz == 0 ? ChannelSettings.DefaultWidth(item.Mode) : item.BandwidthHz;
+        if (!ChannelSettings.Widths(item.Mode).Contains(width)) { Unavailable("Saved filter width is unsupported for this mode; entry retained."); return; }
+        if(trunkRadio.Running||dmrTrunkRadio.Running||lcnSurvey.Running||surveyTuneBusy)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for saved-frequency tuning.");
-        if (!ReceiveDemodulator.Modes.Contains(item.Mode)) { Log($"Cannot tune '{item.Name}': mode {item.Mode} is not implemented."); return; }
-        if (receiver.IsReplay) { Log("Replay follows recorded channel settings; saved entry remains available."); return; }
-        if (!SelectedCanTune(item.FrequencyHz)) { Log("Saved frequency is outside current receiver coverage."); return; }
-        double width = item.BandwidthHz == 0 ? ChannelSettings.DefaultWidth(item.Mode) : item.BandwidthHz;
-        if (!ChannelSettings.Widths(item.Mode).Contains(width)) { Log("Saved filter width is unsupported for this mode; entry retained."); return; }
         updatingControls = true;
         try { FmMode.SelectedIndex = Array.IndexOf(ReceiveDemodulator.Modes, item.Mode); PopulateBandwidth(width); FrequencyBox.Text = (item.FrequencyHz / 1000000m).ToString("F6", CultureInfo.InvariantCulture); }
         finally { updatingControls = false; }
         if (rfMode && receiver.AppliedChannel != null)
         {
             var channel = SelectedChannel(item.FrequencyHz);
-            if (receiver.IsHackRf && receiver.Offset.Enabled)
-            { try { await receiver.Retune(item.FrequencyHz, channel); } catch (Exception ex) { Log(ex.Message); } return; }
-            if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) { receiver.SetChannel(channel); return; }
-            try { await receiver.Retune(item.FrequencyHz, channel); } catch(Exception ex){ Log(ex.Message); } return;
+            long tuningSession = session;
+            try
+            {
+                RtlStatus.Text = $"Tuning to {item.FrequencyHz / 1000000.0:F6} MHz…";
+                if (receiver.IsHackRf && receiver.Offset.Enabled) await receiver.Retune(item.FrequencyHz, channel);
+                else if (channel.Fits(receiver.AppliedFrequency, receiver.AppliedBandwidth)) receiver.SetChannel(channel);
+                else await receiver.Retune(item.FrequencyHz, channel);
+            }
+            catch (Exception ex) { if (tuningSession == session) { ReflectChannel(); Unavailable(ex.Message); } }
+            return;
         }
-        if (RtlDevices.SelectedItem is not RtlNative.Device) { Log("Select an SDR receiver before tuning."); return; }
+        if (RtlDevices.SelectedItem is not RtlNative.Device) { Unavailable("Select an SDR receiver before tuning."); return; }
         StartRtl(FrequencyManager, new RoutedEventArgs());
         await Task.CompletedTask;
     }    private void PostReceiverMessage(string message, bool ended)
@@ -317,12 +326,15 @@ public partial class MainWindow : Window
     private int SelectedSampleRate => int.Parse(((ComboBoxItem)SampleRateBox.SelectedItem).Tag.ToString()!, CultureInfo.InvariantCulture);
     private async Task LiveTune(long frequency)
     {
-        if(trunkRadio.Running||dmrTrunkRadio.Running)StopAllTrunk();
+        void Unavailable(string reason) { RtlStatus.Text = "Tune not applied: " + reason; Log(RtlStatus.Text); }
+        // Validate before interrupting a scanner or trunk assignment.
+        if (receiver.IsReplay) { Unavailable("I/Q replay follows recorded frequencies. Stop replay and start an SDR receiver."); return; }
+        if (!rfMode) { Unavailable("Start an SDR receiver, then press Tune again."); return; }
+        if (receiver.AppliedFrequency == 0) { Unavailable("Receiver is awaiting its first samples. Wait for reception, then press Tune again."); return; }
+        if (!receiver.CanTune(frequency)) { Unavailable("Requested frequency is outside the active receiver/sampling-mode range."); return; }
+        if(trunkRadio.Running||dmrTrunkRadio.Running||lcnSurvey.Running||surveyTuneBusy)StopAllTrunk();
         StopFolderScan("Folder scan stopped for receiver control.");
         StopActivity("Scanner stopped for manual tuning.");
-        if (receiver.IsReplay) { Log("I/Q replay follows recorded frequencies; hardware tuning is disabled."); return; }
-        if (!rfMode) { Log("Start an SDR receiver before click-to-tune."); return; }
-        if (!receiver.CanTune(frequency)) { Log("Requested frequency is outside the active sampling mode range."); return; }
         long tuningSession = session;
         try
         {

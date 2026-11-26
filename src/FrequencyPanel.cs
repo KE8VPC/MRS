@@ -59,6 +59,8 @@ public sealed partial class FrequencyPanel : UserControl
         Button("Hide markers", () => SetSelectedVisibility(false));
         Button("Reload", () => Initialize(path));
         Button("Import / export",()=>CreateSharingWindow().ShowDialog());
+        Button("Website sync",()=>WebsiteWindow(Path.Combine(Path.GetDirectoryName(path)!,"website-sync")).Show());
+        Button("Saving & organization…",()=>CreateOrganizationWindow().ShowDialog());
         Button("Clean up…",()=>CreateCleanupWindow().ShowDialog());
         Button("Review discoveries",()=>CreatePendingDiscoveryWindow().ShowDialog());
         toolbar.Children.Add(discoveryPolicy);discoveryPolicy.SelectionChanged+=(_,_)=>{if(!syncingPolicy&&library!=null)Attempt(()=>{library.SetDiscoveryPolicy(discoveryPolicy.SelectedIndex==1);Notify("Auto-save policy saved");});};
@@ -86,6 +88,7 @@ public sealed partial class FrequencyPanel : UserControl
             Action("Edit",EditSelected,selection.Count==1);Action("Delete",DeleteSelection,selection.Count>0);
             Action("Tune",()=>TuneRequested?.Invoke(item),selection.Count==1&&!item.IsFolder);
             Action("Research LCN map",()=>ResearchFolder(item.Id),selection.Count==1&&item.IsFolder);
+            Action("Discover LCN map (single receiver)",()=>DiscoverFolder(item.Id),selection.Count==1&&item.IsFolder);
             Action("Scan folder",()=>FolderScanRequested?.Invoke(item,FolderScanPlan.Create(RequireLibrary().Items,item.Id,ScanControls.Recursive.IsChecked==true,ScanControls.Hidden.IsChecked==true)),selection.Count==1&&item.IsFolder);
             menu.PlacementTarget=row;menu.IsOpen=true;e.Handled=true;
         };

@@ -12,6 +12,11 @@ public partial class MainWindow
         ApplyDecoderRecommendation();
         if(SelectedSampleRate!=9600000||HackRfHfFilter.IsChecked==true||ReadCaptureOffset().Khz!=250||HackRfLna.SelectedIndex!=3||HackRfVga.SelectedIndex!=12||rfMode)throw new InvalidOperationException("Recommended ADS-B settings changed gain, started hardware or failed to repair capture coverage");
         if(setupReport.Text.Contains("•"))throw new InvalidOperationException("Applied ADS-B recommendation still fails checks: "+setupReport.Text);
+        OpenDecoderSetup("adsb",1090100000);ApplyDecoderRecommendation();
+        if(!FrequencyLibrary.TryFrequency(FrequencyBox.Text,out long customHz)||customHz!=1090100000||rfMode)throw new InvalidOperationException("Receiver setup replaced custom ADS-B target or started hardware");
+        OpenDecoderSetup("uat",915000000);ApplyDecoderRecommendation();
+        if(!FrequencyLibrary.TryFrequency(FrequencyBox.Text,out customHz)||customHz!=915000000||rfMode)throw new InvalidOperationException("Receiver setup replaced custom UAT target or started hardware");
+        OpenDecoderSetup("adsb",1090000000);ApplyDecoderRecommendation();
         UpdateLayout();DecoderSetupExpander.BringIntoView();UpdateLayout();capture("ui-decoder-setup-applied.png");
         Aviation.ClearForTest();var message=AviationData.Parse(AviationTests.PositionJson,"adsb",AviationTests.Context)!;
         for(int plane=0;plane<3;plane++)for(int i=0;i<15;i++)

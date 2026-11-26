@@ -57,3 +57,15 @@ Optional public U.S. Census TIGER/Line roads can be prepared as regional WGS84 G
 ## GPX context
 
 GPX exports now retain the relative mean/peak/noise power, sample count, squelch state, receiver/device/gain token/filter/sample-rate/capture/PPM metadata, GPS receive time and available GPS time/quality/speed/course in M.R.S. extensions. The gain token includes backend-specific settings such as the HackRF amplifier state. Generic GPX viewers may ignore these extensions; the companion CSV remains useful. Exports contain private device and location information and are never included in public default datasets.
+
+## At-a-glance status indicators
+
+The three cards above the map separate signal trend, position and logging. Use Status size in the setup area to choose Compact, Large or Extra large; the preference is saved locally. Colour is accompanied by symbols and words. Expand GPS diagnostics or Signal trend details for the underlying information.
+
+Signal trend shows stronger, steady, weaker, collecting, uncertain or paused. It describes strength change, not a measured bearing to the transmitter. Stopping the log shows paused even if recent readings remain. GPS off/connecting/waiting for fix/stale/error are distinct from a fresh GPS fix; receiving NMEA is not enough. Manual position is explicitly labelled. The logging card shows recording only when the log is active, inputs are usable and a recent point was saved. Waiting for RF/squelch, no GPS and no live RF do not show recording green. A fresh fix alone does not start a log.
+
+These indicators do not implement automatic GPS reconnect, sleep/wake resume, audible alerts or saved-run import; those remain separate planned features. Detailed receiver/file errors remain in the session status. Keep interaction to a passenger or while parked.
+
+## ADC input overload evidence
+
+ADC INPUT shows recent raw input peak/rail evidence, separately from channel power. High input raises near -3 dBFS and clears below -6 dBFS; rail components mean digitized I/Q bytes at the converter limits. This is not calibrated RF power, proof of a source location or a complete analog-overload test. Details show the latest measured block. While Fox logging is active, input quality is measured on each processed block; outside logging the existing periodic input meter is sampled. CSV/GPX preserve raw channel levels and append input peak, component counts and an overload flag. Old recordings lacking these fields remain unknown. Model calculations exclude flagged points and report their count; trend is uncertain for flagged windows. A flat-reading/lower-gain hint requires high peaks and substantial movement and remains a suggestion. Gain automation, per-step normalization and elevated-site modeling are not implemented here.

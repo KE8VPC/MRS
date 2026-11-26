@@ -17,12 +17,12 @@ internal static class DiscoveryReferences
  internal static ListeningPreset[] Read(string path)
  {
   return PlanCsv.Read(path).Select(row=>{string protocol=PlanCsv.Get(row,"protocol"),mode=PlanCsv.Get(row,"mode");if(!ReceiveDemodulator.Modes.Contains(mode))mode=protocol=="ACARS"?"AM":"NFM";
-   return new ListeningPreset{Name=PlanCsv.Get(row,"label"),Protocol=protocol.Length==0?"Reference":protocol,FrequencyMHz=PlanCsv.MHz(PlanCsv.Hz(row,"downlink")!.Value),Mode=mode,BandwidthHz=double.TryParse(PlanCsv.Get(row,"bandwidth_hz"),NumberStyles.Float,CultureInfo.InvariantCulture,out double w)?w:protocol=="ACARS"?15000:protocol=="VDL2"?25000:ChannelSettings.DefaultWidth(mode),Notes=string.Join(" | ",new[]{PlanCsv.Get(row,"reference_status"),PlanCsv.Get(row,"region"),PlanCsv.Get(row,"notes"),PlanCsv.Get(row,"source")}.Where(v=>v.Length>0))};}).ToArray();
+   return new ListeningPreset{Name=PlanCsv.Get(row,"label"),Protocol=protocol.Length==0?"Reference":protocol,FrequencyMHz=PlanCsv.MHz(PlanCsv.Hz(row,"dial",true)??PlanCsv.Hz(row,"downlink")!.Value),Mode=mode,BandwidthHz=double.TryParse(PlanCsv.Get(row,"bandwidth_hz"),NumberStyles.Float,CultureInfo.InvariantCulture,out double w)?w:protocol=="ACARS"?15000:protocol=="VDL2"?25000:ChannelSettings.DefaultWidth(mode),Notes=string.Join(" | ",new[]{PlanCsv.Get(row,"reference_status"),PlanCsv.Get(row,"region"),PlanCsv.Get(row,"notes"),PlanCsv.Get(row,"source")}.Where(v=>v.Length>0))};}).ToArray();
  }
  internal static void Seed(string root)
  {
   string source=Path.Combine(AppContext.BaseDirectory,"bandplans","reference");if(!Directory.Exists(source))return;
-  foreach(string folder in Directory.GetDirectories(source).Where(d=>Path.GetFileName(d).StartsWith("aviation-")||Path.GetFileName(d) is "amateur-presets" or "time-stations" or "ism" or "amateur-beacons" or "hf-hfgcs"))
+  foreach(string folder in Directory.GetDirectories(source).Where(d=>Path.GetFileName(d).StartsWith("aviation-")||Path.GetFileName(d) is "amateur-presets" or "time-stations" or "ism" or "amateur-beacons" or "hf-hfgcs" or "marine-wefax"))
    foreach(string file in Directory.GetFiles(folder,"*.csv")){string to=Path.Combine(root,"reference",Path.GetFileName(folder),Path.GetFileName(file));if(Path.GetFullPath(to)==Path.GetFullPath(file)||File.Exists(to))continue;Directory.CreateDirectory(Path.GetDirectoryName(to)!);File.Copy(file,to,false);}
  }
 }
@@ -65,7 +65,7 @@ public partial class MainWindow
   try{
    if(filePlans==null)return;var picker=new Microsoft.Win32.OpenFileDialog{Title="Select reference channels.csv",InitialDirectory=filePlans.Root,Filter="Channel references|channels.csv"};if(picker.ShowDialog(this)!=true)return;
    var entries=DiscoveryReferences.Read(picker.FileName);if(entries.Length==0)throw new IOException("No channels found.");foreach(var p in entries)p.Validate();
-   string dataset=Path.GetFileName(Path.GetDirectoryName(picker.FileName)!);string folder=dataset switch{"aviation-acars"=>"Aviation/ACARS","aviation-vdl2"=>"Aviation/VDL2","aviation-hf-voice"=>"Aviation/HF voice","aviation-hf-volmet"=>"Aviation/VOLMET","aviation-hf-hfdl"=>"Aviation/HFDL",_=>"References/"+dataset};
+   string dataset=Path.GetFileName(Path.GetDirectoryName(picker.FileName)!);string folder=dataset switch{"aviation-acars"=>"Aviation/ACARS","aviation-vdl2"=>"Aviation/VDL2","aviation-hf-voice"=>"Aviation/HF voice","aviation-hf-volmet"=>"Aviation/VOLMET","aviation-hf-hfdl"=>"Aviation/HFDL","marine-wefax"=>"Marine/WEFAX",_=>"References/"+dataset};
    var root=new DockPanel{Margin=new(10)};var top=new StackPanel();DockPanel.SetDock(top,Dock.Top);root.Children.Add(top);top.Children.Add(new TextBlock{Text=$"Select channels to add to {folder}. Ctrl/Shift selects multiple. Candidate rows are initially unselected. Existing matches and labels are preserved.",TextWrapping=TextWrapping.Wrap});
    var add=new Button{Content="Add selected to frequencies"};top.Children.Add(add);var grid=new DataGrid{ItemsSource=entries,AutoGenerateColumns=true,IsReadOnly=true,SelectionMode=DataGridSelectionMode.Extended,SelectionUnit=DataGridSelectionUnit.FullRow,CanUserAddRows=false,Foreground=Brushes.Black,Background=Brushes.White};root.Children.Add(grid);
    grid.AutoGeneratingColumn+=(_,e)=>{if(e.PropertyName=="Hz")e.Cancel=true;};foreach(var entry in entries.Where(p=>!p.Notes.Contains("unverified",StringComparison.OrdinalIgnoreCase)))grid.SelectedItems.Add(entry);

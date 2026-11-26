@@ -12,7 +12,7 @@ internal static class FoxStrengthTrend
   var older=recent.Where(p=>p.Utc<=last.Utc.AddSeconds(-8)).ToArray();var newer=recent.Where(p=>p.Utc>=last.Utc.AddSeconds(-5)).ToArray();
   if(older.Length<2||newer.Length<2)return new("Collecting","Waiting for recent and earlier signal windows");
   if(newer.Any(p=>p.FloorDb==null)||older.Any(p=>p.FloorDb==null))return new("Uncertain","Noise reference unavailable; strength trend withheld");
-  if(newer.Concat(older).Any(p=>p.PeakDb>=-3)||FoxStatistics.Median(newer.Select(p=>p.MeanDb-p.FloorDb!.Value))<6||FoxStatistics.Median(older.Select(p=>p.MeanDb-p.FloorDb!.Value))<6)return new("Uncertain","Near noise floor or possible clipping; strength trend withheld");
+  if(newer.Concat(older).Any(p=>p.Overloaded||p.PeakDb>=-3)||FoxStatistics.Median(newer.Select(p=>p.MeanDb-p.FloorDb!.Value))<6||FoxStatistics.Median(older.Select(p=>p.MeanDb-p.FloorDb!.Value))<6)return new("Uncertain","Near noise floor or possible clipping; strength trend withheld");
   double delta=FoxStatistics.Median(newer.Select(p=>p.MeanDb))-FoxStatistics.Median(older.Select(p=>p.MeanDb));
   return new(delta>=2?"↑ Stronger":delta<=-2?"↓ Weaker":"→ Steady",$"{delta:+0.0;-0.0;0.0} dB across recent windows · strength change, not direction or distance",delta);
  }
@@ -28,9 +28,14 @@ internal static class FoxLocator
  private sealed record Candidate(double X,double Y,double Loss,double Score,int I,int J);
  internal static FoxEstimate Estimate(IReadOnlyList<FoxPoint> source,CancellationToken cancel=default)
  {
+  int excluded=source.Count(p=>p.Overloaded);var result=EstimateCore(source,cancel);
+  return excluded==0?result:result with{Detail=result.Detail+$" · excluded {excluded} near-full-scale/clipped points"};
+ }
+ private static FoxEstimate EstimateCore(IReadOnlyList<FoxPoint> source,CancellationToken cancel)
+ {
   if(source.Count<20)return new("Collecting","Need more spatially distinct measurements");
   if(source.Any(p=>p.Scope.Backend=="RTL"&&p.Scope.Gain==-1000||p.Scope!=source[0].Scope||p.Fix.Source!=source[0].Fix.Source))return new("Unavailable","Mixed receiver/gain/frequency or position sources; use one comparable session");
-  var points=source.Where(p=>!p.Fix.Manual&&p.Fix.Fresh(p.Utc)&&p.Fix.Hdop is >0 and <=3&&p.Fix.Satellites>=4&&p.Readings>0&&p.FloorDb is double floor&&double.IsFinite(floor)&&double.IsFinite(p.MeanDb)&&double.IsFinite(p.PeakDb)&&p.MeanDb-floor>=6&&p.PeakDb< -3).ToArray();
+  var points=source.Where(p=>!p.Overloaded&&!p.Fix.Manual&&p.Fix.Fresh(p.Utc)&&p.Fix.Hdop is >0 and <=3&&p.Fix.Satellites>=4&&p.Readings>0&&p.FloorDb is double floor&&double.IsFinite(floor)&&double.IsFinite(p.MeanDb)&&double.IsFinite(p.PeakDb)&&p.MeanDb-floor>=6&&p.PeakDb< -3).ToArray();
   if(points.Length<20)return new("Collecting","Need usable RF above noise and known GPS quality; weak/unknown/clipped observations excluded");
   double lat=FoxStatistics.Median(points.Select(p=>p.Fix.Latitude)),lon=points[0].Fix.Longitude,cos=Math.Cos(lat*Math.PI/180);
   if(Math.Abs(lat)>80)return new("Unavailable","Polar routes are outside this local estimator's supported area");

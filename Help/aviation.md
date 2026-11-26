@@ -2,7 +2,7 @@
 Context: Aviation
 Keywords: ADS-B Mode S UAT ACARS VDL2 offline map trails 1090 978
 
-Select a protocol and frequency, then start Aviation after SDR/replay. ADS-B/Mode S is at 1090 MHz; UAT at 978 MHz. Check usable capture coverage: a high sample rate does not override the enabled 1.75 MHz HF hardware filter. HackRF 9.6 MS/s and +250 kHz offset with that HF filter off is an established starting configuration.
+Select a protocol and frequency, then start Aviation after SDR/replay. ADS-B/Mode S defaults to 1090 MHz; UAT defaults to 978 MHz. These are receive presets, not decoder locks: edit MHz to investigate a different frequency, then Tune receiver and start Aviation. Check / setup receiver preserves that target. The selected decoder still requires a matching waveform, sufficient sample rate and usable capture coverage; a spectrum peak alone does not identify its protocol or transmitter. A high sample rate does not override the enabled 1.75 MHz HF hardware filter. HackRF 9.6 MS/s and +250 kHz offset with that HF filter off is an established starting configuration.
 
 Decoded packets may lack positions. Fresh decoded position messages are needed for map points; stale positions expire. Select an aircraft for its trail or enable all trails. The offline Natural Earth basemap works without network access. Online street map is optional. No MLAT or online aircraft feeding is provided.
 
@@ -15,3 +15,7 @@ Each receiver remembers its selected Aviation detail file privately, independent
 Map attribution shows the loaded file's source, licence, version and size as supplied by its author; missing provenance is shown as not supplied. Detailed coverage is limited to the selected file, and the view reports when its center is outside those features. Local import is bounded to 64 MB, 50,000 features and 500,000 coordinates. Automatic restore rejects UNC network paths and malformed/oversized preferences. It does not enable online maps, start a decoder or change receiver tuning.
 
 Regional road files remain optional, separate downloads/imports. This is a reference overlay; it does not provide navigation, guarantee map accuracy or verify aircraft position. See Fox Hunt Help for GeoJSON metadata/format details.
+
+## Readable messages
+
+VDL2 rows show link-message types, From/To addresses, reported airports and advertised channel frequencies when decoded. Supported CPDLC elements show their text, with partial elements marked explicitly. The raw frame and decoder JSON remain in the inspector. Search Help for VDL2 to read the field and validation details.

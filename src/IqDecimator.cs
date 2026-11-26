@@ -12,9 +12,13 @@ internal sealed class IqDecimator
     private int position, phase;
     private readonly double shiftStep;
     private double shiftPhase;
+    private readonly double shiftCos, shiftSin;
+    private double oscillatorI = 1, oscillatorQ;
+    private int oscillatorSamples;
     internal IqDecimator(int rate, double offsetHz = 0)
     {
         shiftStep = -2 * Math.PI * offsetHz / rate;
+        shiftCos = Math.Cos(shiftStep); shiftSin = Math.Sin(shiftStep);
         if (!ReceiverCapabilities.SupportsDspRate(rate)) throw new ArgumentOutOfRangeException(nameof(rate));
         inputRate = rate;
         factor = (int)Math.Ceiling(rate / 240000.0);
@@ -46,9 +50,15 @@ internal sealed class IqDecimator
             double i = (bytes[n] - 127.5) / 128, q = (bytes[n + 1] - 127.5) / 128;
             if (shiftStep != 0)
             {
-                double cos = Math.Cos(shiftPhase), sin = Math.Sin(shiftPhase);
-                (i, q) = (i * cos - q * sin, i * sin + q * cos);
-                shiftPhase = Math.IEEERemainder(shiftPhase + shiftStep, 2 * Math.PI);
+                (i, q) = (i * oscillatorI - q * oscillatorQ, i * oscillatorQ + q * oscillatorI);
+                double nextI = oscillatorI * shiftCos - oscillatorQ * shiftSin;
+                oscillatorQ = oscillatorI * shiftSin + oscillatorQ * shiftCos; oscillatorI = nextI;
+                // Re-anchor periodically to bound drift without transcendental work at RF rate.
+                if (++oscillatorSamples == 4096)
+                {
+                    shiftPhase = Math.IEEERemainder(shiftPhase + shiftStep * 4096, 2 * Math.PI);
+                    oscillatorI = Math.Cos(shiftPhase); oscillatorQ = Math.Sin(shiftPhase); oscillatorSamples = 0;
+                }
             }
             if (factor == 1) { output.Add((i, q)); continue; }
             if (--position < 0) position = historyLength - 1;

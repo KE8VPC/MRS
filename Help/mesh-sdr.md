@@ -13,3 +13,7 @@ The view keeps header-only, CRC-failed and decoded frames distinct. Application 
 MeshCore shows routing/path fields and supported advertisements, names/locations when present, plus known Public-channel text with its short MAC check. Advertisement signatures are not verified; do not treat received coordinates/names as trusted. Unknown/private payloads remain opaque. There is no node configuration, message sending, private-key entry or automatic network bridging in this pass.
 
 Clear, search, order, raw details and export work like the other observation views. Stop mesh reception before changing parameters. Retunes, seeks, missing helpers and overruns are visible and reset acquisition. Keep Decoders/Sensors and Decoders/RadioData with MRS.exe. About lists source/license references. Live over-the-air reception on your mesh networks remains an acceptance test.
+
+## Tuning the receiver
+
+In Analysis > Meshtastic / MeshCore, select the profile, enter the actual network MHz and click Tune receiver. This uses the shared receiver tuning action; start the live SDR first. Replay cannot be retuned. Tune does not start mesh decoding or change SF, bandwidth, coding rate or sync. Then use Start mesh reception with matching network parameters. MeshCore requires your local network frequency; it does not assume the Meshtastic preset.

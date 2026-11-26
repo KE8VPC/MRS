@@ -19,7 +19,15 @@ public partial class MainWindow
  internal async Task RenderUpdate044Smoke()
  {
   await RenderUpdate043Smoke();weakPanel.Verify044Dialogs();if(aprsInternet.Enabled||aprsNetEnable.IsChecked==true)throw new IOException("APRS reporting must start off");if(js8Tab==null||hfReferenceTab==null)throw new IOException("Missing new workspaces");SelectWorkspace(PacketsTab);UpdateLayout();await Task.Delay(100);Shot("ui-044-aprs.png");SelectWorkspace(hfReferenceTab);UpdateLayout();await Task.Delay(100);Shot("ui-044-hf.png");SelectWorkspace(js8Tab);UpdateLayout();await Task.Delay(100);Shot("ui-044-js8.png");
-  var tx=new WeakTransmitWindow("FT8",14074000,"synthetic",(_,_,_)=>throw new IOException("No RF in UI smoke"),()=>false,null){Owner=this};tx.Show();tx.UpdateLayout();if(tx.Background is not SolidColorBrush surface||surface.Color.R>40)throw new IOException("TX window must use dark background with its light checkbox labels");var bmp=new RenderTargetBitmap((int)tx.ActualWidth,(int)tx.ActualHeight,96,96,PixelFormats.Pbgra32);bmp.Render(tx);Save(bmp,"ui-044-tx.png");tx.Close();
+  var received=new PacketObservation(DateTimeOffset.UtcNow,"Synthetic",false,14074000,null,"CRC passed","W2XYZ","CQ","","FT8","CQ W2XYZ FN42",null,"","FT8",true,DecoderJson:"{\"text\":\"CQ W2XYZ FN42\",\"audio_hz\":1760}");
+  var samples=Enumerable.Range(0,SignalMath.FftSize).Select(i=>(float)(.3*Math.Sin(2*Math.PI*1760*i/12000))).ToArray();
+  var spectrum=SignalMath.Spectrum(samples);
+  var tx=new WeakTransmitWindow("FT8",14074000,"synthetic",(_,_,_)=>throw new IOException("No RF in UI smoke"),()=>false,received,
+   readAudioSpectrum:()=>spectrum,station:new("K1ABC","FN42","General")){Owner=this};
+  tx.Show();tx.UpdateLayout();await Task.Delay(160);
+  if(tx.Background is not SolidColorBrush surface||surface.Color.R>40)throw new IOException("TX window must use dark background with its light checkbox labels");
+  var bmp=new RenderTargetBitmap((int)tx.ActualWidth,(int)tx.ActualHeight,96,96,PixelFormats.Pbgra32);
+  bmp.Render(tx);Save(bmp,"ui-044-tx.png");tx.Close();
   void Shot(string name){var bmp=new RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bmp.Render(this);Save(bmp,name);}void Save(RenderTargetBitmap bmp,string name){var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bmp));using var file=File.Create(Path.Combine(AppContext.BaseDirectory,name));encoder.Save(file);}
  }
 }

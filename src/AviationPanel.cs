@@ -32,7 +32,7 @@ public sealed class AviationPanel : UserControl
         header.Children.Add(new TextBlock{Text="AVIATION · RECEIVE ONLY",Foreground=Brushes.White,FontSize=18,Margin=new Thickness(0,0,0,8)});
         var controls=new WrapPanel();header.Children.Add(controls);controls.Children.Add(mode);controls.Children.Add(new TextBlock{Text=" MHz ",Foreground=Brushes.White,VerticalAlignment=VerticalAlignment.Center});controls.Children.Add(frequency);
         void Button(string text,Action action){var b=new Button{Content=text};b.Click+=(_,_)=>action();controls.Children.Add(b);}
-        Button("Tune receiver",()=>{if(Target() is {} hz)Tune?.Invoke(hz);});
+        Button("Tune receiver",()=>{if(Target() is {} hz){if(pipeline.Enabled)pipeline.Follow(hz);Tune?.Invoke(hz);}});
         Button("Check / setup receiver",()=>{if(Target() is {} hz)SetupRequested?.Invoke(Mode,hz);});
         Button("Start aviation",()=>{if(Target() is {} hz){pipeline.Start(Mode,hz);status.Text="Waiting for current SDR or I/Q replay. Reception mode/filter do not gate aviation I/Q decoding.";}});
         Button("Stop",()=>Stop("Aviation stopped"));Button("Clear aircraft",()=>{table.Clear();Refresh();});Button("Export aircraft",Export);
@@ -56,7 +56,6 @@ public sealed class AviationPanel : UserControl
         status.Text="Enter a valid frequency in MHz.";return null;
     }
     internal void Feed(IqFrame frame,PacketContext context)=>pipeline.Feed(frame,context);
-    internal void Follow(long hz){pipeline.Follow(hz);Dispatcher.BeginInvoke(()=>frequency.Text=(hz/1e6).ToString("0.000000",CultureInfo.InvariantCulture));}
     internal void Boundary()=>pipeline.Boundary();
     internal void Stop(string reason)=>pipeline.Stop(reason);
     internal void ConfigureOfflineDetail(string folder)=>_=map.ConfigureOfflineDetail(System.IO.Path.Combine(folder,"aviation-offline-detail.json"));
