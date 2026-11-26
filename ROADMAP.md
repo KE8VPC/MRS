@@ -1208,3 +1208,15 @@ User requests M.R.S. identification in PSK Reporter monitor metadata (Using / Ri
 ## Queued: optional PSK Reporter reception reports
 
 Official DLL PDF and current UDP/IPFIX developer protocol were reviewed. User requested this on the next feature list alongside Fox Hunt. An opt-in feature will report resolved transmitting callsigns, receiver callsign/grid, mode, RF frequency and UTC time. SNR may be omitted until a real estimate exists; sync score is not SNR. Exclude replay/synthetic/unresolved records, batch and deduplicate per service guidance, and show transmission status without claiming UDP delivery is confirmed. No reports have been submitted and implementation is not included in preview2.
+
+### Note 9 expansion — shared saved offline maps (November 26, 2026)
+
+User approved adding this workflow to the roadmap. Start with Aviation's online map: navigate to an area, select **Save area for offline use**, choose geographic coverage and detail/zoom levels, review estimated download/storage size, then name and save the region. Provide one shared Offline maps manager accessible from Settings and map windows. Saved regions should be reusable by Aviation, Fox Hunt and the future Coverage Survey, without downloading separate copies for each workspace.
+
+Manage saved coverage, available detail levels, source/licence, download date, storage use, updates and removal. Support manual region selection and automatic use of available saved coverage when offline. Keep aircraft, hunt measurements and survey overlays separate from the underlying map. Show incomplete downloads, unavailable detail levels and uncovered areas explicitly; preserve the existing GeoJSON import path.
+
+The current viewed-tile cache is a starting point, not an existing save/export feature or a guaranteed complete regional map. Research and select a provider or offline dataset whose terms explicitly permit the requested downloads; do not turn the current online tile service into a bulk downloader without that permission. Define a managed region package and portable import/export workflow after choosing the source and format; current Load offline detail accepts GeoJSON, not arbitrary tile packages.
+
+Acceptance: save a named permitted-source area; restart with the network disabled; render its saved detail in both Aviation and Fox Hunt; verify coverage/detail boundaries, interrupted-download recovery, shared storage, update/removal and import/export where supported. Test overlays remain usable and no aircraft, GPS tracks or observations are uploaded by saving map detail.
+
+Planning only. This expands existing note 9 rather than creating a duplicate item. No implementation, map downloads, build or release is authorized by this roadmap edit.
