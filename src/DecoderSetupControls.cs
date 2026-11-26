@@ -22,7 +22,7 @@ public partial class MainWindow
         setupProfile.SelectedItem=DecoderSetup.Profiles.Single(p=>p.Key==key);requestedSetupTarget=target;
         SidebarTabs.SelectedIndex=0;DecoderSetupExpander.IsExpanded=true;DecoderSetupExpander.BringIntoView();RefreshDecoderSetup();
     }
-    private long SetupTarget(DecoderProfile p)=>p.FixedHz??requestedSetupTarget??(FrequencyLibrary.TryFrequency(FrequencyBox.Text,out long hz)?hz:0);
+    private long SetupTarget(DecoderProfile p)=>requestedSetupTarget??(FrequencyLibrary.TryFrequency(FrequencyBox.Text,out long hz)?hz:p.DefaultHz??0);
     private void RefreshDecoderSetup()
     {
         if(setupProfile.SelectedItem is not DecoderProfile p||!ready)return;

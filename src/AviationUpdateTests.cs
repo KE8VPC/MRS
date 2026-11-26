@@ -34,6 +34,8 @@ internal static class AviationUpdateTests
         var issues=DecoderSetup.Check(adsb,1090000000,new(1090250000,9600000,1750000,IqSampleFormat.Unsigned8),"HackRF",hf,new(1090000000,"AM",15000));
         check(issues.Any(i=>i.Contains("HF hardware filter"))&&issues.Any(i=>i.Contains("usable width")),"Decoder setup identifies the exact HF filter and usable-capture conflict");
         var advice=DecoderSetup.Recommend(adsb,"HackRF");
+        foreach(var key in new[]{"adsb","uat"})
+            check(DecoderSetup.Check(DecoderSetup.Profiles.Single(p=>p.Key==key),433920000,new(434170000,9600000,9000000,IqSampleFormat.Unsigned8),"HackRF",new HackRfGain().Token,new(433920000,"AM",15000)).Length==0,key+" setup accepts off-allocation receive targets");
         check(advice.Rate==9600000&&advice.DisableHf&&advice.OffsetKhz==250,"ADS-B profile restores the user's successful HackRF capture baseline");
         check(DecoderSetup.Check(adsb,1090000000,new(1090250000,9600000,9000000,IqSampleFormat.Unsigned8),"HackRF",new HackRfGain().Token,new(1090000000,"NFM",6000)).Length==0,"Raw I/Q ADS-B setup does not incorrectly reject the listening audio filter");
         var hd=DecoderSetup.Profiles.Single(p=>p.Key=="hd");

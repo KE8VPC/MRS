@@ -107,3 +107,7 @@ User authorized a local portable test package after notes 22/19. Includes all ea
 ## Latest portable artifact handoff
 
 Claude: read CLAUDE-BUILD-HANDOFF-0.54.0-preview2-test1.md for artifact SHA-256, exact build commit, notes 22/19 changes, all included fixes, validation and remaining field acceptance. Local unsigned test ZIP has been built and verified; original GitHub release unchanged. Documentation commits after 27856ca do not change that executable.
+
+## Note 23 custom receive frequencies — November 26, 2026
+
+Codex removed ADS-B/UAT exact-frequency locks and preserved custom targets in receiver setup. Read VALIDATION-NOTE23-CUSTOM-RECEIVE.md for Claude review and acceptance limits. 2,317 self-checks, 17 aviation worker fixture cases and full UI smoke passed. Receive only; hardware/sample-rate/coverage requirements remain. No new portable ZIP or publication.

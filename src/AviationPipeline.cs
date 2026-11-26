@@ -32,7 +32,6 @@ internal sealed class AviationPipeline : IDisposable
         int minimum=mode switch{"acars"=>24000,"vdl2"=>50000,"adsb"=>2000000,_=>2083334};
         if(frame.Rate<minimum)return $"{mode}: needs at least {minimum:N0} samples/s";
         if(Math.Abs((double)target-frame.Frequency)+width/2>Math.Min(frame.Rate,frame.Capture.UsableBandwidthHz)/2)return $"Target channel does not fit: center {frame.Frequency/1e6:0.######} MHz · usable {frame.Capture.UsableBandwidthHz/1e6:0.###} MHz · required {width/1e6:0.###} MHz around {target/1e6:0.######} MHz. "+(frame.Capture.UsableBandwidthHz==1750000?(frame.Rate==2400000?"At 2.4 MS/s this capture provides only 1.75 MHz usable bandwidth, even with the HF filter disabled. For ADS-B use 9.6 MS/s on HackRF. ":"A 1.75 MHz capture is too narrow; check the HF hardware filter and receiver bandwidth. "):"")+"Use Check / setup receiver for recommendations.";
-        if(mode=="adsb"&&target!=1090000000||mode=="uat"&&target!=978000000)return "Use 1090 MHz for ADS-B or 978 MHz for UAT";
         return null;
     }
     internal void Feed(IqFrame frame,PacketContext context)

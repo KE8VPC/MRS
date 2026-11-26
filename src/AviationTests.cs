@@ -61,6 +61,10 @@ internal static class AviationTests
             "ACARS positions reach the aircraft map model without combining with ADS-B");
         var frame=new IqFrame(0,1090000000,2400000,new byte[8],2400000);
         check(AviationPipeline.Check("adsb",1090000000,frame)==null,"Aviation accepts full ADS-B capture at 2.4 MS/s");
+        check(AviationPipeline.Check("adsb",1090100000,frame)==null,"ADS-B accepts a custom target inside usable capture");
+        check(AviationPipeline.Check("adsb",433920000,frame with{Frequency=433920000})==null,"ADS-B receive decoding is independent of allocated RF frequency");
+        check(AviationPipeline.Check("uat",915000000,frame with{Frequency=915000000})==null,"UAT accepts a custom receive frequency with sufficient capture");
+        check(AviationPipeline.Check("adsb",433920000,frame with{Frequency=433920000,Rate=960000})!=null,"Custom ADS-B frequency still requires sufficient sample rate");
         check(AviationPipeline.Check("adsb",1090000000,frame with{Frequency=1091000000})!=null,"Aviation rejects a wideband target outside usable capture");
         check(AviationPipeline.Check("uat",978000000,frame with{Frequency=978000000,Rate=1920000})!=null,"Aviation rejects insufficient UAT sample rate");
         check(AviationPipeline.Check("vdl2",136975000,frame with{Frequency=136725000,Rate=960000,UsableBandwidthHz=960000})==null,"VDL2 accepts an offset channel fully inside capture");
@@ -70,15 +74,18 @@ internal static class AviationTests
         var report=new List<string>();
         foreach(var mode in new[]{"acars","vdl2","adsb","uat"})
         foreach(bool signed in new[]{false,true})
+        foreach(bool custom in new[]{false,true})
         {
             long target=mode switch{"acars"=>131550000,"vdl2"=>136975000,"adsb"=>1090000000,_=>978000000};
+            if(custom)target=433920000;
             long offset=mode is "acars" or "vdl2"?250000:mode=="uat"?100000:0;
             using var pipeline=new AviationPipeline();pipeline.Start(mode,target);
             byte[] bytes=File.ReadAllBytes(Path.Combine(folder,mode+".u8")); if(signed)for(int i=0;i<bytes.Length;i++)bytes[i]=unchecked((byte)(bytes[i]-128));
             for(int n=0;n<bytes.Length;n+=16384){pipeline.Feed(new IqFrame(0,target-offset,2400000,bytes.AsSpan(n,Math.Min(16384,bytes.Length-n)).ToArray(),2400000,signed?IqSampleFormat.Signed8:IqSampleFormat.Unsigned8),Context with{FrequencyHz=target});await Task.Delay(5);}
             await pipeline.CompleteAsync().WaitAsync(TimeSpan.FromSeconds(30));var messages=pipeline.Drain();
             if(messages.Length!=(mode=="adsb"?8:1)||!messages.Any(m=>m.Packet.IsValidated)||!pipeline.Status.EndsWith("dropped 0"))throw new Exception($"{mode} fixture failed: {pipeline.Status}");
-            report.Add($"PASS {mode} {(signed?"s8":"u8")}: {messages.Length} messages; {pipeline.Status}");
+            if(messages.Any(m=>m.Packet.FrequencyHz!=target))throw new Exception($"{mode} fixture lost receive frequency attribution");
+            report.Add($"PASS {mode} {(signed?"s8":"u8")} {target/1e6:0.######} MHz: {messages.Length} messages; {pipeline.Status}");
             File.WriteAllText(Path.Combine(AppContext.BaseDirectory,$"aviation-{mode}-fixture.json"),JsonSerializer.Serialize(messages,new JsonSerializerOptions{WriteIndented=true}));
         }
         // Real-time paced HackRF-sized blocks, noisy 19.2 MS/s with +750 kHz capture offset.

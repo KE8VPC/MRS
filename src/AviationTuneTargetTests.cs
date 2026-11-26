@@ -29,6 +29,9 @@ internal static class AviationTuneTargetTests
             mode.SelectedIndex = 2; panel.Boundary();
             tune.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             check(requested == 1090000000 && target.Text == "1090.000000", "Aviation mode change restores ADS-B target independently of receiver");
+            target.Text = "1090.100000"; panel.Boundary();
+            tune.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            check(requested == 1090100000 && target.Text == "1090.100000", "Aviation Tune preserves a custom ADS-B receive target");
         }
         finally { panel.Release(); }
     }

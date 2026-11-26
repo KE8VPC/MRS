@@ -1,12 +1,12 @@
 namespace MRS;
 
-internal sealed record DecoderProfile(string Key,string Name,string Mode,double Filter,int MinimumRate,double Span,bool Centered=false,long? FixedHz=null);
+internal sealed record DecoderProfile(string Key,string Name,string Mode,double Filter,int MinimumRate,double Span,bool Centered=false,long? DefaultHz=null);
 internal sealed record DecoderRecommendation(int Rate,bool DisableHf,int OffsetKhz,string Mode,double Filter);
 internal static class DecoderSetup
 {
     internal static readonly DecoderProfile[] Profiles=[
-        new("adsb","ADS-B / Mode S","AM",15000,2000000,2000000,FixedHz:1090000000),
-        new("uat","UAT","AM",15000,2083334,1600000,FixedHz:978000000),
+        new("adsb","ADS-B / Mode S","AM",15000,2000000,2000000,DefaultHz:1090000000),
+        new("uat","UAT","AM",15000,2083334,1600000,DefaultHz:978000000),
         new("acars","ACARS","AM",15000,24000,15000),
         new("vdl2","VDL2","NFM",25000,50000,25000),
         new("atsc","HDTV / ATSC 1.0","WFM",200000,8000000,6000000),
@@ -26,7 +26,6 @@ internal static class DecoderSetup
     internal static string[] Check(DecoderProfile p,long target,CaptureDescriptor capture,string backend,int gain,ChannelSettings channel,int sampling=0)
     {
         var issues=new List<string>();
-        if(p.FixedHz is {} fixedHz&&target!=fixedHz)issues.Add($"{p.Name} target must be {fixedHz/1e6:0.######} MHz.");
         if(sampling!=0&&p.Key!="cw")issues.Add("Use quadrature / tuner sampling for this decoder profile.");
         if(capture.SampleRate<p.MinimumRate)issues.Add($"Sample rate {capture.SampleRate/1e6:0.###} MS/s is below {p.MinimumRate/1e6:0.###} MS/s required by {p.Name}.");
         if(backend=="HackRF"&&HackRfGain.Decode(gain).HfFilter&&Math.Abs(target-(double)capture.CenterHz)+p.Span/2>875000)issues.Add($"HF hardware filter (1.75 MHz) blocks {p.Name} coverage; disable it or use the recommended capture settings.");

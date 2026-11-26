@@ -1,4 +1,6 @@
-# Current evaluation roadmap — November 22, 2026
+# Current evaluation roadmap — November 26, 2026
+
+> Note 23: custom receive frequencies. ADS-B/UAT allocation locks removed in source; normal frequencies remain presets, and receiver setup preserves an explicit custom target. Capture compatibility checks remain. See VALIDATION-NOTE23-CUSTOM-RECEIVE.md for validation and Claude handoff. No new release ZIP.
 
 > Local test-build milestone: 0.54.0-preview2-test1 includes prepared TX symbols/first-slot handoff (note 22), Fox ADC overload evidence/exclusions (note 19), and the earlier buffer/recovery/tuning/indicator fixes. See UPDATE-0.54.0-preview2-test1.md. 2,310 local source checks and three UI smokes passed; field acceptance remains open. Private unsigned testing only, no GitHub publication.
 
