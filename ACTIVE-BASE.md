@@ -119,3 +119,7 @@ Claude: read the Note 9 expansion in ROADMAP.md and CLAUDE-NEXT-BUILD-HANDOFF-20
 ## Note 24 mesh tuning — November 26, 2026
 
 Codex added Tune receiver in Analysis > Meshtastic / MeshCore using the shared LiveTune action and entered MHz. Read note 24 at the end of ROADMAP.md and the Claude next-build handoff. Release compile passed with zero warnings/errors; whitespace check passed. Live receiver acceptance remains open. No portable ZIP or publication.
+
+## Portable test2 preparation — November 26, 2026
+
+User authorized next portable test update. Version/header now 0.54.0-preview2-test2, notes 23/24 plus carried-forward HOT/EOT. Read UPDATE-0.54.0-preview2-test2.md. Packaging verification follows from committed inputs; no public publication.
